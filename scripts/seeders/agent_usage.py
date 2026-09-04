@@ -97,11 +97,23 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
             "FROM demo_exchange GROUP BY agent_version_id",
         )
     }
+    # The analysis type, not the KPI id. The value model keys avg_manual_minutes
+    # on how hard the question is to answer by hand — a driver ranking takes
+    # longer than a period comparison — and that is what analysis_type names. A
+    # KPI id says what the answer is about, which is a different question.
     classes = {
         row["agent_version_id"]: row["classes"]
         for row in fetch_all(
             connection,
-            "SELECT agent_version_id, array_agg(kpi_class ORDER BY ordinal) AS classes "
+            "SELECT agent_version_id, array_agg(analysis_type ORDER BY ordinal) AS classes "
+            "FROM demo_exchange GROUP BY agent_version_id",
+        )
+    }
+    kpis = {
+        row["agent_version_id"]: row["kpi_classes"]
+        for row in fetch_all(
+            connection,
+            "SELECT agent_version_id, array_agg(kpi_class ORDER BY ordinal) AS kpi_classes "
             "FROM demo_exchange GROUP BY agent_version_id",
         )
     }
@@ -132,6 +144,7 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
         for agent in agents:
             questions = exchanges.get(agent["agent_version_id"]) or []
             kpi_classes = classes.get(agent["agent_version_id"]) or []
+            cited = kpis.get(agent["agent_version_id"]) or []
             if not questions:
                 continue
             consumers = _window(
@@ -178,7 +191,7 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                                 kpi_classes[which] if which < len(kpi_classes) else "ad_hoc",
                                 outcome, answered,
                                 Decimal("0.93") if answered else None,
-                                [kpi_classes[which]] if answered and kpi_classes else [],
+                                [cited[which]] if answered and cited else [],
                                 _draw(key + "-rows", 800, 90000) if answered else 0,
                                 _draw(key + "-ms", 400,
                                       int(agent["budget_p95_latency_ms"])),
@@ -200,14 +213,22 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
             "       i.principal_id, "
             # mod(), not the % operator: psycopg reads % as a placeholder marker
             # and this statement carries no parameters to bind.
-            "       mod(('x' || substr(md5(i.interaction_id), 1, 8))::bit(32)::bigint, 10) "
-            "         > 1, "
-            "       CASE WHEN mod(('x' || substr(md5(i.interaction_id), 1, 8))::bit(32)"
-            "                     ::bigint, 10) > 1 "
+            # A different salt from the one that chose which answers get rated.
+            # Sharing a hash between the two made the two decisions correlated:
+            # selecting h mod 5 = 0 leaves only h mod 10 in {0, 5}, so an
+            # acceptance test of h mod 10 > 1 passed exactly half the time. The
+            # 50% rejection rate that produced was an artefact of arithmetic, not
+            # a fact about any agent — and it fired the acceptance signal on all
+            # fourteen of them.
+            "       mod(abs(('x' || substr(md5('accept' || i.interaction_id), 1, 8))"
+            "               ::bit(32)::bigint), 10) > 1, "
+            "       CASE WHEN mod(abs(('x' || substr(md5('accept' || i.interaction_id), "
+            "                          1, 8))::bit(32)::bigint), 10) > 1 "
             "            THEN 'correct' ELSE 'wrong_number' END "
             "FROM agent_interaction i "
             "WHERE i.outcome = 'answered' AND i.session_id LIKE 'SES-U-' || chr(37) "
-            "  AND mod(('x' || substr(md5(i.interaction_id), 1, 8))::bit(32)::bigint, 5) = 0 "
+            "  AND mod(abs(('x' || substr(md5(i.interaction_id), 1, 8))::bit(32)::bigint), "
+            "          5) = 0 "
             "ON CONFLICT (interaction_id, party_id) DO NOTHING"
         )
     return written

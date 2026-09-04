@@ -2,7 +2,7 @@
 # date, resampled quarterly, and the sample size is displayed next to any figure
 # derived from it (15.7). It is never a hardcoded constant.
 rubric: value_model
-version: 1.0.0
+version: 1.1.0
 deflection:
   formula: "answered_questions * acceptance_rate * avg_manual_minutes / 60 * loaded_rate"
   avg_manual_minutes_by_question_class:
@@ -23,5 +23,10 @@ deflection:
     gap_analysis:          { minutes: 80,  sample_size: 20, dated: 2026-06-01 }
     default:               { minutes: 55,  sample_size: 34, dated: 2026-06-01 }
   loaded_analyst_rate_usd_hour: 96
+reporting:
+  # The window the value plane defaults to. A month is short enough that a
+  # change in behaviour shows and long enough that a quiet week does not.
+  default_window_days: 30
+
 attribution_confidence: [high, medium, low]
 value_case_review_months: 6

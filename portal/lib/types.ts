@@ -545,3 +545,103 @@ export interface BlastRadius {
   consumers: { asset_id: string; consumers: number }[];
   consumer_count: number;
 }
+
+export interface SignalFinding {
+  asset_type: string;
+  asset_id: string;
+  signal: string;
+  detail: string;
+  observed: number;
+  threshold: number;
+  unit: string;
+  guarantee_breached: string | null;
+}
+
+export interface OpenIncident {
+  incident_id: string;
+  asset_type: string;
+  asset_id: string;
+  signal: string;
+  severity: string;
+  severity_inputs: Record<string, unknown>;
+  status: string;
+  guarantee_breached: string | null;
+  detected_at: string;
+  notified_at: string | null;
+  owner_context: string | null;
+  impacted: number;
+}
+
+export interface Banner {
+  incident_id: string;
+  origin_type: string;
+  origin_id: string;
+  signal: string;
+  severity: string;
+  guarantee_breached: string | null;
+  detected_at: string;
+  owner_context: string | null;
+  status: string;
+}
+
+export interface HealthPlane {
+  findings: SignalFinding[];
+  incidents: OpenIncident[];
+  overdue_notifications: { incident_id: string; asset_id: string }[];
+  signals: { product: string[]; agent: string[] };
+  rubric_version_id: string;
+}
+
+export interface DeflectionEvidence {
+  question_class: string;
+  avg_manual_minutes: number;
+  sample_size: number;
+  dated: string;
+  answers: number;
+}
+
+export interface Deflection {
+  asset_type: string;
+  asset_id: string;
+  answered: number;
+  rated: number;
+  accepted: number;
+  acceptance_rate: number;
+  deflected_hours: number;
+  deflected_value_usd: number;
+  total_cost_usd: number;
+  net_value_usd: number;
+  value_ratio: number | null;
+  evidence: DeflectionEvidence[];
+  rubric_version_id: string;
+}
+
+export interface UnitEconomics {
+  agent_id: string;
+  answered: number;
+  rated: number;
+  accepted: number;
+  acceptance_rate: number;
+  total_cost_usd: number;
+  marginal_cost_usd: number;
+  marginal_cost_per_answer_usd: number | null;
+  cost_per_answer_usd: number | null;
+  cost_per_accepted_answer_usd: number | null;
+  budget_per_answer_usd: number;
+  within_budget: boolean;
+}
+
+export interface ValuePlane {
+  since: string;
+  portfolio: Deflection[];
+  unit_economics: UnitEconomics[];
+  budgets: { agent_id: string; marginal_cost_per_answer_usd: number;
+             loaded_cost_per_answer_usd: number; budget_per_answer_usd: number;
+             consumed_fraction: number; state: string }[];
+  retirement_candidates: { asset_type: string; asset_id: string;
+                           annual_cost_usd: number; why: string }[];
+  demo_tier_share: { demo_usd: number; total_usd: number; share: number;
+                     cap: number; share_pct: number; cap_pct: number;
+                     within_cap: boolean };
+  rubric_version_id: string;
+}

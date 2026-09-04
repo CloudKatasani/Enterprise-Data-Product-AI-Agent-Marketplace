@@ -1,0 +1,103 @@
+# Observability: which signals are watched, when they raise an incident, and how
+# severity is computed (BUILD.md section 15.6).
+#
+# Severity is computed, never chosen. An owner deciding how bad their own outage
+# is has an obvious incentive, and a severity anybody can argue down is a
+# severity nobody acts on. The inputs are blast radius, sensitivity and which
+# guarantee broke — all three facts about the estate rather than judgements
+# about the incident.
+rubric: observability
+version: 1.1.0
+
+product_signals:
+  # Each threshold is the point at which the signal stops being noise. Where a
+  # contract states a guarantee, the contract wins and this is the fallback for
+  # products whose contract is silent.
+  freshness:
+    # Minutes past the contract's stated target before this is a breach.
+    grace_minutes: 15
+  volume:
+    # A day's row count this far below the trailing median is a volume anomaly.
+    drop_fraction: 0.4
+    trailing_days: 14
+  quality:
+    # A composite falling by more than this between snapshots is a regression
+    # worth an incident even if the band did not change.
+    composite_drop_points: 8
+  access:
+    # Permission denials as a share of queries. A leading indicator of an
+    # entitlement gap: people are trying to use something they cannot reach,
+    # which is a demand signal wearing an error's clothes.
+    denied_rate: 0.05
+    min_queries: 20
+  cost:
+    # A day's cost above this multiple of the trailing median is an anomaly.
+    spike_multiple: 3.0
+    trailing_days: 14
+
+agent_signals:
+  groundedness:
+    # I11 is absolute at publish time. In flight, a single ungrounded answer is
+    # an incident, because it means one reached the check and the check held —
+    # and the next one might not.
+    max_ungrounded: 0
+  refusal:
+    # Out-of-scope answers as a share. High refusal is not a fault; it is demand
+    # pointing somewhere the estate does not reach.
+    rate: 0.25
+    min_answers: 20
+  performance:
+    # Answers over the version's own declared p95 budget, as a share.
+    over_budget_rate: 0.1
+  acceptance:
+    # Rejections as a share of the answers people bothered to rate.
+    rejection_rate: 0.3
+    min_rated: 10
+  safety:
+    # A true scope violation — an agent reaching past its own binding — is a
+    # security event with no acceptable rate, and it is structurally impossible
+    # here: the analytic runtime plans only inside the binding intersected with
+    # the caller's grant, and the Cortex adapter refuses an answer whose trace
+    # names an unbound tool before it becomes an answer.
+    max_scope_violations: 0
+    # What is measurable is the other side of that wall: consumers asking for
+    # data their own grant does not reach. Not a security event — the partial
+    # permission case — but above this rate it says the agent's audience and its
+    # bindings disagree.
+    entitlement_denial_rate: 0.08
+    min_answers: 20
+
+severity:
+  # severity = f(downstream consumers, sensitivity rank, guarantee breached).
+  # Written as a floor table: the highest band whose floors are all met wins.
+  bands:
+    - code: sev1
+      label: "Critical"
+      min_consumers: 20
+      min_sensitivity_rank: 3
+      response_minutes: 30
+    - code: sev2
+      label: "High"
+      min_consumers: 8
+      min_sensitivity_rank: 2
+      response_minutes: 120
+    - code: sev3
+      label: "Moderate"
+      min_consumers: 2
+      min_sensitivity_rank: 1
+      response_minutes: 480
+    - code: sev4
+      label: "Low"
+      min_consumers: 0
+      min_sensitivity_rank: 0
+      response_minutes: 1440
+  # Breaching a stated contract guarantee raises severity by one band: a
+  # promise broken is worse than a number moving.
+  guarantee_breach_escalates_bands: 1
+
+notification:
+  # Consumers are notified whatever the owner thinks. Section 15.6: owners
+  # cannot suppress consumer notification; they can only add context. The
+  # deadline is what the M10 acceptance criterion measures.
+  consumer_deadline_minutes: 5
+  banner_while_open: true

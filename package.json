@@ -50,7 +50,8 @@
     "demo:nightly": "python3 scripts/demo_runner.py --nightly",
     "evaluate": "python3 scripts/evaluate.py",
     "publish:agents": "python3 scripts/publish_agents.py",
-    "mesh": "python3 scripts/mesh.py"
+    "mesh": "python3 scripts/mesh.py",
+    "observe": "python3 scripts/observe.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"

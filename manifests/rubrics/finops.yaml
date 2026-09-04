@@ -1,18 +1,36 @@
 # FinOps rubric. Unit economics, budgets and retirement candidates.
 rubric: finops
-version: 1.0.0
+version: 1.2.0
 targets:
   cost_per_accepted_answer_vs_manual_max_ratio: 0.35
   value_ratio_min_after_4q: 3.0
   demo_tier_share_of_inference_max: 0.05
 budgets:
-  soft_threshold_pct: 80
-  hard_threshold_pct: 100
+  # Fractions of the declared budget, not percentages, so nothing downstream
+  # carries a scale constant to divide by. Soft is a warning; hard is where
+  # budget exhaustion freezes feature work.
+  soft_threshold_fraction: 0.8
+  hard_threshold_fraction: 1.0
 cost_classes:
   trivial: 1
   small: 10
   medium: 100
   large: 1000
+# The costs the platform does not itemise. Both are real money and leaving them
+# out is what produces a value ratio of forty thousand: an agent whose only cost
+# is its own inference looks free, and free is never true.
+stewardship:
+  # What it costs to keep one asset governed for a day — the steward's time on
+  # certification, review, incident triage and contract upkeep, loaded and
+  # divided across the estate.
+  usd_per_asset_day: 12.0
+platform:
+  # An agent's share of the query cost of the products it reads, apportioned by
+  # its share of the traffic against them. Apportionment because the platform
+  # bills the warehouse, not the caller; the basis is stated so the number can
+  # be argued with.
+  apportion_by: answers_share_of_product_queries
+
 dormant_grant_days: 60
 retirement_candidate:
   no_queries_days: 90

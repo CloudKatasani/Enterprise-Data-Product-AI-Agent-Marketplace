@@ -22,7 +22,8 @@
         "platform_harvest",
         "semantic_search",
         "agent_runtime",
-        "governance"
+        "governance",
+        "observability"
       ]
     },
     "version": {
@@ -160,6 +161,18 @@
       },
       "then": {
         "$ref": "#/$defs/governance"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "observability"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/observability"
       }
     }
   ],
@@ -756,6 +769,19 @@
         "value_case_review_months": {
           "type": "integer",
           "minimum": 1
+        },
+        "reporting": {
+          "type": "object",
+          "required": [
+            "default_window_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "default_window_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
         }
       }
     },
@@ -781,11 +807,18 @@
         "budgets": {
           "type": "object",
           "required": [
-            "soft_threshold_pct",
-            "hard_threshold_pct"
+            "soft_threshold_fraction",
+            "hard_threshold_fraction"
           ],
-          "additionalProperties": {
-            "$ref": "urn:marketplace:common#/$defs/percent"
+          "additionalProperties": false,
+          "properties": {
+            "soft_threshold_fraction": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "hard_threshold_fraction": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
           }
         },
         "cost_classes": {
@@ -812,6 +845,31 @@
           ],
           "additionalProperties": {
             "type": "number"
+          }
+        },
+        "stewardship": {
+          "type": "object",
+          "required": [
+            "usd_per_asset_day"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "usd_per_asset_day": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "platform": {
+          "type": "object",
+          "required": [
+            "apportion_by"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "apportion_by": {
+              "type": "string"
+            }
           }
         }
       }
@@ -1115,6 +1173,110 @@
             "max_validation_age_days": {
               "type": "integer",
               "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "observability": {
+      "type": "object",
+      "required": [
+        "product_signals",
+        "agent_signals",
+        "severity",
+        "notification"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "product_signals": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        },
+        "agent_signals": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        },
+        "severity": {
+          "type": "object",
+          "required": [
+            "bands",
+            "guarantee_breach_escalates_bands"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "bands": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "code",
+                  "label",
+                  "min_consumers",
+                  "min_sensitivity_rank",
+                  "response_minutes"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "enum": [
+                      "sev1",
+                      "sev2",
+                      "sev3",
+                      "sev4"
+                    ]
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "min_consumers": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "min_sensitivity_rank": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "response_minutes": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            },
+            "guarantee_breach_escalates_bands": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "notification": {
+          "type": "object",
+          "required": [
+            "consumer_deadline_minutes",
+            "banner_while_open"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "consumer_deadline_minutes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "banner_while_open": {
+              "type": "boolean"
             }
           }
         }

@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: 854fed41198947e5d7028a5b9aa10fb17ff82563f217dbed64714a8f78e7b938  generated_at: 2026-09-04T06:12:09+00:00
+// generator_version: 1.0.0  manifest_hash: 749cb34dd1230363b0f9b6dc1580c591486ab3ef16fd345aca42b6d10aafba5c  generated_at: 2026-09-04T06:38:41+00:00
 
 /* eslint-disable */
 /**
@@ -156,6 +156,31 @@ export class MarketplaceClient {
     return request(this.baseUrl, 'GET', `/api/v1/mesh/sources`, undefined, undefined, options);
   }
 
+  /** The health plane */
+  getObservability(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/observability`, undefined, undefined, options);
+  }
+
+  /** What must be shown on this listing right now */
+  getObservabilityBanners(query?: { asset_type?: unknown, asset_id?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/observability/banners`, query, undefined, options);
+  }
+
+  /** Add owner context. It cannot suppress consumer notification. */
+  postObservabilityIncidentsIncident_idContext(incident_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/observability/incidents/${incident_id}/context`, undefined, body, options);
+  }
+
+  /** Resolve with a root cause. The cause is required. */
+  postObservabilityIncidentsIncident_idResolve(incident_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/observability/incidents/${incident_id}/resolve`, undefined, body, options);
+  }
+
+  /** Run the detectors and raise incidents for what they find */
+  postObservabilityScan(query?: { only?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/observability/scan`, query, undefined, options);
+  }
+
   /** Search, filter and page the product catalog */
   getProducts(query?: { industry?: unknown, domain?: unknown, archetype?: unknown, certification?: unknown, sensitivity?: unknown, tier?: unknown, owner?: unknown, endpoint?: unknown, kpi?: unknown, quality_band?: unknown, sort?: unknown, cursor?: unknown, limit?: unknown, featured?: unknown }, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/products`, query, undefined, options);
@@ -259,6 +284,21 @@ export class MarketplaceClient {
   /** Every transition, in order, with its actor */
   getRequestsRequest_idHistory(request_id: string, query?: { workflow?: unknown }, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/requests/${request_id}/history`, query, undefined, options);
+  }
+
+  /** The value plane */
+  getValue(query?: { days?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/value`, query, undefined, options);
+  }
+
+  /** The board pack, read from the stored snapshot and never recomputed */
+  getValueBoard_packSnapshot_ref(snapshot_ref: string, query?: { fmt?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/value/board-pack/${snapshot_ref}`, query, undefined, options);
+  }
+
+  /** Compute the portfolio once and record it */
+  postValueSnapshot(query?: { days?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/value/snapshot`, query, undefined, options);
   }
 
 }

@@ -126,6 +126,12 @@ jobs:
       - name: mesh and divergence
         run: npm run mesh
 
+      # Signals, incidents, cost attribution and the value snapshot. The
+      # snapshot is what the board pack reads; computing it here means the
+      # pack is never assembled from numbers nobody has seen.
+      - name: observe, attribute and snapshot
+        run: npm run observe
+
       - name: unit
         run: npm run test:unit
 

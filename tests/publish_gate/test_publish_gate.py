@@ -293,12 +293,16 @@ def test_a_missing_value_case_blocks_publication(db, rubric, version_id) -> None
             "SELECT agent_id FROM agent_version WHERE agent_version_id = %s", (version_id,)
         )
         agent_id = cursor.fetchone()["agent_id"]
-        cursor.execute(
-            "DELETE FROM value_assumption WHERE value_case_id IN ("
-            "  SELECT value_case_id FROM value_case WHERE asset_type = 'agent' "
-            "  AND asset_id = %s)",
-            (agent_id,),
-        )
+        # Assumptions and realised measurements both hang off the case. Since
+        # M10 the value snapshot writes measurements, so a case that has ever
+        # been measured cannot be removed without them.
+        for child in ("value_assumption", "value_measurement"):
+            cursor.execute(
+                f"DELETE FROM {child} WHERE value_case_id IN ("  # noqa: S608 - fixed set
+                "  SELECT value_case_id FROM value_case WHERE asset_type = 'agent' "
+                "  AND asset_id = %s)",
+                (agent_id,),
+            )
         cursor.execute(
             "DELETE FROM value_case WHERE asset_type = 'agent' AND asset_id = %s", (agent_id,)
         )

@@ -501,3 +501,66 @@
     text-align: center;
   }
 }
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * Incidents (M10.2, M10.3).
+   *
+   * A banner is a statement of fact placed where the consumer is already
+   * looking. It has no dismiss control here because it has none in the API:
+   * an incident stops being shown when it is resolved, and at no other time.
+   * Severity is carried on a data attribute rather than a class per band, so
+   * the bands stay a closed set the CSS enumerates once.
+   * ---------------------------------------------------------------- */
+  .incident-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .incident-banner {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-left-width: var(--border-width-accent);
+    border-left-color: var(--incident-colour, var(--colour-status-info));
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-md);
+  }
+
+  .incident-banner[data-severity='sev1'] { --incident-colour: var(--colour-severity-sev1); }
+  .incident-banner[data-severity='sev2'] { --incident-colour: var(--colour-severity-sev2); }
+  .incident-banner[data-severity='sev3'] { --incident-colour: var(--colour-severity-sev3); }
+  .incident-banner[data-severity='sev4'] { --incident-colour: var(--colour-severity-sev4); }
+
+  .incident-headline {
+    max-width: var(--measure-prose);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  .incident-detail {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-3xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* The band, as a word. A colour alone would carry the whole meaning for a
+   * reader who can see it and none for a reader who cannot. */
+  .incident-severity {
+    display: inline-block;
+    border: var(--border-width-hairline) solid currentcolor;
+    border-radius: var(--radius-pill);
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--incident-colour, var(--text-muted));
+  }
+
+  .incident-severity[data-severity='sev1'] { --incident-colour: var(--colour-severity-sev1); }
+  .incident-severity[data-severity='sev2'] { --incident-colour: var(--colour-severity-sev2); }
+  .incident-severity[data-severity='sev3'] { --incident-colour: var(--colour-severity-sev3); }
+  .incident-severity[data-severity='sev4'] { --incident-colour: var(--colour-severity-sev4); }
+}

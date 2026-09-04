@@ -57,6 +57,14 @@
   --colour-status-error: #c02a3c;
   --colour-status-info: #3b6ef2;
 
+  /* Incident severity, as roles over the status ramp. Four bands, four
+   * distinguishable weights: an estate where everything is red has told the
+   * reader nothing. */
+  --colour-severity-sev1: var(--colour-status-error);
+  --colour-severity-sev2: var(--colour-status-warn);
+  --colour-severity-sev3: var(--colour-status-info);
+  --colour-severity-sev4: var(--colour-ink-400);
+
   /* Semantic surface roles — components only ever use these. */
   --surface-page: var(--colour-ink-025);
   --surface-raised: var(--colour-ink-000);

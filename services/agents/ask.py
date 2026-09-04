@@ -149,6 +149,22 @@ def _record(
         )
 
 
+AD_HOC = "ad_hoc"
+
+
+def _question_class(
+    connection: psycopg.Connection[Any], exchange_id: str | None
+) -> str:
+    if not exchange_id:
+        return AD_HOC
+    row = fetch_one(
+        connection,
+        "SELECT analysis_type FROM demo_exchange WHERE exchange_id = %s",
+        (exchange_id,),
+    )
+    return row["analysis_type"] if row else AD_HOC
+
+
 def _covering(connection: psycopg.Connection[Any], agent_ids: list[str]) -> list[str]:
     if not agent_ids:
         return []
@@ -200,7 +216,10 @@ def ask(
         on_behalf_of=principal.on_behalf_of,
         exchange_id=exchange_id,
     )
-    question_class = exchange_id or "ad_hoc"
+    # The analysis type, where a curated exchange names one. The value model
+    # keys its reference minutes on how hard a question is to answer by hand,
+    # and an exchange id tells it nothing about that.
+    question_class = _question_class(connection, exchange_id)
 
     try:
         answer = runtime.ask(connection, request)
