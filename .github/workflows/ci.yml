@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PRODUCT_NAME: "Marketplace CI"
+  TENANT_ID: TEN-CI
+  DATABASE_URL: postgresql://marketplace:marketplace@localhost:5432/marketplace
+  REDIS_URL: redis://localhost:6379/0
+  OIDC_ISSUER: https://oidc.ci.invalid/realms/marketplace
+  OIDC_CLIENT_ID: marketplace-portal
+  OIDC_CLIENT_SECRET: ci-secret
+  SNOWFLAKE_ACCOUNT: ci-account
+  SNOWFLAKE_USER: SVC_CI
+  SNOWFLAKE_ROLE: MKT_READONLY
+  SNOWFLAKE_PRIVATE_KEY: ""
+  AGENT_RUNTIME: mock
+  MODEL_PROVIDER: anthropic
+  MODEL_ID: ci-model
+  MODEL_MAX_TOKENS: "2000"
+  DEMO_TIER_SCHEMA: MARKETPLACE_DEMO
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4318
+  FEATURE_FLAG_SOURCE: env
+
+jobs:
+  # Pipeline order from BUILD.md section 20:
+  # lint -> typecheck -> gen-diff -> unit -> contract -> golden -> publish_gate
+  #      -> security -> a11y -> build -> e2e -> perf
+  pipeline:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: marketplace
+          POSTGRES_PASSWORD: marketplace
+          POSTGRES_DB: marketplace
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U marketplace -d marketplace"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && pip install -e ".[dev]"
+
+      - name: Install Node dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: lint
+        run: npm run lint
+
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: gen-diff
+        run: npm run gen:diff
+
+      - name: migrate
+        run: npm run migrate
+
+      - name: seed
+        run: npm run seed
+
+      - name: unit
+        run: npm run test:unit
+
+      - name: contract
+        run: npm run test:contract
+
+      - name: golden
+        run: npm run test:golden
+
+      - name: publish_gate
+        run: npm run test:publish-gate
+
+      - name: security
+        run: npm run test:security
+
+      - name: a11y
+        run: npm run test:a11y
+
+      - name: build
+        run: npm run build
+
+      - name: e2e
+        run: npm run test:e2e
+
+      - name: perf
+        run: npm run test:perf
+
+  # The kill test needs a real sandbox account, so it runs on a schedule and on
+  # demand rather than on every pull request. It is blocking for a release.
+  kill-test:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - name: connector write-attempt kill test
+        run: npm run test:kill

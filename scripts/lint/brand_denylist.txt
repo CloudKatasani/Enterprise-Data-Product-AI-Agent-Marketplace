@@ -1,0 +1,14 @@
+# One forbidden literal per line, case-insensitive. Comments start with '#'.
+#
+# I13: the product name is deliberately unset. Application source renders the
+# PRODUCT_NAME token resolved from theme config at runtime. Any of the strings
+# below appearing in services/ or portal/ source is a hardcoded brand and fails
+# the build. Deployments add their own name here to keep it out of source.
+Acme Data Exchange
+Acme
+DataHub
+Data Exchange Platform
+Enterprise Data Exchange
+Marketplace Inc
+Contoso
+Northwind
