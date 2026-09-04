@@ -93,8 +93,8 @@ jobs:
 
       # The stand-in platform lets the harvest path — the real statements, the
       # real read-only guard, the real mapping — run without a Snowflake account.
-      - name: seed platform and harvest
-        run: npm run seed:platform && npm run harvest
+      - name: seed platform, harvest and score
+        run: npm run seed:platform && npm run harvest && npm run score
 
       - name: unit
         run: npm run test:unit

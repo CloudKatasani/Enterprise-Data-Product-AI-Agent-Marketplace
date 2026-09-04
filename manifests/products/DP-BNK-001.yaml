@@ -230,6 +230,7 @@ spec:
     synthetic: true
     rows_target: 300000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 96
     planted_patterns:
       - id: southeast-value-concentration
         description: >-

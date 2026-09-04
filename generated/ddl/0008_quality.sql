@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: fbb3ffd6721e1ee7d8fd5fb08735ed416f5d4af8855002b3a319a5670d827d46  generated_at: 2026-09-04T02:21:56+00:00
+-- generator_version: 1.0.0  manifest_hash: e507de7741ea403b819f92cb7ca8a9c4f98bcabab341c6a1026c556f8d22cf7f  generated_at: 2026-09-04T03:37:55+00:00
 
 -- rules, results, immutable score snapshots and incidents
 
@@ -31,7 +31,9 @@ CREATE TABLE quality_result (
   tenant_id TEXT NOT NULL REFERENCES tenant(tenant_id),  -- Tenant that owns this row; carried into every RLS policy.
   rule_id TEXT NOT NULL REFERENCES quality_rule(rule_id),
   product_id TEXT NOT NULL REFERENCES data_product(product_id),
-  observed_pct NUMERIC(9,4),
+  observed_pct NUMERIC(9,4),  -- For a rule expressed as a percentage against a threshold.
+  observed_value NUMERIC(14,4),  -- For a rule expressed as a measure against a tolerance, such as freshness lag in minutes.
+  observed_unit TEXT,
   observed_text TEXT,
   passed BOOLEAN NOT NULL,
   rows_evaluated BIGINT,

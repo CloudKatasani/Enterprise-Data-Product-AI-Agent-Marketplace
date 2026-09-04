@@ -247,6 +247,7 @@ spec:
     synthetic: true
     rows_target: 420000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 91
     planted_patterns:
       - id: feeder-pareto
         description: >-

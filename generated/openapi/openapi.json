@@ -57,7 +57,7 @@
       "by": "scripts/gen.py",
       "from": "services/api/main.py",
       "generator_version": "1.0.0",
-      "manifest_hash": "f40e68c6735073adc5ae1f4c25783b86f7515564d2c4f6a3e698d00ac523c89d",
+      "manifest_hash": "41f8878e4bab4d5358d0f8e39a0a55223c796713485df545c88111033d8b682a",
       "warning": "DO NOT EDIT"
     }
   },
@@ -1168,6 +1168,28 @@
         "summary": "Value case, assumptions with sample sizes, and measurements",
         "tags": [
           "products"
+        ]
+      }
+    },
+    "/api/v1/quality/estate": {
+      "get": {
+        "operationId": "estate_api_v1_quality_estate_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Estate Api V1 Quality Estate Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Tier-weighted estate quality with its breakdown",
+        "tags": [
+          "quality"
         ]
       }
     }

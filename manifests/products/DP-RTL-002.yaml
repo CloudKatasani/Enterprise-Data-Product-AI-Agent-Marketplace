@@ -229,6 +229,7 @@ spec:
     synthetic: true
     rows_target: 900000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 89
     planted_patterns:
       - id: instock-store-tail
         description: >-

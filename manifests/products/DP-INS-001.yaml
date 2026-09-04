@@ -230,6 +230,7 @@ spec:
     synthetic: true
     rows_target: 220000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 90
     planted_patterns:
       - id: apd-cycle-time
         description: >-

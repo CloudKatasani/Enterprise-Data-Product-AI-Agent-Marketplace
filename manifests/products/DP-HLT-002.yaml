@@ -221,6 +221,7 @@ spec:
     synthetic: true
     rows_target: 320000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 87
     planted_patterns:
       - id: shortdated-waste
         description: >-

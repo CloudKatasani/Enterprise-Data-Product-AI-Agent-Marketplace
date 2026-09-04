@@ -3,7 +3,7 @@
     "from": "manifests/products/DP-TEL-001.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c",
+    "manifest_hash": "99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0",
     "warning": "DO NOT EDIT"
   },
   "server": "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-001",

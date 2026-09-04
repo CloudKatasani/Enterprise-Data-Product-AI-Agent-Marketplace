@@ -41,7 +41,9 @@
     "validate:manifests": "python3 scripts/manifests/validate.py",
     "lint:generated": "python3 scripts/lint/generated.py",
     "harvest": "python3 scripts/harvest.py",
-    "seed:platform": "python3 scripts/seed_platform.py"
+    "seed:platform": "python3 scripts/seed_platform.py",
+    "score": "python3 scripts/score.py",
+    "golden:quality": "python3 scripts/capture_golden_quality.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"

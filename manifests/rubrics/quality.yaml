@@ -4,7 +4,13 @@
 # runtime by rubric_version_id. Changing a weight and re-seeding re-scores the
 # estate with no code change (M1 acceptance).
 rubric: data_product_quality
-version: 1.0.0
+version: 1.3.0
+# The scale every score in this rubric is expressed on. Bands, blocker caps and
+# criterion normalisation all read it, so a deployment that prefers 0..1 changes
+# this and nothing else.
+scale:
+  minimum: 0
+  maximum: 100
 dimensions:
   - { code: completeness, weight: 0.20 }
   - { code: accuracy,     weight: 0.20 }
@@ -12,6 +18,19 @@ dimensions:
   - { code: consistency,  weight: 0.15 }
   - { code: validity,     weight: 0.15 }
   - { code: uniqueness,   weight: 0.10 }
+# A dimension is scored from its rules, and a rule's weight within its dimension
+# is its severity. A critical completeness rule and a low-severity one are not
+# the same evidence, and averaging them as though they were is how a composite
+# stops meaning anything.
+severity_weights:
+  critical: 3.0
+  high: 2.0
+  medium: 1.0
+  low: 0.5
+# A product that declares no rule for a dimension has that dimension's weight
+# redistributed across the dimensions it does declare, rather than scoring zero
+# for evidence nobody asked it to produce.
+redistribute_unmeasured_dimensions: true
 archetype_overrides:
   document_corpus:
     completeness: 0.30

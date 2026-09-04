@@ -261,6 +261,7 @@ spec:
     synthetic: true
     rows_target: 350000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 86
     planted_patterns:
       - id: northeast-lane-lateness
         description: >-

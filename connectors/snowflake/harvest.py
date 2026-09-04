@@ -48,6 +48,7 @@ SNOWFLAKE_TYPE_TO_MANIFEST = {
 
 CLASSIFICATION_TAG = "GOVERNANCE.CLASSIFICATION"
 SENSITIVITY_TAG = "GOVERNANCE.SENSITIVITY"
+MASKING_POLICY_TAG = "GOVERNANCE.MASKING_POLICY"
 
 
 def _split_qualified(name: str) -> tuple[str, str, str]:
@@ -94,12 +95,18 @@ def harvest_metadata(
 
         classification: dict[str, list[str]] = defaultdict(list)
         sensitivity: dict[str, str] = {}
+        masking: dict[str, str] = {}
         for tag in tags:
             column = tag["column_name"]
             if tag["tag_name"] == CLASSIFICATION_TAG:
                 classification[column].append(tag["tag_value"])
             elif tag["tag_name"] == SENSITIVITY_TAG:
                 sensitivity[column] = tag["tag_value"]
+            elif tag["tag_name"] == MASKING_POLICY_TAG:
+                # Which policy is actually attached on the platform. A classified
+                # column without one is a hard blocker on the product's score,
+                # so this is observed rather than assumed from the manifest.
+                masking[column] = tag["tag_value"]
 
         with marketplace.cursor() as cursor:
             for column in columns:
@@ -108,14 +115,16 @@ def harvest_metadata(
                     """
                     INSERT INTO data_product_column (
                       column_id, tenant_id, product_id, name, business_name, data_type,
-                      nullable, classification, sensitivity_code, description, ordinal
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                      nullable, classification, sensitivity_code, description,
+                      masking_policy, ordinal
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (product_id, name) DO UPDATE SET
                       data_type = EXCLUDED.data_type,
                       nullable = EXCLUDED.nullable,
                       classification = EXCLUDED.classification,
                       sensitivity_code = EXCLUDED.sensitivity_code,
                       description = EXCLUDED.description,
+                      masking_policy = EXCLUDED.masking_policy,
                       ordinal = EXCLUDED.ordinal
                     """,
                     (
@@ -126,6 +135,7 @@ def harvest_metadata(
                         sorted(classification.get(name, [])),
                         sensitivity.get(name, "internal"),
                         column["comment"] or f"Harvested column {name}.",
+                        masking.get(name),
                         column["ordinal_position"],
                     ),
                 )
@@ -393,19 +403,17 @@ def harvest_quality(
 
     with marketplace.cursor() as cursor:
         cursor.execute(
-            "SELECT rule_id, product_id, rule_type, threshold_pct, target_columns "
-            "FROM quality_rule WHERE tenant_id = %s",
+            "SELECT rule_id, product_id, rule_type, threshold_pct, tolerance_minutes, "
+            "       target_columns FROM quality_rule WHERE tenant_id = %s",
             (tenant,),
         )
         rules = [dict(row) for row in cursor.fetchall()]
 
-    by_metric: dict[tuple[str, str], tuple[str, Any]] = {}
-    for rule in rules:
-        metric = f"GOVERNANCE.DMF_{rule['rule_type'].upper()}"
-        target = ",".join(rule["target_columns"] or [])
-        by_metric[(rule["product_id"], f"{metric}|{target}")] = (
-            rule["rule_id"], rule["threshold_pct"]
-        )
+    by_metric: dict[tuple[str, str], dict[str, Any]] = {}
+    for declared in rules:
+        metric = f"GOVERNANCE.DMF_{declared['rule_type'].upper()}"
+        target = ",".join(declared["target_columns"] or [])
+        by_metric[(declared["product_id"], f"{metric}|{target}")] = declared
 
     for row in session.query(queries.DMF_RESULTS, (_since(_lookback(rubric, "quality")),)):
         object_schema = _split_qualified(row["table_name"])[1]
@@ -413,24 +421,47 @@ def harvest_quality(
         if product_id is None:
             continue
         key = (product_id, f"{row['metric_name']}|{row['argument_names'] or ''}")
-        matched = by_metric.get(key)
-        if matched is None:
+        rule = by_metric.get(key)
+        if rule is None:
             continue
-        rule_id, threshold = matched
         observed = Decimal(str(row["value"]))
-        passed = threshold is None or observed >= Decimal(str(threshold))
+
+        # A rule is either a percentage against a threshold, or a measure against
+        # a tolerance where lower is better — freshness lag being the case that
+        # matters here. Recording which one it was is what lets the scoring
+        # engine normalise it correctly rather than assume.
+        if rule["threshold_pct"] is not None:
+            observed_pct: Decimal | None = observed
+            observed_value: Decimal | None = None
+            observed_unit: str | None = None
+            passed = observed >= Decimal(str(rule["threshold_pct"]))
+        elif rule["tolerance_minutes"] is not None:
+            observed_pct = None
+            observed_value = observed
+            observed_unit = "minutes"
+            passed = observed <= Decimal(str(rule["tolerance_minutes"]))
+        else:
+            observed_pct = None
+            observed_value = observed
+            observed_unit = None
+            passed = True
+
         with marketplace.cursor() as cursor:
             cursor.execute(
                 """
                 INSERT INTO quality_result (
-                  result_id, tenant_id, rule_id, product_id, observed_pct, passed,
-                  source, evaluated_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, 'dmf', %s)
+                  result_id, tenant_id, rule_id, product_id, observed_pct, observed_value,
+                  observed_unit, passed, source, evaluated_at
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'dmf', %s)
                 ON CONFLICT (result_id) DO UPDATE SET
-                  observed_pct = EXCLUDED.observed_pct, passed = EXCLUDED.passed
+                  observed_pct = EXCLUDED.observed_pct,
+                  observed_value = EXCLUDED.observed_value,
+                  observed_unit = EXCLUDED.observed_unit,
+                  passed = EXCLUDED.passed
                 """,
-                (f"QRES-{rule_id}-{row['measurement_time'].date()}", tenant, rule_id,
-                 product_id, observed, passed, row["measurement_time"]),
+                (f"QRES-{rule['rule_id']}-{row['measurement_time'].date()}", tenant,
+                 rule["rule_id"], product_id, observed_pct, observed_value, observed_unit,
+                 passed, row["measurement_time"]),
             )
             counts["quality_result"] += 1
 

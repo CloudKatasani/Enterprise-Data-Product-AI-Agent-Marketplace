@@ -29,8 +29,8 @@ OWNER = Principal("PTY-0031", "Owner", frozenset({"owner", "steward"}))
 def catalog(db):
     from scripts.seeders import kpis, products, rubrics, taxonomies, tenancy
 
-    taxonomies.seed(db, TENANT)
     tenancy.seed(db, TENANT)
+    taxonomies.seed(db, TENANT)
     rubrics.seed(db, TENANT)
     kpis.seed(db, TENANT)
     products.seed(db, TENANT)
@@ -109,13 +109,50 @@ def test_the_schema_tab_unmasks_for_a_caller_holding_the_pii_scope(catalog) -> N
     assert all(not column["masked_for_caller"] for column in tab["data"]["columns"])
 
 
-def test_the_quality_tab_is_empty_but_explains_itself_before_scoring(catalog) -> None:
-    tab = detail.quality_tab(catalog, PRODUCT)
+def test_the_quality_tab_of_an_unscored_product_explains_itself(catalog) -> None:
+    """An empty tab names what would fill it, rather than showing a blank panel."""
+    with catalog.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO data_product (product_id, tenant_id, name, purpose, industry_code, "
+            "domain_code, archetype_code, sensitivity_tier, certification, owner_party_id, "
+            "current_version, grain, history_months, known_limitations, tier) VALUES "
+            "('DP-NEW-001', %s, 'Newly onboarded product', "
+            "'A product that has been registered but not yet measured by any rule.', "
+            "'retail', 'customer', 'aggregate', 'public', 'beta', 'PTY-0040', '0.1.0', "
+            "'one row per thing', 12, 'Not yet profiled; limitations are being drafted.', "
+            "'tier3')",
+            (TENANT,),
+        )
+        cursor.execute(
+            "INSERT INTO quality_rule (rule_id, tenant_id, product_id, dimension, rule_type, "
+            "target_columns, threshold_pct, severity) VALUES "
+            "('QR-NEW-001-01', %s, 'DP-NEW-001', 'completeness', 'not_null', ARRAY['id'], "
+            "100, 'critical')",
+            (TENANT,),
+        )
+
+    tab = detail.quality_tab(catalog, "DP-NEW-001")
 
     assert tab["state"] == "empty"
     assert "scoring job" in tab["why"]
     # The rules are still listed: the reader can see what will be measured.
     assert tab["data"]["rules"]
+
+
+def test_the_quality_tab_of_a_scored_product_shows_the_snapshot_and_its_rubric(
+    catalog,
+) -> None:
+    from services.quality import engine
+
+    rubric = load_current(catalog, engine.RUBRIC_CODE)
+    engine.write_snapshot(catalog, TENANT, engine.score_product(catalog, PRODUCT, rubric))
+
+    tab = detail.quality_tab(catalog, PRODUCT)
+
+    assert tab["state"] == "populated"
+    assert tab["data"]["current"]["rubric_version_id"] == rubric.rubric_version_id
+    assert tab["data"]["current"]["band"] in {band.code for band in rubric.bands()}
+    assert tab["data"]["history"]
 
 
 def test_the_quality_tab_shows_contributing_results_once_harvested(harvested) -> None:

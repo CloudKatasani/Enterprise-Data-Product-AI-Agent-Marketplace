@@ -254,6 +254,7 @@ spec:
     synthetic: true
     rows_target: 280000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 92
     planted_patterns:
       - id: condition-unit-pareto
         description: >-

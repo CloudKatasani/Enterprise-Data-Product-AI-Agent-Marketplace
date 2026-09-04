@@ -238,6 +238,7 @@ spec:
     synthetic: true
     rows_target: 240000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 90
     planted_patterns:
       - id: line3-downtime-pareto
         description: >-

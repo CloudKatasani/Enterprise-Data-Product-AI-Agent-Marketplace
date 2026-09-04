@@ -4,24 +4,62 @@
   "title": "Data product manifest",
   "description": "Tool-neutral product and contract source of truth (BUILD.md 7.1).",
   "type": "object",
-  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
   "additionalProperties": false,
   "properties": {
-    "apiVersion": { "const": "marketplace/v1" },
-    "kind": { "const": "DataProduct" },
+    "apiVersion": {
+      "const": "marketplace/v1"
+    },
+    "kind": {
+      "const": "DataProduct"
+    },
     "metadata": {
       "type": "object",
-      "required": ["id", "name", "industry", "domain", "archetype", "owner", "certification"],
+      "required": [
+        "id",
+        "name",
+        "industry",
+        "domain",
+        "archetype",
+        "owner",
+        "certification"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "$ref": "urn:marketplace:common#/$defs/productId" },
-        "name": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-        "industry": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-        "domain": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-        "archetype": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-        "tier": { "type": "string", "enum": ["tier1", "tier2", "tier3"] },
-        "owner": { "$ref": "urn:marketplace:common#/$defs/owner" },
-        "certification": { "$ref": "urn:marketplace:common#/$defs/certification" }
+        "id": {
+          "$ref": "urn:marketplace:common#/$defs/productId"
+        },
+        "name": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "industry": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "domain": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "archetype": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "tier1",
+            "tier2",
+            "tier3"
+          ]
+        },
+        "owner": {
+          "$ref": "urn:marketplace:common#/$defs/owner"
+        },
+        "certification": {
+          "$ref": "urn:marketplace:common#/$defs/certification"
+        }
       }
     },
     "spec": {
@@ -49,52 +87,102 @@
           "maxLength": 400,
           "description": "Matches the CHECK on data_product.purpose."
         },
-        "grain": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-        "history_months": { "type": "integer", "minimum": 1, "maximum": 240 },
-        "known_limitations": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" },
+        "grain": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "history_months": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 240
+        },
+        "known_limitations": {
+          "$ref": "urn:marketplace:common#/$defs/meaningfulText"
+        },
         "upstream_sources": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "urn:marketplace:common#/$defs/sourceId" }
+          "items": {
+            "$ref": "urn:marketplace:common#/$defs/sourceId"
+          }
         },
         "entities": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+          "items": {
+            "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+          }
         },
         "certified_kpis": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "urn:marketplace:common#/$defs/kpiId" }
+          "items": {
+            "$ref": "urn:marketplace:common#/$defs/kpiId"
+          }
         },
         "columns": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["name", "type", "business_name", "nullable", "description"],
+            "required": [
+              "name",
+              "type",
+              "business_name",
+              "nullable",
+              "description"
+            ],
             "additionalProperties": false,
             "properties": {
-              "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
               "type": {
                 "type": "string",
-                "enum": ["string", "integer", "number", "boolean", "date", "timestamp", "array"]
+                "enum": [
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean",
+                  "date",
+                  "timestamp",
+                  "array"
+                ]
               },
-              "business_name": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-              "nullable": { "type": "boolean" },
+              "business_name": {
+                "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+              },
+              "nullable": {
+                "type": "boolean"
+              },
               "classification": {
                 "type": "array",
                 "items": {
                   "type": "string",
                   "enum": [
-                    "pii", "phi", "pci", "identifier", "financial", "location",
-                    "contact", "behavioural", "clinical", "credential"
+                    "pii",
+                    "phi",
+                    "pci",
+                    "identifier",
+                    "financial",
+                    "location",
+                    "contact",
+                    "behavioural",
+                    "clinical",
+                    "credential"
                   ]
                 }
               },
-              "sensitivity": { "$ref": "urn:marketplace:common#/$defs/sensitivity" },
-              "masking_policy": { "type": "string" },
-              "description": { "type": "string", "minLength": 5 }
+              "sensitivity": {
+                "$ref": "urn:marketplace:common#/$defs/sensitivity"
+              },
+              "masking_policy": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 5
+              }
             }
           }
         },
@@ -112,92 +200,177 @@
           ],
           "additionalProperties": false,
           "properties": {
-            "version": { "$ref": "urn:marketplace:common#/$defs/semver" },
+            "version": {
+              "$ref": "urn:marketplace:common#/$defs/semver"
+            },
             "schema_stability": {
               "type": "string",
-              "enum": ["additive_only", "breaking_allowed", "frozen"]
+              "enum": [
+                "additive_only",
+                "breaking_allowed",
+                "frozen"
+              ]
             },
             "guarantees": {
               "type": "object",
-              "required": ["freshness", "availability", "completeness", "accuracy"],
+              "required": [
+                "freshness",
+                "availability",
+                "completeness",
+                "accuracy"
+              ],
               "additionalProperties": false,
               "properties": {
                 "freshness": {
                   "type": "object",
-                  "required": ["target", "p95_minutes", "measured"],
+                  "required": [
+                    "target",
+                    "p95_minutes",
+                    "measured"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "target": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-                    "p95_minutes": { "type": "integer", "minimum": 1 },
+                    "target": {
+                      "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+                    },
+                    "p95_minutes": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
                     "measured": {
                       "type": "string",
-                      "enum": ["per_partition", "per_table", "per_stream"]
+                      "enum": [
+                        "per_partition",
+                        "per_table",
+                        "per_stream"
+                      ]
                     }
                   }
                 },
                 "availability": {
                   "type": "object",
-                  "required": ["target_pct", "window"],
+                  "required": [
+                    "target_pct",
+                    "window"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "target_pct": { "$ref": "urn:marketplace:common#/$defs/percent" },
-                    "window": { "type": "string", "enum": ["daily", "weekly", "monthly"] }
+                    "target_pct": {
+                      "$ref": "urn:marketplace:common#/$defs/percent"
+                    },
+                    "window": {
+                      "type": "string",
+                      "enum": [
+                        "daily",
+                        "weekly",
+                        "monthly"
+                      ]
+                    }
                   }
                 },
                 "completeness": {
                   "type": "object",
-                  "required": ["required_fields_pct"],
+                  "required": [
+                    "required_fields_pct"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "required_fields_pct": { "$ref": "urn:marketplace:common#/$defs/percent" }
+                    "required_fields_pct": {
+                      "$ref": "urn:marketplace:common#/$defs/percent"
+                    }
                   }
                 },
                 "accuracy": {
                   "type": "object",
-                  "required": ["reconciliation_variance_pct", "against"],
+                  "required": [
+                    "reconciliation_variance_pct",
+                    "against"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "reconciliation_variance_pct": { "$ref": "urn:marketplace:common#/$defs/percent" },
-                    "against": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+                    "reconciliation_variance_pct": {
+                      "$ref": "urn:marketplace:common#/$defs/percent"
+                    },
+                    "against": {
+                      "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+                    }
                   }
                 }
               }
             },
             "deprecation_policy": {
               "type": "object",
-              "required": ["notice_days", "minimum_parallel_run_days"],
+              "required": [
+                "notice_days",
+                "minimum_parallel_run_days"
+              ],
               "additionalProperties": false,
               "properties": {
-                "notice_days": { "type": "integer", "minimum": 1 },
-                "minimum_parallel_run_days": { "type": "integer", "minimum": 1 }
+                "notice_days": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "minimum_parallel_run_days": {
+                  "type": "integer",
+                  "minimum": 1
+                }
               }
             },
             "support": {
               "type": "object",
-              "required": ["hours", "p1_response_minutes", "on_call"],
+              "required": [
+                "hours",
+                "p1_response_minutes",
+                "on_call"
+              ],
               "additionalProperties": false,
               "properties": {
-                "hours": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-                "p1_response_minutes": { "type": "integer", "minimum": 1 },
-                "on_call": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+                "hours": {
+                  "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+                },
+                "p1_response_minutes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "on_call": {
+                  "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+                }
               }
             },
             "classification": {
               "type": "object",
-              "required": ["max_sensitivity", "contains_pii", "residency"],
+              "required": [
+                "max_sensitivity",
+                "contains_pii",
+                "residency"
+              ],
               "additionalProperties": false,
               "properties": {
-                "max_sensitivity": { "$ref": "urn:marketplace:common#/$defs/sensitivity" },
-                "contains_pii": { "type": "boolean" },
-                "residency": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+                "max_sensitivity": {
+                  "$ref": "urn:marketplace:common#/$defs/sensitivity"
+                },
+                "contains_pii": {
+                  "type": "boolean"
+                },
+                "residency": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
               }
             },
             "consumer_obligations": {
               "type": "array",
               "minItems": 1,
-              "items": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+              "items": {
+                "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+              }
             },
-            "breach_process": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" }
+            "breach_process": {
+              "$ref": "urn:marketplace:common#/$defs/meaningfulText"
+            }
           }
         },
         "quality_rules": {
@@ -206,26 +379,62 @@
           "description": "Completeness, freshness and validity are mandatory for a Tier-1 product.",
           "items": {
             "type": "object",
-            "required": ["id", "dimension", "rule", "severity"],
+            "required": [
+              "id",
+              "dimension",
+              "rule",
+              "severity"
+            ],
             "additionalProperties": false,
             "properties": {
-              "id": { "type": "string", "pattern": "^QR-[A-Z]{3}-[0-9]{3}-[0-9]{2}$" },
+              "id": {
+                "type": "string",
+                "pattern": "^QR-[A-Z]{3}-[0-9]{3}-[0-9]{2}$"
+              },
               "dimension": {
                 "type": "string",
                 "enum": [
-                  "completeness", "accuracy", "freshness", "consistency", "validity", "uniqueness"
+                  "completeness",
+                  "accuracy",
+                  "freshness",
+                  "consistency",
+                  "validity",
+                  "uniqueness"
                 ]
               },
-              "column": { "type": "string" },
-              "columns": { "type": "array", "items": { "type": "string" } },
-              "rule": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-              "threshold_pct": { "$ref": "urn:marketplace:common#/$defs/percent" },
-              "target": { "type": "string" },
-              "tolerance_minutes": { "type": "integer", "minimum": 0 },
-              "reference": { "type": "string" },
+              "column": {
+                "type": "string"
+              },
+              "columns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rule": {
+                "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+              },
+              "threshold_pct": {
+                "$ref": "urn:marketplace:common#/$defs/percent"
+              },
+              "target": {
+                "type": "string"
+              },
+              "tolerance_minutes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reference": {
+                "type": "string"
+              },
               "severity": {
                 "type": "string",
-                "enum": ["critical", "high", "medium", "low"]
+                "enum": [
+                  "critical",
+                  "high",
+                  "medium",
+                  "low"
+                ]
               }
             }
           }
@@ -233,22 +442,43 @@
         "endpoints": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string", "enum": ["sql", "rest", "mcp", "stream", "share"] }
+          "items": {
+            "type": "string",
+            "enum": [
+              "sql",
+              "rest",
+              "mcp",
+              "stream",
+              "share"
+            ]
+          }
         },
         "demo_tier": {
           "type": "object",
-          "required": ["synthetic", "rows_target", "preserve"],
+          "required": [
+            "synthetic",
+            "rows_target",
+            "preserve"
+          ],
           "additionalProperties": false,
           "properties": {
-            "synthetic": { "const": true },
-            "rows_target": { "type": "integer", "minimum": 1000 },
+            "synthetic": {
+              "const": true
+            },
+            "rows_target": {
+              "type": "integer",
+              "minimum": 1000
+            },
             "preserve": {
               "type": "array",
               "minItems": 1,
               "items": {
                 "type": "string",
                 "enum": [
-                  "distribution", "seasonality", "referential_integrity", "cardinality",
+                  "distribution",
+                  "seasonality",
+                  "referential_integrity",
+                  "cardinality",
                   "correlation"
                 ]
               }
@@ -258,50 +488,95 @@
               "description": "The findings the seed questions are meant to discover (18.1).",
               "items": {
                 "type": "object",
-                "required": ["id", "description"],
+                "required": [
+                  "id",
+                  "description"
+                ],
                 "additionalProperties": false,
                 "properties": {
-                  "id": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-                  "description": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" }
+                  "id": {
+                    "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+                  },
+                  "description": {
+                    "$ref": "urn:marketplace:common#/$defs/meaningfulText"
+                  }
                 }
               }
+            },
+            "expected_quality": {
+              "$ref": "urn:marketplace:common#/$defs/percent",
+              "description": "The composite the demo tier is generated to produce. In a live deployment the composite is computed from telemetry and this is absent."
             }
           }
         },
         "value_case": {
           "type": "object",
-          "required": ["business_outcome", "baseline", "benefit_model", "assumptions",
-                       "attribution_confidence", "review"],
+          "required": [
+            "business_outcome",
+            "baseline",
+            "benefit_model",
+            "assumptions",
+            "attribution_confidence",
+            "review"
+          ],
           "additionalProperties": false,
           "properties": {
-            "business_outcome": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" },
+            "business_outcome": {
+              "$ref": "urn:marketplace:common#/$defs/meaningfulText"
+            },
             "baseline": {
               "type": "object",
-              "required": ["method", "captured"],
+              "required": [
+                "method",
+                "captured"
+              ],
               "additionalProperties": false,
               "properties": {
-                "method": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
-                "analyst_hours_month": { "type": "number", "minimum": 0 },
-                "captured": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" }
+                "method": {
+                  "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+                },
+                "analyst_hours_month": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "captured": {
+                  "type": "string",
+                  "pattern": "^[0-9]{4}-[0-9]{2}$"
+                }
               }
             },
-            "benefit_model": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+            "benefit_model": {
+              "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+            },
             "assumptions": {
               "type": "array",
               "minItems": 1,
-              "items": { "$ref": "urn:marketplace:common#/$defs/valueAssumption" }
+              "items": {
+                "$ref": "urn:marketplace:common#/$defs/valueAssumption"
+              }
             },
             "attribution_confidence": {
               "type": "string",
-              "enum": ["high", "medium", "low"]
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
             },
             "review": {
               "type": "object",
-              "required": ["last_reviewed", "reviewer"],
+              "required": [
+                "last_reviewed",
+                "reviewer"
+              ],
               "additionalProperties": false,
               "properties": {
-                "last_reviewed": { "$ref": "urn:marketplace:common#/$defs/isoDate" },
-                "reviewer": { "$ref": "urn:marketplace:common#/$defs/partyId" }
+                "last_reviewed": {
+                  "$ref": "urn:marketplace:common#/$defs/isoDate"
+                },
+                "reviewer": {
+                  "$ref": "urn:marketplace:common#/$defs/partyId"
+                }
               }
             }
           }

@@ -260,6 +260,7 @@ spec:
     synthetic: true
     rows_target: 250000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 94
     planted_patterns:
       - id: churn-concentration-tenure
         description: >-

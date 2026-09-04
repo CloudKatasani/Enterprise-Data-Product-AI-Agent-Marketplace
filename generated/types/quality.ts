@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: 685ed1356f294c76a54e17687ddc51aa3cbf75c96874661d5a7a9e137f14e039  generated_at: 2026-09-04T02:51:42+00:00
+// generator_version: 1.0.0  manifest_hash: 0a0a859f4118be97f65ad52d370b078e4b02a69c29f82d273499a622c777c07b  generated_at: 2026-09-04T03:37:56+00:00
 
 /** An executable expectation declared by a product manifest. */
 export interface QualityRule {
@@ -22,7 +22,9 @@ export interface QualityResult {
   tenantId: string; // Tenant that owns this row; carried into every RLS policy.
   ruleId: string;
   productId: string;
-  observedPct?: number | null;
+  observedPct?: number | null; // For a rule expressed as a percentage against a threshold.
+  observedValue?: number | null; // For a rule expressed as a measure against a tolerance, such as freshness lag in minutes.
+  observedUnit?: string | null;
   observedText?: string | null;
   passed: boolean;
   rowsEvaluated?: number | null;

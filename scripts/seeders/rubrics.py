@@ -61,25 +61,44 @@ def _kind_for(path: str, value: Any) -> str:
     return "reference"
 
 
+# A list of mappings becomes addressable when its entries have a natural key.
+# Bands key on "code", hard blockers on "when": both name the case they describe.
+LIST_KEYS = ("code", "when", "id", "name")
+
+# Where an entry has exactly one other meaningful field, the entry's own path
+# resolves to it, so a caller asks for "the band's minimum" or "the blocker's
+# cap" without repeating the field name.
+SOLE_VALUE_FIELDS = ("weight", "caps_composite_at")
+
+
+def _list_key(item: dict[str, Any]) -> str | None:
+    for candidate in LIST_KEYS:
+        if candidate in item:
+            return candidate
+    return None
+
+
 def _flatten(document: Any, prefix: str = "") -> list[tuple[str, Any]]:
-    """Depth-first flattening into dotted paths, with list-of-mappings keyed by code."""
+    """Depth-first flattening into dotted paths, with keyed lists made addressable."""
     flattened: list[tuple[str, Any]] = []
     if isinstance(document, dict):
         for key, value in document.items():
             path = f"{prefix}.{key}" if prefix else str(key)
             flattened.extend(_flatten(value, path))
     elif isinstance(document, list):
-        if document and all(isinstance(item, dict) and "code" in item for item in document):
+        keys = {
+            _list_key(item) for item in document if isinstance(item, dict)
+        } if document else set()
+        key_field = keys.pop() if len(keys) == 1 else None
+        if key_field and all(isinstance(item, dict) for item in document):
             for item in document:
-                code = item["code"]
+                identifier = item[key_field]
                 for key, value in item.items():
-                    if key == "code":
+                    if key == key_field:
                         continue
-                    flattened.extend(_flatten(value, f"{prefix}.{code}.{key}"))
-                    # A criterion list entry addressed by its code alone resolves
-                    # to its weight, which is what a caller usually wants.
-                    if key == "weight":
-                        flattened.append((f"{prefix}.{code}", value))
+                    flattened.extend(_flatten(value, f"{prefix}.{identifier}.{key}"))
+                    if key in SOLE_VALUE_FIELDS:
+                        flattened.append((f"{prefix}.{identifier}", value))
         else:
             flattened.append((prefix, document))
     else:

@@ -35,8 +35,8 @@ def platform() -> SandboxSession:
 
 @pytest.fixture()
 def seeded(db):
-    taxonomies.seed(db, TENANT)
     tenancy.seed(db, TENANT)
+    taxonomies.seed(db, TENANT)
     rubrics.seed(db, TENANT)
     kpis.seed(db, TENANT)
     products.seed(db, TENANT)

@@ -229,6 +229,7 @@ spec:
     synthetic: true
     rows_target: 600000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 91
     planted_patterns:
       - id: activation-driver
         description: >-

@@ -23,8 +23,10 @@ def _seeders() -> list[tuple[str, Seeder]]:
     from scripts.seeders import kpis, products, rubrics, taxonomies, tenancy
 
     return [
-        ("taxonomies", taxonomies.seed),
+        # Tenancy first: the source-system taxonomy is tenant-scoped, so the
+        # tenant row has to exist before any vocabulary that references it.
         ("tenancy", tenancy.seed),
+        ("taxonomies", taxonomies.seed),
         ("rubrics", rubrics.seed),
         ("kpis", kpis.seed),
         ("data products", products.seed),

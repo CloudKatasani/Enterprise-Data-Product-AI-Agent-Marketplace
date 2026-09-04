@@ -768,7 +768,12 @@ QUALITY: list[Table] = [
             Column("result_id", "TEXT", primary_key=True),
             Column("rule_id", "TEXT", null=False, references="quality_rule(rule_id)"),
             Column("product_id", "TEXT", null=False, references="data_product(product_id)"),
-            Column("observed_pct", "NUMERIC(9,4)"),
+            Column("observed_pct", "NUMERIC(9,4)",
+                   comment="For a rule expressed as a percentage against a threshold."),
+            Column("observed_value", "NUMERIC(14,4)",
+                   comment="For a rule expressed as a measure against a tolerance, "
+                           "such as freshness lag in minutes."),
+            Column("observed_unit", "TEXT"),
             Column("observed_text", "TEXT"),
             Column("passed", "BOOLEAN", null=False),
             Column("rows_evaluated", "BIGINT"),

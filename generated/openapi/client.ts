@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: f40e68c6735073adc5ae1f4c25783b86f7515564d2c4f6a3e698d00ac523c89d  generated_at: 2026-09-04T03:30:50+00:00
+// generator_version: 1.0.0  manifest_hash: 41f8878e4bab4d5358d0f8e39a0a55223c796713485df545c88111033d8b682a  generated_at: 2026-09-04T03:45:22+00:00
 
 /* eslint-disable */
 /**
@@ -124,6 +124,11 @@ export class MarketplaceClient {
   /** Value case, assumptions with sample sizes, and measurements */
   getProductsProduct_idValue(product_id: string, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/products/${product_id}/value`, undefined, undefined, options);
+  }
+
+  /** Tier-weighted estate quality with its breakdown */
+  getQualityEstate(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/quality/estate`, undefined, undefined, options);
   }
 
 }

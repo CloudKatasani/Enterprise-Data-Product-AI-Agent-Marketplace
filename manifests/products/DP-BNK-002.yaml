@@ -216,6 +216,7 @@ spec:
     synthetic: true
     rows_target: 180000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 93
     planted_patterns:
       - id: typology-false-positive-spread
         description: >-

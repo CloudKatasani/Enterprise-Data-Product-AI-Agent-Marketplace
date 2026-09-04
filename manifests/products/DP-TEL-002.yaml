@@ -221,6 +221,7 @@ spec:
     synthetic: true
     rows_target: 400000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 88
     planted_patterns:
       - id: denver-throughput-drop
         description: >-

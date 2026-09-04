@@ -4,6 +4,13 @@
 Migrations are forward-only. Each applied file is recorded in ``schema_migration``
 with the sha256 of its contents; a changed file that has already been applied is
 an error, not a silent re-run.
+
+Before the first tagged release the generated DDL is a *baseline* rather than a
+history: the canonical model is still moving, and emitting a delta migration for
+every column would produce a history nobody will ever replay. ``--reset`` drops
+and rebuilds the schema, which is what a development database and CI use. Once
+the schema is released the baseline is frozen and `gen:ddl` emits deltas; the
+forward-only check below is what will enforce that.
 """
 
 from __future__ import annotations
@@ -26,7 +33,18 @@ CREATE TABLE IF NOT EXISTS schema_migration (
 """
 
 
-def main() -> int:
+RESET_FLAG = "--reset"
+
+DROP_SCHEMA = """
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO public;
+"""
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = argv if argv is not None else sys.argv[1:]
+    reset = RESET_FLAG in argv
     load_dotenv()
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
@@ -43,6 +61,12 @@ def main() -> int:
 
     applied = 0
     with psycopg.connect(database_url, autocommit=False) as conn:
+        if reset:
+            with conn.cursor() as cur:
+                cur.execute(DROP_SCHEMA)
+            conn.commit()
+            print("migrate: schema dropped and recreated (--reset)")
+
         with conn.cursor() as cur:
             cur.execute(BOOTSTRAP)
         conn.commit()
@@ -59,7 +83,8 @@ def main() -> int:
                 if row[0] != digest:
                     print(
                         f"migrate: {path.name} has changed since it was applied; "
-                        "migrations are forward-only — add a new migration instead",
+                        "migrations are forward-only. Add a new migration, or rebuild a "
+                        "development database with: npm run migrate -- --reset",
                         file=sys.stderr,
                     )
                     return 1
@@ -80,4 +105,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))

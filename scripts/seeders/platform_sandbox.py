@@ -78,6 +78,69 @@ TABLES = (
 CATALOG = "MARKETPLACE"
 WAREHOUSE = "MKT_HARVEST_WH"
 
+QUALITY_DAYS = 7
+
+# A governed estate is mostly healthy with a visible tail — that is what makes a
+# quality score worth reading. Higher-severity rules are held to a tighter
+# standard because that is what severity means, and one product carries a
+# planted critical failure so the hard blocker has a real case in the seed data
+# rather than only in a test.
+PASS_RATE_BY_SEVERITY = {"critical": 97, "high": 88, "medium": 78, "low": 70}
+PLANTED_CRITICAL_FAILURE = ("DP-HLT-002", "QR-HLT-002-01")
+
+# One product is left with a classified column and no masking policy, so the
+# second hard blocker has a real case in the seed estate rather than only in a
+# test. Everywhere else the platform reports the policy the generated SQL
+# attaches.
+PLANTED_UNPROTECTED_PRODUCT = "DP-ENG-001"
+MASKED_CLASSIFICATIONS = ("pii", "phi", "pci", "credential")
+
+PERCENT_CEILING = 100.0
+
+
+def _measurement(
+    product_id: str, rule: dict[str, Any], day: int, expected_quality: float
+) -> float:
+    """A deterministic observation for one rule on one day.
+
+    Non-critical observations are drawn around the product's declared demo-tier
+    quality, so the estate has a real spread instead of a flat hundred. Section
+    16 is explicit that these are demo-tier seeds; in a live deployment the
+    composite is computed from telemetry and no expected figure exists. The
+    figure steers the observations rather than pinning the composite, because a
+    composite that was dialled in would prove nothing about the engine.
+
+    Critical rules are floored at their threshold, because a critical rule
+    failing is a hard blocker rather than a low score — the two products
+    carrying a planted governance failure are the ones that demonstrate that.
+
+    Percentage rules report a percentage; a freshness rule reports its lag in
+    minutes, which the connector records as observed_value and the scoring
+    engine normalises against the rule's tolerance.
+    """
+    key = f"{product_id}-{rule['id']}-{day}"
+    threshold = float(rule.get("threshold_pct") or PERCENT_CEILING)
+
+    if rule["id"] == PLANTED_CRITICAL_FAILURE[1] and product_id == PLANTED_CRITICAL_FAILURE[0]:
+        # A real, reproducible critical breach: the not-null rule on the key
+        # column is missing rows.
+        return threshold - 2.5
+
+    tolerance = rule.get("tolerance_minutes")
+    if tolerance is not None:
+        within = _draw(key + "-fresh", 1, 100) <= PASS_RATE_BY_SEVERITY[rule["severity"]]
+        if within:
+            return float(_draw(key + "-lag", 1, max(int(tolerance), 2)))
+        return float(int(tolerance) + _draw(key + "-late", 1, int(tolerance) + 1))
+
+    # Centred on the declared figure, spread either side of it.
+    spread = PERCENT_CEILING - expected_quality
+    offset = (_draw(key + "-obs", 0, 200) - 100) / 100
+    observed = expected_quality + offset * spread
+    if rule["severity"] == "critical":
+        observed = max(observed, threshold)
+    return max(0.0, min(PERCENT_CEILING, observed))
+
 # Deterministic pseudo-random draw: the sandbox must produce the same numbers on
 # every run so a harvested figure is reproducible (I9 in spirit).
 def _draw(seed: str, lower: int, upper: int) -> int:
@@ -118,6 +181,9 @@ def seed(connection: psycopg.Connection[Any], tenant: str, schema: str) -> int:
             object_schema = _schema_name(product_id)
             object_name = _object_name(product_id)
             rows = spec["demo_tier"]["rows_target"]
+            expected_quality = float(
+                spec["demo_tier"].get("expected_quality", PERCENT_CEILING)
+            )
 
             cursor.execute(
                 f"INSERT INTO {schema}.sf_tables VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
@@ -141,6 +207,17 @@ def seed(connection: psycopg.Connection[Any], tenant: str, schema: str) -> int:
                          "GOVERNANCE.CLASSIFICATION", classification),
                     )
                     written += 1
+                    if (
+                        classification in MASKED_CLASSIFICATIONS
+                        and product_id != PLANTED_UNPROTECTED_PRODUCT
+                    ):
+                        cursor.execute(
+                            f"INSERT INTO {schema}.tag_references VALUES (%s,%s,%s,%s,%s,%s)",
+                            (CATALOG, object_schema, object_name, column["name"],
+                             "GOVERNANCE.MASKING_POLICY",
+                             f"GOVERNANCE.MASK_{classification.upper()}"),
+                        )
+                        written += 1
                 cursor.execute(
                     f"INSERT INTO {schema}.tag_references VALUES (%s,%s,%s,%s,%s,%s)",
                     (CATALOG, object_schema, object_name, column["name"],
@@ -199,17 +276,14 @@ def seed(connection: psycopg.Connection[Any], tenant: str, schema: str) -> int:
                      "USING CRON 0 6 * * * UTC"),
                 )
                 written += 1
-                for day in range(7):
-                    key = f"{product_id}-{rule['id']}-{day}"
-                    ceiling = rule.get("threshold_pct") or 100
-                    shortfall = _draw(key, 0, 300) / 100
+                for day in range(QUALITY_DAYS):
                     cursor.execute(
                         f"INSERT INTO {schema}.data_quality_monitoring_results "
                         f"VALUES (%s,%s,%s,%s,%s)",
                         (now - timedelta(days=day),
                          f"GOVERNANCE.DMF_{rule['rule'].upper()}",
                          f"{CATALOG}.{object_schema}.{object_name}", target,
-                         max(0.0, float(ceiling) - shortfall)),
+                         _measurement(product_id, rule, day, expected_quality)),
                     )
                     written += 1
 

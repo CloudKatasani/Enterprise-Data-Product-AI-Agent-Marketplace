@@ -214,6 +214,7 @@ spec:
     synthetic: true
     rows_target: 700000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 88
     planted_patterns:
       - id: dr-response-spread
         description: >-

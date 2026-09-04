@@ -87,6 +87,7 @@ def main() -> int:
     print("dev: platform and harvest")
     _run([sys.executable, "scripts/seed_platform.py"])
     _run([sys.executable, "scripts/harvest.py"])
+    _run([sys.executable, "scripts/score.py"])
 
     print("dev: api, worker, portal")
     processes = [

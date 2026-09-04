@@ -33,8 +33,8 @@ def catalog(db):
     """A seeded catalog inside the rolled-back transaction."""
     from scripts.seeders import kpis, products, rubrics, taxonomies, tenancy
 
-    taxonomies.seed(db, TENANT)
     tenancy.seed(db, TENANT)
+    taxonomies.seed(db, TENANT)
     rubrics.seed(db, TENANT)
     kpis.seed(db, TENANT)
     products.seed(db, TENANT)
@@ -160,12 +160,34 @@ def test_an_unknown_sort_is_refused_with_the_valid_options(catalog, ranking) -> 
     assert "expected one of" in excinfo.value.detail
 
 
-def test_the_featured_band_excludes_anything_below_the_quality_floor(catalog, ranking) -> None:
-    page, _ = _list(catalog, ranking, featured=True)
+def test_the_featured_band_only_promotes_certified_products_above_the_floor(
+    catalog, ranking
+) -> None:
+    """A marketing surface that promotes an at-risk asset is a governance failure."""
+    floor = float(ranking.number("featured_ranking.min_quality_composite"))
 
-    # No snapshots exist yet, so nothing qualifies — and that is the correct
-    # answer: the band would rather be empty than promote an unscored asset.
-    assert page.items == []
+    page, _ = _list(catalog, ranking, featured=True, limit=100)
+
+    for item in page.items:
+        assert item["certification"] == "certified", item["product_id"]
+        assert item["quality"]["composite"] is not None, item["product_id"]
+        assert item["quality"]["composite"] >= floor, item["product_id"]
+
+
+def test_an_unscored_product_is_never_featured(catalog, ranking) -> None:
+    """The band would rather be short than promote an asset nobody has scored."""
+    page, _ = _list(catalog, ranking, featured=True, limit=100)
+    featured = {item["product_id"] for item in page.items}
+
+    with catalog.cursor() as cursor:
+        cursor.execute(
+            "SELECT p.product_id FROM data_product p WHERE p.tenant_id = %s AND NOT EXISTS "
+            "(SELECT 1 FROM quality_score_snapshot s WHERE s.product_id = p.product_id)",
+            (TENANT,),
+        )
+        unscored = {row["product_id"] for row in cursor.fetchall()}
+
+    assert featured & unscored == set()
 
 
 # --- search ---------------------------------------------------------------

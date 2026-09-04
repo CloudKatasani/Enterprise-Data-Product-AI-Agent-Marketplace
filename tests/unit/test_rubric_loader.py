@@ -46,8 +46,8 @@ def manifests(tmp_path: Path, monkeypatch) -> Path:
 
 @pytest.fixture()
 def seeded(db, manifests: Path):
-    taxonomies.seed(db, TENANT)
     tenancy.seed(db, TENANT)
+    taxonomies.seed(db, TENANT)
     rubric_seeder.seed(db, TENANT)
     return db
 
@@ -235,8 +235,8 @@ def test_a_weighted_composite_moves_when_the_rubric_moves(seeded, manifests: Pat
 
 
 def test_the_kpi_register_seeds_every_manifest(db, manifests: Path) -> None:
-    taxonomies.seed(db, TENANT)
     tenancy.seed(db, TENANT)
+    taxonomies.seed(db, TENANT)
 
     count = kpi_seeder.seed(db, TENANT)
 
@@ -252,8 +252,8 @@ def test_the_kpi_register_seeds_every_manifest(db, manifests: Path) -> None:
 def test_i1_rejects_a_second_active_definition_of_a_seeded_name(db, manifests: Path) -> None:
     import psycopg
 
-    taxonomies.seed(db, TENANT)
     tenancy.seed(db, TENANT)
+    taxonomies.seed(db, TENANT)
     kpi_seeder.seed(db, TENANT)
 
     with db.cursor() as cursor, pytest.raises(psycopg.errors.UniqueViolation):
@@ -270,11 +270,14 @@ def test_i1_rejects_a_second_active_definition_of_a_seeded_name(db, manifests: P
 
 def test_changing_content_without_bumping_the_version_is_refused(seeded, manifests: Path) -> None:
     """A rubric version is immutable: two different rubrics cannot share a name."""
+    original = load_current(seeded, "data_product_quality")
     _set_weight(manifests, "freshness", "0.40")
 
     with pytest.raises(rubric_seeder.RubricVersionConflict) as excinfo:
         rubric_seeder.seed(seeded, TENANT)
 
     message = str(excinfo.value)
-    assert "version: 1.0.0" in message
+    assert "content changed but" in message
     assert "Bump 'version'" in message
+    # The message names the version that did not move, whatever it currently is.
+    assert original.semver in message

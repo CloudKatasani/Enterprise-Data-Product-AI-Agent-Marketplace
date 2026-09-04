@@ -230,6 +230,7 @@ spec:
     synthetic: true
     rows_target: 800000
     preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 95
     planted_patterns:
       - id: category-plan-miss
         description: >-

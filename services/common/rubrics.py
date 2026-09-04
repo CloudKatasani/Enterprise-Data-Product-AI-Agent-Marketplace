@@ -134,6 +134,16 @@ class Rubric:
         )
 
 
+def rubric_from_rows(version: dict[str, Any], criteria: list[dict[str, Any]]) -> Rubric:
+    """Build a resolved rubric from rows that came from anywhere.
+
+    Used by the golden suite, which pins a rubric version to a fixture file so a
+    historical score can be replayed without a database — and therefore without
+    the possibility of the rubric having moved underneath it.
+    """
+    return _rows_to_rubric(version, criteria)
+
+
 def _rows_to_rubric(version: dict[str, Any], criteria: list[dict[str, Any]]) -> Rubric:
     numeric: dict[tuple[str, str | None], Decimal] = {}
     text: dict[tuple[str, str | None], str] = {}
