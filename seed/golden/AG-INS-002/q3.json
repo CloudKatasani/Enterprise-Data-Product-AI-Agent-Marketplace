@@ -16,7 +16,9 @@
   ],
   "claims": {
     "current": "10.83",
-    "delta": "0.00"
+    "delta": "0.00",
+    "groups": "12",
+    "rows_scanned": "17280"
   },
   "exchange_id": "DEMO-AG-INS-002-03",
   "headline": "Quote-to-Bind Rate is 10.83% for the quarter ending 2026-07-01, flat on the prior quarter.",

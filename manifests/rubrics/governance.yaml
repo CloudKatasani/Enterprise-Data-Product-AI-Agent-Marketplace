@@ -1,0 +1,21 @@
+# Governance policy numbers.
+#
+# Retention periods and the windows around them. They are here rather than in
+# code for the ordinary reason — a legal or regulatory change moves a number,
+# not a deployment — and because an audit record has to be able to say which
+# policy version set its own retention.
+rubric: governance
+version: 1.0.0
+
+audit:
+  # Seven years is the common floor for financial and healthcare record
+  # retention in the jurisdictions this estate models. A tenant with a longer
+  # obligation raises it here; nothing recomputes an existing record's
+  # retain_until, because the record was written under the policy in force then.
+  retention_years: 7
+
+demo_theatre:
+  # An exchange that has not been re-validated inside this window is not shown
+  # on the front page, whatever its last recorded state: silence is not
+  # evidence that it still works.
+  max_validation_age_days: 7

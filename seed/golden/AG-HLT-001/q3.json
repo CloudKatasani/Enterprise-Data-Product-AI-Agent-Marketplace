@@ -21,7 +21,11 @@
   "claims": {
     "cohort_gap": "5.31",
     "cohort_high": "14.62",
-    "cohort_low": "9.31"
+    "cohort_high_observations": "25474",
+    "cohort_low": "9.31",
+    "cohort_low_observations": "5726",
+    "groups": "2",
+    "rows_scanned": "31200"
   },
   "exchange_id": "DEMO-AG-HLT-001-03",
   "headline": "Thirty Day Readmission Rate is 14.62% where cohort is false against 9.31% where it is true, a gap of 5.31%.",

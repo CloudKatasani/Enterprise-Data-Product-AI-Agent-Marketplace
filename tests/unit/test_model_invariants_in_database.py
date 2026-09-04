@@ -137,12 +137,14 @@ def test_i4_coverage_cannot_cite_a_kpi_that_does_not_exist(db) -> None:
               agent_version_id, tenant_id, agent_id, semver, status, autonomy_level,
               capability_statement, business_value_block, out_of_scope, replaces,
               model_provider, model_id, model_params, prompt_hash, guardrail_config,
-              budget_p95_latency_ms, budget_cost_per_answer_usd
+              budget_p95_latency_ms, budget_cost_per_answer_usd, eval_suites,
+              eval_threshold_pct
             ) VALUES (
               'AGV-1', %s, 'AG-TST-001', '1.0.0', 'draft', 'L1',
               %s, 'Replaces manual pull-and-pivot cycles by the analytics team.',
               ARRAY['Individual credit decisions'], 'Manual analysis cycles',
-              'anthropic', 'test-model', '{}'::jsonb, 'sha-1', '{}'::jsonb, 6000, 0.06
+              'anthropic', 'test-model', '{}'::jsonb, 'sha-1', '{}'::jsonb, 6000, 0.06,
+              ARRAY['golden_accuracy','groundedness'], 92.00
             )
             """,
             (TENANT, "A" * 100),

@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: 685ed1356f294c76a54e17687ddc51aa3cbf75c96874661d5a7a9e137f14e039  generated_at: 2026-09-04T02:51:42+00:00
+// generator_version: 1.0.0  manifest_hash: ecef402a0bc2a39dabd73ab8610ad9fddd50da8a0fb4b40f95b29de13247e2ef  generated_at: 2026-09-04T04:34:16+00:00
 
 /** Content-addressed prompt. An agent version pins the hash, never the text. */
 export interface PromptArtifact {
@@ -65,6 +65,8 @@ export interface AgentVersion {
   guardrailConfig: unknown;
   budgetP95LatencyMs: number;
   budgetCostPerAnswerUsd: number;
+  evalSuites: string[]; // Suites this version declares it is evaluated by.
+  evalThresholdPct: number; // The version's own declared pass threshold; the gate reads it here rather than from a manifest, so a published version carries the bar it was judged against.
   evalRunId?: string | null;
   canaryTrafficPct?: number | null;
   publishedAt?: string | null;

@@ -18,6 +18,8 @@
     }
   ],
   "claims": {
+    "groups": "4",
+    "rows_scanned": "12600",
     "top": "0.80",
     "top_share": "25.00"
   },

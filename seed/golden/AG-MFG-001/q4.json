@@ -19,7 +19,11 @@
   "claims": {
     "cohort_gap": "23.36",
     "cohort_high": "56.3750",
-    "cohort_low": "33.0100"
+    "cohort_high_observations": "6300",
+    "cohort_low": "33.0100",
+    "cohort_low_observations": "6300",
+    "groups": "2",
+    "rows_scanned": "12600"
   },
   "exchange_id": "DEMO-AG-MFG-001-04",
   "headline": "Changeover Time is 56.3750 minutes where cohort is false against 33.0100 minutes where it is true, a gap of 23.3650 minutes.",

@@ -93,9 +93,10 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                   agent_version_id, tenant_id, agent_id, semver, status, autonomy_level,
                   capability_statement, business_value_block, out_of_scope, personas, analyses,
                   replaces, model_provider, model_id, model_params, prompt_hash,
-                  guardrail_config, budget_p95_latency_ms, budget_cost_per_answer_usd
+                  guardrail_config, budget_p95_latency_ms, budget_cost_per_answer_usd,
+                  eval_suites, eval_threshold_pct
                 ) VALUES (%s, %s, %s, '1.0.0', 'draft', %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                          %s, %s, %s, %s, %s)
+                          %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (agent_version_id) DO UPDATE SET
                   capability_statement = EXCLUDED.capability_statement,
                   business_value_block = EXCLUDED.business_value_block,
@@ -104,7 +105,9 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                   model_params = EXCLUDED.model_params, prompt_hash = EXCLUDED.prompt_hash,
                   guardrail_config = EXCLUDED.guardrail_config,
                   budget_p95_latency_ms = EXCLUDED.budget_p95_latency_ms,
-                  budget_cost_per_answer_usd = EXCLUDED.budget_cost_per_answer_usd
+                  budget_cost_per_answer_usd = EXCLUDED.budget_cost_per_answer_usd,
+                  eval_suites = EXCLUDED.eval_suites,
+                  eval_threshold_pct = EXCLUDED.eval_threshold_pct
                 """,
                 (
                     version_id, tenant, agent_id, metadata["autonomy_level"],
@@ -124,6 +127,7 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                     ),
                     prompt_hash, json.dumps(spec["guardrails"], sort_keys=True),
                     spec["budgets"]["p95_latency_ms"], spec["budgets"]["cost_per_answer_usd"],
+                    spec["evaluation"]["suites"], spec["evaluation"]["pass_threshold_pct"],
                 ),
             )
             written += 1

@@ -21,7 +21,8 @@
         "agent_evaluation",
         "platform_harvest",
         "semantic_search",
-        "agent_runtime"
+        "agent_runtime",
+        "governance"
       ]
     },
     "version": {
@@ -147,6 +148,18 @@
       },
       "then": {
         "$ref": "#/$defs/agentRuntime"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "governance"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/governance"
       }
     }
   ],
@@ -696,6 +709,10 @@
               "personas_min": {
                 "type": "integer",
                 "minimum": 1
+              },
+              "repeats": {
+                "type": "integer",
+                "minimum": 2
               }
             }
           }
@@ -912,6 +929,44 @@
             "percent_scale": {
               "type": "number",
               "exclusiveMinimum": 0
+            }
+          }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "audit",
+        "demo_theatre"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "audit": {
+          "type": "object",
+          "required": [
+            "retention_years"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "retention_years": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "demo_theatre": {
+          "type": "object",
+          "required": [
+            "max_validation_age_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "max_validation_age_days": {
+              "type": "integer",
+              "minimum": 1
             }
           }
         }

@@ -26,6 +26,12 @@ CONSUMER = Principal(
 OWNER = Principal(
     party_id="PTY-0031", display_name="Owner", roles=frozenset({"owner", "steward"})
 )
+# A consumer the entitlement seeder gives no grant to. The seeded personas all
+# hold grants now, so proving the ungranted state needs someone who genuinely
+# does not.
+UNGRANTED = Principal(
+    party_id="PTY-0064", display_name="Ungranted consumer", roles=frozenset({"consumer"})
+)
 
 
 @pytest.fixture()
@@ -81,7 +87,9 @@ def test_a_consumer_without_a_grant_sees_the_asset_and_how_to_ask_for_it(
     catalog, ranking
 ) -> None:
     """Partial permission is the common case, not an error."""
-    page, _ = _list(catalog, ranking)
+    from services.catalog.products import list_products
+
+    page, _ = list_products(catalog, TENANT, UNGRANTED, ranking)
 
     for item in page.items:
         assert item["access"]["granted"] is False
@@ -90,6 +98,21 @@ def test_a_consumer_without_a_grant_sees_the_asset_and_how_to_ask_for_it(
         # The metadata is still fully populated.
         assert item["purpose"]
         assert item["certified_kpis"]
+
+
+def test_a_consumer_with_a_grant_is_shown_as_granted(catalog, ranking) -> None:
+    """The other half of the same state: a live grant reads as granted.
+
+    CONSUMER holds seeded grants on the products its agents read, so the card
+    must say so — and must still carry the scope, because the card is the same
+    card either way.
+    """
+    page, _ = _list(catalog, ranking)
+
+    granted = [item for item in page.items if item["access"]["granted"]]
+    assert granted, "the seeded consumer holds no grant; the entitlement seed did not run"
+    for item in granted:
+        assert item["access"]["required_scope"] == f"dp:{item['product_id']}:read"
 
 
 def test_facet_counts_ignore_their_own_selection(catalog, ranking) -> None:

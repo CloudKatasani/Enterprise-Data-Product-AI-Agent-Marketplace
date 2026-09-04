@@ -17,7 +17,11 @@
   "claims": {
     "cohort_gap": "100.00",
     "cohort_high": "100.00",
-    "cohort_low": "0.00"
+    "cohort_high_observations": "202",
+    "cohort_low": "0.00",
+    "cohort_low_observations": "24998",
+    "groups": "2",
+    "rows_scanned": "25200"
   },
   "exchange_id": "DEMO-AG-TEL-001-05",
   "headline": "Save Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",

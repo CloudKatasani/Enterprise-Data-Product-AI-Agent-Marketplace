@@ -518,6 +518,12 @@ SUPPLY_AGENTS: list[Table] = [
             Column("guardrail_config", "JSONB", null=False),
             Column("budget_p95_latency_ms", "INT", null=False),
             Column("budget_cost_per_answer_usd", "NUMERIC(10,4)", null=False),
+            Column("eval_suites", "TEXT[]", null=False,
+                   comment="Suites this version declares it is evaluated by."),
+            Column("eval_threshold_pct", "NUMERIC(5,2)", null=False,
+                   comment="The version's own declared pass threshold; the gate reads it here "
+                           "rather than from a manifest, so a published version carries the "
+                           "bar it was judged against."),
             Column("eval_run_id", "TEXT", references="evaluation_run(eval_run_id)"),
             Column("canary_traffic_pct", "NUMERIC(5,2)"),
             Column("published_at", "TIMESTAMPTZ"),

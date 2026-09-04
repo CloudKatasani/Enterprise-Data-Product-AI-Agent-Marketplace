@@ -17,7 +17,9 @@
   ],
   "claims": {
     "current": "20.48",
-    "delta": "-0.47"
+    "delta": "-0.47",
+    "groups": "2",
+    "rows_scanned": "25200"
   },
   "exchange_id": "DEMO-AG-TEL-001-01",
   "headline": "Churn Rate is 20.48% for the quarter ending 2026-07-01, down 0.47% on the prior quarter.",

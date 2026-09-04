@@ -97,6 +97,24 @@ jobs:
       - name: seed platform, harvest and score
         run: npm run seed:platform && npm run harvest && npm run score
 
+      # The demo tier is what the agents actually answer from, so it is built
+      # before anything that asks one a question.
+      - name: demo tier
+        run: npm run seed:demo-tier
+        env:
+          DEMO_TIER_SCALE: "0.05"
+
+      # The curated questions run against the real runtime and are compared to
+      # their golden answers. A drifted answer fails the build here rather than
+      # being discovered on the front page.
+      - name: demo runner
+        run: npm run demo:verify
+
+      # All eight evaluation suites, all fourteen agents. Exit code is the
+      # answer to "would these publish?".
+      - name: evaluate agents
+        run: npm run evaluate
+
       - name: unit
         run: npm run test:unit
 

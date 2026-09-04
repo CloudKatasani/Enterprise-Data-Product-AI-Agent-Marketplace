@@ -615,14 +615,19 @@ def _compose(
         bottom_label, bottom, bottom_count = ordered[-1]
         claims["cohort_high"] = top if top is not None else Decimal(0)
         claims["cohort_low"] = bottom if bottom is not None else Decimal(0)
-        gap = (top - bottom) if top is not None and bottom is not None else None
+        # Quantised in the KPI's own unit, not in percentage points: the claim
+        # and the sentence have to be the same number, and the sentence prints
+        # whatever the unit's precision is.
+        gap = _quantise(top - bottom, unit) if top is not None and bottom is not None else None
         if gap is not None:
-            claims["cohort_gap"] = gap.quantize(PERCENT_POINTS)
+            claims["cohort_gap"] = gap
         headline = (
             f"{name} is {_format(top, unit)} where {label} is {_label(top_label)} against "
             f"{_format(bottom, unit)} where it is {_label(bottom_label)}"
             + (f", a gap of {_format(gap, unit)}." if gap is not None else ".")
         )
+        claims["cohort_high_observations"] = Decimal(top_count)
+        claims["cohort_low_observations"] = Decimal(bottom_count)
         narrative = (
             f"Both cohorts are drawn from {context.product['product_id']} over the same "
             f"period: {top_count:,} observations against {bottom_count:,}."
@@ -631,13 +636,18 @@ def _compose(
         top_label, median, observations = values[0]
         claims["median"] = median if median is not None else Decimal(0)
         tail = _quantise(rows[0].get("tail"), unit)
-        tail_name = format(rubric.number(TAIL_FRACTION_PATH), ".0%")
+        # "p90", not "90%": the percentile is a label for the statistic, and a
+        # bare 90 in the prose would read as a claim the answer has to cite.
+        tail_name = "p" + format(
+            rubric.number(TAIL_FRACTION_PATH) * rubric.number(PERCENT_SCALE_PATH), "f"
+        ).rstrip("0").rstrip(".")
         if tail is not None:
             claims["tail"] = tail
         headline = (
             f"Median {name.lower()} is {_format(median, unit)} for {_label(top_label)}, "
-            f"with the {tail_name} percentile at {_format(tail, unit)}."
+            f"with {tail_name} at {_format(tail, unit)}."
         )
+        claims["observations"] = Decimal(observations)
         narrative = (
             f"Across {observations:,} observations in {context.product['product_id']}; "
             f"the spread, not the mean, is what the question asked about."
@@ -658,6 +668,12 @@ def _compose(
             f"Ranked by the certified definition {context.kpi['kpi_id']} over "
             f"{executed.rows_scanned:,} rows in {context.product['product_id']}."
         )
+
+    # The prose states how much was read and how many groups came back. Those
+    # are assertions like any other, so they are claimed like any other — the
+    # groundedness suite is right to demand it.
+    claims["rows_scanned"] = Decimal(executed.rows_scanned)
+    claims["groups"] = Decimal(len(values))
 
     thin = int(rubric.number(THIN_EVIDENCE_ROWS_PATH))
     if executed.rows_scanned < thin:
@@ -716,6 +732,22 @@ class AnalyticRuntime:
         analysis_type = (
             context.exchange["analysis_type"] if context.exchange else "ranking"
         )
+        # I12: the agent's binding intersected with the caller's grant. The
+        # planner only ever sees columns both sides hold — and an empty
+        # intersection is an entitlement shortfall, not a coverage gap. Letting
+        # the planner refuse here would tell the caller the agent does not do
+        # this, when in truth they are not allowed to see it.
+        readable_binding = sorted(
+            set(context.binding["columns_allowed"]) & context.readable.columns
+        )
+        if not readable_binding:
+            raise EntitlementShortfall(
+                f"your grant on {context.binding['product_id']} covers none of what this "
+                "agent reads",
+                asset_id=context.binding["product_id"],
+                required_scope=context.readable.scope,
+            )
+
         plan = planner.resolve(
             question=request.question,
             analysis_type=analysis_type,
@@ -723,9 +755,7 @@ class AnalyticRuntime:
             kpi=context.kpi,
             # I12: the agent's binding intersected with the caller's grant. The
             # planner only ever sees columns both sides hold.
-            binding_columns=sorted(
-                set(context.binding["columns_allowed"]) & context.readable.columns
-            ),
+            binding_columns=readable_binding,
             limit=int(self._rubric.number(ROW_LIMIT_PATH)),
         )
 

@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: fbb3ffd6721e1ee7d8fd5fb08735ed416f5d4af8855002b3a319a5670d827d46  generated_at: 2026-09-04T02:21:56+00:00
+-- generator_version: 1.0.0  manifest_hash: 96d17f7f9320d3265d899c97483037ffbb45e8663669675658ba59f61548f772  generated_at: 2026-09-04T04:34:16+00:00
 
 -- agents, versions, coverage, bindings, demos and evaluation
 
@@ -90,6 +90,8 @@ CREATE TABLE agent_version (
   guardrail_config JSONB NOT NULL,
   budget_p95_latency_ms INT NOT NULL,
   budget_cost_per_answer_usd NUMERIC(10,4) NOT NULL,
+  eval_suites TEXT[] NOT NULL,  -- Suites this version declares it is evaluated by.
+  eval_threshold_pct NUMERIC(5,2) NOT NULL,  -- The version's own declared pass threshold; the gate reads it here rather than from a manifest, so a published version carries the bar it was judged against.
   eval_run_id TEXT REFERENCES evaluation_run(eval_run_id),
   canary_traffic_pct NUMERIC(5,2),
   published_at TIMESTAMPTZ,

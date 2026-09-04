@@ -19,7 +19,9 @@
     }
   ],
   "claims": {
-    "current": "13.64"
+    "current": "13.64",
+    "groups": "1",
+    "rows_scanned": "31200"
   },
   "exchange_id": "DEMO-AG-HLT-001-01",
   "headline": "Thirty Day Readmission Rate is 13.64% for the year ending 2026-01-01.",

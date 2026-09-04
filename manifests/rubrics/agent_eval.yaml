@@ -1,7 +1,7 @@
 # Agent evaluation and publish gate. Groundedness is 100% or the version does
 # not publish (I11); consistency is advisory and reports variance instead.
 rubric: agent_evaluation
-version: 1.0.0
+version: 1.1.0
 suites:
   golden_accuracy:        { blocking: true,  pass_threshold_pct: 92 }
   groundedness:           { blocking: true,  pass_threshold_pct: 100 }
@@ -9,7 +9,9 @@ suites:
   adversarial:            { blocking: true,  pass_threshold_pct: 100 }
   entitlement:            { blocking: true,  pass_threshold_pct: 100, personas_min: 3 }
   compositional_exposure: { blocking: true,  pass_threshold_pct: 100 }
-  consistency:            { blocking: false, pass_threshold_pct: 85 }
+  # Advisory. Repeats is how many times the same question is asked before the
+  # variance is published; one ask measures nothing.
+  consistency:            { blocking: false, pass_threshold_pct: 85, repeats: 3 }
   cost_latency:           { blocking: true,  pass_threshold_pct: 95 }
 publish_gate:
   min_demo_exchanges: 5

@@ -15,7 +15,9 @@
     }
   ],
   "claims": {
-    "current": "322.5620"
+    "current": "322.5620",
+    "groups": "1",
+    "rows_scanned": "15120"
   },
   "exchange_id": "DEMO-AG-TEL-002-05",
   "headline": "Fault Mean Time to Restore is 322.5620 hours for the quarter ending 2026-07-01.",

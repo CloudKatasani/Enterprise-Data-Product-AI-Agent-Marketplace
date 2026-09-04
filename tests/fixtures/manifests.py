@@ -184,7 +184,7 @@ VALID_AGENT: dict[str, Any] = {
             "Pricing approval or plan change execution",
         ],
         "runtime": {
-            "provider": "mock",
+            "provider": "analytic",
             "model": {"provider": "anthropic", "id": "test-model", "temperature": 0.0,
                       "max_tokens": 2000},
             "prompt_ref": "prompts/AG-TEL-001/system@v7",

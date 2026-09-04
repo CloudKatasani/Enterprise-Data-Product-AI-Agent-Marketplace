@@ -15,7 +15,10 @@
     }
   ],
   "claims": {
+    "groups": "3",
     "median": "12.0000",
+    "observations": "10800",
+    "rows_scanned": "50400",
     "tail": "37.0000"
   },
   "exchange_id": "DEMO-AG-TCH-001-03",

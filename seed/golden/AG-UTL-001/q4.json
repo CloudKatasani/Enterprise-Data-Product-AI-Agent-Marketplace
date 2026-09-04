@@ -18,7 +18,9 @@
     }
   ],
   "claims": {
-    "current": "2164.9775"
+    "current": "2164.9775",
+    "groups": "1",
+    "rows_scanned": "21600"
   },
   "exchange_id": "DEMO-AG-UTL-001-04",
   "headline": "SAIFI is 2,164.9775 for the year ending 2026-01-01.",

@@ -18,7 +18,9 @@
   ],
   "claims": {
     "current": "-1.36",
-    "delta": "0.06"
+    "delta": "0.06",
+    "groups": "14",
+    "rows_scanned": "23400"
   },
   "exchange_id": "DEMO-AG-RTL-001-01",
   "headline": "Comparable Sales Growth is -1.36% for the week ending 2026-08-31, up 0.06% on the prior week.",

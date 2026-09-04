@@ -17,7 +17,9 @@
     }
   ],
   "claims": {
-    "current": "264443.6480"
+    "current": "264443.6480",
+    "groups": "1",
+    "rows_scanned": "21600"
   },
   "exchange_id": "DEMO-AG-UTL-001-01",
   "headline": "SAIDI is 264,443.6480 minutes for the year ending 2026-01-01.",

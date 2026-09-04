@@ -16,7 +16,9 @@
   ],
   "claims": {
     "current": "61.40",
-    "delta": "0.00"
+    "delta": "0.00",
+    "groups": "4",
+    "rows_scanned": "18000"
   },
   "exchange_id": "DEMO-AG-BNK-001-03",
   "headline": "Primary Bank Share is 61.40% for the year ending 2026-01-01, flat on the prior year.",

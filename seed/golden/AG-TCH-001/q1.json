@@ -16,6 +16,8 @@
     }
   ],
   "claims": {
+    "groups": "3",
+    "rows_scanned": "50400",
     "top": "93.33",
     "top_share": "35.81"
   },

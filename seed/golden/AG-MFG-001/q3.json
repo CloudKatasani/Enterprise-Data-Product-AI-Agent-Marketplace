@@ -18,7 +18,11 @@
   "claims": {
     "cohort_gap": "100.00",
     "cohort_high": "100.00",
-    "cohort_low": "0.00"
+    "cohort_high_observations": "12072",
+    "cohort_low": "0.00",
+    "cohort_low_observations": "528",
+    "groups": "2",
+    "rows_scanned": "12600"
   },
   "exchange_id": "DEMO-AG-MFG-001-03",
   "headline": "First Pass Yield is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",

@@ -41,9 +41,17 @@ from typing import Any
 import psycopg
 
 from services.agent_runtime import registry
-from services.agent_runtime.base import Answer, AskRequest, OutOfScope, RuntimeUnavailable
+from services.agent_runtime.base import (
+    Answer,
+    AskRequest,
+    EntitlementShortfall,
+    OutOfScope,
+    RuntimeUnavailable,
+)
+from services.common import audit
 from services.common.config import REPO_ROOT, get_settings, load_dotenv
 from services.common.db import connect, fetch_all
+from services.common.rubrics import load_current
 
 STATE_PASSING = "passing"
 STATE_STALE = "stale"
@@ -52,8 +60,10 @@ STATE_FAILING = "failing"
 OUTCOME_ANSWERED = "answered"
 OUTCOME_OUT_OF_SCOPE = "out_of_scope"
 OUTCOME_ERROR = "error"
+OUTCOME_DENIED = "denied"
 
 SESSION_PREFIX = "SES-DEMO-RUNNER"
+EVENT_STALE = "demo_exchange.stale"
 # The runner asks analytical questions of demo data. It declares that purpose
 # rather than inventing a "demo" one, so its interactions sit in the same purpose
 # reporting as everything else instead of in a category only it uses.
@@ -241,6 +251,14 @@ def run_one(
                 exchange_id=exchange["exchange_id"],
             ),
         )
+    except EntitlementShortfall as error:
+        _record(connection, exchange, None, OUTCOME_DENIED, tenant, principal)
+        result.state = STATE_FAILING
+        result.failures.append(
+            f"the runner's principal cannot read {error.asset_id}; it holds no "
+            f"{error.required_scope}"
+        )
+        return result
     except OutOfScope as error:
         _record(connection, exchange, None, OUTCOME_OUT_OF_SCOPE, tenant, principal)
         result.state = STATE_FAILING
@@ -295,6 +313,44 @@ def _mark(connection: psycopg.Connection[Any], result: Outcome) -> None:
         "UPDATE demo_exchange SET validation_state = %s, last_validated = now() "
         "WHERE exchange_id = %s",
         (result.state, result.exchange_id),
+    )
+
+
+def _notify_owner(
+    connection: psycopg.Connection[Any], tenant: str, rubric: Any, result: Outcome
+) -> None:
+    """Record that the owner needs to know an exchange stopped working.
+
+    An audit event, not a message: delivery is M10.2's job and this is the row
+    it will read. Writing it here means the record exists from the moment the
+    nightly run finds the drift, rather than from the moment a mailer is built.
+    """
+    owner = fetch_all(
+        connection,
+        "SELECT a.owner_party_id, a.on_call FROM agent a WHERE a.agent_id = %s",
+        (result.agent_id,),
+    )
+    party = owner[0] if owner else {}
+    audit.record(
+        connection,
+        tenant,
+        rubric,
+        audit_id=f"AUD-{result.exchange_id}-{datetime.now(UTC):%Y%m%d%H%M%S}",
+        event_name=EVENT_STALE,
+        outcome=result.state,
+        actor_party_id=None,
+        asset_type="agent",
+        asset_id=result.agent_id,
+        detail={
+            "exchange_id": result.exchange_id,
+            "question": result.question,
+            "failures": result.failures,
+            "notify": {
+                "owner_party_id": party.get("owner_party_id"),
+                "on_call": party.get("on_call"),
+            },
+            "effect": "removed from the front-page theatre until it passes again",
+        },
     )
 
 
@@ -357,8 +413,11 @@ def main(argv: list[str] | None = None) -> int:
             for exchange in exchanges
         ]
         if not arguments.capture:
+            governance = load_current(connection, audit.GOVERNANCE_RUBRIC)
             for result in results:
                 _mark(connection, result)
+                if arguments.nightly and not result.ok:
+                    _notify_owner(connection, settings.tenant_id, governance, result)
         connection.commit()
 
     return _report(results, capture=arguments.capture, nightly=arguments.nightly)

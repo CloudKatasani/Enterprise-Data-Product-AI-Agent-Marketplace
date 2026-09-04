@@ -124,8 +124,10 @@ def _write(
         "  asset_type, asset_id, access_level, purpose_code, purpose_text, platform_role, "
         "  oauth_scopes, granted_at, expires_at) "
         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now(), now() + %s::interval) "
-        "ON CONFLICT (grant_id) DO UPDATE SET expires_at = EXCLUDED.expires_at, "
-        "  oauth_scopes = EXCLUDED.oauth_scopes",
+        # A grant's terms are immutable — the append-only trigger on this table
+        # enforces it, and re-seeding must not try to talk its way past that.
+        # Changing what a principal may read means revoking and issuing anew.
+        "ON CONFLICT (grant_id) DO NOTHING",
         (
             grant_id,
             tenant,
@@ -144,7 +146,7 @@ def _write(
     connection.execute(
         "INSERT INTO grant_scope (scope_id, tenant_id, grant_id, scope_kind, expression, "
         "  applied_in_platform) VALUES (%s, %s, %s, %s, %s, true) "
-        "ON CONFLICT (scope_id) DO UPDATE SET expression = EXCLUDED.expression",
+        "ON CONFLICT (scope_id) DO NOTHING",
         (f"SCP-{grant_id}-COLS", tenant, grant_id, SCOPE_COLUMNS, ",".join(columns)),
     )
     return 1

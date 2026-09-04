@@ -44,7 +44,11 @@
     "seed:platform": "python3 scripts/seed_platform.py",
     "score": "python3 scripts/score.py",
     "golden:quality": "python3 scripts/capture_golden_quality.py",
-    "seed:demo-tier": "python3 scripts/seed_demo_tier.py"
+    "seed:demo-tier": "python3 scripts/seed_demo_tier.py",
+    "demo:capture": "python3 scripts/demo_runner.py --capture",
+    "demo:verify": "python3 scripts/demo_runner.py --verify",
+    "demo:nightly": "python3 scripts/demo_runner.py --nightly",
+    "evaluate": "python3 scripts/evaluate.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"
