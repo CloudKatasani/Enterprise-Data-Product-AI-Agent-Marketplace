@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-COSTPPD-043
+  name: "Pharmacy Cost per Patient Day"
+  domain: supply_chain
+  steward: PTY-0039
+  status: certified
+spec:
+  business_definition: >-
+    Total dispensed pharmacy cost divided by inpatient patient days for the period.
+  numerator_expr: "sum(dispensed_cost)"
+  denominator_expr: "sum(patient_days)"
+  grains_supported: [month, quarter]
+  slices_supported: [therapeutic_class, facility, service_line]
+  unit: currency
+  direction: lower_is_better
+  source_of_record: DP-HLT-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["drug cost per patient day"]

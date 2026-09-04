@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ATTRISK-019
+  name: "Attrition Risk Score"
+  domain: customer
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Modelled probability that a customer materially reduces or ends the relationship within the
+    next two quarters, expressed on a zero to one hundred scale.
+  expression: "avg(attrition_model_score)"
+  grains_supported: [month, quarter]
+  slices_supported: [segment, region, value_band]
+  unit: score
+  direction: lower_is_better
+  source_of_record: DP-BNK-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["churn score", "runoff risk"]

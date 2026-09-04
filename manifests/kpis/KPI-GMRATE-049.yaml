@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-GMRATE-049
+  name: "Gross Margin Rate"
+  domain: customer
+  steward: PTY-0040
+  status: certified
+spec:
+  business_definition: >-
+    Gross margin as a share of net sales, after markdowns and before store operating costs.
+  numerator_expr: "sum(net_sales) - sum(cost_of_goods_sold)"
+  denominator_expr: "sum(net_sales)"
+  grains_supported: [week, month, quarter, year]
+  slices_supported: [category, region, channel]
+  unit: percent
+  direction: higher_is_better
+  target: 38.0
+  source_of_record: DP-RTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["gross margin percent", "GM rate"]

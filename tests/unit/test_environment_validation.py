@@ -32,6 +32,7 @@ def _complete_environment() -> dict[str, str]:
         "DEMO_TIER_SCHEMA": "MARKETPLACE_DEMO",
         "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4318",
         "FEATURE_FLAG_SOURCE": "env",
+        "WORKER_POLL_SECONDS": "5",
     }
 
 

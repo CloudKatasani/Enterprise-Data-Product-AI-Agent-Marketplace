@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-FOLLOWUP-040
+  name: "Discharge to Follow-up Interval"
+  domain: clinical
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Median days between inpatient discharge and the first completed ambulatory follow-up
+    appointment.
+  expression: "percentile_cont(0.5) within group (order by days_to_followup)"
+  grains_supported: [month, quarter]
+  slices_supported: [condition, unit, payer]
+  unit: days
+  direction: lower_is_better
+  target: 7.0
+  source_of_record: DP-HLT-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["follow-up interval", "transition interval"]

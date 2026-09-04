@@ -41,6 +41,11 @@ ignore = ["B008", "E501"]
 [tool.ruff.lint.per-file-ignores]
 # ast.NodeVisitor dispatches on visit_<NodeType>; the casing is the library's.
 "scripts/lint/no_magic_numbers.py" = ["N802"]
+# NotFound / NotConfigured read better at a call site than NotFoundError, and
+# these are raised, caught and named in error responses constantly.
+"services/common/db.py" = ["N818"]
+"services/common/rubrics.py" = ["N818"]
+"scripts/seeders/rubrics.py" = ["N818"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["services", "connectors", "scripts"]

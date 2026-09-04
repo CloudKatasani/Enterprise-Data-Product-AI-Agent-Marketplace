@@ -13,8 +13,6 @@ import time
 
 from services.common.config import ConfigurationError, get_settings
 
-POLL_INTERVAL_SECONDS = 5
-
 
 def main() -> int:
     try:
@@ -32,19 +30,20 @@ def main() -> int:
     signal.signal(signal.SIGINT, stop)
     signal.signal(signal.SIGTERM, stop)
 
-    print(f"worker: started for tenant {settings.tenant_id}")
+    poll_seconds = settings.worker_poll_seconds
+    print(f"worker: started for tenant {settings.tenant_id}, polling every {poll_seconds}s")
     try:
         from services.worker.runner import JobRunner
     except ImportError:
         print("worker: no jobs registered yet")
         while running:
-            time.sleep(POLL_INTERVAL_SECONDS)
+            time.sleep(poll_seconds)
         return 0
 
     runner = JobRunner(settings)
     while running:
         runner.tick()
-        time.sleep(POLL_INTERVAL_SECONDS)
+        time.sleep(poll_seconds)
     return 0
 
 

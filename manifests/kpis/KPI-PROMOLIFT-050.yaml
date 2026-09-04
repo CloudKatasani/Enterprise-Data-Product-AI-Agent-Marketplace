@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PROMOLIFT-050
+  name: "Promotion Lift"
+  domain: customer
+  steward: PTY-0040
+  status: certified
+spec:
+  business_definition: >-
+    Incremental sales during a promotion over the modelled non-promoted baseline for the same
+    items and stores.
+  numerator_expr: "sum(promoted_sales) - sum(baseline_sales)"
+  denominator_expr: "sum(baseline_sales)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [category, promotion, region]
+  unit: percent
+  direction: higher_is_better
+  target: 8.0
+  source_of_record: DP-RTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["incrementality", "promo lift"]

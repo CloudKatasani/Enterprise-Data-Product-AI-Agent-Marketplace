@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-AHI-063
+  name: "Asset Health Index"
+  domain: network_asset
+  steward: PTY-0043
+  status: certified
+spec:
+  business_definition: >-
+    Composite condition score for an asset on a zero to one hundred scale, combining age,
+    inspection findings, loading and failure history.
+  expression: "avg(asset_health_score)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [asset_class, region, vintage_band]
+  unit: score
+  direction: higher_is_better
+  target: 75.0
+  source_of_record: DP-UTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["condition index", "AHI"]

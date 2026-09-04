@@ -30,6 +30,7 @@ REQUIRED_VARS: tuple[str, ...] = (
     "DEMO_TIER_SCHEMA",
     "OTEL_EXPORTER_OTLP_ENDPOINT",
     "FEATURE_FLAG_SOURCE",
+    "WORKER_POLL_SECONDS",
 )
 
 # Variables that must be *present* but may legitimately be empty in a local run
@@ -77,6 +78,7 @@ class Settings:
     demo_tier_schema: str
     otel_endpoint: str
     feature_flag_source: str
+    worker_poll_seconds: int
     missing: tuple[str, ...] = field(default=())
 
 
@@ -114,9 +116,10 @@ def validate_environment() -> None:
             f"FEATURE_FLAG_SOURCE={flags!r} is not one of {sorted(VALID_FLAG_SOURCES)}"
         )
 
-    max_tokens = os.environ.get("MODEL_MAX_TOKENS", "")
-    if max_tokens and not max_tokens.isdigit():
-        problems.append(f"MODEL_MAX_TOKENS={max_tokens!r} is not an integer")
+    for name in ("MODEL_MAX_TOKENS", "WORKER_POLL_SECONDS"):
+        value = os.environ.get(name, "")
+        if value and not value.isdigit():
+            problems.append(f"{name}={value!r} is not a positive integer")
 
     if problems:
         raise ConfigurationError("; ".join(problems))
@@ -143,4 +146,5 @@ def get_settings() -> Settings:
         demo_tier_schema=os.environ["DEMO_TIER_SCHEMA"],
         otel_endpoint=os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"],
         feature_flag_source=os.environ["FEATURE_FLAG_SOURCE"],
+        worker_poll_seconds=int(os.environ["WORKER_POLL_SECONDS"]),
     )

@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DAUMAU-011
+  name: "DAU to MAU Ratio"
+  domain: product
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Ratio of daily active accounts to monthly active accounts, the stickiness measure for a
+    product surface.
+  numerator_expr: "count(distinct daily_active_account)"
+  denominator_expr: "count(distinct monthly_active_account)"
+  grains_supported: [day, week, month]
+  slices_supported: [plan_tier, segment, region]
+  unit: ratio
+  direction: higher_is_better
+  target: 0.42
+  source_of_record: DP-TCH-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["stickiness", "engagement ratio"]

@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ALERTVOL-021
+  name: "Alert Volume"
+  domain: risk_compliance
+  steward: PTY-0035
+  status: certified
+spec:
+  business_definition: >-
+    Number of surveillance alerts generated in the period, counted at the alert rather than the
+    transaction level.
+  expression: "count(distinct alert_id)"
+  grains_supported: [day, week, month]
+  slices_supported: [typology, business_line, region]
+  unit: count
+  direction: lower_is_better
+  source_of_record: DP-BNK-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["alert count"]

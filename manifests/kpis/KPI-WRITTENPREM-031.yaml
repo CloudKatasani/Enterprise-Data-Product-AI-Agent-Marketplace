@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-WRITTENPREM-031
+  name: "Gross Written Premium"
+  domain: product
+  steward: PTY-0037
+  status: certified
+spec:
+  business_definition: >-
+    Total premium written on policies incepted or renewed within the period, gross of
+    reinsurance.
+  expression: "sum(written_premium)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [coverage_line, segment, region, channel]
+  unit: currency
+  direction: higher_is_better
+  source_of_record: DP-INS-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["GWP", "written premium"]

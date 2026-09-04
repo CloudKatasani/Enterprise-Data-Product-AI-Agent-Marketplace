@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ALOS-037
+  name: "Average Length of Stay"
+  domain: clinical
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Mean inpatient days per discharged encounter, excluding observation and same-day stays.
+  numerator_expr: "sum(inpatient_days)"
+  denominator_expr: "count(distinct encounter_id)"
+  grains_supported: [month, quarter]
+  slices_supported: [condition, unit, payer]
+  unit: days
+  direction: lower_is_better
+  target: 4.2
+  source_of_record: DP-HLT-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["ALOS", "length of stay"]

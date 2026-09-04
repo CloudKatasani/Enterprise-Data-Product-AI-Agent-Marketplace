@@ -44,7 +44,12 @@ def db(database_url: str) -> Iterator[object]:
     try:
         connection.autocommit = False
         with connection.cursor() as cursor:
-            cursor.execute("SET session_replication_role = 'origin'")
+            # Mirror the production connection: every session carries the tenant
+            # the row-level policies evaluate against.
+            cursor.execute(
+                "SELECT set_config('app.tenant_id', %s, false)",
+                (os.environ.get("TENANT_ID", TEST_TENANT),),
+            )
         yield connection
     finally:
         connection.rollback()

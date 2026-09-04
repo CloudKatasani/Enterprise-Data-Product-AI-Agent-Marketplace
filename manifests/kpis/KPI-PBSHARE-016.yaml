@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PBSHARE-016
+  name: "Primary Bank Share"
+  domain: customer
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Share of customers for whom the institution holds the primary transactional relationship,
+    judged on salary credit and transaction concentration.
+  numerator_expr: "count(distinct customer_id) filter (where primary_relationship)"
+  denominator_expr: "count(distinct customer_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, tenure_band]
+  unit: percent
+  direction: higher_is_better
+  target: 61.0
+  source_of_record: DP-BNK-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["primacy", "main bank share"]

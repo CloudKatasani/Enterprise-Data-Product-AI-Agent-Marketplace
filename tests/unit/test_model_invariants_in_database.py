@@ -95,7 +95,9 @@ def test_i1_allows_a_second_definition_once_the_first_is_superseded(db) -> None:
         )
         _insert_kpi(cursor, "KPI-TST-002", "Churn Rate", status="certified")
         cursor.execute(
-            "SELECT count(*) FROM kpi_definition WHERE status IN ('draft','certified')"
+            "SELECT count(*) FROM kpi_definition "
+            "WHERE tenant_id = %s AND status IN ('draft','certified')",
+            (TENANT,),
         )
         assert cursor.fetchone()[0] == 1
 

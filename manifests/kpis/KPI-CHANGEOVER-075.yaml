@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CHANGEOVER-075
+  name: "Changeover Time"
+  domain: operations
+  steward: PTY-0046
+  status: certified
+spec:
+  business_definition: >-
+    Median minutes from last good unit of one product to first good unit of the next.
+  expression: "percentile_cont(0.5) within group (order by changeover_minutes)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [line, plant, product_family, shift]
+  unit: minutes
+  direction: lower_is_better
+  target: 35.0
+  source_of_record: DP-MFG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["setup time", "SMED"]

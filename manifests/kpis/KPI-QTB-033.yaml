@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-QTB-033
+  name: "Quote-to-Bind Rate"
+  domain: product
+  steward: PTY-0037
+  status: certified
+spec:
+  business_definition: >-
+    Share of quotes issued in the period that converted to a bound policy.
+  numerator_expr: "count(distinct quote_id) filter (where bound)"
+  denominator_expr: "count(distinct quote_id)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [coverage_line, segment, channel]
+  unit: percent
+  direction: higher_is_better
+  target: 21.0
+  source_of_record: DP-INS-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["conversion rate", "bind rate"]

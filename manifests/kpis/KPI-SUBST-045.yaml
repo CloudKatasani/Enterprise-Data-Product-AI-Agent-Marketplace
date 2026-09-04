@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-SUBST-045
+  name: "Therapeutic Substitution Rate"
+  domain: supply_chain
+  steward: PTY-0039
+  status: certified
+spec:
+  business_definition: >-
+    Share of substitution-eligible dispensing events where an approved therapeutic alternative
+    was supplied.
+  numerator_expr: "count(*) filter (where substituted)"
+  denominator_expr: "count(*) filter (where substitution_eligible)"
+  grains_supported: [month, quarter]
+  slices_supported: [therapeutic_class, facility]
+  unit: percent
+  direction: higher_is_better
+  target: 22.0
+  source_of_record: DP-HLT-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["substitution uptake"]

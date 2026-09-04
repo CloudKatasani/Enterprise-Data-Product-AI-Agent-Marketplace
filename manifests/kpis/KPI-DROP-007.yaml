@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DROP-007
+  name: "Dropped Call Rate"
+  domain: network_asset
+  steward: PTY-0032
+  status: certified
+spec:
+  business_definition: >-
+    Share of established voice calls terminated abnormally by the network within the period.
+  numerator_expr: "sum(dropped_calls)"
+  denominator_expr: "sum(established_calls)"
+  grains_supported: [day, week, month]
+  slices_supported: [region, site_class, technology]
+  unit: percent
+  direction: lower_is_better
+  target: 0.6
+  source_of_record: DP-TEL-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["call drop rate", "DCR"]

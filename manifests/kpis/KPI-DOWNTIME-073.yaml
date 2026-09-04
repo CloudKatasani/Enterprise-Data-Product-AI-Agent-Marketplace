@@ -1,0 +1,21 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DOWNTIME-073
+  name: "Unplanned Downtime Hours"
+  domain: operations
+  steward: PTY-0046
+  status: certified
+spec:
+  business_definition: >-
+    Total hours a line was unavailable for reasons outside the maintenance plan.
+  expression: "sum(downtime_hours) filter (where downtime_type = 'unplanned')"
+  grains_supported: [day, week, month, quarter]
+  slices_supported: [line, plant, shift, reason_code]
+  unit: hours
+  direction: lower_is_better
+  source_of_record: DP-MFG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["unplanned stops", "breakdown hours"]

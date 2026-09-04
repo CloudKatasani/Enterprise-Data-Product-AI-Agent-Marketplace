@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-OTD-056
+  name: "On-Time Delivery Rate"
+  domain: operations
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Share of attempted deliveries completed within the committed appointment window.
+  numerator_expr: "count(*) filter (where delivered_within_window)"
+  denominator_expr: "count(*) filter (where delivery_attempted)"
+  grains_supported: [day, week, month, quarter]
+  slices_supported: [lane, carrier, customer, service_level]
+  unit: percent
+  direction: higher_is_better
+  target: 95.0
+  source_of_record: DP-TRN-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["OTD", "on time in full"]

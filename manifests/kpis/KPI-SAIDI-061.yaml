@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-SAIDI-061
+  name: "SAIDI"
+  domain: network_asset
+  steward: PTY-0043
+  status: certified
+spec:
+  business_definition: >-
+    System Average Interruption Duration Index: total customer interruption minutes divided by
+    customers served, excluding major event days per the regulatory definition.
+  numerator_expr: "sum(customer_interruption_minutes)"
+  denominator_expr: "count(distinct served_customer_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [feeder, region, cause_class]
+  unit: minutes
+  direction: lower_is_better
+  target: 90.0
+  source_of_record: DP-UTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["interruption duration index"]

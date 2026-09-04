@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-TTV-014
+  name: "Time to First Value"
+  domain: product
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Median elapsed days between account creation and the first completed value milestone.
+  expression: "percentile_cont(0.5) within group (order by days_to_first_value)"
+  grains_supported: [month, quarter]
+  slices_supported: [plan_tier, segment, acquisition_channel]
+  unit: days
+  direction: lower_is_better
+  target: 14.0
+  source_of_record: DP-TCH-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["time to value", "TTV"]

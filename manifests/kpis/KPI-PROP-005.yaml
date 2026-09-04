@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PROP-005
+  name: "Churn Propensity Decile"
+  domain: customer
+  steward: PTY-0031
+  status: certified
+spec:
+  business_definition: >-
+    Decile rank of a subscriber's modelled churn propensity, where decile one carries the
+    highest modelled risk.
+  expression: "ntile(10) over (order by churn_propensity_score desc)"
+  grains_supported: [day, week, month]
+  slices_supported: [segment, region, tenure_band]
+  unit: index
+  direction: lower_is_better
+  source_of_record: DP-TEL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["risk decile", "propensity band"]

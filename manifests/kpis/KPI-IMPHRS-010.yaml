@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-IMPHRS-010
+  name: "Impacted Subscriber Hours"
+  domain: network_asset
+  steward: PTY-0032
+  status: certified
+spec:
+  business_definition: >-
+    Sum across faults of affected subscribers multiplied by the hours each was affected, the
+    network measure of customer harm.
+  expression: "sum(impacted_subscribers * outage_hours)"
+  grains_supported: [day, week, month]
+  slices_supported: [region, fault_class]
+  unit: count
+  direction: lower_is_better
+  source_of_record: DP-TEL-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["customer impact hours"]

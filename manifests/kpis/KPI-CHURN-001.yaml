@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CHURN-001
+  name: "Churn Rate"
+  domain: customer
+  steward: PTY-0031
+  status: certified
+spec:
+  business_definition: >-
+    Share of subscribers active at the start of the period who disconnected within it, measured
+    after the 30-day reconnection window closes.
+  numerator_expr: "count(distinct subscriber_id) filter (where churn_flag)"
+  denominator_expr: "count(distinct subscriber_id) filter (where active_at_period_start)"
+  grains_supported: [day, week, month, quarter]
+  slices_supported: [segment, region, plan_type, tenure_band, channel]
+  unit: percent
+  direction: lower_is_better
+  target: 1.4
+  source_of_record: DP-TEL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["attrition rate", "disconnect rate"]

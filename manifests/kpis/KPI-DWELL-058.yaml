@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DWELL-058
+  name: "Dwell Time"
+  domain: operations
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Median hours an asset spends stationary at a facility between arrival and departure.
+  expression: "percentile_cont(0.5) within group (order by dwell_hours)"
+  grains_supported: [day, week, month]
+  slices_supported: [facility, carrier, equipment_type]
+  unit: hours
+  direction: lower_is_better
+  target: 2.0
+  source_of_record: DP-TRN-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["detention", "facility dwell"]

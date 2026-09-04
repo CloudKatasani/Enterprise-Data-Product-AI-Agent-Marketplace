@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-EXPCONC-035
+  name: "Exposure Concentration"
+  domain: product
+  steward: PTY-0037
+  status: certified
+spec:
+  business_definition: >-
+    Share of total insured value sitting in the largest single accumulation zone for a given
+    peril.
+  numerator_expr: "sum(total_insured_value) filter (where in_top_accumulation_zone)"
+  denominator_expr: "sum(total_insured_value)"
+  grains_supported: [quarter, year]
+  slices_supported: [peril, region, coverage_line]
+  unit: percent
+  direction: lower_is_better
+  target: 12.0
+  source_of_record: DP-INS-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["accumulation", "aggregate concentration"]

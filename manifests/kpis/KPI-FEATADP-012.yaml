@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-FEATADP-012
+  name: "Feature Adoption Rate"
+  domain: product
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Share of entitled accounts that used a feature at least once within the period.
+  numerator_expr: "count(distinct account_id) filter (where feature_used)"
+  denominator_expr: "count(distinct account_id) filter (where feature_entitled)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [feature, plan_tier, segment]
+  unit: percent
+  direction: higher_is_better
+  target: 55.0
+  source_of_record: DP-TCH-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["feature uptake"]

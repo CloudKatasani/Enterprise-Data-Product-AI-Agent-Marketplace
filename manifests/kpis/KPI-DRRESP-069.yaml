@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DRRESP-069
+  name: "Demand Response Event Response Rate"
+  domain: customer
+  steward: PTY-0045
+  status: certified
+spec:
+  business_definition: >-
+    Share of enrolled meters called for a demand response event that delivered measurable
+    curtailment.
+  numerator_expr: "count(distinct meter_id) filter (where curtailed_during_event)"
+  denominator_expr: "count(distinct meter_id) filter (where enrolled_and_called)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [programme, rate_class, region]
+  unit: percent
+  direction: higher_is_better
+  target: 72.0
+  source_of_record: DP-ENG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["DR response", "event participation"]

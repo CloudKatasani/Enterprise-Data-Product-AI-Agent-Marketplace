@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CPM-057
+  name: "Cost per Mile"
+  domain: operations
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Total linehaul and accessorial cost divided by loaded miles for the period.
+  numerator_expr: "sum(linehaul_cost) + sum(accessorial_cost)"
+  denominator_expr: "sum(loaded_miles)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [lane, carrier, equipment_type]
+  unit: currency
+  direction: lower_is_better
+  source_of_record: DP-TRN-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["CPM", "cost per loaded mile"]
