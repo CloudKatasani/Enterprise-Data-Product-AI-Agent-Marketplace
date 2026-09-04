@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "facility",
+        "filled_shift",
+        "overtime_hours",
+        "region",
+        "shift",
+        "shift_start",
+        "unit_id",
+        "unit_type",
+        "worked_hours"
+      ],
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "48600",
+    "top": "6.96",
+    "top_share": "29.48"
+  },
+  "exchange_id": "DEMO-AG-HLT-004-03",
+  "headline": "critical_care leads on overtime share of hours at 6.96%, 29.48% of the total across 4 unit types.",
+  "kpi_definitions": [
+    "KPI-OTSHARE-098"
+  ],
+  "narrative": "Ranked by the certified definition KPI-OTSHARE-098 over 48,600 rows in DP-HLT-003.",
+  "question": "Where is overtime share highest by unit type?",
+  "rows_scanned": 48600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "unit_type",
+    "KPI-OTSHARE-098",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

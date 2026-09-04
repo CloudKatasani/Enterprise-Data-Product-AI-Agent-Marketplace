@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-HLT-002-1.0.0",
   "analysis_type": "compliance_ranking",
   "answer": {
-    "headline": "immunology leads on formulary adherence at 91.85%, 20.15% of the total across 5 therapeutic classs.",
+    "headline": "analgesia trails on formulary adherence at 90.10%, 19.77% of the total across 5 therapeutic classs.",
     "narrative": "Ranked by the certified definition KPI-FORMADH-041 over 30,600 rows in DP-HLT-002.",
     "table": {
       "columns": [
@@ -14,19 +14,9 @@
       ],
       "rows": [
         [
-          "immunology",
-          91.85,
-          4320
-        ],
-        [
-          "oncology",
-          91.62,
-          4320
-        ],
-        [
-          "cardiovascular",
-          91.36,
-          6480
+          "analgesia",
+          90.1,
+          6120
         ],
         [
           "anti_infective",
@@ -34,9 +24,19 @@
           9360
         ],
         [
-          "analgesia",
-          90.1,
-          6120
+          "cardiovascular",
+          91.36,
+          6480
+        ],
+        [
+          "oncology",
+          91.62,
+          4320
+        ],
+        [
+          "immunology",
+          91.85,
+          4320
         ]
       ]
     },
@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Where is formulary adherence lowest?",
-  "recorded_at": "2026-09-04T16:01:33.304657+00:00",
+  "recorded_at": "2026-09-04T21:58:29.118873+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 10,
+    "latency_ms": 9,
     "rows_scanned": 30600,
     "runtime": "analytic",
     "tokens": {
@@ -97,7 +97,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
         },
         "cost_class": "small",
-        "duration_ms": 7,
+        "duration_ms": 6,
         "rows_returned": 5,
         "rows_scanned": 30600,
         "tool": "query_dp_hlt_002"

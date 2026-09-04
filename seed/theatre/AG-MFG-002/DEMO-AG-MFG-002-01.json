@@ -1,0 +1,206 @@
+{
+  "agent_id": "AG-MFG-002",
+  "agent_name": "Supplier Quality Analyst",
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "concentration",
+  "answer": {
+    "headline": "SUP-0001 leads on supplier defect rate at 6.67%, 14.67% of the total across 24 supplier ids.",
+    "narrative": "Ranked by the certified definition KPI-SUPPDEF-093 over 26,400 rows in DP-MFG-002.",
+    "table": {
+      "columns": [
+        "supplier_id",
+        "KPI-SUPPDEF-093",
+        "observations"
+      ],
+      "rows": [
+        [
+          "SUP-0001",
+          6.67,
+          1080
+        ],
+        [
+          "SUP-0002",
+          5.97,
+          1200
+        ],
+        [
+          "SUP-0003",
+          5.96,
+          1200
+        ],
+        [
+          "SUP-0004",
+          5.44,
+          1200
+        ],
+        [
+          "SUP-0011",
+          1.45,
+          1080
+        ],
+        [
+          "SUP-0015",
+          1.21,
+          1080
+        ],
+        [
+          "SUP-0012",
+          1.2,
+          1080
+        ],
+        [
+          "SUP-0024",
+          1.14,
+          1080
+        ],
+        [
+          "SUP-0019",
+          1.13,
+          1080
+        ],
+        [
+          "SUP-0020",
+          1.13,
+          1080
+        ],
+        [
+          "SUP-0022",
+          1.12,
+          1080
+        ],
+        [
+          "SUP-0006",
+          1.12,
+          1080
+        ],
+        [
+          "SUP-0017",
+          1.11,
+          1080
+        ],
+        [
+          "SUP-0016",
+          1.04,
+          1080
+        ],
+        [
+          "SUP-0021",
+          1.03,
+          1080
+        ],
+        [
+          "SUP-0013",
+          1.03,
+          1080
+        ],
+        [
+          "SUP-0023",
+          1.01,
+          1080
+        ],
+        [
+          "SUP-0009",
+          1.01,
+          1080
+        ],
+        [
+          "SUP-0010",
+          1.0,
+          1080
+        ],
+        [
+          "SUP-0008",
+          1.0,
+          1080
+        ],
+        [
+          "SUP-0005",
+          0.99,
+          1200
+        ],
+        [
+          "SUP-0018",
+          0.99,
+          1080
+        ],
+        [
+          "SUP-0014",
+          0.9,
+          1080
+        ],
+        [
+          "SUP-0007",
+          0.81,
+          1080
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.2,
+        "unit": "percent",
+        "x": "supplier_id",
+        "y": "KPI-SUPPDEF-093"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "receipt_line_id",
+        "receipt_date",
+        "supplier_id",
+        "supplier_tier",
+        "material_class",
+        "plant",
+        "region",
+        "received_units",
+        "rejected_units",
+        "inspection_required"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-002-01",
+  "kpi_definitions": [
+    "KPI-SUPPDEF-093"
+  ],
+  "notes": [],
+  "question": "Which suppliers account for most of our rejected units?",
+  "recorded_at": "2026-09-04T21:58:30.116981+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 9,
+    "rows_scanned": 26400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "supplier_id",
+          "limit": 24,
+          "measure": "((sum(rejected_units))::numeric / NULLIF((sum(received_units))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 7,
+        "rows_returned": 24,
+        "rows_scanned": 26400,
+        "tool": "query_dp_mfg_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "agent_id": "AG-MFG-002",
+  "agent_name": "Supplier Quality Analyst",
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "electronics leads on supplier defect rate at 3.26%, 36.06% of the total across 5 material classs.",
+    "narrative": "Ranked by the certified definition KPI-SUPPDEF-093 over 26,400 rows in DP-MFG-002.",
+    "table": {
+      "columns": [
+        "material_class",
+        "KPI-SUPPDEF-093",
+        "observations"
+      ],
+      "rows": [
+        [
+          "electronics",
+          3.26,
+          7560
+        ],
+        [
+          "packaging",
+          1.75,
+          3600
+        ],
+        [
+          "polymers",
+          1.59,
+          4320
+        ],
+        [
+          "fasteners",
+          1.48,
+          5760
+        ],
+        [
+          "castings",
+          0.96,
+          5160
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.2,
+        "unit": "percent",
+        "x": "material_class",
+        "y": "KPI-SUPPDEF-093"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "receipt_line_id",
+        "receipt_date",
+        "supplier_id",
+        "supplier_tier",
+        "material_class",
+        "plant",
+        "region",
+        "received_units",
+        "rejected_units",
+        "inspection_required"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-002-02",
+  "kpi_definitions": [
+    "KPI-SUPPDEF-093"
+  ],
+  "notes": [],
+  "question": "Which material classes have the worst defect rate?",
+  "recorded_at": "2026-09-04T21:58:30.127594+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 9,
+    "rows_scanned": 26400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "material_class",
+          "limit": 24,
+          "measure": "((sum(rejected_units))::numeric / NULLIF((sum(received_units))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 6,
+        "rows_returned": 5,
+        "rows_scanned": 26400,
+        "tool": "query_dp_mfg_002"
+      }
+    ]
+  }
+}

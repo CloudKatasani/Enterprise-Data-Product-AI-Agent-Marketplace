@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-MFG-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "8582ee023574045c153f6206c9f567f1bd8bf26f280d60891b3220444572dc41",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-MFG-002",
+  "product": {
+    "id": "DP-MFG-002",
+    "name": "Supplier Quality & Inbound Materials",
+    "version": "1.0.0",
+    "sensitivity": "confidential",
+    "contains_pii": false,
+    "grain": "one row per inbound receipt line"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-MFG-002:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_receipt_line_supply_chain",
+      "description": "Return certified measures for Supplier Quality & Inbound Materials by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[month,quarter,year]",
+        "slices": "array[enum[material_class,plant,supplier_tier,rejection_reason]]",
+        "kpi_ids": "array[enum[KPI-SUPPDEF-093,KPI-INBOTD-094,KPI-FILLRATE-095,KPI-PPV-096,KPI-INBLEAD-097]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 28000,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": true,
+    "max_rows_per_call": 28000,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-MFG-002",
+    "contract_version": "1.0.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "Supplier-level pricing is commercially confidential and must not leave procurement",
+    "Defect rates must be shared with a supplier only through supplier quality"
+  ]
+}

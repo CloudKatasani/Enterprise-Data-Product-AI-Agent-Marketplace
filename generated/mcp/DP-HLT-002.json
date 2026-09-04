@@ -3,7 +3,7 @@
     "from": "manifests/products/DP-HLT-002.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "e3907c67cfe5f6a0bf970d3e3e080796aefa5731f02cd93c3c8cb9c4c93a5cbe",
+    "manifest_hash": "8582ee023574045c153f6206c9f567f1bd8bf26f280d60891b3220444572dc41",
     "warning": "DO NOT EDIT"
   },
   "server": "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-002",

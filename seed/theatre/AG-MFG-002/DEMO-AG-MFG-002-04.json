@@ -1,0 +1,103 @@
+{
+  "agent_id": "AG-MFG-002",
+  "agent_name": "Supplier Quality Analyst",
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "CN leads on median inbound lead time at 44.10 days, 45.00% of the total across 4 country of origins.",
+    "narrative": "Ranked by the certified definition KPI-INBLEAD-097 over 26,400 rows in DP-MFG-002.",
+    "table": {
+      "columns": [
+        "country_of_origin",
+        "KPI-INBLEAD-097",
+        "observations"
+      ],
+      "rows": [
+        [
+          "CN",
+          44.1,
+          6960
+        ],
+        [
+          "MX",
+          18.1,
+          6600
+        ],
+        [
+          "DE",
+          17.9,
+          4800
+        ],
+        [
+          "US",
+          17.9,
+          8040
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 21.0,
+        "unit": "days",
+        "x": "country_of_origin",
+        "y": "KPI-INBLEAD-097"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "receipt_line_id",
+        "receipt_date",
+        "supplier_id",
+        "material_class",
+        "country_of_origin",
+        "region",
+        "lead_time_days"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-002-04",
+  "kpi_definitions": [
+    "KPI-INBLEAD-097"
+  ],
+  "notes": [],
+  "question": "Which countries of origin run the longest inbound lead time?",
+  "recorded_at": "2026-09-04T21:58:30.153348+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 13,
+    "rows_scanned": 26400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "country_of_origin",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by lead_time_days))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 11,
+        "rows_returned": 4,
+        "rows_scanned": 26400,
+        "tool": "query_dp_mfg_002"
+      }
+    ]
+  }
+}

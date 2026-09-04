@@ -60,7 +60,7 @@
   ],
   "notes": [],
   "question": "What is our churn rate this quarter and how does it compare to last?",
-  "recorded_at": "2026-09-04T16:01:34.832560+00:00",
+  "recorded_at": "2026-09-04T21:58:31.203864+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

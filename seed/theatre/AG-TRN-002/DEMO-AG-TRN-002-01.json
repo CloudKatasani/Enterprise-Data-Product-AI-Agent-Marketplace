@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TRN-002-1.0.0",
   "analysis_type": "efficiency_ranking",
   "answer": {
-    "headline": "flatbed leads on asset utilization at 73.54%, 33.43% of the total across 3 equipment types.",
+    "headline": "dry_van trails on asset utilization at 73.02%, 33.20% of the total across 3 equipment types.",
     "narrative": "Ranked by the certified definition KPI-ASSETUTIL-059 over 13,200 rows in DP-TRN-001.",
     "table": {
       "columns": [
@@ -14,9 +14,9 @@
       ],
       "rows": [
         [
-          "flatbed",
-          73.54,
-          2040
+          "dry_van",
+          73.02,
+          6900
         ],
         [
           "reefer",
@@ -24,9 +24,9 @@
           4260
         ],
         [
-          "dry_van",
-          73.02,
-          6900
+          "flatbed",
+          73.54,
+          2040
         ]
       ]
     },
@@ -66,12 +66,12 @@
   ],
   "notes": [],
   "question": "Which equipment types are utilised least?",
-  "recorded_at": "2026-09-04T16:01:35.136684+00:00",
+  "recorded_at": "2026-09-04T21:58:31.489980+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 7,
+    "latency_ms": 6,
     "rows_scanned": 13200,
     "runtime": "analytic",
     "tokens": {
@@ -89,7 +89,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_trn_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 4,
         "rows_returned": 3,
         "rows_scanned": 13200,
         "tool": "query_dp_trn_001"

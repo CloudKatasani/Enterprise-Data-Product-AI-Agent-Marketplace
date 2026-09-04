@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DELINQ-079
+  name: "30+ Delinquency Rate"
+  domain: finance
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Share of loan accounts thirty or more days past due at period end. Counted on accounts
+    rather than balances, because an account is the unit collections works.
+  numerator_expr: "count(distinct loan_id) filter (where delinquent_30d)"
+  denominator_expr: "count(distinct loan_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [product_type, region, risk_grade, vintage_band, channel]
+  unit: percent
+  direction: lower_is_better
+  target: 2.4
+  source_of_record: DP-BNK-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["arrears rate", "30 dpd"]

@@ -137,6 +137,11 @@ class Answer:
     # answer it describes.
     cost_display: str = ""
     confidence_display: str = ""
+    # Names of the measures the answer is about. The grounding validator strips
+    # them before reading numbers out of the prose: a digit inside a measure's
+    # own name — "30+ Delinquency Rate", "30-Day Readmission Rate" — is part of
+    # a label, not a figure the answer computed.
+    measure_names: list[str] = field(default_factory=list)
 
     def document(self) -> dict[str, Any]:
         return {

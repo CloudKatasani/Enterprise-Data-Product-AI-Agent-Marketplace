@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Which conditions drive emergency department utilization?",
-  "recorded_at": "2026-09-04T16:01:33.430984+00:00",
+  "recorded_at": "2026-09-04T21:58:29.244645+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 57,
+    "latency_ms": 60,
     "rows_scanned": 8060,
     "runtime": "analytic",
     "tokens": {
@@ -97,7 +97,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
         },
         "cost_class": "medium",
-        "duration_ms": 53,
+        "duration_ms": 57,
         "rows_returned": 5,
         "rows_scanned": 8060,
         "tool": "query_dp_hlt_001"

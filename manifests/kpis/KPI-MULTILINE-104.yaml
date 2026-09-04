@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-MULTILINE-104
+  name: "Multi-Line Penetration"
+  domain: customer
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Share of customers holding policies across more than one coverage line. Multi-line customers
+    lapse less, which is why the share is worth watching on its own.
+  numerator_expr: "count(distinct customer_id) filter (where multi_line)"
+  denominator_expr: "count(distinct customer_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, distribution_channel, tenure_band]
+  unit: percent
+  direction: higher_is_better
+  target: 34.0
+  source_of_record: DP-INS-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["multi-line share", "cross-line penetration"]

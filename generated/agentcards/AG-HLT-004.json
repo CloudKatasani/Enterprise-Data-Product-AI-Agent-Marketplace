@@ -1,0 +1,259 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-HLT-004.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "167e02345c32ec8285f5304cfc765db85af8e5597327726adfefc13e9424a4e8",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-HLT-004",
+    "name": "Care Capacity Analyst",
+    "industry": "healthcare",
+    "domain": "operations",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0050",
+      "team": "Care Operations",
+      "on_call": "pagerduty://care-capacity-agents"
+    }
+  },
+  "capability_statement": "Answers questions about overtime share, agency reliance, bed occupancy, hours per patient day and emergency boarding time.",
+  "business_value": {
+    "analyses": [
+      "driver_ranking",
+      "comparison",
+      "trend_segmented",
+      "cohort_comparison",
+      "distribution"
+    ],
+    "replaces": "The weekly staffing review and the agency spend reconciliation done against payroll.",
+    "personas": [
+      "nurse_staffing_director",
+      "care_operations_manager",
+      "chief_nursing_officer"
+    ]
+  },
+  "out_of_scope": [
+    "Rostering staff or filling an open shift",
+    "Opening or closing beds on a unit",
+    "Individual employee hours or performance"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-OTSHARE-098",
+      "kpi_name": "Overtime Share of Hours",
+      "unit": "percent",
+      "source_product": "DP-HLT-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "facility",
+        "region",
+        "unit_type",
+        "shift"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-AGENCY-099",
+      "kpi_name": "Agency Hours Share",
+      "unit": "percent",
+      "source_product": "DP-HLT-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "shift",
+        "unit_type",
+        "facility",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-OCCUP-100",
+      "kpi_name": "Bed Occupancy",
+      "unit": "percent",
+      "source_product": "DP-HLT-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "unit_type",
+        "facility",
+        "region",
+        "shift"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-HPPD-101",
+      "kpi_name": "Hours per Patient Day",
+      "unit": "hours",
+      "source_product": "DP-HLT-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "unit_type",
+        "facility",
+        "region",
+        "shift"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-BOARD-102",
+      "kpi_name": "Median Boarding Hours",
+      "unit": "hours",
+      "source_product": "DP-HLT-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "unit_type",
+        "facility",
+        "region",
+        "shift"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-HLT-003",
+      "columns": [
+        "unit_id",
+        "shift_start",
+        "facility",
+        "region",
+        "unit_type",
+        "shift",
+        "budgeted_hours",
+        "worked_hours",
+        "overtime_hours",
+        "agency_hours",
+        "census_patients",
+        "staffed_beds",
+        "licensed_beds",
+        "admissions",
+        "discharges",
+        "boarding_hours",
+        "call_offs",
+        "vacancy_count",
+        "filled_shift",
+        "float_pool_used"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-HLT-003:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-HLT-004/ask",
+    "required_scope": "agent:AG-HLT-004:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which shifts rely most on agency hours?",
+      "Which unit types carry the most agency reliance?",
+      "Where is overtime share highest by unit type?",
+      "Which unit types run closest to their staffed bed capacity?",
+      "Which unit types board admitted patients longest?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-HLT-004/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_hlt_003",
+        "scope": "dp:DP-HLT-003:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-HLT-003": "1.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "phi_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "d4d902819d5a9bda026dfb21c9d83860c91c2be8107923306cbc646be2af8b67"
+}

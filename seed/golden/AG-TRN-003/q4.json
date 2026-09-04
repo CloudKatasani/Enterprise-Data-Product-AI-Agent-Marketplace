@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "billed_revenue",
+        "carrier",
+        "customer",
+        "disputed_amount",
+        "invoice_date",
+        "invoice_line_id",
+        "lane",
+        "region"
+      ],
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "28800",
+    "top": "3.44",
+    "top_share": "70.20"
+  },
+  "exchange_id": "DEMO-AG-TRN-003-04",
+  "headline": "carrier_charlie leads on invoice dispute rate at 3.44%, 70.20% of the total across 3 carriers.",
+  "kpi_definitions": [
+    "KPI-DISPUTE-092"
+  ],
+  "narrative": "Ranked by the certified definition KPI-DISPUTE-092 over 28,800 rows in DP-TRN-002.",
+  "question": "Which carriers account for most disputed value?",
+  "rows_scanned": 28800,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "carrier",
+    "KPI-DISPUTE-092",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

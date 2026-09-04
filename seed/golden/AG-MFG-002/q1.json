@@ -1,0 +1,43 @@
+{
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "concentration",
+  "citations": [
+    {
+      "columns": [
+        "inspection_required",
+        "material_class",
+        "plant",
+        "receipt_date",
+        "receipt_line_id",
+        "received_units",
+        "region",
+        "rejected_units",
+        "supplier_id",
+        "supplier_tier"
+      ],
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "claims": {
+    "groups": "24",
+    "rows_scanned": "26400",
+    "top": "6.67",
+    "top_share": "14.67"
+  },
+  "exchange_id": "DEMO-AG-MFG-002-01",
+  "headline": "SUP-0001 leads on supplier defect rate at 6.67%, 14.67% of the total across 24 supplier ids.",
+  "kpi_definitions": [
+    "KPI-SUPPDEF-093"
+  ],
+  "narrative": "Ranked by the certified definition KPI-SUPPDEF-093 over 26,400 rows in DP-MFG-002.",
+  "question": "Which suppliers account for most of our rejected units?",
+  "rows_scanned": 26400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "supplier_id",
+    "KPI-SUPPDEF-093",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

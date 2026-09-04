@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-MTTR-086
+  name: "Mean Time to Restore"
+  domain: operations
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Mean minutes from an incident being raised to service being restored, over the incidents
+    opened in the period. Restoration, not root cause: the clock stops when users are served.
+  numerator_expr: "sum(resolved_minutes)"
+  denominator_expr: "count(distinct incident_id)"
+  grains_supported: [day, week, month]
+  slices_supported: [service_tier, region, team, deployment_ring]
+  unit: minutes
+  direction: lower_is_better
+  target: 60.0
+  source_of_record: DP-TCH-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["MTTR", "time to restore"]

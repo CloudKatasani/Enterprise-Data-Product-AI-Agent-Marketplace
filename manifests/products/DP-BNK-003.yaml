@@ -1,0 +1,299 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-BNK-003
+  name: "Lending & Credit Portfolio"
+  industry: banking
+  domain: finance
+  archetype: aggregate
+  tier: tier1
+  owner:
+    party_id: PTY-0034
+    team: "Credit Portfolio Analytics"
+    escalation: "#dp-lending"
+  certification: certified
+spec:
+  purpose: >-
+    Account-level position, yield, arrears and provisioning across the booked lending book, so
+    credit and finance read the same portfolio from the same definitions.
+  grain: "one row per loan account per month"
+  history_months: 36
+  known_limitations: >-
+    Collateral valuations refresh on an annual revaluation cycle and are carried forward between
+    them, so loan-to-value moves in steps rather than continuously. Bureau scores arrive monthly
+    and are as of the bureau's own extract date, not the position date. Accounts sold or
+    securitised leave the book at settlement and are not restated into prior periods.
+  upstream_sources: [SRC-LOAN-ORIGINATION, SRC-LOAN-SERVICING, SRC-COLLATERAL, SRC-CREDIT-BUREAU]
+  entities: [loan_account, customer, collateral]
+  certified_kpis: [KPI-PORTYIELD-078, KPI-DELINQ-079, KPI-NPL-080, KPI-PROVCOV-081, KPI-LTV-082]
+  columns:
+    - name: loan_id
+      type: string
+      business_name: "Loan Account ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Booked loan account. The grain of this product together with the position month.
+    - name: customer_id
+      type: string
+      business_name: "Customer ID"
+      nullable: false
+      classification: [identifier, pii]
+      sensitivity: restricted
+      description: >-
+        Pseudonymous borrower the account belongs to.
+    - name: as_of_month
+      type: date
+      business_name: "Position Month"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        First day of the month the position describes.
+    - name: product_type
+      type: string
+      business_name: "Product Type"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Credit product the account was booked under.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the booking branch or originating channel.
+    - name: segment
+      type: string
+      business_name: "Segment"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Customer segment the account is managed within.
+    - name: channel
+      type: string
+      business_name: "Origination Channel"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Channel the account was originated through.
+    - name: risk_grade
+      type: string
+      business_name: "Risk Grade"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Internal credit grade at the position date.
+    - name: vintage_band
+      type: string
+      business_name: "Vintage Band"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        How long ago the account was originated, banded.
+    - name: origination_date
+      type: date
+      business_name: "Origination Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Date the account was booked.
+    - name: outstanding_balance
+      type: number
+      business_name: "Outstanding Balance"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Principal outstanding at the position date.
+    - name: original_balance
+      type: number
+      business_name: "Original Balance"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Principal advanced at origination.
+    - name: interest_income
+      type: number
+      business_name: "Interest Income"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Interest recognised on the account in the month.
+    - name: days_past_due
+      type: integer
+      business_name: "Days Past Due"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Days the account has been in arrears at the position date, zero when current.
+    - name: delinquent_30d
+      type: boolean
+      business_name: "30+ Days Delinquent"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        True when the account is thirty or more days past due at the position date.
+    - name: defaulted
+      type: boolean
+      business_name: "Defaulted"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        True when the account has been classified as non-performing.
+    - name: charged_off_amount
+      type: number
+      business_name: "Charged Off Amount"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Balance written off in the month, zero where none.
+    - name: provision_amount
+      type: number
+      business_name: "Provision Amount"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Expected credit loss provision held against the account.
+    - name: collateral_value
+      type: number
+      business_name: "Collateral Value"
+      nullable: true
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Most recent valuation of the security held, null for unsecured lending.
+    - name: bureau_score
+      type: integer
+      business_name: "Bureau Score"
+      nullable: true
+      classification: [financial, pii]
+      sensitivity: restricted
+      description: >-
+        External credit score at the last bureau refresh, null where no match was returned.
+  contract:
+    version: 1.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "monthly by the fourth working day"
+        p95_minutes: 240
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.9
+      accuracy:
+        reconciliation_variance_pct: 0.1
+        against: "general_ledger"
+    deprecation_policy:
+      notice_days: 180
+      minimum_parallel_run_days: 90
+    support:
+      hours: "business"
+      p1_response_minutes: 30
+      on_call: "pagerduty://lending-dp"
+    classification:
+      max_sensitivity: restricted
+      contains_pii: true
+      residency: [US]
+    consumer_obligations:
+      - "No lending decision may be taken on this product without credit policy sign-off"
+      - "Bureau scores are licensed and must not be redistributed outside the institution"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 30 minutes of detection.
+  quality_rules:
+    - id: QR-BNK-003-01
+      dimension: completeness
+      column: loan_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-003-02
+      dimension: uniqueness
+      columns: [loan_id, as_of_month]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-BNK-003-03
+      dimension: freshness
+      rule: partition_completion_by
+      target: "30d"
+      tolerance_minutes: 240
+      severity: critical
+    - id: QR-BNK-003-04
+      dimension: validity
+      column: product_type
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-BNK-003-05
+      dimension: consistency
+      column: outstanding_balance
+      rule: non_negative
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-003-06
+      dimension: accuracy
+      column: interest_income
+      rule: reconciles_to_source
+      threshold_pct: 99.9
+      severity: critical
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 1200000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 93
+    planted_patterns:
+      - id: delinquency-vintage
+        description: >-
+            Delinquency concentrates in one origination vintage, and within it in one channel.
+      - id: yield-grade-inversion
+        description: >-
+            One product type earns a yield out of line with the risk grade mix behind it.
+      - id: under-provisioned-tail
+        description: >-
+            A tail of defaulted accounts in one region carries provision coverage below the book.
+  value_case:
+    business_outcome: >-
+      Credit and finance stop reconciling two arrears numbers and start arguing about the one
+      they agree on.
+    baseline:
+      method: "monthly credit pack assembled from three extracts and reconciled by hand"
+      analyst_hours_month: 190
+      captured: "2026-04"
+    benefit_model: "avoided_provision_surprise * probability_of_early_detection"
+    assumptions:
+      - text: "share of provisioning surprises visible a quarter earlier at account grain"
+        value: 35.0
+        unit: percent
+        sample_size: 12
+        source: "look-back on FY25 provisioning movements"
+        dated: 2026-04-30
+      - text: "average provisioning surprise per quarter"
+        value: 4200000.0
+        unit: usd
+        source: "FY25 credit committee minutes"
+        dated: 2026-02-01
+    attribution_confidence: low
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0034

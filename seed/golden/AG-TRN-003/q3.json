@@ -1,0 +1,46 @@
+{
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "accessorial_cost",
+        "billed_revenue",
+        "carrier",
+        "customer",
+        "fuel_surcharge",
+        "invoice_date",
+        "invoice_line_id",
+        "lane",
+        "linehaul_cost",
+        "mode",
+        "region",
+        "service_level",
+        "tendered_to_spot"
+      ],
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "claims": {
+    "groups": "6",
+    "rows_scanned": "28800",
+    "top": "18.40",
+    "top_share": "16.56"
+  },
+  "exchange_id": "DEMO-AG-TRN-003-03",
+  "headline": "LANE-NYC-BOS trails on freight margin rate at 18.40%, 16.56% of the total across 6 lanes.",
+  "kpi_definitions": [
+    "KPI-FRTMARGIN-088"
+  ],
+  "narrative": "Ranked by the certified definition KPI-FRTMARGIN-088 over 28,800 rows in DP-TRN-002.",
+  "question": "Which lanes are thinnest on freight margin?",
+  "rows_scanned": 28800,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "lane",
+    "KPI-FRTMARGIN-088",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

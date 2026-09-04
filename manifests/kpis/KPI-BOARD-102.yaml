@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-BOARD-102
+  name: "Median Boarding Hours"
+  domain: operations
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Median hours an admitted patient waits in the emergency department for an inpatient bed. The
+    median, because a single stranded patient would carry the mean for a whole shift.
+  expression: "percentile_cont(0.5) within group (order by boarding_hours)"
+  grains_supported: [day, week, month]
+  slices_supported: [facility, region, unit_type, shift]
+  unit: hours
+  direction: lower_is_better
+  target: 2.0
+  source_of_record: DP-HLT-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["boarding time", "admit wait"]

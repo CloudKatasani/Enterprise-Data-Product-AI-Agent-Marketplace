@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-RTL-003-1.0.0",
   "analysis_type": "performance_ranking",
   "answer": {
-    "headline": "toys leads on gross margin rate at 35.68%, 16.70% of the total across 6 categorys.",
+    "headline": "apparel trails on gross margin rate at 35.47%, 16.60% of the total across 6 categorys.",
     "narrative": "Ranked by the certified definition KPI-GMRATE-049 over 23,400 rows in DP-RTL-001.",
     "table": {
       "columns": [
@@ -14,24 +14,9 @@
       ],
       "rows": [
         [
-          "toys",
-          35.68,
-          2626
-        ],
-        [
-          "electronics",
-          35.66,
-          3920
-        ],
-        [
-          "beauty",
-          35.61,
-          2636
-        ],
-        [
-          "grocery",
-          35.6,
-          5128
+          "apparel",
+          35.47,
+          5242
         ],
         [
           "home",
@@ -39,9 +24,24 @@
           3848
         ],
         [
-          "apparel",
-          35.47,
-          5242
+          "grocery",
+          35.6,
+          5128
+        ],
+        [
+          "beauty",
+          35.61,
+          2636
+        ],
+        [
+          "electronics",
+          35.66,
+          3920
+        ],
+        [
+          "toys",
+          35.68,
+          2626
         ]
       ]
     },
@@ -80,12 +80,12 @@
   ],
   "notes": [],
   "question": "Which categories have the weakest gross margin rate?",
-  "recorded_at": "2026-09-04T16:01:33.923153+00:00",
+  "recorded_at": "2026-09-04T21:58:30.337665+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 10,
+    "latency_ms": 9,
     "rows_scanned": 23400,
     "runtime": "analytic",
     "tokens": {
@@ -103,7 +103,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "medium",
-        "duration_ms": 7,
+        "duration_ms": 6,
         "rows_returned": 6,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

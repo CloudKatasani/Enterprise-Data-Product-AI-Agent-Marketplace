@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-HLT-004",
+  "agent_name": "Care Capacity Analyst",
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "critical_care leads on bed occupancy at 95.17%, 28.55% of the total across 4 unit types.",
+    "narrative": "Ranked by the certified definition KPI-OCCUP-100 over 48,600 rows in DP-HLT-003.",
+    "table": {
+      "columns": [
+        "unit_type",
+        "KPI-OCCUP-100",
+        "observations"
+      ],
+      "rows": [
+        [
+          "critical_care",
+          95.17,
+          7020
+        ],
+        [
+          "telemetry",
+          86.68,
+          15660
+        ],
+        [
+          "emergency",
+          78.12,
+          9720
+        ],
+        [
+          "medical_surgical",
+          73.43,
+          16200
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 85.0,
+        "unit": "percent",
+        "x": "unit_type",
+        "y": "KPI-OCCUP-100"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T23:00:00+00:00",
+      "columns": [
+        "unit_id",
+        "shift_start",
+        "facility",
+        "region",
+        "unit_type",
+        "shift",
+        "census_patients",
+        "staffed_beds"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-004-04",
+  "kpi_definitions": [
+    "KPI-OCCUP-100"
+  ],
+  "notes": [],
+  "question": "Which unit types run closest to their staffed bed capacity?",
+  "recorded_at": "2026-09-04T21:58:29.349245+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 15,
+    "rows_scanned": 48600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "unit_type",
+          "limit": 24,
+          "measure": "((sum(census_patients))::numeric / NULLIF((sum(staffed_beds))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 11,
+        "rows_returned": 4,
+        "rows_scanned": 48600,
+        "tool": "query_dp_hlt_003"
+      }
+    ]
+  }
+}

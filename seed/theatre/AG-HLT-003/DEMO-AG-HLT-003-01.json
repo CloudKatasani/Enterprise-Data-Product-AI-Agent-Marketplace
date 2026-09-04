@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-HLT-003-1.0.0",
   "analysis_type": "gap_analysis",
   "answer": {
-    "headline": "med_reconciliation leads on care gap closure at 78.83%, 25.20% of the total across 4 measures.",
+    "headline": "hba1c trails on care gap closure at 77.25%, 24.69% of the total across 4 measures.",
     "narrative": "Ranked by the certified definition KPI-CAREGAP-039 over 31,200 rows in DP-HLT-001.",
     "table": {
       "columns": [
@@ -14,14 +14,9 @@
       ],
       "rows": [
         [
-          "med_reconciliation",
-          78.83,
-          7790
-        ],
-        [
-          "follow_up",
-          78.56,
-          7921
+          "hba1c",
+          77.25,
+          7666
         ],
         [
           "bp_control",
@@ -29,9 +24,14 @@
           7823
         ],
         [
-          "hba1c",
-          77.25,
-          7666
+          "follow_up",
+          78.56,
+          7921
+        ],
+        [
+          "med_reconciliation",
+          78.83,
+          7790
         ]
       ]
     },
@@ -71,7 +71,7 @@
   ],
   "notes": [],
   "question": "Which quality measures have the weakest care gap closure?",
-  "recorded_at": "2026-09-04T16:01:33.357406+00:00",
+  "recorded_at": "2026-09-04T21:58:29.169041+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",

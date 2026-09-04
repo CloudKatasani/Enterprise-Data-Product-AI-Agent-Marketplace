@@ -19,11 +19,11 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "18000",
-    "top": "4.45",
-    "top_share": "53.29"
+    "top": "2.75",
+    "top_share": "34.20"
   },
   "exchange_id": "DEMO-AG-BNK-001-04",
-  "headline": "affluent leads on deposit balance growth at 4.45%, 53.29% of the total across 3 segments.",
+  "headline": "wealth leads on deposit balance growth at 2.75%, 34.20% of the total across 3 product familys.",
   "kpi_definitions": [
     "KPI-DEPGRW-020"
   ],
@@ -33,7 +33,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "segment",
+    "product_family",
     "KPI-DEPGRW-020",
     "observations"
   ],

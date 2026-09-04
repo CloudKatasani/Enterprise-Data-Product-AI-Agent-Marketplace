@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-INS-004",
+  "agent_name": "Policyholder Relationship Analyst",
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "3-5y leads on digital enrolment rate at 70.85%, 30.75% of the total across 4 tenure bands.",
+    "narrative": "Ranked by the certified definition KPI-DIGITAL-105 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "tenure_band",
+        "KPI-DIGITAL-105",
+        "observations"
+      ],
+      "rows": [
+        [
+          "3-5y",
+          70.85,
+          710
+        ],
+        [
+          "6-10y",
+          70.29,
+          451
+        ],
+        [
+          "0-2y",
+          68.28,
+          763
+        ],
+        [
+          "10y+",
+          21.01,
+          476
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 62.0,
+        "unit": "percent",
+        "x": "tenure_band",
+        "y": "KPI-DIGITAL-105"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band",
+        "digital_registered"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-004-02",
+  "kpi_definitions": [
+    "KPI-DIGITAL-105"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "How does digital enrolment differ by tenure band?",
+  "recorded_at": "2026-09-04T21:58:29.801771+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 77,
+    "rows_scanned": 2400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "tenure_band",
+          "limit": 24,
+          "measure": "((count(distinct customer_id) filter (where digital_registered))::numeric / NULLIF((count(distinct customer_id))::numeric, 0) * 100)",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 74,
+        "rows_returned": 4,
+        "rows_scanned": 2400,
+        "tool": "query_dp_ins_003"
+      }
+    ]
+  }
+}

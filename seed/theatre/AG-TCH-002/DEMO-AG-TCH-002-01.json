@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "How has the DAU to MAU ratio moved month by month?",
-  "recorded_at": "2026-09-04T16:01:34.715465+00:00",
+  "recorded_at": "2026-09-04T21:58:31.019113+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 38,
+    "latency_ms": 36,
     "rows_scanned": 50400,
     "runtime": "analytic",
     "tokens": {

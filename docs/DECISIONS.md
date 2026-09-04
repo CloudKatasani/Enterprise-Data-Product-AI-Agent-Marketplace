@@ -458,3 +458,52 @@ Two runtime defects surfaced, both from the new product's shape:
   one the coverage map happened to list first. The slice matcher now falls back to the noun the
   column name ends in, after exact matches, so a product carrying both `category` and
   `entry_category` still resolves the bare word to the bare column.
+
+### D-039 — Six more data products, one per gap in the industry and domain grid (2026-09-04)
+**Context** Sixteen products covered nine industries unevenly: three industries had a single
+product, and the `finance` domain — which two agents already answer in — had no product of its
+own at all. The catalogue's two browse facets are industry and business domain, and both had
+holes a consumer would hit on their first filter.
+**Decision** One product per gap, each with its own grain, its own upstream sources and its own
+certified measures, so none of them is a reslice of a product that already exists:
+
+| Product | Industry | Domain | Grain |
+|---|---|---|---|
+| DP-BNK-003 Lending & Credit Portfolio | banking | finance | loan account per month |
+| DP-TCH-002 Service Reliability & Incident | technology | operations | service per hour |
+| DP-TRN-002 Freight Cost & Margin | transportation | finance | carrier invoice line |
+| DP-MFG-002 Supplier Quality & Inbound Materials | manufacturing | supply_chain | receipt line |
+| DP-HLT-003 Workforce & Care Capacity | healthcare | operations | unit per shift |
+| DP-INS-003 Policyholder & Distribution 360 | insurance | customer | customer per month |
+
+Every industry now holds at least two products and every business domain at least one. The
+thirty measures they certify are covered by six agents written against them, so the estate gains
+products without gaining uncovered KPIs: 107 of 107 are answerable.
+
+**Consequence** Four defects surfaced, each from a shape the estate had not carried before:
+
+* A ranking always ordered descending, so a question asking which lane was thinnest was answered
+  with the fattest, and one asking where provision coverage was weakest named the strongest
+  region. The order now follows the question — and, for a quality word rather than a magnitude
+  word, the KPI's own declared direction, because the worst delinquency rate is the highest and
+  the worst margin is the lowest. Eight existing exchanges were answering the wrong end.
+* A slice was matched on its exact name or its trailing noun only, so "which vintages" against a
+  column named `vintage_band` matched nothing and silently answered by whichever slice the
+  coverage map listed first. It now falls back to any word of the column name, after exact
+  matches. Three more existing exchanges were answering a dimension nobody asked about.
+* Grounding read the `30` in "30+ Delinquency Rate" as an uncited figure. A measure's name is a
+  label, so its digits are subtracted from what the prose is held to — computed from the names
+  rather than cut out of the text, because cutting `SAIDI` out of `KPI-SAIDI-061` leaves `-061`
+  behind and invents a number that was never written.
+* The boundary matcher's action verbs had no word for the actions these domains ask for. "Award
+  the lane to a different carrier" and "roll back the release" were planned as questions rather
+  than refused as instructions. The vocabulary now carries them.
+
+Three source-system codes introduced with DP-RTL-003 were in no vocabulary. They are registered,
+and `validate:manifests` now fails on an upstream source outside the `source_system` taxonomy —
+the mesh draws its source-overlap edges from these codes, so one that is in no vocabulary is an
+edge between two products that nothing can name.
+
+Two generator calibrations were made against the measures rather than beside them: lending
+delinquency was set to land near its own 2.4% target instead of at 10%, and freight margin was
+reading 26% because fuel surcharge was billed as revenue but never counted as cost.

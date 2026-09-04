@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ERRRATE-083
+  name: "Service Error Rate"
+  domain: operations
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Failed requests over total requests served. The denominator is requests, not sessions, so a
+    retry storm reads as the load it actually places on the service.
+  numerator_expr: "sum(error_count)"
+  denominator_expr: "sum(request_count)"
+  grains_supported: [day, week, month]
+  slices_supported: [service_tier, region, team, deployment_ring]
+  unit: percent
+  direction: lower_is_better
+  target: 0.5
+  source_of_record: DP-TCH-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["error rate", "failure rate"]

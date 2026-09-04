@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-MFG-002
+  name: "Supplier Quality Analyst"
+  industry: manufacturing
+  domain: supply_chain
+  owner:
+    party_id: PTY-0046
+    team: "Supplier Quality"
+    on_call: "pagerduty://supplier-quality-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about supplier defect rate, inbound on-time delivery, fill rate, purchase
+    price variance and inbound lead time.
+  business_value_block:
+    analyses: [concentration, performance_ranking, comparison, trend_segmented, cohort_comparison]
+    replaces: >-
+      The quarterly supplier scorecard built by hand from the ERP and inspection extracts.
+    personas: [supplier_quality_engineer, category_buyer, plant_materials_manager]
+  out_of_scope:
+    - "Placing, changing or cancelling a purchase order"
+    - "Approving a supplier corrective action or a deviation"
+    - "Individual receipt line or inspection record enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-MFG-002/system@v1
+  data_products:
+    - product_id: DP-MFG-002
+      columns: [receipt_line_id, purchase_order_id, supplier_id, receipt_date, material_class, plant, region, supplier_tier, country_of_origin, ordered_units, received_units, accepted_units, rejected_units, rejection_reason, on_time, inspection_required, inspection_passed, unit_cost, standard_cost, lead_time_days]
+      access: read
+  tool_bindings:
+    - tool: query_dp_mfg_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-MFG-002"
+      scope: "dp:DP-MFG-002:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-SUPPDEF-093
+      source_product: DP-MFG-002
+      columns_used: [receipt_line_id, receipt_date, supplier_id, supplier_tier, material_class, plant, region, received_units, rejected_units, inspection_required]
+      grains: [month, quarter, year]
+      slices: [supplier_id, supplier_tier, material_class, plant, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-INBOTD-094
+      source_product: DP-MFG-002
+      columns_used: [receipt_line_id, receipt_date, supplier_id, supplier_tier, material_class, plant, region, country_of_origin, on_time]
+      grains: [month, quarter, year]
+      slices: [supplier_id, supplier_tier, material_class, country_of_origin, region]
+      analysis_depth: explain
+    - kpi_id: KPI-FILLRATE-095
+      source_product: DP-MFG-002
+      columns_used: [receipt_line_id, receipt_date, supplier_id, supplier_tier, material_class, plant, ordered_units, received_units]
+      grains: [month, quarter, year]
+      slices: [supplier_id, supplier_tier, material_class, plant]
+      analysis_depth: compare
+    - kpi_id: KPI-PPV-096
+      source_product: DP-MFG-002
+      columns_used: [receipt_line_id, receipt_date, supplier_id, material_class, plant, region, unit_cost, standard_cost, received_units]
+      grains: [month, quarter, year]
+      slices: [material_class, supplier_id, plant, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-INBLEAD-097
+      source_product: DP-MFG-002
+      columns_used: [receipt_line_id, receipt_date, supplier_id, material_class, country_of_origin, region, lead_time_days]
+      grains: [month, quarter, year]
+      slices: [country_of_origin, material_class, supplier_id, region]
+      analysis_depth: compare
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-MFG-002-01
+      ordinal: 1
+      question: "Which suppliers account for most of our rejected units?"
+      kpi_class: KPI-SUPPDEF-093
+      analysis_type: concentration
+      expected_shape:
+        headline: >-
+          the suppliers carrying most of the defects, and their share of the total
+        visual: pareto
+        table_columns: [supplier_id, defect_rate_pct, received_units]
+        must_cite: [DP-MFG-002, KPI-SUPPDEF-093]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-002-02
+      ordinal: 2
+      question: "Which material classes have the worst defect rate?"
+      kpi_class: KPI-SUPPDEF-093
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the commodity classes rejecting most units, and the spread across them
+        visual: bar
+        table_columns: [material_class, defect_rate_pct, received_units]
+        must_cite: [DP-MFG-002, KPI-SUPPDEF-093]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-002-03
+      ordinal: 3
+      question: "How does inbound on-time delivery differ by country of origin?"
+      kpi_class: KPI-INBOTD-094
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the origins arriving on promise and the ones that do not, and the gap between them
+        visual: bar
+        table_columns: [country_of_origin, on_time_rate_pct, receipt_lines]
+        must_cite: [DP-MFG-002, KPI-INBOTD-094]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-002-04
+      ordinal: 4
+      question: "Which countries of origin run the longest inbound lead time?"
+      kpi_class: KPI-INBLEAD-097
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the origins taking longest from order to receipt, and how far apart they sit
+        visual: bar
+        table_columns: [country_of_origin, median_lead_time_days, receipt_lines]
+        must_cite: [DP-MFG-002, KPI-INBLEAD-097]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-002-05
+      ordinal: 5
+      question: "Where is purchase price variance building by material class?"
+      kpi_class: KPI-PPV-096
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the commodity classes drifting furthest from standard cost, and by how much
+        visual: bar
+        table_columns: [material_class, purchase_price_variance, received_units]
+        must_cite: [DP-MFG-002, KPI-PPV-096]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-MFG-002/
+  value_case:
+    benefit_model: "avoided_supplier_scorecard_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per supplier quality question"
+        value: 52
+        unit: minutes
+        sample_size: 16
+        source: "supplier quality time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0046

@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-POLPERCUST-103
+  name: "Policies per Customer"
+  domain: customer
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Mean number of in-force policies held per customer at period end. The measure a distribution
+    strategy is trying to move.
+  numerator_expr: "sum(policies_held)"
+  denominator_expr: "count(distinct customer_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, distribution_channel, tenure_band]
+  unit: count
+  direction: higher_is_better
+  target: 1.8
+  source_of_record: DP-INS-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["policy density", "products per policyholder"]

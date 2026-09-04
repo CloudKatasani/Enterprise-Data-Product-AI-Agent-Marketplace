@@ -1,0 +1,101 @@
+{
+  "agent_id": "AG-INS-004",
+  "agent_name": "Policyholder Relationship Analyst",
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "preferred leads on cross-sell acceptance at 14.50%, 46.09% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-XSELL-106 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-XSELL-106",
+        "observations"
+      ],
+      "rows": [
+        [
+          "preferred",
+          14.5,
+          697
+        ],
+        [
+          "mass",
+          9.36,
+          1210
+        ],
+        [
+          "commercial",
+          7.6,
+          493
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 11.0,
+        "unit": "percent",
+        "x": "segment",
+        "y": "KPI-XSELL-106"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band",
+        "cross_sell_eligible",
+        "cross_sell_accepted"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-004-05",
+  "kpi_definitions": [
+    "KPI-XSELL-106"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Where is cross-sell acceptance strongest by segment?",
+  "recorded_at": "2026-09-04T21:58:30.063619+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 90,
+    "rows_scanned": 2400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((count(distinct customer_id) filter (where cross_sell_accepted))::numeric / NULLIF((count(distinct customer_id) filter (where cross_sell_eligible))::numeric, 0) * 100)",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 87,
+        "rows_returned": 3,
+        "rows_scanned": 2400,
+        "tool": "query_dp_ins_003"
+      }
+    ]
+  }
+}

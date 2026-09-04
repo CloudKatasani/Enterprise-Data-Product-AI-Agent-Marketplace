@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-HLT-003-1.0.0",
   "analysis_type": "compliance_ranking",
   "answer": {
-    "headline": "analgesia leads on therapeutic substitution rate at 24.26%, 21.97% of the total across 5 therapeutic classs.",
+    "headline": "immunology trails on therapeutic substitution rate at 19.72%, 17.86% of the total across 5 therapeutic classs.",
     "narrative": "Ranked by the certified definition KPI-SUBST-045 over 30,600 rows in DP-HLT-002.",
     "table": {
       "columns": [
@@ -14,18 +14,8 @@
       ],
       "rows": [
         [
-          "analgesia",
-          24.26,
-          6120
-        ],
-        [
-          "cardiovascular",
-          22.41,
-          6480
-        ],
-        [
-          "oncology",
-          22.38,
+          "immunology",
+          19.72,
           4320
         ],
         [
@@ -34,9 +24,19 @@
           9360
         ],
         [
-          "immunology",
-          19.72,
+          "oncology",
+          22.38,
           4320
+        ],
+        [
+          "cardiovascular",
+          22.41,
+          6480
+        ],
+        [
+          "analgesia",
+          24.26,
+          6120
         ]
       ]
     },
@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Where is therapeutic substitution weakest by therapeutic class?",
-  "recorded_at": "2026-09-04T16:01:33.474140+00:00",
+  "recorded_at": "2026-09-04T21:58:29.285819+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 11,
+    "latency_ms": 10,
     "rows_scanned": 30600,
     "runtime": "analytic",
     "tokens": {

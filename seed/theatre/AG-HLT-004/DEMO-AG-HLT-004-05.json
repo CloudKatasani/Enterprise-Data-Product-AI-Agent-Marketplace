@@ -1,0 +1,103 @@
+{
+  "agent_id": "AG-HLT-004",
+  "agent_name": "Care Capacity Analyst",
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "critical_care leads on median boarding hours at 1.93 hours, 29.02% of the total across 4 unit types.",
+    "narrative": "Ranked by the certified definition KPI-BOARD-102 over 48,600 rows in DP-HLT-003.",
+    "table": {
+      "columns": [
+        "unit_type",
+        "KPI-BOARD-102",
+        "observations"
+      ],
+      "rows": [
+        [
+          "critical_care",
+          1.93,
+          7020
+        ],
+        [
+          "telemetry",
+          1.67,
+          15660
+        ],
+        [
+          "emergency",
+          1.53,
+          9720
+        ],
+        [
+          "medical_surgical",
+          1.52,
+          16200
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 2.0,
+        "unit": "hours",
+        "x": "unit_type",
+        "y": "KPI-BOARD-102"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T23:00:00+00:00",
+      "columns": [
+        "unit_id",
+        "shift_start",
+        "facility",
+        "region",
+        "unit_type",
+        "shift",
+        "boarding_hours"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-004-05",
+  "kpi_definitions": [
+    "KPI-BOARD-102"
+  ],
+  "notes": [],
+  "question": "Which unit types board admitted patients longest?",
+  "recorded_at": "2026-09-04T21:58:29.376023+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 25,
+    "rows_scanned": 48600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "unit_type",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by boarding_hours))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 22,
+        "rows_returned": 4,
+        "rows_scanned": 48600,
+        "tool": "query_dp_hlt_003"
+      }
+    ]
+  }
+}

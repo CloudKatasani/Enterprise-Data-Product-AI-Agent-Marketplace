@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "event_analysis",
+  "citations": [
+    {
+      "columns": [
+        "deployment_ring",
+        "error_count",
+        "observed_hour",
+        "region",
+        "request_count",
+        "service_id",
+        "service_tier",
+        "team"
+      ],
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "claims": {
+    "current": "0.35",
+    "delta": "0.00",
+    "groups": "15",
+    "rows_scanned": "30240"
+  },
+  "exchange_id": "DEMO-AG-TCH-003-02",
+  "headline": "Service Error Rate is 0.35% for the day ending 2026-09-04, flat on the prior day.",
+  "kpi_definitions": [
+    "KPI-ERRRATE-083"
+  ],
+  "narrative": "Computed from DP-TCH-002 under the certified definition KPI-ERRRATE-083, across 15 days and 30,240 rows.",
+  "question": "How has the error rate moved day by day?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-ERRRATE-083",
+    "observations"
+  ],
+  "visual_type": "line"
+}

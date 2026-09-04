@@ -18,6 +18,11 @@ things; demanding a citation for the ``001`` in a product id would make the
 check noise, and a check that cries wolf gets turned off. So label-shaped tokens
 are removed before any number is read out of the text.
 
+A measure's own name is a label too. "30+ Delinquency Rate" and "30-Day
+Readmission Rate" carry a number that describes the definition rather than the
+data, and an answer that mentions the measure it computed has not thereby made
+a claim about thirty. The names the answer names are removed first.
+
 The failure mode this guards against is specific and worth naming: a model that
 writes a fluent sentence containing a figure it did not compute. That sentence
 is the most dangerous output the system can produce, because it is the most
@@ -93,12 +98,29 @@ def _renderings(value: Decimal) -> set[str]:
     }
 
 
+def _label_numbers(names: list[str]) -> set[str]:
+    """Numbers that belong to a measure's name rather than to its value.
+
+    Taken from the names rather than cut out of the prose. Cutting a name out
+    of the text splits the identifiers it appears inside — ``KPI-SAIDI-061``
+    becomes ``KPI- -061`` — and hands the scanner a number that was never
+    written. Subtracting the name's own digits from what the prose states
+    cannot do that.
+    """
+    return {
+        match.replace(",", "")
+        for name in names
+        for match in NUMERIC.findall(name)
+    }
+
+
 def check(answer: Answer) -> Verdict:
     claimed: set[str] = set()
     for value in answer.claims.values():
         claimed |= _renderings(value)
 
     stated = numbers_in(answer.headline) | numbers_in(answer.narrative)
+    stated -= _label_numbers(answer.measure_names)
     uncited = sorted(
         number
         for number in stated

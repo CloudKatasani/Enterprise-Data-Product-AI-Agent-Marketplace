@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "concentration",
+  "citations": [
+    {
+      "columns": [
+        "accessorial_cost",
+        "carrier",
+        "fuel_surcharge",
+        "invoice_date",
+        "invoice_line_id",
+        "lane",
+        "linehaul_cost",
+        "mode",
+        "region"
+      ],
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "claims": {
+    "groups": "6",
+    "rows_scanned": "28800",
+    "top": "7.90",
+    "top_share": "27.36"
+  },
+  "exchange_id": "DEMO-AG-TRN-003-01",
+  "headline": "LANE-CHI-ATL leads on accessorial share of spend at 7.90%, 27.36% of the total across 6 lanes.",
+  "kpi_definitions": [
+    "KPI-ACCESSSHARE-090"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ACCESSSHARE-090 over 28,800 rows in DP-TRN-002.",
+  "question": "Which lanes carry the highest accessorial share of spend?",
+  "rows_scanned": 28800,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "lane",
+    "KPI-ACCESSSHARE-090",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

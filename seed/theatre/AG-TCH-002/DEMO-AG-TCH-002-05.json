@@ -60,12 +60,12 @@
   ],
   "notes": [],
   "question": "How has net revenue retention moved quarter by quarter?",
-  "recorded_at": "2026-09-04T16:01:34.810376+00:00",
+  "recorded_at": "2026-09-04T21:58:31.112779+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 20,
+    "latency_ms": 18,
     "rows_scanned": 50400,
     "runtime": "analytic",
     "tokens": {
@@ -83,7 +83,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 17,
+        "duration_ms": 16,
         "rows_returned": 2,
         "rows_scanned": 50400,
         "tool": "query_dp_tch_001"

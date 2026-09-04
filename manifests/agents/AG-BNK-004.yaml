@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-BNK-004
+  name: "Credit Portfolio Analyst"
+  industry: banking
+  domain: finance
+  owner:
+    party_id: PTY-0034
+    team: "Credit Portfolio Analytics"
+    on_call: "pagerduty://lending-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about portfolio yield, delinquency, non-performing balance, provision
+    coverage and loan to value across the lending book.
+  business_value_block:
+    analyses: [performance_ranking, comparison, trend_segmented, cohort_comparison, gap_analysis]
+    replaces: >-
+      The monthly credit pack and the arrears cut each portfolio manager rebuilds from it.
+    personas: [credit_portfolio_manager, finance_business_partner, chief_risk_officer]
+  out_of_scope:
+    - "Lending decisions or credit limit changes"
+    - "Collections contact or forbearance approval"
+    - "Individual borrower or account enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-BNK-004/system@v1
+  data_products:
+    - product_id: DP-BNK-003
+      columns: [loan_id, as_of_month, product_type, region, segment, channel, risk_grade, vintage_band, outstanding_balance, original_balance, interest_income, days_past_due, delinquent_30d, defaulted, charged_off_amount, provision_amount, collateral_value]
+      access: read
+  tool_bindings:
+    - tool: query_dp_bnk_003
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-BNK-003"
+      scope: "dp:DP-BNK-003:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-PORTYIELD-078
+      source_product: DP-BNK-003
+      columns_used: [loan_id, as_of_month, product_type, region, risk_grade, segment, interest_income, outstanding_balance]
+      grains: [month, quarter, year]
+      slices: [product_type, region, risk_grade, segment]
+      analysis_depth: explain
+    - kpi_id: KPI-DELINQ-079
+      source_product: DP-BNK-003
+      columns_used: [loan_id, as_of_month, product_type, region, risk_grade, vintage_band, channel, delinquent_30d]
+      grains: [month, quarter, year]
+      slices: [product_type, region, risk_grade, vintage_band, channel]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-NPL-080
+      source_product: DP-BNK-003
+      columns_used: [loan_id, as_of_month, product_type, region, risk_grade, vintage_band, outstanding_balance, defaulted]
+      grains: [month, quarter, year]
+      slices: [product_type, region, risk_grade, vintage_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-PROVCOV-081
+      source_product: DP-BNK-003
+      columns_used: [loan_id, as_of_month, product_type, region, risk_grade, outstanding_balance, defaulted, provision_amount]
+      grains: [month, quarter, year]
+      slices: [product_type, region, risk_grade]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-LTV-082
+      source_product: DP-BNK-003
+      columns_used: [loan_id, as_of_month, product_type, region, risk_grade, vintage_band, outstanding_balance, collateral_value]
+      grains: [month, quarter, year]
+      slices: [product_type, region, risk_grade, vintage_band]
+      analysis_depth: compare
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 7000
+    cost_per_answer_usd: 0.08
+  demo_exchanges:
+    - id: DEMO-AG-BNK-004-01
+      ordinal: 1
+      question: "Which origination vintages carry the worst delinquency?"
+      kpi_class: KPI-DELINQ-079
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the vintages running hardest into arrears, and the spread across the book
+        visual: bar
+        table_columns: [vintage_band, delinquency_rate_pct, accounts]
+        must_cite: [DP-BNK-003, KPI-DELINQ-079]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-BNK-004/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-004-02
+      ordinal: 2
+      question: "How does delinquency differ across origination channels?"
+      kpi_class: KPI-DELINQ-079
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the channels above and below the book arrears rate, and the gap between the ends
+        visual: bar
+        table_columns: [channel, delinquency_rate_pct, accounts]
+        must_cite: [DP-BNK-003, KPI-DELINQ-079]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-BNK-004/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-004-03
+      ordinal: 3
+      question: "Which product types earn the most portfolio yield?"
+      kpi_class: KPI-PORTYIELD-078
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the products earning most on the balance they carry, and how far apart they sit
+        visual: bar
+        table_columns: [product_type, portfolio_yield_pct, outstanding_balance]
+        must_cite: [DP-BNK-003, KPI-PORTYIELD-078]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-BNK-004/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-004-04
+      ordinal: 4
+      question: "Where is provision coverage weakest by region?"
+      kpi_class: KPI-PROVCOV-081
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the regions holding least against their defaulted balance, and the distance to the rest
+        visual: bar
+        table_columns: [region, provision_coverage_pct, defaulted_balance]
+        must_cite: [DP-BNK-003, KPI-PROVCOV-081]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-BNK-004/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-004-05
+      ordinal: 5
+      question: "How has the non-performing loan ratio moved quarter by quarter?"
+      kpi_class: KPI-NPL-080
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of non-performing balance across the observed quarters
+        visual: line
+        table_columns: [period, npl_ratio_pct, outstanding_balance]
+        must_cite: [DP-BNK-003, KPI-NPL-080]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-BNK-004/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-BNK-004/
+  value_case:
+    benefit_model: "avoided_credit_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per credit portfolio question"
+        value: 75
+        unit: minutes
+        sample_size: 10
+        source: "credit analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0034

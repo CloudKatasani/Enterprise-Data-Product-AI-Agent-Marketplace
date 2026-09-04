@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-HLT-004
+  name: "Care Capacity Analyst"
+  industry: healthcare
+  domain: operations
+  owner:
+    party_id: PTY-0050
+    team: "Care Operations"
+    on_call: "pagerduty://care-capacity-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about overtime share, agency reliance, bed occupancy, hours per patient
+    day and emergency boarding time.
+  business_value_block:
+    analyses: [driver_ranking, comparison, trend_segmented, cohort_comparison, distribution]
+    replaces: >-
+      The weekly staffing review and the agency spend reconciliation done against payroll.
+    personas: [nurse_staffing_director, care_operations_manager, chief_nursing_officer]
+  out_of_scope:
+    - "Rostering staff or filling an open shift"
+    - "Opening or closing beds on a unit"
+    - "Individual employee hours or performance"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-HLT-004/system@v1
+  data_products:
+    - product_id: DP-HLT-003
+      columns: [unit_id, shift_start, facility, region, unit_type, shift, budgeted_hours, worked_hours, overtime_hours, agency_hours, census_patients, staffed_beds, licensed_beds, admissions, discharges, boarding_hours, call_offs, vacancy_count, filled_shift, float_pool_used]
+      access: read
+  tool_bindings:
+    - tool: query_dp_hlt_003
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-003"
+      scope: "dp:DP-HLT-003:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-OTSHARE-098
+      source_product: DP-HLT-003
+      columns_used: [unit_id, shift_start, facility, region, unit_type, shift, worked_hours, overtime_hours, filled_shift]
+      grains: [day, week, month]
+      slices: [facility, region, unit_type, shift]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-AGENCY-099
+      source_product: DP-HLT-003
+      columns_used: [unit_id, shift_start, facility, region, unit_type, shift, worked_hours, agency_hours, float_pool_used]
+      grains: [day, week, month]
+      slices: [shift, unit_type, facility, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-OCCUP-100
+      source_product: DP-HLT-003
+      columns_used: [unit_id, shift_start, facility, region, unit_type, shift, census_patients, staffed_beds]
+      grains: [day, week, month]
+      slices: [unit_type, facility, region, shift]
+      analysis_depth: explain
+    - kpi_id: KPI-HPPD-101
+      source_product: DP-HLT-003
+      columns_used: [unit_id, shift_start, facility, region, unit_type, shift, worked_hours, census_patients]
+      grains: [day, week, month]
+      slices: [unit_type, facility, region, shift]
+      analysis_depth: compare
+    - kpi_id: KPI-BOARD-102
+      source_product: DP-HLT-003
+      columns_used: [unit_id, shift_start, facility, region, unit_type, shift, boarding_hours]
+      grains: [day, week, month]
+      slices: [unit_type, facility, region, shift]
+      analysis_depth: compare
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, phi_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-HLT-004-01
+      ordinal: 1
+      question: "Which shifts rely most on agency hours?"
+      kpi_class: KPI-AGENCY-099
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the shifts leaning hardest on contract labour, and the gap to the rest
+        visual: bar
+        table_columns: [shift, agency_share_pct, worked_hours]
+        must_cite: [DP-HLT-003, KPI-AGENCY-099]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-004/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-004-02
+      ordinal: 2
+      question: "Which unit types carry the most agency reliance?"
+      kpi_class: KPI-AGENCY-099
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the unit types with the highest agency share, and how far apart they sit
+        visual: bar
+        table_columns: [unit_type, agency_share_pct, worked_hours]
+        must_cite: [DP-HLT-003, KPI-AGENCY-099]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-004/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-004-03
+      ordinal: 3
+      question: "Where is overtime share highest by unit type?"
+      kpi_class: KPI-OTSHARE-098
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the unit types paying most overtime against hours worked
+        visual: bar
+        table_columns: [unit_type, overtime_share_pct, worked_hours]
+        must_cite: [DP-HLT-003, KPI-OTSHARE-098]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-004/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-004-04
+      ordinal: 4
+      question: "Which unit types run closest to their staffed bed capacity?"
+      kpi_class: KPI-OCCUP-100
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the unit types running fullest against the beds they can staff
+        visual: bar
+        table_columns: [unit_type, occupancy_pct, staffed_beds]
+        must_cite: [DP-HLT-003, KPI-OCCUP-100]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-004/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-004-05
+      ordinal: 5
+      question: "Which unit types board admitted patients longest?"
+      kpi_class: KPI-BOARD-102
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the unit types holding admitted patients longest before a bed
+        visual: bar
+        table_columns: [unit_type, median_boarding_hours, shifts]
+        must_cite: [DP-HLT-003, KPI-BOARD-102]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-004/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-HLT-004/
+  value_case:
+    benefit_model: "avoided_staffing_review_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per staffing or capacity question"
+        value: 58
+        unit: minutes
+        sample_size: 15
+        source: "care operations time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0050

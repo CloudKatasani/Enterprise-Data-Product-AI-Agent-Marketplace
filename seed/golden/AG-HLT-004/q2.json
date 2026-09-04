@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "agency_hours",
+        "facility",
+        "float_pool_used",
+        "region",
+        "shift",
+        "shift_start",
+        "unit_id",
+        "unit_type",
+        "worked_hours"
+      ],
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "48600",
+    "top": "13.14",
+    "top_share": "40.96"
+  },
+  "exchange_id": "DEMO-AG-HLT-004-02",
+  "headline": "critical_care leads on agency hours share at 13.14%, 40.96% of the total across 4 unit types.",
+  "kpi_definitions": [
+    "KPI-AGENCY-099"
+  ],
+  "narrative": "Ranked by the certified definition KPI-AGENCY-099 over 48,600 rows in DP-HLT-003.",
+  "question": "Which unit types carry the most agency reliance?",
+  "rows_scanned": 48600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "unit_type",
+    "KPI-AGENCY-099",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

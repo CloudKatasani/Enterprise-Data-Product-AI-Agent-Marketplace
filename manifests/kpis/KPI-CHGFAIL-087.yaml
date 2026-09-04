@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CHGFAIL-087
+  name: "Change Failure Rate"
+  domain: operations
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Share of deployments that caused a degradation needing a rollback or a fix forward, over all
+    deployments in the period.
+  numerator_expr: "count(*) filter (where change_failed)"
+  denominator_expr: "count(*) filter (where change_deployed)"
+  grains_supported: [day, week, month]
+  slices_supported: [service_tier, region, team, deployment_ring]
+  unit: percent
+  direction: lower_is_better
+  target: 8.0
+  source_of_record: DP-TCH-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["CFR", "failed change rate"]

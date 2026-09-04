@@ -4,34 +4,29 @@
   "agent_version_id": "AGV-AG-INS-001-1.0.0",
   "analysis_type": "programme_eval",
   "answer": {
-    "headline": "auto_liability leads on average claim severity at $784,221.50, 28.09% of the total across 4 coverage lines.",
+    "headline": "low leads on average claim severity at $772,556.89, 37.27% of the total across 3 complexity bands.",
     "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,340 rows in DP-INS-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
-        "coverage_line",
+        "complexity_band",
         "KPI-AVGSEV-028",
         "observations"
       ],
       "rows": [
         [
-          "auto_liability",
-          784221.5,
-          1054
+          "low",
+          772556.89,
+          2108
         ],
         [
-          "auto_physical_damage",
-          740196.15,
-          1457
+          "high",
+          676180.97,
+          868
         ],
         [
-          "property",
-          648341.72,
-          992
-        ],
-        [
-          "general_liability",
-          619341.86,
-          837
+          "medium",
+          623976.81,
+          1364
         ]
       ]
     },
@@ -40,7 +35,7 @@
         "direction": "lower_is_better",
         "target": null,
         "unit": "currency",
-        "x": "coverage_line",
+        "x": "complexity_band",
         "y": "KPI-AVGSEV-028"
       },
       "type": "bar"
@@ -73,12 +68,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Did the new triage rule reduce severity on low-complexity claims?",
-  "recorded_at": "2026-09-04T16:01:33.554060+00:00",
+  "recorded_at": "2026-09-04T21:58:29.445964+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 22,
+    "latency_ms": 20,
     "rows_scanned": 4340,
     "runtime": "analytic",
     "tokens": {
@@ -89,15 +84,15 @@
       {
         "arguments": {
           "grain": "year",
-          "group_by": "coverage_line",
+          "group_by": "complexity_band",
           "limit": 24,
           "measure": "((sum(incurred_losses))::numeric / NULLIF((count(distinct claim_id))::numeric, 0))",
           "period": "2026-08-01",
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "small",
-        "duration_ms": 18,
-        "rows_returned": 4,
+        "duration_ms": 17,
+        "rows_returned": 3,
         "rows_scanned": 4340,
         "tool": "query_dp_ins_001"
       }

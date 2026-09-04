@@ -1080,9 +1080,542 @@ DP_RTL_003 = _spec(
     notes="digital and mobile convert worse; express format trails; electronics holds and does not sell",
 )
 
+# ---------------------------------------------------------------------------
+# DP-BNK-003 — Lending & Credit Portfolio
+# Planted: delinquency concentrates in one origination vintage and, within it,
+# in the broker channel; one product type earns a yield out of line with the
+# risk grades behind it; and defaulted accounts in one region are held at
+# provision coverage below the rest of the book.
+# ---------------------------------------------------------------------------
+BNK3_PRODUCTS = [("mortgage", 4), ("auto", 3), ("personal", 2), ("card", 3)]
+BNK3_GRADES = [("A", 4), ("B", 4), ("C", 2), ("D", 1)]
+BNK3_CHANNELS = [("branch", 4), ("digital", 3), ("broker", 3)]
+BNK3_VINTAGES = [("0-1y", 3), ("1-3y", 4), ("3-5y", 2), ("5y+", 2)]
+# The vintage and channel the arrears sit in.
+ARREARS_VINTAGE = "1-3y"
+ARREARS_CHANNEL = "broker"
+# The product whose yield is out of line with its grade mix.
+YIELD_OUTLIER = "card"
+UNDERPROVISIONED_REGION = "Southeast"
+
+_B3_PRODUCT = weighted(BNK3_PRODUCTS, E, k("prod"))
+_B3_GRADE = weighted(BNK3_GRADES, E, k("grade"))
+_B3_CHANNEL = weighted(BNK3_CHANNELS, E, k("chan"))
+_B3_VINTAGE = weighted(BNK3_VINTAGES, E, k("vint"))
+_B3_REGION = pick(["Northeast", "Southeast", "Midwest", "West"], E, k("reg"))
+
+DP_BNK_003 = _spec(
+    "DP-BNK-003",
+    entity_column="loan_id", entity_count=8000,
+    time_column="as_of_month", grain="month", periods=24,
+    expressions={
+        "loan_id": "('LN-' || lpad(entity::text, 8, '0'))",
+        "customer_id": "('CUST-' || lpad((entity / 2)::text, 7, '0'))",
+        "as_of_month": "date_trunc('month', period_at)::date",
+        "product_type": _B3_PRODUCT,
+        "region": _B3_REGION,
+        "segment": weighted([("mass", 5), ("affluent", 3), ("business", 2)], E, k("seg")),
+        "channel": _B3_CHANNEL,
+        "risk_grade": _B3_GRADE,
+        "vintage_band": _B3_VINTAGE,
+        "origination_date": (
+            f"(period_at - ((180 + floor({rnd(E, k('orig'))} * 1800))::int || ' days')"
+            "::interval)::date"
+        ),
+        "original_balance": f"round({uniform(4000, 480000, E, k('orig_bal'))}::numeric, 2)",
+        "outstanding_balance": (
+            f"round((original_balance * (0.35 + 0.6 * {rnd(E, P, k('amort'))}))::numeric, 2)"
+        ),
+        # Card carries a much higher coupon than its grade mix would imply, which
+        # is the yield question the agent is meant to find.
+        "interest_income": (
+            "round((outstanding_balance * "
+            f" ((0.0028 + 0.0022 * {rnd(E, P, k('cpn'))}) "
+            f"  * (CASE WHEN {_B3_PRODUCT} = '{YIELD_OUTLIER}' THEN 2.4 ELSE 1.0 END)))"
+            "::numeric, 2)"
+        ),
+        # The arrears concentration: one vintage, and the broker channel within it.
+        "days_past_due": (
+            f"(CASE WHEN {rnd(E, P, k('dpd'))} < "
+            # Set so the book lands near KPI-DELINQ-079's own 2.4% target once
+            # the vintage, channel and grade multipliers below are applied.
+            "       0.0085"
+            f"       * (CASE WHEN {_B3_VINTAGE} = '{ARREARS_VINTAGE}' THEN 2.8 ELSE 1.0 END)"
+            f"       * (CASE WHEN {_B3_CHANNEL} = '{ARREARS_CHANNEL}' THEN 2.2 ELSE 1.0 END)"
+            f"       * (CASE WHEN {_B3_GRADE} IN ('C','D') THEN 2.4 ELSE 1.0 END)"
+            f"      THEN (30 + floor({rnd(E, P, k('dpdlen'))} * 150))::int ELSE 0 END)"
+        ),
+        "delinquent_30d": "(days_past_due >= 30)",
+        "defaulted": "(days_past_due >= 90)",
+        "charged_off_amount": (
+            f"(CASE WHEN days_past_due >= 150 AND {rnd(E, P, k('co'))} < 0.35 "
+            "       THEN round((outstanding_balance * 0.62)::numeric, 2) ELSE 0 END)"
+        ),
+        # The provisioning gap: one region holds materially less against its
+        # defaulted balance than the rest of the book.
+        "provision_amount": (
+            "(CASE WHEN defaulted "
+            f"      THEN round((outstanding_balance * (0.88 + 0.20 * {rnd(E, P, k('prov'))}) "
+            f"        * (CASE WHEN {_B3_REGION} = '{UNDERPROVISIONED_REGION}' "
+            "                THEN 0.58 ELSE 1.0 END))::numeric, 2) "
+            f"      ELSE round((outstanding_balance * 0.006 * {rnd(E, P, k('prov'))})"
+            "::numeric, 2) END)"
+        ),
+        "collateral_value": (
+            f"(CASE WHEN {_B3_PRODUCT} IN ('mortgage', 'auto') "
+            f"      THEN round((original_balance * (1.25 + 0.35 * {rnd(E, k('coll'))}))"
+            "::numeric, 2) END)"
+        ),
+        "bureau_score": (
+            f"(CASE WHEN {rnd(E, P, k('bureau'))} < 0.93 "
+            f"      THEN (520 + floor({rnd(E, P, k('score'))} * 320) "
+            f"        - (CASE WHEN {_B3_GRADE} IN ('C','D') THEN 90 ELSE 0 END))::int END)"
+        ),
+    },
+    notes="arrears in the 1-3y broker vintage; card yield out of line; Southeast under-provisioned",
+)
+
+
+# ---------------------------------------------------------------------------
+# DP-TCH-002 — Service Reliability & Incident
+# Planted: change failure concentrates in the canary ring, one service tier
+# acknowledges materially slower than the others, and one region carries a
+# sustained error-rate elevation across a contiguous run of hours.
+# ---------------------------------------------------------------------------
+TCH2_TIERS = [("tier1", 3), ("tier2", 4), ("tier3", 3)]
+TCH2_RINGS = [("canary", 2), ("early", 3), ("broad", 5)]
+TCH2_REGIONS = [("us-east", 4), ("us-west", 3), ("eu-west", 3)]
+TCH2_TEAMS = ["platform", "payments", "identity", "search", "billing"]
+FAILING_RING = "canary"
+SLOW_ACK_TIER = "tier3"
+DEGRADED_REGION = "eu-west"
+# The contiguous run of hours the regional elevation sits in.
+DEGRADED_FROM, DEGRADED_TO = 96, 168
+
+_T2_TIER = weighted(TCH2_TIERS, E, k("tier"))
+_T2_RING = weighted(TCH2_RINGS, E, P, k("ring"))
+_T2_REGION = weighted(TCH2_REGIONS, E, k("rgn"))
+_T2_INCIDENT = f"({rnd(E, P, k('inc'))} < 0.015)"
+_T2_DEPLOY = f"({rnd(E, P, k('dep'))} < 0.06)"
+
+DP_TCH_002 = _spec(
+    "DP-TCH-002",
+    entity_column="service_id", entity_count=900,
+    time_column="observed_hour", grain="hour", periods=336,
+    expressions={
+        "service_id": "('SVC-' || lpad(entity::text, 5, '0'))",
+        "observed_hour": "period_at",
+        "service_tier": _T2_TIER,
+        "region": _T2_REGION,
+        "team": pick(TCH2_TEAMS, E, k("team")),
+        "deployment_ring": _T2_RING,
+        # An incident belongs to the hour it was raised, so counting incidents
+        # counts incidents rather than the hours they ran for.
+        "incident_id": (
+            f"(CASE WHEN {_T2_INCIDENT} "
+            "       THEN ('INC-' || lpad(entity::text, 5, '0') || '-' || period::text) END)"
+        ),
+        "severity": (
+            f"(CASE WHEN {_T2_INCIDENT} "
+            f"      THEN {weighted([('sev1', 1), ('sev2', 3), ('sev3', 6)], E, P, k('sev'))} END)"
+        ),
+        "request_count": (
+            f"round((2000 + {rnd(E, P, k('req'))} * 18000) "
+            f"  * (1 + {seasonal(0.35, 'period', 24)}))"
+        ),
+        # The regional elevation: a contiguous run of hours in one region.
+        "error_count": (
+            "round(request_count * "
+            f" ((0.0015 + 0.004 * {rnd(E, P, k('err'))}) "
+            f"  * (CASE WHEN {_T2_REGION} = '{DEGRADED_REGION}' "
+            f"           AND period BETWEEN {DEGRADED_FROM} AND {DEGRADED_TO} "
+            "          THEN 5.5 ELSE 1.0 END)))"
+        ),
+        "latency_p95_ms": (
+            f"round((120 + {rnd(E, P, k('lat'))} * 380 "
+            f"  + (CASE WHEN {_T2_REGION} = '{DEGRADED_REGION}' "
+            f"           AND period BETWEEN {DEGRADED_FROM} AND {DEGRADED_TO} "
+            "          THEN 260 ELSE 0 END))::numeric, 1)"
+        ),
+        "scheduled_minutes": f"(CASE WHEN {rnd(E, P, k('maint'))} < 0.01 THEN 45 ELSE 60 END)",
+        "availability_minutes": (
+            f"(CASE WHEN {_T2_INCIDENT} "
+            f"      THEN round((scheduled_minutes * (0.55 + 0.4 * {rnd(E, P, k('av'))}))"
+            "::numeric, 1) ELSE scheduled_minutes END)"
+        ),
+        # The slow tier: tier3 is paged like the others and answers later.
+        "acknowledged_minutes": (
+            f"(CASE WHEN {_T2_INCIDENT} "
+            f"      THEN round(((1 + {rnd(E, P, k('ack'))} * 9) "
+            f"        * (CASE WHEN {_T2_TIER} = '{SLOW_ACK_TIER}' THEN 3.8 ELSE 1.0 END))"
+            "::numeric, 1) ELSE 0 END)"
+        ),
+        "resolved_minutes": (
+            f"(CASE WHEN {_T2_INCIDENT} "
+            f"      THEN round((acknowledged_minutes + 12 + {rnd(E, P, k('res'))} * 110)"
+            "::numeric, 1) ELSE 0 END)"
+        ),
+        "change_deployed": _T2_DEPLOY,
+        # The canary ring is where failures are meant to surface, and do.
+        "change_failed": (
+            f"({_T2_DEPLOY} AND {rnd(E, P, k('cf'))} < "
+            f"  0.06 * (CASE WHEN {_T2_RING} = '{FAILING_RING}' THEN 4.2 ELSE 1.0 END))"
+        ),
+        "on_call_page_count": (
+            f"(CASE WHEN {_T2_INCIDENT} THEN (1 + floor({rnd(E, P, k('pg'))} * 4))::int "
+            "       ELSE 0 END)"
+        ),
+    },
+    notes="canary ring fails more; tier3 acknowledges slower; eu-west errors elevated for a run",
+)
+
+# ---------------------------------------------------------------------------
+# DP-TRN-002 — Freight Cost & Margin
+# Planted: accessorial spend concentrates on a small set of lanes through
+# detention, spot-tendered movements carry a materially thinner margin than
+# contracted ones, and one carrier accounts for most of the disputed value.
+# ---------------------------------------------------------------------------
+TRN2_LANES = ["LANE-CHI-ATL", "LANE-LAX-PHX", "LANE-NYC-BOS", "LANE-DFW-DEN",
+              "LANE-SEA-POR", "LANE-MIA-ORL"]
+TRN2_CARRIERS = [("carrier_alpha", 4), ("carrier_bravo", 3), ("carrier_charlie", 3)]
+TRN2_MODES = [("road", 6), ("rail", 2), ("air", 1), ("ocean", 1)]
+# The two lanes detention sits on, and the carrier the disputes sit with.
+DETENTION_LANES = "('LANE-CHI-ATL','LANE-DFW-DEN')"
+DISPUTING_CARRIER = "carrier_charlie"
+
+_R2_LANE = pick(TRN2_LANES, E, k("lane"))
+_R2_CARRIER = weighted(TRN2_CARRIERS, E, P, k("carr"))
+_R2_SPOT = f"({rnd(E, P, k('spot'))} < 0.14)"
+
+DP_TRN_002 = _spec(
+    "DP-TRN-002",
+    entity_column="invoice_line_id", entity_count=2400,
+    time_column="invoice_date", grain="day", periods=120,
+    expressions={
+        "invoice_line_id": "('INV-' || lpad(entity::text, 8, '0') || '-' || period::text)",
+        "shipment_id": "('SHP-' || lpad(entity::text, 8, '0'))",
+        "invoice_date": "period_at::date",
+        "lane": _R2_LANE,
+        "carrier": _R2_CARRIER,
+        "customer": pick(["cust_north", "cust_south", "cust_central", "cust_west"], E,
+                         k("cust")),
+        "service_level": weighted([("standard", 6), ("expedited", 3), ("economy", 1)], E, P,
+                                  k("svc")),
+        "mode": weighted(TRN2_MODES, E, k("mode")),
+        "equipment_type": pick(["dry_van", "reefer", "flatbed"], E, k("eq")),
+        "region": pick(["Northeast", "Southeast", "Midwest", "West"], E, k("reg")),
+        "billable_km": f"round((80 + {rnd(E, P, k('km'))} * 2600)::numeric, 1)",
+        "weight_kg": f"round((400 + {rnd(E, P, k('wt'))} * 18000)::numeric, 1)",
+        "linehaul_cost": (
+            f"round((billable_km * (1.05 + 0.35 * {rnd(E, P, k('rate'))}))::numeric, 2)"
+        ),
+        # Detention concentrates on two lanes, which is the accessorial finding.
+        "accessorial_type": (
+            f"(CASE WHEN {rnd(E, P, k('acc'))} < 0.34 "
+            f"      THEN (CASE WHEN {_R2_LANE} IN {DETENTION_LANES} THEN 'detention' "
+            f"                 ELSE {pick(['layover', 'redelivery', 'lumper'], E, P, k('at'))} "
+            "            END) END)"
+        ),
+        "accessorial_cost": (
+            "(CASE WHEN accessorial_type IS NULL THEN 0 "
+            f"      ELSE round((linehaul_cost * (0.06 + 0.10 * {rnd(E, P, k('accv'))}) "
+            f"        * (CASE WHEN {_R2_LANE} IN {DETENTION_LANES} THEN 2.6 ELSE 1.0 END))"
+            "::numeric, 2) END)"
+        ),
+        "fuel_surcharge": (
+            f"round((linehaul_cost * (0.11 + 0.04 * {seasonal(1.0, 'period', 30)}))::numeric, 2)"
+        ),
+        "tendered_to_spot": _R2_SPOT,
+        "contracted_rate": (
+            f"(CASE WHEN NOT {_R2_SPOT} "
+            "       THEN round((linehaul_cost / NULLIF(billable_km, 0))::numeric, 4) END)"
+        ),
+        "spot_rate": (
+            f"(CASE WHEN {_R2_SPOT} "
+            f"      THEN round((linehaul_cost * (1.18 + 0.14 * {rnd(E, P, k('sr'))}) "
+            "        / NULLIF(billable_km, 0))::numeric, 4) END)"
+        ),
+        # Spot moves are billed at the same market and cost more, so their
+        # margin is thinner. That is the comparison the agent is asked for.
+        "billed_revenue": (
+            "round(((linehaul_cost + accessorial_cost + fuel_surcharge) "
+            f" * (1.20 + 0.10 * {rnd(E, P, k('mkup'))}) "
+            f" * (CASE WHEN {_R2_SPOT} THEN 0.87 ELSE 1.0 END))::numeric, 2)"
+        ),
+        "invoice_disputed": (
+            f"({rnd(E, P, k('disp'))} < "
+            f"  0.04 * (CASE WHEN {_R2_CARRIER} = '{DISPUTING_CARRIER}' THEN 4.5 ELSE 1.0 END))"
+        ),
+        "disputed_amount": (
+            "(CASE WHEN invoice_disputed "
+            f"      THEN round((billed_revenue * (0.08 + 0.22 * {rnd(E, P, k('dv'))}))"
+            "::numeric, 2) ELSE 0 END)"
+        ),
+    },
+    notes="detention on two lanes; spot margin thinner; carrier_charlie disputes concentrate",
+)
+
+
+# ---------------------------------------------------------------------------
+# DP-MFG-002 — Supplier Quality & Inbound Materials
+# Planted: a small number of suppliers carry most rejected units in one material
+# class, one country of origin runs a materially longer lead time with a worse
+# on-time rate for it, and price variance drifts upward in one commodity class.
+# ---------------------------------------------------------------------------
+MFG2_CLASSES = [("castings", 3), ("electronics", 4), ("fasteners", 3),
+                ("polymers", 2), ("packaging", 2)]
+MFG2_ORIGINS = [("US", 4), ("MX", 3), ("CN", 3), ("DE", 2)]
+MFG2_TIERS = [("strategic", 2), ("preferred", 4), ("transactional", 4)]
+DEFECT_CLASS = "electronics"
+FAR_ORIGIN = "CN"
+DRIFTING_CLASS = "polymers"
+
+_M2_CLASS = weighted(MFG2_CLASSES, E, k("mcls"))
+_M2_ORIGIN = weighted(MFG2_ORIGINS, E, k("orig"))
+# Twenty-four suppliers: enough that ranking them says something, and inside
+# the runtime's answer row limit so the share each carries is a share of the
+# whole supply base rather than of whatever fitted in the answer.
+_M2_SUPPLIER = "('SUP-' || lpad((1 + (entity % 24))::text, 4, '0'))"
+# The defect tail sits with the first four suppliers, in one material class.
+_M2_BAD_SUPPLIER = "((entity % 24) < 4)"
+
+DP_MFG_002 = _spec(
+    "DP-MFG-002",
+    entity_column="receipt_line_id", entity_count=2200,
+    time_column="receipt_date", grain="day", periods=120,
+    expressions={
+        "receipt_line_id": "('RCP-' || lpad(entity::text, 8, '0') || '-' || period::text)",
+        "purchase_order_id": "('PO-' || lpad((entity / 3)::text, 8, '0'))",
+        "supplier_id": _M2_SUPPLIER,
+        "receipt_date": "period_at::date",
+        "material_class": _M2_CLASS,
+        "plant": weighted([("plant_north", 4), ("plant_south", 3), ("plant_east", 3)], E,
+                          k("plant")),
+        "region": pick(["Northeast", "Southeast", "Midwest", "West"], E, k("reg")),
+        "supplier_tier": weighted(MFG2_TIERS, E, k("stier")),
+        "country_of_origin": _M2_ORIGIN,
+        "ordered_units": f"(50 + floor({rnd(E, P, k('ord'))} * 950))::int",
+        "received_units": (
+            f"round((ordered_units * (0.94 + 0.06 * {rnd(E, P, k('recv'))}))::numeric, 0)"
+        ),
+        # The defect tail: six suppliers, worse again in one material class.
+        "rejected_units": (
+            "round((received_units * "
+            f" ((0.004 + 0.008 * {rnd(E, P, k('rej'))}) "
+            f"  * (CASE WHEN {_M2_BAD_SUPPLIER} THEN 5.5 ELSE 1.0 END) "
+            f"  * (CASE WHEN {_M2_CLASS} = '{DEFECT_CLASS}' THEN 2.2 ELSE 1.0 END)))"
+            "::numeric, 0)"
+        ),
+        "accepted_units": "(received_units - rejected_units)",
+        "rejection_reason": (
+            "(CASE WHEN rejected_units > 0 "
+            f"      THEN {pick(['dimensional', 'cosmetic', 'documentation', 'contamination'], E, P, k('rr'))} "
+            " END)"
+        ),
+        # The far origin: longer to arrive, and later against its own promise.
+        "lead_time_days": (
+            f"round((9 + {rnd(E, P, k('lt'))} * 18 "
+            f"  + (CASE WHEN {_M2_ORIGIN} = '{FAR_ORIGIN}' THEN 26 ELSE 0 END))::numeric, 1)"
+        ),
+        "promised_date": "period_at::date",
+        "on_time": (
+            f"({rnd(E, P, k('otd'))} < "
+            f"  (CASE WHEN {_M2_ORIGIN} = '{FAR_ORIGIN}' THEN 0.79 ELSE 0.955 END))"
+        ),
+        "inspection_required": (
+            f"({_M2_CLASS} IN ('electronics', 'castings') OR {rnd(E, k('insp'))} < 0.2)"
+        ),
+        "inspection_passed": (
+            f"(NOT inspection_required OR {rnd(E, P, k('ip'))} < 0.96)"
+        ),
+        "standard_cost": f"round({uniform(2, 240, E, k('std'))}::numeric, 2)",
+        # The drift: one commodity class walks away from standard over time.
+        "unit_cost": (
+            "round((standard_cost * "
+            f" (0.99 + 0.02 * {rnd(E, P, k('uc'))} "
+            f"  + (CASE WHEN {_M2_CLASS} = '{DRIFTING_CLASS}' "
+            "          THEN 0.06 * (period::numeric / 120) ELSE 0 END)))::numeric, 2)"
+        ),
+    },
+    notes="six suppliers carry the defects in electronics; CN lead time and OTD worse; polymers price drifts",
+)
+
+# ---------------------------------------------------------------------------
+# DP-HLT-003 — Workforce & Care Capacity
+# Planted: agency reliance concentrates on the night shift and, within it, on
+# one unit type; boarding hours rise on the units closest to their staffed bed
+# capacity; and a tail of units carries both the vacancies and the overtime
+# that covers them.
+# ---------------------------------------------------------------------------
+HLT3_UNIT_TYPES = [("medical_surgical", 4), ("critical_care", 2), ("telemetry", 3),
+                   ("emergency", 2)]
+HLT3_FACILITIES = [("north_general", 4), ("river_memorial", 3), ("west_campus", 3)]
+HLT3_SHIFTS = ["day", "evening", "night"]
+AGENCY_SHIFT = "night"
+AGENCY_UNIT_TYPE = "critical_care"
+# The tail of units carrying the vacancies.
+SHORT_STAFFED = "((entity % 40) < 7)"
+
+_H3_UNIT_TYPE = weighted(HLT3_UNIT_TYPES, E, k("utype"))
+# The shift is a fanned-out dimension rather than a draw, so a unit has exactly
+# one row per shift per day and the label agrees with the timestamp.
+_H3_SHIFT = "fan_value"
+SHIFT_HOUR = "(CASE fan_value WHEN 'day' THEN 7 WHEN 'evening' THEN 15 ELSE 23 END)"
+
+DP_HLT_003 = _spec(
+    "DP-HLT-003",
+    entity_column="unit_id", entity_count=900,
+    time_column="shift_start", grain="day", periods=180,
+    fan_out=("shift", HLT3_SHIFTS),
+    expressions={
+        "unit_id": "('UNIT-' || lpad(entity::text, 5, '0'))",
+        "shift_start": f"(date_trunc('day', period_at) + ({SHIFT_HOUR} || ' hours')::interval)",
+        "facility": weighted(HLT3_FACILITIES, E, k("fac")),
+        "region": pick(["Northeast", "Southeast", "Midwest", "West"], E, k("reg")),
+        "unit_type": _H3_UNIT_TYPE,
+        "shift": _H3_SHIFT,
+        "licensed_beds": f"(12 + floor({rnd(E, k('lic'))} * 28))::int",
+        "staffed_beds": (
+            f"round((licensed_beds * (0.82 + 0.16 * {rnd(E, P, k('staffed'))}) "
+            f"  * (CASE WHEN {SHORT_STAFFED} THEN 0.82 ELSE 1.0 END))::numeric, 0)"
+        ),
+        # Occupancy is drawn against staffed beds, so a short-staffed unit runs
+        # closer to its own ceiling rather than simply emptier.
+        "census_patients": (
+            "round((staffed_beds * "
+            f" ((0.70 + 0.26 * {rnd(E, P, k('cen'))}) "
+            f"  * (CASE {_H3_UNIT_TYPE} WHEN 'critical_care' THEN 1.14 "
+            "          WHEN 'telemetry' THEN 1.04 WHEN 'emergency' THEN 0.94 "
+            "          ELSE 0.88 END)) "
+            f"  * (1 + {seasonal(0.08, 'period', 21)}))::numeric, 0)"
+        ),
+        "budgeted_hours": "round((census_patients * 8.2)::numeric, 1)",
+        "worked_hours": (
+            f"round((budgeted_hours * (0.94 + 0.14 * {rnd(E, P, k('wh'))}))::numeric, 1)"
+        ),
+        # The vacancy tail pays for itself in overtime.
+        "overtime_hours": (
+            "round((worked_hours * "
+            f" ((0.025 + 0.03 * {rnd(E, P, k('ot'))}) "
+            f"  * (CASE WHEN {SHORT_STAFFED} THEN 3.1 ELSE 1.0 END)))::numeric, 1)"
+        ),
+        # Agency covers the night shift, and critical care hardest of all.
+        "agency_hours": (
+            "round((worked_hours * "
+            f" ((0.02 + 0.03 * {rnd(E, P, k('ag'))}) "
+            f"  * (CASE WHEN {_H3_SHIFT} = '{AGENCY_SHIFT}' THEN 3.4 ELSE 1.0 END) "
+            f"  * (CASE WHEN {_H3_UNIT_TYPE} = '{AGENCY_UNIT_TYPE}' THEN 2.1 ELSE 1.0 END)))"
+            "::numeric, 1)"
+        ),
+        "admissions": f"floor({rnd(E, P, k('adm'))} * 9)::int",
+        "discharges": f"floor({rnd(E, P, k('dis'))} * 9)::int",
+        # Boarding rises where the unit is closest to its staffed capacity: the
+        # link the question about occupancy and boarding is meant to surface.
+        "boarding_hours": (
+            f"round(((0.4 + {rnd(E, P, k('brd'))} * 2.2) "
+            "  * (1 + 4.0 * greatest(0, "
+            "       (census_patients::numeric / NULLIF(staffed_beds, 0)) - 0.88)))::numeric, 2)"
+        ),
+        "call_offs": f"floor({rnd(E, P, k('co'))} * 3)::int",
+        "vacancy_count": (
+            f"(CASE WHEN {SHORT_STAFFED} THEN (3 + floor({rnd(E, k('vac'))} * 6))::int "
+            f"      ELSE floor({rnd(E, k('vac'))} * 3)::int END)"
+        ),
+        "filled_shift": "(worked_hours >= budgeted_hours * 0.97)",
+        "float_pool_used": f"({rnd(E, P, k('float'))} < 0.22)",
+    },
+    notes="agency on nights in critical care; boarding rises with occupancy; a vacancy tail pays overtime",
+)
+
+
+# ---------------------------------------------------------------------------
+# DP-INS-003 — Policyholder & Distribution 360
+# Planted: one distribution channel carries materially lower multi-line
+# penetration, digital enrolment falls away in the longest tenure band, and
+# complaints concentrate in one region and one segment together rather than in
+# either alone.
+# ---------------------------------------------------------------------------
+INS3_SEGMENTS = [("mass", 5), ("preferred", 3), ("commercial", 2)]
+INS3_CHANNELS = [("agency", 5), ("direct", 3), ("affinity", 2)]
+INS3_TENURE = [("0-2y", 3), ("3-5y", 3), ("6-10y", 2), ("10y+", 2)]
+LOW_MULTILINE_CHANNEL = "affinity"
+LOW_DIGITAL_TENURE = "10y+"
+COMPLAINT_REGION = "Southeast"
+COMPLAINT_SEGMENT = "commercial"
+
+_I3_SEGMENT = weighted(INS3_SEGMENTS, E, k("seg"))
+_I3_CHANNEL = weighted(INS3_CHANNELS, E, k("chan"))
+_I3_TENURE = weighted(INS3_TENURE, E, k("ten"))
+_I3_REGION = pick(["Northeast", "Southeast", "Midwest", "West"], E, k("reg"))
+
+DP_INS_003 = _spec(
+    "DP-INS-003",
+    entity_column="customer_id", entity_count=24000,
+    time_column="as_of_month", grain="month", periods=24,
+    expressions={
+        "customer_id": "('PCUST-' || lpad(entity::text, 8, '0'))",
+        "household_id": (
+            f"(CASE WHEN {rnd(E, k('hh'))} < 0.88 "
+            "       THEN ('HH-' || lpad((entity / 2)::text, 8, '0')) END)"
+        ),
+        "as_of_month": "date_trunc('month', period_at)::date",
+        "segment": _I3_SEGMENT,
+        "region": _I3_REGION,
+        "distribution_channel": _I3_CHANNEL,
+        "agency_id": (
+            f"(CASE WHEN {_I3_CHANNEL} = 'agency' "
+            "       THEN ('AGY-' || lpad((1 + (entity % 30))::text, 4, '0')) END)"
+        ),
+        "tenure_band": _I3_TENURE,
+        # The multi-line gap: affinity business is sold one line at a time.
+        "coverage_lines_held": (
+            # The affinity multiplier stays above the level at which the floor
+            # can still reach one. Pushed lower it produces a channel with
+            # literally no multi-line customers, which is a generator artefact
+            # rather than the penetration gap the question is looking for.
+            f"(1 + floor({rnd(E, P, k('lines'))} * 1.7 "
+            f"  * (CASE WHEN {_I3_CHANNEL} = '{LOW_MULTILINE_CHANNEL}' THEN 0.75 ELSE 1.0 END)))"
+            "::int"
+        ),
+        "multi_line": "(coverage_lines_held > 1)",
+        "policies_held": (
+            f"(coverage_lines_held + floor({rnd(E, P, k('pol'))} * 1.4))::int"
+        ),
+        "total_written_premium": (
+            f"round((policies_held * (420 + {rnd(E, P, k('prem'))} * 2600))::numeric, 2)"
+        ),
+        # The digital cliff: the longest-tenured customers never registered.
+        "digital_registered": (
+            f"({rnd(E, P, k('dig'))} < "
+            f"  (CASE WHEN {_I3_TENURE} = '{LOW_DIGITAL_TENURE}' THEN 0.24 ELSE 0.71 END))"
+        ),
+        "autopay_enrolled": f"({rnd(E, P, k('auto'))} < 0.58)",
+        "service_contacts_90d": f"floor({rnd(E, P, k('svc'))} * 6)::int",
+        # The interaction: neither the region nor the segment alone explains it.
+        "complaints_90d": (
+            f"(CASE WHEN {rnd(E, P, k('cmp'))} < "
+            "       0.018"
+            f"       * (CASE WHEN {_I3_REGION} = '{COMPLAINT_REGION}' "
+            f"                 AND {_I3_SEGMENT} = '{COMPLAINT_SEGMENT}' THEN 6.0 ELSE 1.0 END)"
+            f"      THEN (1 + floor({rnd(E, P, k('cmpn'))} * 3))::int ELSE 0 END)"
+        ),
+        "nps_response": (
+            f"(CASE WHEN {rnd(E, P, k('nps'))} < 0.31 "
+            f"      THEN (1 + floor({rnd(E, P, k('npsv'))} * 10))::int END)"
+        ),
+        "cross_sell_eligible": f"({rnd(E, P, k('xe'))} < 0.34)",
+        "cross_sell_accepted": (
+            f"(cross_sell_eligible AND {rnd(E, P, k('xa'))} < "
+            "  (CASE WHEN multi_line THEN 0.19 ELSE 0.08 END))"
+        ),
+        "lapsed": f"({rnd(E, P, k('lapse'))} < 0.004)",
+    },
+    notes="affinity is single-line; 10y+ never registered digitally; complaints are Southeast x commercial",
+)
+
 ALL_SPECS = [
     DP_TEL_001, DP_TEL_002, DP_TCH_001, DP_BNK_001, DP_BNK_002, DP_INS_001, DP_INS_002,
     DP_HLT_001, DP_HLT_002, DP_RTL_001, DP_RTL_002, DP_RTL_003, DP_TRN_001, DP_UTL_001,
-    DP_ENG_001,
-    DP_MFG_001,
+    DP_ENG_001, DP_MFG_001,
+    DP_BNK_003, DP_TCH_002, DP_TRN_002, DP_MFG_002, DP_HLT_003, DP_INS_003,
 ]

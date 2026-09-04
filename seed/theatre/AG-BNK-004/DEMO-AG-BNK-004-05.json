@@ -1,0 +1,124 @@
+{
+  "agent_id": "AG-BNK-004",
+  "agent_name": "Credit Portfolio Analyst",
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Non-Performing Loan Ratio is 1.79% for the quarter ending 2026-07-01, up 0.05% on the prior quarter.",
+    "narrative": "Computed from DP-BNK-003 under the certified definition KPI-NPL-080, across 8 quarters and 19,200 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-NPL-080",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2024-10-01",
+          1.62,
+          2400
+        ],
+        [
+          "2025-01-01",
+          1.15,
+          2400
+        ],
+        [
+          "2025-04-01",
+          1.82,
+          2400
+        ],
+        [
+          "2025-07-01",
+          1.34,
+          2400
+        ],
+        [
+          "2025-10-01",
+          1.56,
+          2400
+        ],
+        [
+          "2026-01-01",
+          2.16,
+          2400
+        ],
+        [
+          "2026-04-01",
+          1.74,
+          2400
+        ],
+        [
+          "2026-07-01",
+          1.79,
+          2400
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.8,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-NPL-080"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "loan_id",
+        "as_of_month",
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band",
+        "outstanding_balance",
+        "defaulted"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-004-05",
+  "kpi_definitions": [
+    "KPI-NPL-080"
+  ],
+  "notes": [],
+  "question": "How has the non-performing loan ratio moved quarter by quarter?",
+  "recorded_at": "2026-09-04T21:58:28.736678+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 10,
+    "rows_scanned": 19200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(outstanding_balance) filter (where defaulted))::numeric / NULLIF((sum(outstanding_balance))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 7,
+        "rows_returned": 8,
+        "rows_scanned": 19200,
+        "tool": "query_dp_bnk_003"
+      }
+    ]
+  }
+}

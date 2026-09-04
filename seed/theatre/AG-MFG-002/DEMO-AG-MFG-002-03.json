@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-MFG-002",
+  "agent_name": "Supplier Quality Analyst",
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "DE leads on inbound on-time rate at 96.00%, 26.26% of the total across 4 country of origins.",
+    "narrative": "Ranked by the certified definition KPI-INBOTD-094 over 26,400 rows in DP-MFG-002.",
+    "table": {
+      "columns": [
+        "country_of_origin",
+        "KPI-INBOTD-094",
+        "observations"
+      ],
+      "rows": [
+        [
+          "DE",
+          96.0,
+          4800
+        ],
+        [
+          "MX",
+          95.77,
+          6600
+        ],
+        [
+          "US",
+          95.76,
+          8040
+        ],
+        [
+          "CN",
+          78.0,
+          6960
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 95.0,
+        "unit": "percent",
+        "x": "country_of_origin",
+        "y": "KPI-INBOTD-094"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "receipt_line_id",
+        "receipt_date",
+        "supplier_id",
+        "supplier_tier",
+        "material_class",
+        "plant",
+        "region",
+        "country_of_origin",
+        "on_time"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-002-03",
+  "kpi_definitions": [
+    "KPI-INBOTD-094"
+  ],
+  "notes": [],
+  "question": "How does inbound on-time delivery differ by country of origin?",
+  "recorded_at": "2026-09-04T21:58:30.138818+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 10,
+    "rows_scanned": 26400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "country_of_origin",
+          "limit": 24,
+          "measure": "((count(*) filter (where on_time))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 6,
+        "rows_returned": 4,
+        "rows_scanned": 26400,
+        "tool": "query_dp_mfg_002"
+      }
+    ]
+  }
+}

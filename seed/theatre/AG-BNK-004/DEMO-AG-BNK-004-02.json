@@ -1,0 +1,101 @@
+{
+  "agent_id": "AG-BNK-004",
+  "agent_name": "Credit Portfolio Analyst",
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "broker leads on 30+ delinquency rate at 6.17%, 57.40% of the total across 3 channels.",
+    "narrative": "Ranked by the certified definition KPI-DELINQ-079 over 800 rows in DP-BNK-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "channel",
+        "KPI-DELINQ-079",
+        "observations"
+      ],
+      "rows": [
+        [
+          "broker",
+          6.17,
+          227
+        ],
+        [
+          "digital",
+          2.43,
+          247
+        ],
+        [
+          "branch",
+          2.15,
+          326
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 2.4,
+        "unit": "percent",
+        "x": "channel",
+        "y": "KPI-DELINQ-079"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "loan_id",
+        "as_of_month",
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band",
+        "channel",
+        "delinquent_30d"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-BNK-004-02",
+  "kpi_definitions": [
+    "KPI-DELINQ-079"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "How does delinquency differ across origination channels?",
+  "recorded_at": "2026-09-04T21:58:28.701839+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 29,
+    "rows_scanned": 800,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "channel",
+          "limit": 24,
+          "measure": "((count(distinct loan_id) filter (where delinquent_30d))::numeric / NULLIF((count(distinct loan_id))::numeric, 0) * 100)",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 26,
+        "rows_returned": 3,
+        "rows_scanned": 800,
+        "tool": "query_dp_bnk_003"
+      }
+    ]
+  }
+}

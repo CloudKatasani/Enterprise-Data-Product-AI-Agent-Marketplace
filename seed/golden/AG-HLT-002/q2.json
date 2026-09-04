@@ -17,11 +17,11 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "30600",
-    "top": "91.85",
-    "top_share": "20.15"
+    "top": "90.10",
+    "top_share": "19.77"
   },
   "exchange_id": "DEMO-AG-HLT-002-02",
-  "headline": "immunology leads on formulary adherence at 91.85%, 20.15% of the total across 5 therapeutic classs.",
+  "headline": "analgesia trails on formulary adherence at 90.10%, 19.77% of the total across 5 therapeutic classs.",
   "kpi_definitions": [
     "KPI-FORMADH-041"
   ],

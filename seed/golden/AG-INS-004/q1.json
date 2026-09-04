@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "gap_analysis",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "customer_id",
+        "distribution_channel",
+        "multi_line",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "2400",
+    "top": "21.49",
+    "top_share": "20.59"
+  },
+  "exchange_id": "DEMO-AG-INS-004-01",
+  "headline": "affinity trails on multi-line penetration at 21.49%, 20.59% of the total across 3 distribution channels.",
+  "kpi_definitions": [
+    "KPI-MULTILINE-104"
+  ],
+  "narrative": "Ranked by the certified definition KPI-MULTILINE-104 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which distribution channels have the weakest multi-line penetration?",
+  "rows_scanned": 2400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "distribution_channel",
+    "KPI-MULTILINE-104",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

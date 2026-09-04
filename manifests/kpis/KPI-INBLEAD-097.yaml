@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-INBLEAD-097
+  name: "Median Inbound Lead Time"
+  domain: supply_chain
+  steward: PTY-0046
+  status: certified
+spec:
+  business_definition: >-
+    Median days from purchase order to goods receipt. The median rather than the mean, because a
+    handful of expedited or stranded shipments would carry the mean.
+  expression: "percentile_cont(0.5) within group (order by lead_time_days)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [supplier_id, supplier_tier, material_class, plant, region]
+  unit: days
+  direction: lower_is_better
+  target: 21.0
+  source_of_record: DP-MFG-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["inbound lead time", "supplier lead time"]

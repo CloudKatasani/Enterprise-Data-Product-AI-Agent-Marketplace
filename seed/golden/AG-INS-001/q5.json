@@ -17,13 +17,13 @@
     }
   ],
   "claims": {
-    "groups": "4",
+    "groups": "3",
     "rows_scanned": "4340",
-    "top": "784221.50",
-    "top_share": "28.09"
+    "top": "772556.89",
+    "top_share": "37.27"
   },
   "exchange_id": "DEMO-AG-INS-001-05",
-  "headline": "auto_liability leads on average claim severity at $784,221.50, 28.09% of the total across 4 coverage lines.",
+  "headline": "low leads on average claim severity at $772,556.89, 37.27% of the total across 3 complexity bands.",
   "kpi_definitions": [
     "KPI-AVGSEV-028"
   ],
@@ -33,7 +33,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "coverage_line",
+    "complexity_band",
     "KPI-AVGSEV-028",
     "observations"
   ],

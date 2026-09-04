@@ -18,11 +18,11 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "17280",
-    "top": "1.05",
-    "top_share": "34.77"
+    "top": "0.93",
+    "top_share": "30.79"
   },
   "exchange_id": "DEMO-AG-INS-002-01",
-  "headline": "auto leads on rate adequacy at 1.05, 34.77% of the total across 3 coverage lines.",
+  "headline": "property trails on rate adequacy at 0.93, 30.79% of the total across 3 coverage lines.",
   "kpi_definitions": [
     "KPI-RATEADQ-034"
   ],

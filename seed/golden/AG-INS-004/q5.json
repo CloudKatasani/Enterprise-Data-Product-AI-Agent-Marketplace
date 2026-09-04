@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "cross_sell_accepted",
+        "cross_sell_eligible",
+        "customer_id",
+        "distribution_channel",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "2400",
+    "top": "14.50",
+    "top_share": "46.09"
+  },
+  "exchange_id": "DEMO-AG-INS-004-05",
+  "headline": "preferred leads on cross-sell acceptance at 14.50%, 46.09% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-XSELL-106"
+  ],
+  "narrative": "Ranked by the certified definition KPI-XSELL-106 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Where is cross-sell acceptance strongest by segment?",
+  "rows_scanned": 2400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-XSELL-106",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -4,29 +4,29 @@
   "agent_version_id": "AGV-AG-BNK-001-1.0.0",
   "analysis_type": "risk_cohort",
   "answer": {
-    "headline": "affluent leads on attrition risk score at 46.77, 34.40% of the total across 3 segments.",
+    "headline": "top leads on attrition risk score at 48.24, 34.74% of the total across 3 value bands.",
     "narrative": "Ranked by the certified definition KPI-ATTRISK-019 over 18,000 rows in DP-BNK-001.",
     "table": {
       "columns": [
-        "segment",
+        "value_band",
         "KPI-ATTRISK-019",
         "observations"
       ],
       "rows": [
         [
-          "affluent",
-          46.77,
-          5112
+          "top",
+          48.24,
+          144
         ],
         [
-          "mass",
-          45.11,
-          11088
+          "upper",
+          46.24,
+          10368
         ],
         [
-          "private",
-          44.08,
-          1800
+          "core",
+          44.37,
+          7488
         ]
       ]
     },
@@ -35,7 +35,7 @@
         "direction": "lower_is_better",
         "target": null,
         "unit": "score",
-        "x": "segment",
+        "x": "value_band",
         "y": "KPI-ATTRISK-019"
       },
       "type": "bar"
@@ -64,12 +64,12 @@
   ],
   "notes": [],
   "question": "Which high-value customers show attrition risk this month?",
-  "recorded_at": "2026-09-04T16:01:32.592984+00:00",
+  "recorded_at": "2026-09-04T21:58:28.414849+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 12,
+    "latency_ms": 9,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {
@@ -80,14 +80,14 @@
       {
         "arguments": {
           "grain": "month",
-          "group_by": "segment",
+          "group_by": "value_band",
           "limit": 24,
           "measure": "(avg(attrition_model_score))",
           "period": "all periods",
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 4,
         "rows_returned": 3,
         "rows_scanned": 18000,
         "tool": "query_dp_bnk_001"

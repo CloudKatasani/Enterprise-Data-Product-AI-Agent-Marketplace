@@ -1,0 +1,99 @@
+{
+  "agent_id": "AG-TCH-003",
+  "agent_name": "Service Reliability Analyst",
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "eu-west leads on service error rate at 0.69%, 49.64% of the total across 3 regions.",
+    "narrative": "Ranked by the certified definition KPI-ERRRATE-083 over 30,240 rows in DP-TCH-002.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-ERRRATE-083",
+        "observations"
+      ],
+      "rows": [
+        [
+          "eu-west",
+          0.69,
+          7728
+        ],
+        [
+          "us-west",
+          0.35,
+          10080
+        ],
+        [
+          "us-east",
+          0.35,
+          12432
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 0.5,
+        "unit": "percent",
+        "x": "region",
+        "y": "KPI-ERRRATE-083"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "service_id",
+        "observed_hour",
+        "service_tier",
+        "region",
+        "team",
+        "deployment_ring",
+        "request_count",
+        "error_count"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-003-01",
+  "kpi_definitions": [
+    "KPI-ERRRATE-083"
+  ],
+  "notes": [],
+  "question": "Which regions carry the highest service error rate?",
+  "recorded_at": "2026-09-04T21:58:31.124521+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 10,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "((sum(error_count))::numeric / NULLIF((sum(request_count))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 7,
+        "rows_returned": 3,
+        "rows_scanned": 30240,
+        "tool": "query_dp_tch_002"
+      }
+    ]
+  }
+}

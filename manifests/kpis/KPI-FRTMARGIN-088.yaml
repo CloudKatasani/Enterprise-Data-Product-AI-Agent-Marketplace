@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-FRTMARGIN-088
+  name: "Freight Margin Rate"
+  domain: finance
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Revenue billed less linehaul and accessorial cost, over revenue billed. Accessorials sit in
+    the numerator because they are cost the lane incurred, not a separate business.
+  numerator_expr: "sum(billed_revenue) - sum(linehaul_cost) - sum(accessorial_cost) - sum(fuel_surcharge)"
+  denominator_expr: "sum(billed_revenue)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [lane, carrier, customer, mode, service_level, region]
+  unit: percent
+  direction: higher_is_better
+  target: 17.0
+  source_of_record: DP-TRN-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["freight margin", "lane margin"]

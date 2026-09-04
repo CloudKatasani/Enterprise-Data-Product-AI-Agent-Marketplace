@@ -232,12 +232,13 @@ def _load_context(
 # boundary probes in seed/eval/<agent>/boundary.yaml are what prove it still
 # catches the ones already declared.
 ACTION_VERBS = frozenset({
-    "activate", "agree", "apply", "approve", "authorise", "authorize", "bind", "book",
-    "cancel", "carry", "change", "close", "commit", "create", "credit", "delete",
-    "disable", "dispatch", "draft", "drop", "enable", "execute", "extend", "file",
-    "increase", "issue", "lower", "move", "open", "order", "place", "put", "raise",
-    "reduce", "reroute", "reschedule", "retune", "revoke", "schedule", "send", "sent",
-    "set", "sign", "split", "submit", "substitute", "switch", "turn", "update", "write",
+    "activate", "agree", "apply", "approve", "authorise", "authorize", "award", "bind",
+    "book", "cancel", "carry", "change", "close", "commit", "create", "credit", "delete",
+    "deploy", "disable", "dispatch", "draft", "drop", "enable", "execute", "extend",
+    "file", "increase", "issue", "lower", "move", "open", "order", "place", "put",
+    "raise", "reduce", "reject", "release", "reroute", "restart", "reschedule", "retune",
+    "revert", "revoke", "roll", "rollback", "schedule", "send", "sent", "set", "sign",
+    "split", "submit", "substitute", "switch", "tender", "turn", "update", "write",
 })
 
 # Words that make a question about one record rather than a population.
@@ -605,7 +606,11 @@ def _run(
         # groups — a stockout rate of zero everywhere, say — names a different
         # leader on every run, and an answer whose headline changes while its
         # numbers do not is an answer nobody can check.
-        order = "2 DESC NULLS LAST, 1"
+        #
+        # A question asking which is weakest is ordered the other way, so the
+        # group the reader asked about is the one the headline names.
+        direction = "ASC" if plan.ascending else "DESC"
+        order = f"2 {direction} NULLS LAST, 1"
 
     # Grouping by period already isolates each one; the other shapes collapse
     # the time axis, and a non-additive measure cannot survive that.
@@ -824,8 +829,9 @@ def _compose(
         if total and top is not None:
             share = (top / total * rubric.number(PERCENT_SCALE_PATH)).quantize(PERCENT_POINTS)
             claims["top_share"] = share
+        verb = "trails" if plan.ascending else "leads"
         headline = (
-            f"{_label(top_label)} leads on {name.lower()} at {_format(top, unit)}"
+            f"{_label(top_label)} {verb} on {name.lower()} at {_format(top, unit)}"
             + (f", {share}% of the total across {len(values)} {label.replace('_', ' ')}s."
                if share is not None else f" across {len(values)} groups.")
         )
@@ -1000,6 +1006,7 @@ class AnalyticRuntime:
             table=table_payload,
             citations=[citation],
             kpi_definitions=[plan.kpi_id],
+            measure_names=[context.kpi["kpi_name"]],
             tool_calls=[call],
             rows_scanned=executed.rows_scanned,
             latency_ms=elapsed_ms(started),

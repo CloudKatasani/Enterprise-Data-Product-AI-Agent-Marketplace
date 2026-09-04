@@ -61,7 +61,7 @@
   ],
   "notes": [],
   "question": "Did changeover standardization reduce changeover time?",
-  "recorded_at": "2026-09-04T16:01:33.729310+00:00",
+  "recorded_at": "2026-09-04T21:58:30.098424+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
@@ -84,7 +84,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
         },
         "cost_class": "small",
-        "duration_ms": 7,
+        "duration_ms": 6,
         "rows_returned": 2,
         "rows_scanned": 12600,
         "tool": "query_dp_mfg_001"

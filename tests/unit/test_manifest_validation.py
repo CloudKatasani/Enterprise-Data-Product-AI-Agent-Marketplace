@@ -271,3 +271,35 @@ def test_the_error_renders_with_file_line_pointer_and_source(repo: Path) -> None
     assert "DP-TEL-001.yaml:" in rendered
     assert "at /spec/history_months" in rendered
     assert "| " in rendered
+
+
+def test_an_upstream_source_outside_the_taxonomy_is_rejected(repo: Path) -> None:
+    # The mesh draws its source-overlap edges from these codes and the catalogue
+    # renders their labels, so a code in no vocabulary is an edge between two
+    # products that nothing can name.
+    root = write_tree(repo / "manifests")
+    (root / "taxonomies" / "source_system.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "apiVersion": "marketplace/v1",
+                "kind": "Taxonomy",
+                "taxonomy": "source_system",
+                "entries": [
+                    {
+                        "code": "SRC-BILLING",
+                        "label": "Billing",
+                        "description": "System of record for billing accounts.",
+                        "platform": "oracle",
+                        "owner_team": "Revenue Systems",
+                        "criticality": "tier1",
+                    }
+                ],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    errors = validate_all(root)
+    rendered = [error.render() for error in errors]
+    assert any("SRC-CRM" in message and "source_system taxonomy" in message
+               for message in rendered), rendered

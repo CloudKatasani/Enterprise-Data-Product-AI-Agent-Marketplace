@@ -17,12 +17,12 @@
     }
   ],
   "claims": {
-    "groups": "5",
+    "groups": "4",
     "rows_scanned": "30600",
     "top": "0.00"
   },
   "exchange_id": "DEMO-AG-HLT-002-01",
-  "headline": "analgesia leads on pharmacy stockout rate at 0.00% across 5 groups.",
+  "headline": "cold_chain leads on pharmacy stockout rate at 0.00% across 4 groups.",
   "kpi_definitions": [
     "KPI-STOCKOUT-042"
   ],
@@ -32,7 +32,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "therapeutic_class",
+    "item_class",
     "KPI-STOCKOUT-042",
     "observations"
   ],

@@ -213,6 +213,7 @@ def cross_validate(
     products: list[LoadedManifest],
     agents: list[LoadedManifest],
     kpis: list[LoadedManifest],
+    taxonomies: list[LoadedManifest] | None = None,
 ) -> list[ValidationError]:
     errors: list[ValidationError] = []
 
@@ -239,6 +240,30 @@ def cross_validate(
                     f"{name!r}\n{_side_by_side(first, other)}",
                 )
             )
+
+    # Every upstream source a product names must be in the source_system
+    # taxonomy. The mesh draws its source-overlap edges from these codes and the
+    # catalogue renders their labels, so a code that is in no vocabulary is an
+    # edge between two products that nothing can name.
+    source_codes = {
+        entry["code"]
+        for manifest in (taxonomies or [])
+        if manifest.data.get("taxonomy") == "source_system"
+        for entry in manifest.data.get("entries", [])
+    }
+    if source_codes:
+        for manifest in products:
+            for index, code in enumerate(manifest.data.get("spec", {}).get(
+                "upstream_sources", []
+            )):
+                if code not in source_codes:
+                    errors.append(
+                        _error_from(
+                            manifest,
+                            f"/spec/upstream_sources/{index}",
+                            f"upstream source {code!r} is not in the source_system taxonomy",
+                        )
+                    )
 
     for manifest in products:
         spec = manifest.data.get("spec", {})
@@ -496,7 +521,7 @@ def validate_all(root: Path | None = None) -> list[ValidationError]:
 
     # Cross-manifest rules only make sense once every document parses.
     if not errors:
-        errors.extend(cross_validate(products, agents, kpis))
+        errors.extend(cross_validate(products, agents, kpis, taxonomies))
 
     return errors
 

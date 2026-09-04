@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-SPOTEXP-091
+  name: "Spot Exposure"
+  domain: finance
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Share of invoice lines tendered to the spot market rather than moved on a contracted rate.
+    Spot is where the cost surprises come from, so its size is worth watching.
+  numerator_expr: "count(*) filter (where tendered_to_spot)"
+  denominator_expr: "count(*)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [lane, carrier, customer, mode, service_level, region]
+  unit: percent
+  direction: lower_is_better
+  target: 12.0
+  source_of_record: DP-TRN-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["spot share", "off-contract tendering"]

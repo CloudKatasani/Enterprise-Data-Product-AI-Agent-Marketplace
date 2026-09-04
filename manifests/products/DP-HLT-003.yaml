@@ -1,0 +1,294 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-HLT-003
+  name: "Workforce & Care Capacity"
+  industry: healthcare
+  domain: operations
+  archetype: aggregate
+  tier: tier1
+  owner:
+    party_id: PTY-0050
+    team: "Care Operations"
+    escalation: "#dp-care-capacity"
+  certification: certified
+spec:
+  purpose: >-
+    Shift-level staffing against census for every inpatient unit, so overtime, agency reliance,
+    occupancy and boarding are read against the same roster rather than argued from three.
+  grain: "one row per unit per shift"
+  history_months: 24
+  known_limitations: >-
+    Census is taken at the midnight census point and carried across the shift, so a unit that
+    fills and empties within one shift reads flat. Agency hours are recognised when the invoice
+    is matched, which can be up to two weeks after the shift was worked, so the most recent
+    fortnight understates agency reliance. Boarding hours are recorded only where an admission
+    decision was timestamped in the emergency department.
+  upstream_sources: [SRC-WFM, SRC-TIME-ATTENDANCE, SRC-ADT, SRC-SCHEDULING]
+  entities: [unit, shift, facility, roster]
+  certified_kpis: [KPI-OTSHARE-098, KPI-AGENCY-099, KPI-OCCUP-100, KPI-HPPD-101, KPI-BOARD-102]
+  columns:
+    - name: unit_id
+      type: string
+      business_name: "Unit ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Inpatient unit. The grain of this product together with the shift.
+    - name: shift_start
+      type: timestamp
+      business_name: "Shift Start"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Start of the rostered shift the row describes.
+    - name: facility
+      type: string
+      business_name: "Facility"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hospital or site the unit sits in.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the facility.
+    - name: unit_type
+      type: string
+      business_name: "Unit Type"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Clinical type of the unit.
+    - name: shift
+      type: string
+      business_name: "Shift"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Named shift within the day.
+    - name: budgeted_hours
+      type: number
+      business_name: "Budgeted Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours the roster was funded for on this shift.
+    - name: worked_hours
+      type: number
+      business_name: "Worked Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours actually worked on the shift, all sources included.
+    - name: overtime_hours
+      type: number
+      business_name: "Overtime Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours worked at an overtime rate, a subset of hours worked.
+    - name: agency_hours
+      type: number
+      business_name: "Agency Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours worked by contract or agency staff, a subset of hours worked.
+    - name: census_patients
+      type: number
+      business_name: "Census"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Patients on the unit at the census point for the shift.
+    - name: staffed_beds
+      type: number
+      business_name: "Staffed Beds"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Beds the unit could staff on this shift.
+    - name: licensed_beds
+      type: number
+      business_name: "Licensed Beds"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Beds the unit is licensed for, whether or not they could be staffed.
+    - name: admissions
+      type: number
+      business_name: "Admissions"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Patients admitted to the unit during the shift.
+    - name: discharges
+      type: number
+      business_name: "Discharges"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Patients discharged from the unit during the shift.
+    - name: boarding_hours
+      type: number
+      business_name: "Boarding Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours admitted patients waited in the emergency department for a bed on this unit.
+    - name: call_offs
+      type: integer
+      business_name: "Call Offs"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Rostered staff who called off for the shift.
+    - name: vacancy_count
+      type: integer
+      business_name: "Open Positions"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Established positions unfilled on the unit at the shift date.
+    - name: filled_shift
+      type: boolean
+      business_name: "Shift Filled"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the roster met its own staffing target for the shift.
+    - name: float_pool_used
+      type: boolean
+      business_name: "Float Pool Used"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the shift was covered in part from the central float pool.
+  contract:
+    version: 1.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "daily by 08:00"
+        p95_minutes: 60
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "payroll_system_of_record"
+    deprecation_policy:
+      notice_days: 90
+      minimum_parallel_run_days: 45
+    support:
+      hours: "extended"
+      p1_response_minutes: 30
+      on_call: "pagerduty://care-capacity-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US]
+    consumer_obligations:
+      - "Unit-level staffing must not be used to identify or manage an individual employee"
+      - "The most recent fortnight understates agency hours and must be labelled as provisional"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 30 minutes of detection.
+  quality_rules:
+    - id: QR-HLT-003-01
+      dimension: completeness
+      column: unit_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-HLT-003-02
+      dimension: uniqueness
+      columns: [unit_id, shift_start]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-HLT-003-03
+      dimension: freshness
+      rule: partition_completion_by
+      target: "24h"
+      tolerance_minutes: 60
+      severity: critical
+    - id: QR-HLT-003-04
+      dimension: validity
+      column: unit_type
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-HLT-003-05
+      dimension: consistency
+      column: worked_hours
+      rule: non_negative
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 620000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 89
+    planted_patterns:
+      - id: night-shift-agency
+        description: >-
+            Agency reliance concentrates on the night shift, and within it on one unit type.
+      - id: occupancy-boarding-link
+        description: >-
+            Boarding hours rise on the units running closest to their staffed bed capacity.
+      - id: vacancy-overtime-tail
+        description: >-
+            A tail of units carries both the open positions and the overtime that covers them.
+  value_case:
+    business_outcome: >-
+      Nurse staffing decisions are made against occupancy and boarding rather than against last
+      month's overtime bill.
+    baseline:
+      method: "weekly staffing review from roster exports reconciled to payroll by hand"
+      analyst_hours_month: 130
+      captured: "2026-03"
+    benefit_model: "avoided_agency_premium_hours * agency_premium_per_hour"
+    assumptions:
+      - text: "share of agency hours avoidable with a week of forward visibility"
+        value: 15.0
+        unit: percent
+        sample_size: 220
+        source: "float pool deployment pilot"
+        dated: 2026-06-02
+      - text: "premium paid per agency hour over establishment rate"
+        value: 41.0
+        unit: usd
+        source: "FY26 workforce budget"
+        dated: 2026-01-20
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0050

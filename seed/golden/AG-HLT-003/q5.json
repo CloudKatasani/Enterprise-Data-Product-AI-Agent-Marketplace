@@ -17,11 +17,11 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "30600",
-    "top": "24.26",
-    "top_share": "21.97"
+    "top": "19.72",
+    "top_share": "17.86"
   },
   "exchange_id": "DEMO-AG-HLT-003-05",
-  "headline": "analgesia leads on therapeutic substitution rate at 24.26%, 21.97% of the total across 5 therapeutic classs.",
+  "headline": "immunology trails on therapeutic substitution rate at 19.72%, 17.86% of the total across 5 therapeutic classs.",
   "kpi_definitions": [
     "KPI-SUBST-045"
   ],

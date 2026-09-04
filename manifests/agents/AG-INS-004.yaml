@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-INS-004
+  name: "Policyholder Relationship Analyst"
+  industry: insurance
+  domain: customer
+  owner:
+    party_id: PTY-0036
+    team: "Customer & Distribution Analytics"
+    on_call: "pagerduty://policyholder-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about policies per customer, multi-line penetration, digital enrolment,
+    cross-sell acceptance and complaint rate.
+  business_value_block:
+    analyses: [comparison, performance_ranking, gap_analysis, trend_segmented, cohort_comparison]
+    replaces: >-
+      The quarterly distribution pack and the penetration cut each channel lead rebuilds from it.
+    personas: [distribution_lead, customer_experience_manager, segment_marketing_manager]
+  out_of_scope:
+    - "Contacting a policyholder or launching a campaign"
+    - "Underwriting, pricing or renewal decisions"
+    - "Individual policyholder or household enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-INS-004/system@v1
+  data_products:
+    - product_id: DP-INS-003
+      columns: [customer_id, as_of_month, segment, region, distribution_channel, tenure_band, policies_held, coverage_lines_held, total_written_premium, service_contacts_90d, complaints_90d, digital_registered, autopay_enrolled, cross_sell_eligible, cross_sell_accepted, multi_line, lapsed]
+      access: read
+  tool_bindings:
+    - tool: query_dp_ins_003
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-INS-003"
+      scope: "dp:DP-INS-003:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-POLPERCUST-103
+      source_product: DP-INS-003
+      columns_used: [customer_id, as_of_month, segment, region, distribution_channel, tenure_band, policies_held, autopay_enrolled]
+      grains: [month, quarter, year]
+      slices: [segment, region, distribution_channel, tenure_band]
+      analysis_depth: compare
+    - kpi_id: KPI-MULTILINE-104
+      source_product: DP-INS-003
+      columns_used: [customer_id, as_of_month, segment, region, distribution_channel, tenure_band, multi_line]
+      grains: [month, quarter, year]
+      slices: [distribution_channel, segment, region, tenure_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-DIGITAL-105
+      source_product: DP-INS-003
+      columns_used: [customer_id, as_of_month, segment, region, distribution_channel, tenure_band, digital_registered]
+      grains: [month, quarter, year]
+      slices: [tenure_band, segment, region, distribution_channel]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-XSELL-106
+      source_product: DP-INS-003
+      columns_used: [customer_id, as_of_month, segment, region, distribution_channel, tenure_band, cross_sell_eligible, cross_sell_accepted]
+      grains: [month, quarter, year]
+      slices: [segment, distribution_channel, region, tenure_band]
+      analysis_depth: explain
+    - kpi_id: KPI-COMPLAINT-107
+      source_product: DP-INS-003
+      columns_used: [customer_id, as_of_month, segment, region, distribution_channel, tenure_band, complaints_90d]
+      grains: [month, quarter, year]
+      slices: [region, segment, distribution_channel, tenure_band]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-INS-004-01
+      ordinal: 1
+      question: "Which distribution channels have the weakest multi-line penetration?"
+      kpi_class: KPI-MULTILINE-104
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the channels selling one line at a time, and the distance to the best
+        visual: bar
+        table_columns: [distribution_channel, multi_line_pct, customers]
+        must_cite: [DP-INS-003, KPI-MULTILINE-104]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-004/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-004-02
+      ordinal: 2
+      question: "How does digital enrolment differ by tenure band?"
+      kpi_class: KPI-DIGITAL-105
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the tenure bands registered on digital and the ones that never were
+        visual: bar
+        table_columns: [tenure_band, digital_enrolment_pct, customers]
+        must_cite: [DP-INS-003, KPI-DIGITAL-105]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-004/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-004-03
+      ordinal: 3
+      question: "Which regions carry the highest complaint rate?"
+      kpi_class: KPI-COMPLAINT-107
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the regions complaining most per thousand customers, and the spread across the book
+        visual: bar
+        table_columns: [region, complaints_per_1000, customers]
+        must_cite: [DP-INS-003, KPI-COMPLAINT-107]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-004/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-004-04
+      ordinal: 4
+      question: "Which segments complain most per thousand customers?"
+      kpi_class: KPI-COMPLAINT-107
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the segments raising most complaints, and how far apart they sit
+        visual: bar
+        table_columns: [segment, complaints_per_1000, customers]
+        must_cite: [DP-INS-003, KPI-COMPLAINT-107]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-004/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-004-05
+      ordinal: 5
+      question: "Where is cross-sell acceptance strongest by segment?"
+      kpi_class: KPI-XSELL-106
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the segments taking up most of the cross-sells they were eligible for
+        visual: bar
+        table_columns: [segment, cross_sell_acceptance_pct, eligible_customers]
+        must_cite: [DP-INS-003, KPI-XSELL-106]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-004/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-INS-004/
+  value_case:
+    benefit_model: "avoided_distribution_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per penetration or complaint question"
+        value: 48
+        unit: minutes
+        sample_size: 13
+        source: "distribution analytics time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0036

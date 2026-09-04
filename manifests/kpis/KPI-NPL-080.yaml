@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-NPL-080
+  name: "Non-Performing Loan Ratio"
+  domain: finance
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Outstanding balance on defaulted accounts over total outstanding balance. Balance weighted,
+    because a defaulted mortgage and a defaulted card are not the same exposure.
+  numerator_expr: "sum(outstanding_balance) filter (where defaulted)"
+  denominator_expr: "sum(outstanding_balance)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [product_type, region, risk_grade, vintage_band]
+  unit: percent
+  direction: lower_is_better
+  target: 1.8
+  source_of_record: DP-BNK-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["NPL ratio", "impaired loans"]

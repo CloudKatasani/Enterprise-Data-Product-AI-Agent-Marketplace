@@ -1,0 +1,255 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-INS-004.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "167e02345c32ec8285f5304cfc765db85af8e5597327726adfefc13e9424a4e8",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-INS-004",
+    "name": "Policyholder Relationship Analyst",
+    "industry": "insurance",
+    "domain": "customer",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0036",
+      "team": "Customer & Distribution Analytics",
+      "on_call": "pagerduty://policyholder-agents"
+    }
+  },
+  "capability_statement": "Answers questions about policies per customer, multi-line penetration, digital enrolment, cross-sell acceptance and complaint rate.",
+  "business_value": {
+    "analyses": [
+      "comparison",
+      "performance_ranking",
+      "gap_analysis",
+      "trend_segmented",
+      "cohort_comparison"
+    ],
+    "replaces": "The quarterly distribution pack and the penetration cut each channel lead rebuilds from it.",
+    "personas": [
+      "distribution_lead",
+      "customer_experience_manager",
+      "segment_marketing_manager"
+    ]
+  },
+  "out_of_scope": [
+    "Contacting a policyholder or launching a campaign",
+    "Underwriting, pricing or renewal decisions",
+    "Individual policyholder or household enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-POLPERCUST-103",
+      "kpi_name": "Policies per Customer",
+      "unit": "count",
+      "source_product": "DP-INS-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-MULTILINE-104",
+      "kpi_name": "Multi-Line Penetration",
+      "unit": "percent",
+      "source_product": "DP-INS-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "distribution_channel",
+        "segment",
+        "region",
+        "tenure_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DIGITAL-105",
+      "kpi_name": "Digital Enrolment Rate",
+      "unit": "percent",
+      "source_product": "DP-INS-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "tenure_band",
+        "segment",
+        "region",
+        "distribution_channel"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-XSELL-106",
+      "kpi_name": "Cross-Sell Acceptance",
+      "unit": "percent",
+      "source_product": "DP-INS-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "segment",
+        "distribution_channel",
+        "region",
+        "tenure_band"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-COMPLAINT-107",
+      "kpi_name": "Complaint Rate per Thousand",
+      "unit": "rate",
+      "source_product": "DP-INS-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "region",
+        "segment",
+        "distribution_channel",
+        "tenure_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-INS-003",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band",
+        "policies_held",
+        "coverage_lines_held",
+        "total_written_premium",
+        "service_contacts_90d",
+        "complaints_90d",
+        "digital_registered",
+        "autopay_enrolled",
+        "cross_sell_eligible",
+        "cross_sell_accepted",
+        "multi_line",
+        "lapsed"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-INS-003:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-INS-004/ask",
+    "required_scope": "agent:AG-INS-004:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which distribution channels have the weakest multi-line penetration?",
+      "How does digital enrolment differ by tenure band?",
+      "Which regions carry the highest complaint rate?",
+      "Which segments complain most per thousand customers?",
+      "Where is cross-sell acceptance strongest by segment?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-INS-004/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_ins_003",
+        "scope": "dp:DP-INS-003:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-INS-003": "1.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "55df5eca8168824610789bb6b8c7125f3be8983c98ea6e2c037def82c8ca4506"
+}

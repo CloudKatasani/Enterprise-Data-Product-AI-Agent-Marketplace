@@ -191,3 +191,78 @@ def test_cost_is_the_finops_relative_unit_priced_by_the_runtime_rubric(
         * agent_runtime.number("cost_per_relative_unit_usd")
     ).quantize(Decimal("0.000001"))
     assert answer.cost_usd == expected
+
+
+# ---------------------------------------------------------------------------
+# Which end of the ranking the question asked for
+# ---------------------------------------------------------------------------
+
+_RANKING = {
+    "kpi_id": "KPI-X-001",
+    "source_product_id": "DP-X-001",
+    "columns_used": ["region", "value"],
+    "supported_grains": ["month"],
+    "supported_slices": ["region"],
+}
+
+
+def _plan(question: str, direction: str):
+    from services.agent_runtime import planner
+
+    return planner.resolve(
+        question=question,
+        analysis_type="performance_ranking",
+        coverage=_RANKING,
+        kpi={
+            "direction": direction,
+            "numerator_expr": "sum(value)",
+            "denominator_expr": None,
+            "expression": None,
+        },
+        binding_columns=["region", "value"],
+        column_types={"region": "string", "value": "number"},
+        limit=10,
+    )
+
+
+@pytest.mark.parametrize(
+    ("question", "direction", "ascending"),
+    [
+        # A quality word means the good or the bad end, and which end of the
+        # ranking that is depends on what the measure counts.
+        ("Which regions have the worst delinquency rate?", "lower_is_better", False),
+        ("Which regions have the worst margin?", "higher_is_better", True),
+        ("Which teams are fastest to restore?", "lower_is_better", True),
+        ("Which regions are strongest on retention?", "higher_is_better", False),
+        # A magnitude word names the direction outright, whichever way the
+        # measure reads: "most rejected units" is the top of the ranking even
+        # though rejections are bad.
+        ("Which suppliers account for most of our rejected units?", "lower_is_better", False),
+        ("Which regions carry the lowest premium?", "higher_is_better", True),
+        # No direction word at all leaves the default: largest first.
+        ("How does margin differ across regions?", "higher_is_better", False),
+    ],
+)
+def test_the_ranking_is_ordered_at_the_end_the_question_asked_for(
+    question: str, direction: str, ascending: bool
+) -> None:
+    assert _plan(question, direction).ascending is ascending
+
+
+def test_a_slice_is_matched_on_any_word_of_its_column_name() -> None:
+    from services.agent_runtime import planner
+
+    # "vintages" is the qualifier on `vintage_band`, not its noun. Matching
+    # only the noun answered a question about vintages by whichever slice the
+    # coverage map happened to list first.
+    assert planner.choose_slice(
+        "Which vintages carry the worst delinquency?",
+        ["product_type", "vintage_band"],
+        ["product_type", "vintage_band"],
+    ) == "vintage_band"
+    # An exact match still wins over a token one.
+    assert planner.choose_slice(
+        "How does margin differ by category?",
+        ["entry_category", "category"],
+        ["entry_category", "category"],
+    ) == "category"

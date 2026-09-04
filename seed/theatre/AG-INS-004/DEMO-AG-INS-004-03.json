@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-INS-004",
+  "agent_name": "Policyholder Relationship Analyst",
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "Southeast leads on complaint rate per thousand at 27.30, 33.31% of the total across 4 regions.",
+    "narrative": "Ranked by the certified definition KPI-COMPLAINT-107 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-COMPLAINT-107",
+        "observations"
+      ],
+      "rows": [
+        [
+          "Southeast",
+          27.3,
+          586
+        ],
+        [
+          "West",
+          22.03,
+          590
+        ],
+        [
+          "Midwest",
+          21.14,
+          615
+        ],
+        [
+          "Northeast",
+          11.49,
+          609
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 22.0,
+        "unit": "rate",
+        "x": "region",
+        "y": "KPI-COMPLAINT-107"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band",
+        "complaints_90d"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-004-03",
+  "kpi_definitions": [
+    "KPI-COMPLAINT-107"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Which regions carry the highest complaint rate?",
+  "recorded_at": "2026-09-04T21:58:29.886872+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 83,
+    "rows_scanned": 2400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "((count(distinct customer_id) filter (where complaints_90d > 0) * 1000)::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 81,
+        "rows_returned": 4,
+        "rows_scanned": 2400,
+        "tool": "query_dp_ins_003"
+      }
+    ]
+  }
+}

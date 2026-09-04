@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "channel",
+        "delinquent_30d",
+        "loan_id",
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band"
+      ],
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "800",
+    "top": "6.17",
+    "top_share": "57.40"
+  },
+  "exchange_id": "DEMO-AG-BNK-004-02",
+  "headline": "broker leads on 30+ delinquency rate at 6.17%, 57.40% of the total across 3 channels.",
+  "kpi_definitions": [
+    "KPI-DELINQ-079"
+  ],
+  "narrative": "Ranked by the certified definition KPI-DELINQ-079 over 800 rows in DP-BNK-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "How does delinquency differ across origination channels?",
+  "rows_scanned": 800,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "channel",
+    "KPI-DELINQ-079",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

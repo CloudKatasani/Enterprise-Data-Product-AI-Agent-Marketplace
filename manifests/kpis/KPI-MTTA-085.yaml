@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-MTTA-085
+  name: "Mean Time to Acknowledge"
+  domain: operations
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Mean minutes from an incident being raised to a responder acknowledging the page, over the
+    incidents opened in the period.
+  numerator_expr: "sum(acknowledged_minutes)"
+  denominator_expr: "count(distinct incident_id)"
+  grains_supported: [day, week, month]
+  slices_supported: [service_tier, region, team, deployment_ring]
+  unit: minutes
+  direction: lower_is_better
+  target: 6.0
+  source_of_record: DP-TCH-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["MTTA", "time to acknowledge"]

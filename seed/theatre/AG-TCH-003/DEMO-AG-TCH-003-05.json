@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-TCH-003",
+  "agent_name": "Service Reliability Analyst",
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "canary leads on change failure rate at 23.71%, 70.36% of the total across 3 deployment rings.",
+    "narrative": "Ranked by the certified definition KPI-CHGFAIL-087 over 30,240 rows in DP-TCH-002.",
+    "table": {
+      "columns": [
+        "deployment_ring",
+        "KPI-CHGFAIL-087",
+        "observations"
+      ],
+      "rows": [
+        [
+          "canary",
+          23.71,
+          6111
+        ],
+        [
+          "early",
+          5.01,
+          9063
+        ],
+        [
+          "broad",
+          4.98,
+          15066
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 8.0,
+        "unit": "percent",
+        "x": "deployment_ring",
+        "y": "KPI-CHGFAIL-087"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "service_id",
+        "observed_hour",
+        "deployment_ring",
+        "service_tier",
+        "team",
+        "change_deployed",
+        "change_failed"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-003-05",
+  "kpi_definitions": [
+    "KPI-CHGFAIL-087"
+  ],
+  "notes": [],
+  "question": "Which deployment rings fail changes most often?",
+  "recorded_at": "2026-09-04T21:58:31.182361+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 8,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "deployment_ring",
+          "limit": 24,
+          "measure": "((count(*) filter (where change_failed))::numeric / NULLIF((count(*) filter (where change_deployed))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 6,
+        "rows_returned": 3,
+        "rows_scanned": 30240,
+        "tool": "query_dp_tch_002"
+      }
+    ]
+  }
+}

@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "What are the top downtime reasons on Line 3?",
-  "recorded_at": "2026-09-04T16:01:33.710241+00:00",
+  "recorded_at": "2026-09-04T21:58:30.080702+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 6,
+    "latency_ms": 7,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
         },
         "cost_class": "small",
-        "duration_ms": 4,
+        "duration_ms": 3,
         "rows_returned": 4,
         "rows_scanned": 12600,
         "tool": "query_dp_mfg_001"

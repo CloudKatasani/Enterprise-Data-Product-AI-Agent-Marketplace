@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "boarding_hours",
+        "facility",
+        "region",
+        "shift",
+        "shift_start",
+        "unit_id",
+        "unit_type"
+      ],
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "48600",
+    "top": "1.93",
+    "top_share": "29.02"
+  },
+  "exchange_id": "DEMO-AG-HLT-004-05",
+  "headline": "critical_care leads on median boarding hours at 1.93 hours, 29.02% of the total across 4 unit types.",
+  "kpi_definitions": [
+    "KPI-BOARD-102"
+  ],
+  "narrative": "Ranked by the certified definition KPI-BOARD-102 over 48,600 rows in DP-HLT-003.",
+  "question": "Which unit types board admitted patients longest?",
+  "rows_scanned": 48600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "unit_type",
+    "KPI-BOARD-102",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

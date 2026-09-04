@@ -60,12 +60,12 @@
   ],
   "notes": [],
   "question": "How has loss ratio moved quarter by quarter?",
-  "recorded_at": "2026-09-04T16:01:33.678544+00:00",
+  "recorded_at": "2026-09-04T21:58:29.588189+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 7,
+    "latency_ms": 10,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {
@@ -83,7 +83,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "medium",
-        "duration_ms": 4,
+        "duration_ms": 7,
         "rows_returned": 2,
         "rows_scanned": 12600,
         "tool": "query_dp_ins_001"

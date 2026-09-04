@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "interest_income",
+        "loan_id",
+        "outstanding_balance",
+        "product_type",
+        "region",
+        "risk_grade",
+        "segment"
+      ],
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "19200",
+    "top": "11.26",
+    "top_share": "44.54"
+  },
+  "exchange_id": "DEMO-AG-BNK-004-03",
+  "headline": "card leads on portfolio yield at 11.26%, 44.54% of the total across 4 product types.",
+  "kpi_definitions": [
+    "KPI-PORTYIELD-078"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PORTYIELD-078 over 19,200 rows in DP-BNK-003.",
+  "question": "Which product types earn the most portfolio yield?",
+  "rows_scanned": 19200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "product_type",
+    "KPI-PORTYIELD-078",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

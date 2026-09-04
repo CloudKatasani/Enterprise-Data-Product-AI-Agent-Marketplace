@@ -1,0 +1,115 @@
+{
+  "agent_id": "AG-TRN-003",
+  "agent_name": "Freight Cost Analyst",
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "concentration",
+  "answer": {
+    "headline": "LANE-CHI-ATL leads on accessorial share of spend at 7.90%, 27.36% of the total across 6 lanes.",
+    "narrative": "Ranked by the certified definition KPI-ACCESSSHARE-090 over 28,800 rows in DP-TRN-002.",
+    "table": {
+      "columns": [
+        "lane",
+        "KPI-ACCESSSHARE-090",
+        "observations"
+      ],
+      "rows": [
+        [
+          "LANE-CHI-ATL",
+          7.9,
+          5160
+        ],
+        [
+          "LANE-DFW-DEN",
+          7.87,
+          4440
+        ],
+        [
+          "LANE-MIA-ORL",
+          3.31,
+          5280
+        ],
+        [
+          "LANE-NYC-BOS",
+          3.31,
+          4320
+        ],
+        [
+          "LANE-SEA-POR",
+          3.27,
+          4920
+        ],
+        [
+          "LANE-LAX-PHX",
+          3.21,
+          4680
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 8.0,
+        "unit": "percent",
+        "x": "lane",
+        "y": "KPI-ACCESSSHARE-090"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "invoice_line_id",
+        "invoice_date",
+        "lane",
+        "carrier",
+        "mode",
+        "region",
+        "linehaul_cost",
+        "accessorial_cost",
+        "fuel_surcharge"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-003-01",
+  "kpi_definitions": [
+    "KPI-ACCESSSHARE-090"
+  ],
+  "notes": [],
+  "question": "Which lanes carry the highest accessorial share of spend?",
+  "recorded_at": "2026-09-04T21:58:31.534957+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 11,
+    "rows_scanned": 28800,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "lane",
+          "limit": 24,
+          "measure": "((sum(accessorial_cost))::numeric / NULLIF((sum(linehaul_cost) + sum(accessorial_cost) + sum(fuel_surcharge))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 9,
+        "rows_returned": 6,
+        "rows_scanned": 28800,
+        "tool": "query_dp_trn_002"
+      }
+    ]
+  }
+}

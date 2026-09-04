@@ -19,11 +19,11 @@
   "claims": {
     "groups": "4",
     "rows_scanned": "31200",
-    "top": "78.83",
-    "top_share": "25.20"
+    "top": "77.25",
+    "top_share": "24.69"
   },
   "exchange_id": "DEMO-AG-HLT-003-01",
-  "headline": "med_reconciliation leads on care gap closure at 78.83%, 25.20% of the total across 4 measures.",
+  "headline": "hba1c trails on care gap closure at 77.25%, 24.69% of the total across 4 measures.",
   "kpi_definitions": [
     "KPI-CAREGAP-039"
   ],

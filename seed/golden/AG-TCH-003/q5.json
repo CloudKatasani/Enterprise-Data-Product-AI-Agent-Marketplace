@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "change_deployed",
+        "change_failed",
+        "deployment_ring",
+        "observed_hour",
+        "service_id",
+        "service_tier",
+        "team"
+      ],
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "30240",
+    "top": "23.71",
+    "top_share": "70.36"
+  },
+  "exchange_id": "DEMO-AG-TCH-003-05",
+  "headline": "canary leads on change failure rate at 23.71%, 70.36% of the total across 3 deployment rings.",
+  "kpi_definitions": [
+    "KPI-CHGFAIL-087"
+  ],
+  "narrative": "Ranked by the certified definition KPI-CHGFAIL-087 over 30,240 rows in DP-TCH-002.",
+  "question": "Which deployment rings fail changes most often?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "deployment_ring",
+    "KPI-CHGFAIL-087",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

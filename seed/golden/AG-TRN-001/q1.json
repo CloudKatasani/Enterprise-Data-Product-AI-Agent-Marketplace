@@ -20,11 +20,11 @@
   "claims": {
     "groups": "6",
     "rows_scanned": "13200",
-    "top": "96.90",
-    "top_share": "17.28"
+    "top": "86.95",
+    "top_share": "15.50"
   },
   "exchange_id": "DEMO-AG-TRN-001-01",
-  "headline": "SE-01 leads on on-time delivery rate at 96.90%, 17.28% of the total across 6 lanes.",
+  "headline": "NE-02 trails on on-time delivery rate at 86.95%, 15.50% of the total across 6 lanes.",
   "kpi_definitions": [
     "KPI-OTD-056"
   ],

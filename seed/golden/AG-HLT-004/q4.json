@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "census_patients",
+        "facility",
+        "region",
+        "shift",
+        "shift_start",
+        "staffed_beds",
+        "unit_id",
+        "unit_type"
+      ],
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "48600",
+    "top": "95.17",
+    "top_share": "28.55"
+  },
+  "exchange_id": "DEMO-AG-HLT-004-04",
+  "headline": "critical_care leads on bed occupancy at 95.17%, 28.55% of the total across 4 unit types.",
+  "kpi_definitions": [
+    "KPI-OCCUP-100"
+  ],
+  "narrative": "Ranked by the certified definition KPI-OCCUP-100 over 48,600 rows in DP-HLT-003.",
+  "question": "Which unit types run closest to their staffed bed capacity?",
+  "rows_scanned": 48600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "unit_type",
+    "KPI-OCCUP-100",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

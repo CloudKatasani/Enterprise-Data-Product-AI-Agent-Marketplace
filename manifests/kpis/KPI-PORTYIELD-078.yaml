@@ -1,0 +1,25 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PORTYIELD-078
+  name: "Portfolio Yield"
+  domain: finance
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Interest income earned over the outstanding balance that produced it, annualised. The
+    product carries a month of interest per row, so the twelve is what makes the figure the
+    annual rate its target is written in.
+  numerator_expr: "sum(interest_income) * 12"
+  denominator_expr: "sum(outstanding_balance)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [product_type, region, risk_grade, segment]
+  unit: percent
+  direction: higher_is_better
+  target: 6.5
+  source_of_record: DP-BNK-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["book yield", "portfolio yield"]

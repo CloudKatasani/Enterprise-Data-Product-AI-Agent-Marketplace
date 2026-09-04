@@ -69,12 +69,12 @@
   ],
   "notes": [],
   "question": "What is our primary bank share trend by segment?",
-  "recorded_at": "2026-09-04T16:01:32.616508+00:00",
+  "recorded_at": "2026-09-04T21:58:28.433937+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 21,
+    "latency_ms": 17,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {
@@ -92,7 +92,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 15,
+        "duration_ms": 13,
         "rows_returned": 4,
         "rows_scanned": 18000,
         "tool": "query_dp_bnk_001"

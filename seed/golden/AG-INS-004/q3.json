@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "complaints_90d",
+        "customer_id",
+        "distribution_channel",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "2400",
+    "top": "27.30",
+    "top_share": "33.31"
+  },
+  "exchange_id": "DEMO-AG-INS-004-03",
+  "headline": "Southeast leads on complaint rate per thousand at 27.30, 33.31% of the total across 4 regions.",
+  "kpi_definitions": [
+    "KPI-COMPLAINT-107"
+  ],
+  "narrative": "Ranked by the certified definition KPI-COMPLAINT-107 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which regions carry the highest complaint rate?",
+  "rows_scanned": 2400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "region",
+    "KPI-COMPLAINT-107",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

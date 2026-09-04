@@ -4,29 +4,29 @@
   "agent_version_id": "AGV-AG-BNK-001-1.0.0",
   "analysis_type": "opportunity_cohort",
   "answer": {
-    "headline": "affluent leads on deposit balance growth at 4.45%, 53.29% of the total across 3 segments.",
+    "headline": "wealth leads on deposit balance growth at 2.75%, 34.20% of the total across 3 product familys.",
     "narrative": "Ranked by the certified definition KPI-DEPGRW-020 over 18,000 rows in DP-BNK-001.",
     "table": {
       "columns": [
-        "segment",
+        "product_family",
         "KPI-DEPGRW-020",
         "observations"
       ],
       "rows": [
         [
-          "affluent",
-          4.45,
-          5112
+          "wealth",
+          2.75,
+          3636
         ],
         [
-          "mass",
-          1.95,
-          11088
+          "deposits",
+          2.73,
+          9396
         ],
         [
-          "private",
-          1.95,
-          1800
+          "lending",
+          2.56,
+          4968
         ]
       ]
     },
@@ -35,7 +35,7 @@
         "direction": "higher_is_better",
         "target": 3.0,
         "unit": "percent",
-        "x": "segment",
+        "x": "product_family",
         "y": "KPI-DEPGRW-020"
       },
       "type": "bar"
@@ -66,12 +66,12 @@
   ],
   "notes": [],
   "question": "Which single-product customers show strong balance growth?",
-  "recorded_at": "2026-09-04T16:01:32.629041+00:00",
+  "recorded_at": "2026-09-04T21:58:28.444546+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 11,
+    "latency_ms": 9,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {
@@ -82,14 +82,14 @@
       {
         "arguments": {
           "grain": "month",
-          "group_by": "segment",
+          "group_by": "product_family",
           "limit": 24,
           "measure": "((sum(ending_deposit_balance) - sum(starting_deposit_balance))::numeric / NULLIF((sum(starting_deposit_balance))::numeric, 0) * 100)",
           "period": "all periods",
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 4,
         "rows_returned": 3,
         "rows_scanned": 18000,
         "tool": "query_dp_bnk_001"

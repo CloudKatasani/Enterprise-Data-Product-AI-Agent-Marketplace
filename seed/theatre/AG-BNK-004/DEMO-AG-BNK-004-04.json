@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-BNK-004",
+  "agent_name": "Credit Portfolio Analyst",
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "gap_analysis",
+  "answer": {
+    "headline": "Southeast trails on provision coverage at 71.59%, 16.94% of the total across 4 regions.",
+    "narrative": "Ranked by the certified definition KPI-PROVCOV-081 over 19,200 rows in DP-BNK-003.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-PROVCOV-081",
+        "observations"
+      ],
+      "rows": [
+        [
+          "Southeast",
+          71.59,
+          4584
+        ],
+        [
+          "Northeast",
+          114.68,
+          4824
+        ],
+        [
+          "Midwest",
+          116.26,
+          4968
+        ],
+        [
+          "West",
+          120.15,
+          4824
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 95.0,
+        "unit": "percent",
+        "x": "region",
+        "y": "KPI-PROVCOV-081"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "loan_id",
+        "as_of_month",
+        "product_type",
+        "region",
+        "risk_grade",
+        "outstanding_balance",
+        "defaulted",
+        "provision_amount"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-004-04",
+  "kpi_definitions": [
+    "KPI-PROVCOV-081"
+  ],
+  "notes": [],
+  "question": "Where is provision coverage weakest by region?",
+  "recorded_at": "2026-09-04T21:58:28.724957+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 9,
+    "rows_scanned": 19200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "((sum(provision_amount))::numeric / NULLIF((sum(outstanding_balance) filter (where defaulted))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 5,
+        "rows_returned": 4,
+        "rows_scanned": 19200,
+        "tool": "query_dp_bnk_003"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-HPPD-101
+  name: "Hours per Patient Day"
+  domain: operations
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Hours worked over patient days delivered. The measure staffing plans are built from, and the
+    one a roster is judged against after the fact.
+  numerator_expr: "sum(worked_hours)"
+  denominator_expr: "sum(census_patients)"
+  grains_supported: [day, week, month]
+  slices_supported: [facility, region, unit_type, shift]
+  unit: hours
+  direction: higher_is_better
+  target: 8.4
+  source_of_record: DP-HLT-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["HPPD", "nursing hours per patient day"]

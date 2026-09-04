@@ -1,0 +1,100 @@
+{
+  "agent_id": "AG-INS-004",
+  "agent_name": "Policyholder Relationship Analyst",
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "gap_analysis",
+  "answer": {
+    "headline": "affinity trails on multi-line penetration at 21.49%, 20.59% of the total across 3 distribution channels.",
+    "narrative": "Ranked by the certified definition KPI-MULTILINE-104 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "distribution_channel",
+        "KPI-MULTILINE-104",
+        "observations"
+      ],
+      "rows": [
+        [
+          "affinity",
+          21.49,
+          470
+        ],
+        [
+          "agency",
+          41.09,
+          1195
+        ],
+        [
+          "direct",
+          41.77,
+          735
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 34.0,
+        "unit": "percent",
+        "x": "distribution_channel",
+        "y": "KPI-MULTILINE-104"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band",
+        "multi_line"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-004-01",
+  "kpi_definitions": [
+    "KPI-MULTILINE-104"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Which distribution channels have the weakest multi-line penetration?",
+  "recorded_at": "2026-09-04T21:58:29.723014+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 110,
+    "rows_scanned": 2400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "distribution_channel",
+          "limit": 24,
+          "measure": "((count(distinct customer_id) filter (where multi_line))::numeric / NULLIF((count(distinct customer_id))::numeric, 0) * 100)",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 107,
+        "rows_returned": 3,
+        "rows_scanned": 2400,
+        "tool": "query_dp_ins_003"
+      }
+    ]
+  }
+}

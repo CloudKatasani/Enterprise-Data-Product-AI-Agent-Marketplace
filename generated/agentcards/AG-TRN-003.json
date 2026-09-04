@@ -1,0 +1,261 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TRN-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "167e02345c32ec8285f5304cfc765db85af8e5597327726adfefc13e9424a4e8",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TRN-003",
+    "name": "Freight Cost Analyst",
+    "industry": "transportation",
+    "domain": "finance",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0052",
+      "team": "Logistics Finance",
+      "on_call": "pagerduty://freight-cost-agents"
+    }
+  },
+  "capability_statement": "Answers questions about freight margin, cost per kilometre, accessorial share, spot exposure and invoice disputes by lane and carrier.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "concentration",
+      "cohort_comparison",
+      "comparison",
+      "trend_segmented"
+    ],
+    "replaces": "The quarterly lane review and the accessorial spreadsheet procurement builds before it.",
+    "personas": [
+      "logistics_finance_partner",
+      "transport_procurement_lead",
+      "network_planner"
+    ]
+  },
+  "out_of_scope": [
+    "Tendering freight or awarding a lane to a carrier",
+    "Approving or settling a carrier invoice dispute",
+    "Individual shipment or invoice line enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-FRTMARGIN-088",
+      "kpi_name": "Freight Margin Rate",
+      "unit": "percent",
+      "source_product": "DP-TRN-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "customer",
+        "mode",
+        "service_level",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-COSTPERKM-089",
+      "kpi_name": "Cost per Kilometre",
+      "unit": "currency",
+      "source_product": "DP-TRN-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "mode",
+        "region"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-ACCESSSHARE-090",
+      "kpi_name": "Accessorial Share of Spend",
+      "unit": "percent",
+      "source_product": "DP-TRN-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "mode",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SPOTEXP-091",
+      "kpi_name": "Spot Exposure",
+      "unit": "percent",
+      "source_product": "DP-TRN-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "mode",
+        "service_level",
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DISPUTE-092",
+      "kpi_name": "Invoice Dispute Rate",
+      "unit": "percent",
+      "source_product": "DP-TRN-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "carrier",
+        "lane",
+        "customer",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TRN-002",
+      "columns": [
+        "invoice_line_id",
+        "shipment_id",
+        "invoice_date",
+        "lane",
+        "carrier",
+        "customer",
+        "service_level",
+        "mode",
+        "equipment_type",
+        "region",
+        "accessorial_type",
+        "billed_revenue",
+        "linehaul_cost",
+        "accessorial_cost",
+        "fuel_surcharge",
+        "tendered_to_spot",
+        "invoice_disputed",
+        "disputed_amount",
+        "billable_km",
+        "weight_kg"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TRN-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TRN-003/ask",
+    "required_scope": "agent:AG-TRN-003:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which lanes carry the highest accessorial share of spend?",
+      "Do spot-tendered movements earn a different freight margin?",
+      "Which lanes are thinnest on freight margin?",
+      "Which carriers account for most disputed value?",
+      "How does cost per kilometre compare across modes?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TRN-003/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_trn_002",
+        "scope": "dp:DP-TRN-002:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TRN-002": "1.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "16d85420b7b272fa4ee4ea9b7d483e1bf8657496b18897f8681acd4c9915e7a1"
+}

@@ -1,0 +1,100 @@
+{
+  "agent_id": "AG-INS-004",
+  "agent_name": "Policyholder Relationship Analyst",
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "commercial leads on complaint rate per thousand at 30.43, 47.10% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-COMPLAINT-107 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-COMPLAINT-107",
+        "observations"
+      ],
+      "rows": [
+        [
+          "commercial",
+          30.43,
+          493
+        ],
+        [
+          "mass",
+          19.83,
+          1210
+        ],
+        [
+          "preferred",
+          14.35,
+          697
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 22.0,
+        "unit": "rate",
+        "x": "segment",
+        "y": "KPI-COMPLAINT-107"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "distribution_channel",
+        "tenure_band",
+        "complaints_90d"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-004-04",
+  "kpi_definitions": [
+    "KPI-COMPLAINT-107"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Which segments complain most per thousand customers?",
+  "recorded_at": "2026-09-04T21:58:29.971861+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 83,
+    "rows_scanned": 2400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((count(distinct customer_id) filter (where complaints_90d > 0) * 1000)::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 80,
+        "rows_returned": 3,
+        "rows_scanned": 2400,
+        "tool": "query_dp_ins_003"
+      }
+    ]
+  }
+}

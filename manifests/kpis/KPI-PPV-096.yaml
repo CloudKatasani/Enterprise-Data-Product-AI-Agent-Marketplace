@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PPV-096
+  name: "Purchase Price Variance"
+  domain: supply_chain
+  steward: PTY-0046
+  status: certified
+spec:
+  business_definition: >-
+    Cash difference between what was paid and what standard cost said would be paid, across the
+    units received. Positive is an overspend against standard.
+  expression: "sum((unit_cost - standard_cost) * received_units)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [supplier_id, supplier_tier, material_class, plant, region]
+  unit: currency
+  direction: lower_is_better
+  target: 0.0
+  source_of_record: DP-MFG-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["PPV", "price variance"]

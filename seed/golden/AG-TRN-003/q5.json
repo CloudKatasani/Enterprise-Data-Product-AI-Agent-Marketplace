@@ -1,0 +1,43 @@
+{
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "accessorial_cost",
+        "billable_km",
+        "carrier",
+        "fuel_surcharge",
+        "invoice_date",
+        "invoice_line_id",
+        "lane",
+        "linehaul_cost",
+        "mode",
+        "region"
+      ],
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "28800",
+    "top": "1.44",
+    "top_share": "25.13"
+  },
+  "exchange_id": "DEMO-AG-TRN-003-05",
+  "headline": "air leads on cost per kilometre at $1.44, 25.13% of the total across 4 modes.",
+  "kpi_definitions": [
+    "KPI-COSTPERKM-089"
+  ],
+  "narrative": "Ranked by the certified definition KPI-COSTPERKM-089 over 28,800 rows in DP-TRN-002.",
+  "question": "How does cost per kilometre compare across modes?",
+  "rows_scanned": 28800,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "mode",
+    "KPI-COSTPERKM-089",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

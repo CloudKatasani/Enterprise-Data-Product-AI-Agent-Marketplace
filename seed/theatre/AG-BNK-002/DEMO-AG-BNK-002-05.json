@@ -4,39 +4,29 @@
   "agent_version_id": "AGV-AG-BNK-002-1.0.0",
   "analysis_type": "workload",
   "answer": {
-    "headline": "trade_based leads on investigation cycle time at 16.19 days, 20.26% of the total across 5 typologys.",
+    "headline": "team_charlie leads on investigation cycle time at 16.04 days, 33.44% of the total across 3 investigator teams.",
     "narrative": "Ranked by the certified definition KPI-INVCYCLE-024 over 14,400 rows in DP-BNK-002.",
     "table": {
       "columns": [
-        "typology",
+        "investigator_team",
         "KPI-INVCYCLE-024",
         "observations"
       ],
       "rows": [
         [
-          "trade_based",
-          16.19,
-          1350
+          "team_charlie",
+          16.04,
+          3420
         ],
         [
-          "structuring",
-          16.1,
-          5760
+          "team_alpha",
+          15.98,
+          6030
         ],
         [
-          "sanctions_proximity",
-          15.92,
-          900
-        ],
-        [
-          "rapid_movement",
-          15.86,
-          3330
-        ],
-        [
-          "mule_network",
-          15.86,
-          3060
+          "team_bravo",
+          15.94,
+          4950
         ]
       ]
     },
@@ -45,7 +35,7 @@
         "direction": "lower_is_better",
         "target": 12.0,
         "unit": "days",
-        "x": "typology",
+        "x": "investigator_team",
         "y": "KPI-INVCYCLE-024"
       },
       "type": "bar"
@@ -74,12 +64,12 @@
   ],
   "notes": [],
   "question": "Which investigators are carrying aged alerts above SLA?",
-  "recorded_at": "2026-09-04T16:01:32.727604+00:00",
+  "recorded_at": "2026-09-04T21:58:28.524196+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 12,
+    "latency_ms": 9,
     "rows_scanned": 14400,
     "runtime": "analytic",
     "tokens": {
@@ -90,15 +80,15 @@
       {
         "arguments": {
           "grain": "month",
-          "group_by": "typology",
+          "group_by": "investigator_team",
           "limit": 24,
           "measure": "(percentile_cont(0.5) within group (order by investigation_days))",
           "period": "all periods",
           "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
         },
         "cost_class": "small",
-        "duration_ms": 7,
-        "rows_returned": 5,
+        "duration_ms": 6,
+        "rows_returned": 3,
         "rows_scanned": 14400,
         "tool": "query_dp_bnk_002"
       }

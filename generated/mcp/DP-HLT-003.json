@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-HLT-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "8582ee023574045c153f6206c9f567f1bd8bf26f280d60891b3220444572dc41",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-003",
+  "product": {
+    "id": "DP-HLT-003",
+    "name": "Workforce & Care Capacity",
+    "version": "1.0.0",
+    "sensitivity": "internal",
+    "contains_pii": false,
+    "grain": "one row per unit per shift"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-HLT-003:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_unit_operations",
+      "description": "Return certified measures for Workforce & Care Capacity by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,week,month]",
+        "slices": "array[enum[facility,unit_type,shift]]",
+        "kpi_ids": "array[enum[KPI-OTSHARE-098,KPI-AGENCY-099,KPI-OCCUP-100,KPI-HPPD-101,KPI-BOARD-102]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 24800,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": false,
+    "max_rows_per_call": 24800,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-HLT-003",
+    "contract_version": "1.0.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "Unit-level staffing must not be used to identify or manage an individual employee",
+    "The most recent fortnight understates agency hours and must be labelled as provisional"
+  ]
+}

@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ACCESSSHARE-090
+  name: "Accessorial Share of Spend"
+  domain: finance
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Accessorial charges as a share of total carrier cost. The measure exists because
+    accessorials are the part of freight spend nobody contracted for.
+  numerator_expr: "sum(accessorial_cost)"
+  denominator_expr: "sum(linehaul_cost) + sum(accessorial_cost) + sum(fuel_surcharge)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [lane, carrier, customer, mode, service_level, region]
+  unit: percent
+  direction: lower_is_better
+  target: 8.0
+  source_of_record: DP-TRN-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["accessorial share", "unplanned freight spend"]

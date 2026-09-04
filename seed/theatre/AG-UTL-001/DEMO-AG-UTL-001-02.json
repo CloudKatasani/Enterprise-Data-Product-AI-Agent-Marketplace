@@ -86,12 +86,12 @@
   ],
   "notes": [],
   "question": "Which feeders contribute most to interruption minutes?",
-  "recorded_at": "2026-09-04T16:01:35.229539+00:00",
+  "recorded_at": "2026-09-04T21:58:31.637748+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 36,
+    "latency_ms": 34,
     "rows_scanned": 7440,
     "runtime": "analytic",
     "tokens": {

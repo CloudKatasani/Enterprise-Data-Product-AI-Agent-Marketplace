@@ -67,12 +67,12 @@
   ],
   "notes": [],
   "question": "Which segments retain subscribers best?",
-  "recorded_at": "2026-09-04T16:01:35.035164+00:00",
+  "recorded_at": "2026-09-04T21:58:31.401579+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 41,
+    "latency_ms": 40,
     "rows_scanned": 6510,
     "runtime": "analytic",
     "tokens": {

@@ -1,0 +1,49 @@
+{
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "accessorial_cost",
+        "billed_revenue",
+        "carrier",
+        "customer",
+        "fuel_surcharge",
+        "invoice_date",
+        "invoice_line_id",
+        "lane",
+        "linehaul_cost",
+        "mode",
+        "region",
+        "service_level",
+        "tendered_to_spot"
+      ],
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "11.94",
+    "cohort_high": "20.00",
+    "cohort_high_observations": "24783",
+    "cohort_low": "8.06",
+    "cohort_low_observations": "4017",
+    "groups": "2",
+    "rows_scanned": "28800"
+  },
+  "exchange_id": "DEMO-AG-TRN-003-02",
+  "headline": "Freight Margin Rate is 20.00% where cohort is false against 8.06% where it is true, a gap of 11.94%.",
+  "kpi_definitions": [
+    "KPI-FRTMARGIN-088"
+  ],
+  "narrative": "Both cohorts are drawn from DP-TRN-002 over the same period: 24,783 observations against 4,017.",
+  "question": "Do spot-tendered movements earn a different freight margin?",
+  "rows_scanned": 28800,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-FRTMARGIN-088",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

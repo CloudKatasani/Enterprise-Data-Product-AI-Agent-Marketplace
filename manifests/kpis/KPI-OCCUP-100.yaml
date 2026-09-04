@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-OCCUP-100
+  name: "Bed Occupancy"
+  domain: operations
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Census over staffed beds. Staffed rather than licensed: a bed nobody can staff is not
+    capacity, and counting it understates how full the unit really is.
+  numerator_expr: "sum(census_patients)"
+  denominator_expr: "sum(staffed_beds)"
+  grains_supported: [day, week, month]
+  slices_supported: [facility, region, unit_type, shift]
+  unit: percent
+  direction: higher_is_better
+  target: 85.0
+  source_of_record: DP-HLT-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["occupancy", "bed utilisation"]

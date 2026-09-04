@@ -74,7 +74,7 @@
   ],
   "notes": [],
   "question": "How has emergency department utilization moved by month?",
-  "recorded_at": "2026-09-04T16:01:33.461205+00:00",
+  "recorded_at": "2026-09-04T21:58:29.274431+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
@@ -97,7 +97,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
         },
         "cost_class": "medium",
-        "duration_ms": 25,
+        "duration_ms": 24,
         "rows_returned": 5,
         "rows_scanned": 31200,
         "tool": "query_dp_hlt_001"

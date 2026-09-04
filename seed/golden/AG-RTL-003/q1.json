@@ -18,11 +18,11 @@
   "claims": {
     "groups": "6",
     "rows_scanned": "23400",
-    "top": "35.68",
-    "top_share": "16.70"
+    "top": "35.47",
+    "top_share": "16.60"
   },
   "exchange_id": "DEMO-AG-RTL-003-01",
-  "headline": "toys leads on gross margin rate at 35.68%, 16.70% of the total across 6 categorys.",
+  "headline": "apparel trails on gross margin rate at 35.47%, 16.60% of the total across 6 categorys.",
   "kpi_definitions": [
     "KPI-GMRATE-049"
   ],

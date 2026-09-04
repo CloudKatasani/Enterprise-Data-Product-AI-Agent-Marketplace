@@ -1,0 +1,107 @@
+{
+  "agent_id": "AG-TCH-003",
+  "agent_name": "Service Reliability Analyst",
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "billing leads on mean time to restore at 81.67 minutes, 20.50% of the total across 5 teams.",
+    "narrative": "Ranked by the certified definition KPI-MTTR-086 over 30,240 rows in DP-TCH-002.",
+    "table": {
+      "columns": [
+        "team",
+        "KPI-MTTR-086",
+        "observations"
+      ],
+      "rows": [
+        [
+          "billing",
+          81.67,
+          4704
+        ],
+        [
+          "search",
+          80.98,
+          3696
+        ],
+        [
+          "payments",
+          80.62,
+          7392
+        ],
+        [
+          "platform",
+          78.4,
+          6720
+        ],
+        [
+          "identity",
+          76.79,
+          7728
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 60.0,
+        "unit": "minutes",
+        "x": "team",
+        "y": "KPI-MTTR-086"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "incident_id",
+        "observed_hour",
+        "service_tier",
+        "region",
+        "team",
+        "resolved_minutes"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-003-04",
+  "kpi_definitions": [
+    "KPI-MTTR-086"
+  ],
+  "notes": [],
+  "question": "How does time to restore compare across owning teams?",
+  "recorded_at": "2026-09-04T21:58:31.172898+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 15,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "team",
+          "limit": 24,
+          "measure": "((sum(resolved_minutes))::numeric / NULLIF((count(distinct incident_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 13,
+        "rows_returned": 5,
+        "rows_scanned": 30240,
+        "tool": "query_dp_tch_002"
+      }
+    ]
+  }
+}

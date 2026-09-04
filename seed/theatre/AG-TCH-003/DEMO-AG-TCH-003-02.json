@@ -1,0 +1,159 @@
+{
+  "agent_id": "AG-TCH-003",
+  "agent_name": "Service Reliability Analyst",
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "event_analysis",
+  "answer": {
+    "headline": "Service Error Rate is 0.35% for the day ending 2026-09-04, flat on the prior day.",
+    "narrative": "Computed from DP-TCH-002 under the certified definition KPI-ERRRATE-083, across 15 days and 30,240 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-ERRRATE-083",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-08-21",
+          0.35,
+          2070
+        ],
+        [
+          "2026-08-22",
+          0.35,
+          2160
+        ],
+        [
+          "2026-08-23",
+          0.35,
+          2160
+        ],
+        [
+          "2026-08-24",
+          0.35,
+          2160
+        ],
+        [
+          "2026-08-25",
+          0.73,
+          2160
+        ],
+        [
+          "2026-08-26",
+          0.74,
+          2160
+        ],
+        [
+          "2026-08-27",
+          0.75,
+          2160
+        ],
+        [
+          "2026-08-28",
+          0.37,
+          2160
+        ],
+        [
+          "2026-08-29",
+          0.35,
+          2160
+        ],
+        [
+          "2026-08-30",
+          0.35,
+          2160
+        ],
+        [
+          "2026-08-31",
+          0.35,
+          2160
+        ],
+        [
+          "2026-09-01",
+          0.35,
+          2160
+        ],
+        [
+          "2026-09-02",
+          0.35,
+          2160
+        ],
+        [
+          "2026-09-03",
+          0.35,
+          2160
+        ],
+        [
+          "2026-09-04",
+          0.35,
+          90
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 0.5,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-ERRRATE-083"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "service_id",
+        "observed_hour",
+        "service_tier",
+        "region",
+        "team",
+        "deployment_ring",
+        "request_count",
+        "error_count"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-003-02",
+  "kpi_definitions": [
+    "KPI-ERRRATE-083"
+  ],
+  "notes": [],
+  "question": "How has the error rate moved day by day?",
+  "recorded_at": "2026-09-04T21:58:31.138884+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 13,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "day",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(error_count))::numeric / NULLIF((sum(request_count))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 10,
+        "rows_returned": 15,
+        "rows_scanned": 30240,
+        "tool": "query_dp_tch_002"
+      }
+    ]
+  }
+}

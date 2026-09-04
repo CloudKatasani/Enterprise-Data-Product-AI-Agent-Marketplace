@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TRN-003
+  name: "Freight Cost Analyst"
+  industry: transportation
+  domain: finance
+  owner:
+    party_id: PTY-0052
+    team: "Logistics Finance"
+    on_call: "pagerduty://freight-cost-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about freight margin, cost per kilometre, accessorial share, spot exposure
+    and invoice disputes by lane and carrier.
+  business_value_block:
+    analyses: [performance_ranking, concentration, cohort_comparison, comparison, trend_segmented]
+    replaces: >-
+      The quarterly lane review and the accessorial spreadsheet procurement builds before it.
+    personas: [logistics_finance_partner, transport_procurement_lead, network_planner]
+  out_of_scope:
+    - "Tendering freight or awarding a lane to a carrier"
+    - "Approving or settling a carrier invoice dispute"
+    - "Individual shipment or invoice line enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TRN-003/system@v1
+  data_products:
+    - product_id: DP-TRN-002
+      columns: [invoice_line_id, shipment_id, invoice_date, lane, carrier, customer, service_level, mode, equipment_type, region, accessorial_type, billed_revenue, linehaul_cost, accessorial_cost, fuel_surcharge, tendered_to_spot, invoice_disputed, disputed_amount, billable_km, weight_kg]
+      access: read
+  tool_bindings:
+    - tool: query_dp_trn_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TRN-002"
+      scope: "dp:DP-TRN-002:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-FRTMARGIN-088
+      source_product: DP-TRN-002
+      columns_used: [invoice_line_id, invoice_date, lane, carrier, customer, mode, service_level, region, billed_revenue, linehaul_cost, accessorial_cost, fuel_surcharge, tendered_to_spot]
+      grains: [week, month, quarter]
+      slices: [lane, carrier, customer, mode, service_level, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-COSTPERKM-089
+      source_product: DP-TRN-002
+      columns_used: [invoice_line_id, invoice_date, lane, carrier, mode, region, linehaul_cost, accessorial_cost, fuel_surcharge, billable_km]
+      grains: [week, month, quarter]
+      slices: [lane, carrier, mode, region]
+      analysis_depth: compare
+    - kpi_id: KPI-ACCESSSHARE-090
+      source_product: DP-TRN-002
+      columns_used: [invoice_line_id, invoice_date, lane, carrier, mode, region, linehaul_cost, accessorial_cost, fuel_surcharge]
+      grains: [week, month, quarter]
+      slices: [lane, carrier, mode, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-SPOTEXP-091
+      source_product: DP-TRN-002
+      columns_used: [invoice_line_id, invoice_date, lane, carrier, mode, service_level, region, tendered_to_spot]
+      grains: [week, month, quarter]
+      slices: [lane, carrier, mode, service_level, region]
+      analysis_depth: explain
+    - kpi_id: KPI-DISPUTE-092
+      source_product: DP-TRN-002
+      columns_used: [invoice_line_id, invoice_date, lane, carrier, customer, region, billed_revenue, disputed_amount]
+      grains: [week, month, quarter]
+      slices: [carrier, lane, customer, region]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-TRN-003-01
+      ordinal: 1
+      question: "Which lanes carry the highest accessorial share of spend?"
+      kpi_class: KPI-ACCESSSHARE-090
+      analysis_type: concentration
+      expected_shape:
+        headline: >-
+          the lanes where unplanned charges take most of the freight bill
+        visual: pareto
+        table_columns: [lane, accessorial_share_pct, total_cost]
+        must_cite: [DP-TRN-002, KPI-ACCESSSHARE-090]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TRN-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-003-02
+      ordinal: 2
+      question: "Do spot-tendered movements earn a different freight margin?"
+      kpi_class: KPI-FRTMARGIN-088
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          the margin difference between spot-tendered and contracted movements
+        visual: bar
+        table_columns: [cohort, freight_margin_pct, billed_revenue]
+        must_cite: [DP-TRN-002, KPI-FRTMARGIN-088]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TRN-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-003-03
+      ordinal: 3
+      question: "Which lanes are thinnest on freight margin?"
+      kpi_class: KPI-FRTMARGIN-088
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the lanes trading at the thinnest margin, and the spread across the network
+        visual: bar
+        table_columns: [lane, freight_margin_pct, billed_revenue]
+        must_cite: [DP-TRN-002, KPI-FRTMARGIN-088]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TRN-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-003-04
+      ordinal: 4
+      question: "Which carriers account for most disputed value?"
+      kpi_class: KPI-DISPUTE-092
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the carriers raising most disputed value against what they billed
+        visual: bar
+        table_columns: [carrier, dispute_rate_pct, billed_revenue]
+        must_cite: [DP-TRN-002, KPI-DISPUTE-092]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TRN-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-003-05
+      ordinal: 5
+      question: "How does cost per kilometre compare across modes?"
+      kpi_class: KPI-COSTPERKM-089
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the modes above and below the network cost per kilometre
+        visual: bar
+        table_columns: [mode, cost_per_km, billable_km]
+        must_cite: [DP-TRN-002, KPI-COSTPERKM-089]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TRN-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TRN-003/
+  value_case:
+    benefit_model: "avoided_lane_review_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per freight cost question"
+        value: 60
+        unit: minutes
+        sample_size: 14
+        source: "logistics finance time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0052

@@ -1,0 +1,255 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-BNK-004.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "167e02345c32ec8285f5304cfc765db85af8e5597327726adfefc13e9424a4e8",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-BNK-004",
+    "name": "Credit Portfolio Analyst",
+    "industry": "banking",
+    "domain": "finance",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0034",
+      "team": "Credit Portfolio Analytics",
+      "on_call": "pagerduty://lending-agents"
+    }
+  },
+  "capability_statement": "Answers questions about portfolio yield, delinquency, non-performing balance, provision coverage and loan to value across the lending book.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "comparison",
+      "trend_segmented",
+      "cohort_comparison",
+      "gap_analysis"
+    ],
+    "replaces": "The monthly credit pack and the arrears cut each portfolio manager rebuilds from it.",
+    "personas": [
+      "credit_portfolio_manager",
+      "finance_business_partner",
+      "chief_risk_officer"
+    ]
+  },
+  "out_of_scope": [
+    "Lending decisions or credit limit changes",
+    "Collections contact or forbearance approval",
+    "Individual borrower or account enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-PORTYIELD-078",
+      "kpi_name": "Portfolio Yield",
+      "unit": "percent",
+      "source_product": "DP-BNK-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "product_type",
+        "region",
+        "risk_grade",
+        "segment"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DELINQ-079",
+      "kpi_name": "30+ Delinquency Rate",
+      "unit": "percent",
+      "source_product": "DP-BNK-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band",
+        "channel"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-NPL-080",
+      "kpi_name": "Non-Performing Loan Ratio",
+      "unit": "percent",
+      "source_product": "DP-BNK-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-PROVCOV-081",
+      "kpi_name": "Provision Coverage",
+      "unit": "percent",
+      "source_product": "DP-BNK-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "product_type",
+        "region",
+        "risk_grade"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-LTV-082",
+      "kpi_name": "Average Loan to Value",
+      "unit": "percent",
+      "source_product": "DP-BNK-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-BNK-003",
+      "columns": [
+        "loan_id",
+        "as_of_month",
+        "product_type",
+        "region",
+        "segment",
+        "channel",
+        "risk_grade",
+        "vintage_band",
+        "outstanding_balance",
+        "original_balance",
+        "interest_income",
+        "days_past_due",
+        "delinquent_30d",
+        "defaulted",
+        "charged_off_amount",
+        "provision_amount",
+        "collateral_value"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-BNK-003:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-BNK-004/ask",
+    "required_scope": "agent:AG-BNK-004:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 7000,
+    "cost_per_answer_usd": 0.08
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which origination vintages carry the worst delinquency?",
+      "How does delinquency differ across origination channels?",
+      "Which product types earn the most portfolio yield?",
+      "Where is provision coverage weakest by region?",
+      "How has the non-performing loan ratio moved quarter by quarter?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-BNK-004/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_bnk_003",
+        "scope": "dp:DP-BNK-003:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-BNK-003": "1.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "19eec63fee259facc921905dea6f44fc826caf3fd6b2faa5c4c4315908870859"
+}

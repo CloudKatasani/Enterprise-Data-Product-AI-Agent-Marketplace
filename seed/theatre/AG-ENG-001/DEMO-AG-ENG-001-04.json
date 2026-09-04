@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which demand response programmes are getting the best response?",
-  "recorded_at": "2026-09-04T16:01:33.000983+00:00",
+  "recorded_at": "2026-09-04T21:58:28.853861+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 51,
+    "latency_ms": 39,
     "rows_scanned": 17100,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_eng_001"
         },
         "cost_class": "small",
-        "duration_ms": 46,
+        "duration_ms": 36,
         "rows_returned": 3,
         "rows_scanned": 17100,
         "tool": "query_dp_eng_001"

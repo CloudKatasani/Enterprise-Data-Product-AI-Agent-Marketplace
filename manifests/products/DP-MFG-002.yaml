@@ -1,0 +1,306 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-MFG-002
+  name: "Supplier Quality & Inbound Materials"
+  industry: manufacturing
+  domain: supply_chain
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0046
+    team: "Supplier Quality"
+    escalation: "#dp-supplier-quality"
+  certification: certified
+spec:
+  purpose: >-
+    Receipt-line view of what suppliers delivered against what was ordered and promised, with
+    the inspection outcome and the price paid, so quality and procurement rank the same
+    suppliers.
+  grain: "one row per inbound receipt line"
+  history_months: 24
+  known_limitations: >-
+    Rejections are recorded at goods receipt; a defect found later on the line is a
+    non-conformance against production and does not restate the receipt. Lead time is measured
+    from purchase order to receipt and therefore includes the buyer's own approval delay, not
+    only the supplier's. Consignment stock is received on consumption rather than on delivery,
+    so its lead time is not comparable with bought-in material.
+  upstream_sources: [SRC-SUPPLIER-PORTAL, SRC-INBOUND-QMS, SRC-ERP-SUPPLY, SRC-ERP-QUALITY]
+  entities: [receipt_line, purchase_order, supplier, material]
+  certified_kpis: [KPI-SUPPDEF-093, KPI-INBOTD-094, KPI-FILLRATE-095, KPI-PPV-096, KPI-INBLEAD-097]
+  columns:
+    - name: receipt_line_id
+      type: string
+      business_name: "Receipt Line ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Goods-receipt line. The grain of this product.
+    - name: purchase_order_id
+      type: string
+      business_name: "Purchase Order ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Purchase order the receipt line settles against.
+    - name: supplier_id
+      type: string
+      business_name: "Supplier"
+      nullable: false
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Supplier that shipped the material.
+    - name: receipt_date
+      type: date
+      business_name: "Receipt Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Date the material was booked into stock.
+    - name: material_class
+      type: string
+      business_name: "Material Class"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Commodity class the material belongs to.
+    - name: plant
+      type: string
+      business_name: "Plant"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Receiving plant.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the receiving plant.
+    - name: supplier_tier
+      type: string
+      business_name: "Supplier Tier"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Strategic tier the supplier is managed at.
+    - name: country_of_origin
+      type: string
+      business_name: "Country of Origin"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Declared country the material was produced in.
+    - name: ordered_units
+      type: number
+      business_name: "Ordered Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units the purchase order line called for.
+    - name: received_units
+      type: number
+      business_name: "Received Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units physically received on the line.
+    - name: accepted_units
+      type: number
+      business_name: "Accepted Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units passed into usable stock.
+    - name: rejected_units
+      type: number
+      business_name: "Rejected Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units rejected at receipt.
+    - name: rejection_reason
+      type: string
+      business_name: "Rejection Reason"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Reason recorded against the rejection, null where nothing was rejected.
+    - name: promised_date
+      type: date
+      business_name: "Promised Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Date the supplier committed to on the order acknowledgement.
+    - name: on_time
+      type: boolean
+      business_name: "On Time"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the receipt landed on or before the promised date.
+    - name: inspection_required
+      type: boolean
+      business_name: "Inspection Required"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the material class or supplier state calls for incoming inspection.
+    - name: inspection_passed
+      type: boolean
+      business_name: "Inspection Passed"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when incoming inspection passed, or where none was required.
+    - name: unit_cost
+      type: number
+      business_name: "Unit Cost"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Price paid per unit on the line.
+    - name: standard_cost
+      type: number
+      business_name: "Standard Cost"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Standard cost the material is valued at.
+    - name: lead_time_days
+      type: number
+      business_name: "Lead Time Days"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Days from purchase order to goods receipt.
+  contract:
+    version: 1.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "daily by 05:00"
+        p95_minutes: 60
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "erp_system_of_record"
+    deprecation_policy:
+      notice_days: 90
+      minimum_parallel_run_days: 45
+    support:
+      hours: "extended"
+      p1_response_minutes: 45
+      on_call: "pagerduty://supplier-quality-dp"
+    classification:
+      max_sensitivity: confidential
+      contains_pii: false
+      residency: [US, EU, APAC]
+    consumer_obligations:
+      - "Supplier-level pricing is commercially confidential and must not leave procurement"
+      - "Defect rates must be shared with a supplier only through supplier quality"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 45 minutes of detection.
+  quality_rules:
+    - id: QR-MFG-002-01
+      dimension: completeness
+      column: receipt_line_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-MFG-002-02
+      dimension: uniqueness
+      columns: [receipt_line_id]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-MFG-002-03
+      dimension: freshness
+      rule: partition_completion_by
+      target: "24h"
+      tolerance_minutes: 60
+      severity: critical
+    - id: QR-MFG-002-04
+      dimension: validity
+      column: material_class
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-MFG-002-05
+      dimension: consistency
+      column: received_units
+      rule: non_negative
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 700000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 90
+    planted_patterns:
+      - id: one-supplier-defect-tail
+        description: >-
+            A small number of suppliers carry most of the rejected units, concentrated in one
+            material class.
+      - id: offshore-lead-time
+        description: >-
+            One country of origin runs a materially longer lead time, and its on-time rate is
+            worse for it.
+      - id: price-variance-drift
+        description: >-
+            Purchase price variance drifts upward in one commodity class over the period.
+  value_case:
+    business_outcome: >-
+      Supplier reviews open with the suppliers costing the plant money rather than the ones with
+      the largest spend.
+    baseline:
+      method: "quarterly supplier scorecard built by hand from ERP and inspection extracts"
+      analyst_hours_month: 95
+      captured: "2026-04"
+    benefit_model: "avoided_rejection_cost + recovered_price_variance"
+    assumptions:
+      - text: "fully loaded cost of handling and returning a rejected unit"
+        value: 34.0
+        unit: usd
+        sample_size: 480
+        source: "goods-receipt cost study"
+        dated: 2026-05-05
+      - text: "share of price variance recoverable at the next negotiation"
+        value: 40.0
+        unit: percent
+        sample_size: 18
+        source: "procurement negotiation outcomes"
+        dated: 2026-05-05
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0046

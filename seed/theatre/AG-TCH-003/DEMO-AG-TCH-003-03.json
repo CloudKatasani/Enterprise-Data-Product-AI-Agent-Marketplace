@@ -1,0 +1,97 @@
+{
+  "agent_id": "AG-TCH-003",
+  "agent_name": "Service Reliability Analyst",
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "tier3 leads on mean time to acknowledge at 20.65 minutes, 65.00% of the total across 3 service tiers.",
+    "narrative": "Ranked by the certified definition KPI-MTTA-085 over 30,240 rows in DP-TCH-002.",
+    "table": {
+      "columns": [
+        "service_tier",
+        "KPI-MTTA-085",
+        "observations"
+      ],
+      "rows": [
+        [
+          "tier3",
+          20.65,
+          8736
+        ],
+        [
+          "tier1",
+          5.68,
+          10080
+        ],
+        [
+          "tier2",
+          5.44,
+          11424
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 6.0,
+        "unit": "minutes",
+        "x": "service_tier",
+        "y": "KPI-MTTA-085"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "incident_id",
+        "observed_hour",
+        "service_tier",
+        "region",
+        "team",
+        "acknowledged_minutes"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-003-03",
+  "kpi_definitions": [
+    "KPI-MTTA-085"
+  ],
+  "notes": [],
+  "question": "Which service tiers are slowest to acknowledge an incident?",
+  "recorded_at": "2026-09-04T21:58:31.156334+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 16,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "service_tier",
+          "limit": 24,
+          "measure": "((sum(acknowledged_minutes))::numeric / NULLIF((count(distinct incident_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 14,
+        "rows_returned": 3,
+        "rows_scanned": 30240,
+        "tool": "query_dp_tch_002"
+      }
+    ]
+  }
+}

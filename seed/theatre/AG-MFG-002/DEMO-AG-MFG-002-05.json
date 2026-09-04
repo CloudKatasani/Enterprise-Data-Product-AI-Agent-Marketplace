@@ -1,0 +1,110 @@
+{
+  "agent_id": "AG-MFG-002",
+  "agent_name": "Supplier Quality Analyst",
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "polymers leads on purchase price variance at $8,254,813.37, 99.68% of the total across 5 material classs.",
+    "narrative": "Ranked by the certified definition KPI-PPV-096 over 26,400 rows in DP-MFG-002.",
+    "table": {
+      "columns": [
+        "material_class",
+        "KPI-PPV-096",
+        "observations"
+      ],
+      "rows": [
+        [
+          "polymers",
+          8254813.37,
+          4320
+        ],
+        [
+          "packaging",
+          41517.06,
+          3600
+        ],
+        [
+          "castings",
+          29402.84,
+          5160
+        ],
+        [
+          "fasteners",
+          16098.31,
+          5760
+        ],
+        [
+          "electronics",
+          -60601.18,
+          7560
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 0.0,
+        "unit": "currency",
+        "x": "material_class",
+        "y": "KPI-PPV-096"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "receipt_line_id",
+        "receipt_date",
+        "supplier_id",
+        "material_class",
+        "plant",
+        "region",
+        "unit_cost",
+        "standard_cost",
+        "received_units"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-002-05",
+  "kpi_definitions": [
+    "KPI-PPV-096"
+  ],
+  "notes": [],
+  "question": "Where is purchase price variance building by material class?",
+  "recorded_at": "2026-09-04T21:58:30.165539+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 11,
+    "rows_scanned": 26400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "material_class",
+          "limit": 24,
+          "measure": "(sum((unit_cost - standard_cost) * received_units))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 7,
+        "rows_returned": 5,
+        "rows_scanned": 26400,
+        "tool": "query_dp_mfg_002"
+      }
+    ]
+  }
+}

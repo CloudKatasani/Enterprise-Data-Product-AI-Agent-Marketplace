@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-BNK-004",
+  "agent_name": "Credit Portfolio Analyst",
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "card leads on portfolio yield at 11.26%, 44.54% of the total across 4 product types.",
+    "narrative": "Ranked by the certified definition KPI-PORTYIELD-078 over 19,200 rows in DP-BNK-003.",
+    "table": {
+      "columns": [
+        "product_type",
+        "KPI-PORTYIELD-078",
+        "observations"
+      ],
+      "rows": [
+        [
+          "card",
+          11.26,
+          4944
+        ],
+        [
+          "auto",
+          4.68,
+          4632
+        ],
+        [
+          "personal",
+          4.67,
+          3336
+        ],
+        [
+          "mortgage",
+          4.67,
+          6288
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 6.5,
+        "unit": "percent",
+        "x": "product_type",
+        "y": "KPI-PORTYIELD-078"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "loan_id",
+        "as_of_month",
+        "product_type",
+        "region",
+        "risk_grade",
+        "segment",
+        "interest_income",
+        "outstanding_balance"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-004-03",
+  "kpi_definitions": [
+    "KPI-PORTYIELD-078"
+  ],
+  "notes": [],
+  "question": "Which product types earn the most portfolio yield?",
+  "recorded_at": "2026-09-04T21:58:28.714276+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 11,
+    "rows_scanned": 19200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "product_type",
+          "limit": 24,
+          "measure": "((sum(interest_income) * 12)::numeric / NULLIF((sum(outstanding_balance))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 6,
+        "rows_returned": 4,
+        "rows_scanned": 19200,
+        "tool": "query_dp_bnk_003"
+      }
+    ]
+  }
+}

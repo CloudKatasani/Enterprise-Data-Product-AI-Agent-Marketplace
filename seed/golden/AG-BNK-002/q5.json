@@ -15,13 +15,13 @@
     }
   ],
   "claims": {
-    "groups": "5",
+    "groups": "3",
     "rows_scanned": "14400",
-    "top": "16.19",
-    "top_share": "20.26"
+    "top": "16.04",
+    "top_share": "33.44"
   },
   "exchange_id": "DEMO-AG-BNK-002-05",
-  "headline": "trade_based leads on investigation cycle time at 16.19 days, 20.26% of the total across 5 typologys.",
+  "headline": "team_charlie leads on investigation cycle time at 16.04 days, 33.44% of the total across 3 investigator teams.",
   "kpi_definitions": [
     "KPI-INVCYCLE-024"
   ],
@@ -31,7 +31,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "typology",
+    "investigator_team",
     "KPI-INVCYCLE-024",
     "observations"
   ],

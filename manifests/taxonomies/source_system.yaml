@@ -322,3 +322,147 @@ entries:
     owner_team: "Quality Assurance"
     criticality: tier1
     rank_order: 40
+  - code: SRC-WEB-ANALYTICS
+    label: "Web and App Analytics"
+    description: >-
+        Session-scoped browsing behaviour, page and screen views for the digital storefront.
+    platform: snowplow
+    owner_team: "Digital Engineering"
+    criticality: tier2
+    rank_order: 41
+  - code: SRC-APP-EVENTS
+    label: "Mobile Application Events"
+    description: >-
+        Instrumented events emitted by the shopper mobile application.
+    platform: kafka
+    owner_team: "Digital Engineering"
+    criticality: tier2
+    rank_order: 42
+  - code: SRC-DOOR-COUNTER
+    label: "Store Door Counter"
+    description: >-
+        Sensor counts of entries and exits at each trading location, by trading session.
+    platform: shoppertrak
+    owner_team: "Store Operations"
+    criticality: tier3
+    rank_order: 43
+  - code: SRC-LOAN-ORIGINATION
+    label: "Loan Origination"
+    description: >-
+        Applications, decisions, pricing and booking for every credit product.
+    platform: finastra
+    owner_team: "Lending Systems"
+    criticality: tier1
+    rank_order: 44
+  - code: SRC-LOAN-SERVICING
+    label: "Loan Servicing"
+    description: >-
+        Balances, repayment schedules, arrears state and charge-off records for booked loans.
+    platform: fiserv
+    owner_team: "Lending Systems"
+    criticality: tier1
+    rank_order: 45
+  - code: SRC-COLLATERAL
+    label: "Collateral Register"
+    description: >-
+        Secured asset descriptions and periodic valuations behind lending exposures.
+    platform: oracle
+    owner_team: "Credit Risk"
+    criticality: tier2
+    rank_order: 46
+  - code: SRC-CREDIT-BUREAU
+    label: "Credit Bureau Feed"
+    description: >-
+        Externally sourced credit scores and arrears history, refreshed on a monthly cycle.
+    platform: experian
+    owner_team: "Credit Risk"
+    criticality: tier2
+    rank_order: 47
+  - code: SRC-APM
+    label: "Application Performance Monitoring"
+    description: >-
+        Request, error and latency telemetry emitted by every instrumented service.
+    platform: datadog
+    owner_team: "Platform Engineering"
+    criticality: tier1
+    rank_order: 48
+  - code: SRC-INCIDENT-MGMT
+    label: "Incident Management"
+    description: >-
+        Incident records, severity, paging, acknowledgement and restoration timestamps.
+    platform: pagerduty
+    owner_team: "Site Reliability"
+    criticality: tier1
+    rank_order: 49
+  - code: SRC-CICD
+    label: "Continuous Delivery Pipeline"
+    description: >-
+        Deployment records, rollout rings and rollback events for every service release.
+    platform: argocd
+    owner_team: "Platform Engineering"
+    criticality: tier2
+    rank_order: 50
+  - code: SRC-FREIGHT-AUDIT
+    label: "Freight Audit and Payment"
+    description: >-
+        Carrier invoices, accessorial charges, audit outcomes and dispute records.
+    platform: cass
+    owner_team: "Logistics Finance"
+    criticality: tier1
+    rank_order: 51
+  - code: SRC-RATE-MGMT
+    label: "Rate Management"
+    description: >-
+        Contracted lane rates, fuel surcharge tables and spot tender history.
+    platform: oracle
+    owner_team: "Logistics Procurement"
+    criticality: tier2
+    rank_order: 52
+  - code: SRC-SUPPLIER-PORTAL
+    label: "Supplier Collaboration Portal"
+    description: >-
+        Purchase order acknowledgements, promised dates and advance shipment notices.
+    platform: sap_ariba
+    owner_team: "Procurement Systems"
+    criticality: tier2
+    rank_order: 53
+  - code: SRC-INBOUND-QMS
+    label: "Inbound Quality Inspection"
+    description: >-
+        Goods-receipt inspection results, rejection reasons and supplier corrective actions.
+    platform: sap
+    owner_team: "Quality Assurance"
+    criticality: tier1
+    rank_order: 54
+  - code: SRC-WFM
+    label: "Workforce Management"
+    description: >-
+        Shift rosters, budgeted hours, vacancies and float-pool assignment.
+    platform: ukg
+    owner_team: "Workforce Systems"
+    criticality: tier1
+    rank_order: 55
+  - code: SRC-TIME-ATTENDANCE
+    label: "Time and Attendance"
+    description: >-
+        Clocked hours, overtime, agency hours and call-offs against the published roster.
+    platform: kronos
+    owner_team: "Workforce Systems"
+    criticality: tier1
+    rank_order: 56
+  - code: SRC-AGENCY-PORTAL
+    label: "Agency and Broker Portal"
+    description: >-
+        Producer hierarchy, appointment state and agency-submitted business.
+    platform: guidewire
+    owner_team: "Distribution Systems"
+    criticality: tier2
+    rank_order: 57
+  - code: SRC-VOC-SURVEY
+    label: "Voice of Customer Survey"
+    description: >-
+        Post-interaction survey responses, complaint records and their dispositions.
+    platform: qualtrics
+    owner_team: "Customer Experience"
+    criticality: tier3
+    rank_order: 58

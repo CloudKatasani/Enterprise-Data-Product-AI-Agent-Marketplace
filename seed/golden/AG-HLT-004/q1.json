@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "agency_hours",
+        "facility",
+        "float_pool_used",
+        "region",
+        "shift",
+        "shift_start",
+        "unit_id",
+        "unit_type",
+        "worked_hours"
+      ],
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "48600",
+    "top": "14.12",
+    "top_share": "62.98"
+  },
+  "exchange_id": "DEMO-AG-HLT-004-01",
+  "headline": "night leads on agency hours share at 14.12%, 62.98% of the total across 3 shifts.",
+  "kpi_definitions": [
+    "KPI-AGENCY-099"
+  ],
+  "narrative": "Ranked by the certified definition KPI-AGENCY-099 over 48,600 rows in DP-HLT-003.",
+  "question": "Which shifts rely most on agency hours?",
+  "rows_scanned": 48600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "shift",
+    "KPI-AGENCY-099",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

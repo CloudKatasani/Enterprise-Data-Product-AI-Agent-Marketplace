@@ -108,6 +108,51 @@ GRAIN_WORDS = (
 GRAIN_ORDER = ["day", "week", "month", "quarter", "year"]
 
 
+# Which end of the ranking the question asked for. A question that asks which
+# lane is thinnest and gets the fattest one back has been answered accurately
+# and uselessly, and the reader cannot tell from the number.
+#
+# Two kinds of word do this, and they do not mean the same thing. A magnitude
+# word names a direction outright: "most" is the top of the ranking whatever the
+# measure means. A quality word names the good or the bad end, and which end of
+# the ranking that is depends on the KPI — the worst delinquency rate is the
+# highest, the worst margin is the lowest.
+MAGNITUDE_HIGH = frozenset({
+    "most", "highest", "largest", "greatest", "biggest", "top", "longest",
+    "maximum", "max",
+})
+MAGNITUDE_LOW = frozenset({
+    "lowest", "smallest", "fewest", "least", "bottom", "shortest", "minimum", "min",
+})
+BAD_END = frozenset({
+    "worst", "weakest", "poorest", "thinnest", "slowest", "worse", "lagging",
+    "behind", "struggling",
+})
+GOOD_END = frozenset({"best", "strongest", "fastest", "healthiest", "leading", "better"})
+
+LOWER_IS_BETTER = "lower_is_better"
+
+
+def wants_ascending(question: str, kpi: dict[str, Any]) -> bool:
+    """Whether the ranking should put the smallest measure first.
+
+    Magnitude words settle it on their own. Quality words are resolved against
+    the KPI's declared direction, which is the only thing that knows whether a
+    big number is a good one.
+    """
+    asked = _words(question)
+    if asked & MAGNITUDE_LOW:
+        return True
+    if asked & MAGNITUDE_HIGH:
+        return False
+    lower_is_better = kpi.get("direction") == LOWER_IS_BETTER
+    if asked & BAD_END:
+        return not lower_is_better
+    if asked & GOOD_END:
+        return lower_is_better
+    return False
+
+
 @dataclass(frozen=True)
 class QueryPlan:
     kpi_id: str
@@ -120,6 +165,7 @@ class QueryPlan:
     measure_column: str | None
     columns_used: tuple[str, ...]
     limit: int
+    ascending: bool
 
 
 def _words(text: str) -> set[str]:
@@ -166,9 +212,20 @@ def choose_slice(question: str, slices: list[str], columns: list[str]) -> str | 
     asked = _words(question)
     for name in eligible:
         noun = name.rsplit("_", 1)[-1]
-        if noun in asked or f"{noun}s" in asked or noun.rstrip("y") + "ies" in asked:
+        if _names(noun) & asked:
+            return name
+    # Then on any word of the column name. "Which vintages carry the worst
+    # delinquency" is asking about `vintage_band`, and the qualifier the column
+    # carries is on the other end of the name from the noun.
+    for name in eligible:
+        if any(_names(part) & asked for part in name.split("_")):
             return name
     return eligible[0]
+
+
+def _names(word: str) -> set[str]:
+    """A word and the plurals a question is likely to use for it."""
+    return {word, f"{word}s", word.rstrip("y") + "ies" if word.endswith("y") else f"{word}es"}
 
 
 def resolve(
@@ -221,6 +278,7 @@ def resolve(
             shape = SHAPE_SLICE
 
     return QueryPlan(
+        ascending=shape == SHAPE_SLICE and wants_ascending(question, kpi),
         kpi_id=coverage["kpi_id"],
         product_id=coverage["source_product_id"],
         shape=shape,
@@ -240,6 +298,9 @@ COHORT_MARKERS = (
     "primary_relationship", "renewed", "bound", "on_formulary", "activated",
     "delivered_within_window", "in_top_accumulation_zone", "sar_filed", "feature_used",
     "curtailed_during_event", "passed_without_rework", "save_offer_accepted",
+    "loyalty_identified", "autopay_enrolled", "digital_registered", "multi_line",
+    "float_pool_used", "inspection_required", "tendered_to_spot", "change_deployed",
+    "delinquent_30d", "filled_shift",
 )
 
 

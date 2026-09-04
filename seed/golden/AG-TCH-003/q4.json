@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "incident_id",
+        "observed_hour",
+        "region",
+        "resolved_minutes",
+        "service_tier",
+        "team"
+      ],
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "30240",
+    "top": "81.67",
+    "top_share": "20.50"
+  },
+  "exchange_id": "DEMO-AG-TCH-003-04",
+  "headline": "billing leads on mean time to restore at 81.67 minutes, 20.50% of the total across 5 teams.",
+  "kpi_definitions": [
+    "KPI-MTTR-086"
+  ],
+  "narrative": "Ranked by the certified definition KPI-MTTR-086 over 30,240 rows in DP-TCH-002.",
+  "question": "How does time to restore compare across owning teams?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "team",
+    "KPI-MTTR-086",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

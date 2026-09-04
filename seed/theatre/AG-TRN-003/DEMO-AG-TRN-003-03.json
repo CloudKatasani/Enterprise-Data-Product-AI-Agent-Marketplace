@@ -1,0 +1,119 @@
+{
+  "agent_id": "AG-TRN-003",
+  "agent_name": "Freight Cost Analyst",
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "LANE-NYC-BOS trails on freight margin rate at 18.40%, 16.56% of the total across 6 lanes.",
+    "narrative": "Ranked by the certified definition KPI-FRTMARGIN-088 over 28,800 rows in DP-TRN-002.",
+    "table": {
+      "columns": [
+        "lane",
+        "KPI-FRTMARGIN-088",
+        "observations"
+      ],
+      "rows": [
+        [
+          "LANE-NYC-BOS",
+          18.4,
+          4320
+        ],
+        [
+          "LANE-SEA-POR",
+          18.5,
+          4920
+        ],
+        [
+          "LANE-MIA-ORL",
+          18.52,
+          5280
+        ],
+        [
+          "LANE-LAX-PHX",
+          18.52,
+          4680
+        ],
+        [
+          "LANE-CHI-ATL",
+          18.54,
+          5160
+        ],
+        [
+          "LANE-DFW-DEN",
+          18.63,
+          4440
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 17.0,
+        "unit": "percent",
+        "x": "lane",
+        "y": "KPI-FRTMARGIN-088"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "invoice_line_id",
+        "invoice_date",
+        "lane",
+        "carrier",
+        "customer",
+        "mode",
+        "service_level",
+        "region",
+        "billed_revenue",
+        "linehaul_cost",
+        "accessorial_cost",
+        "fuel_surcharge",
+        "tendered_to_spot"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-003-03",
+  "kpi_definitions": [
+    "KPI-FRTMARGIN-088"
+  ],
+  "notes": [],
+  "question": "Which lanes are thinnest on freight margin?",
+  "recorded_at": "2026-09-04T21:58:31.559191+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 10,
+    "rows_scanned": 28800,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "lane",
+          "limit": 24,
+          "measure": "((sum(billed_revenue) - sum(linehaul_cost) - sum(accessorial_cost) - sum(fuel_surcharge))::numeric / NULLIF((sum(billed_revenue))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 8,
+        "rows_returned": 6,
+        "rows_scanned": 28800,
+        "tool": "query_dp_trn_002"
+      }
+    ]
+  }
+}

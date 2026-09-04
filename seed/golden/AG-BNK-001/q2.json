@@ -17,11 +17,11 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "18000",
-    "top": "46.77",
-    "top_share": "34.40"
+    "top": "48.24",
+    "top_share": "34.74"
   },
   "exchange_id": "DEMO-AG-BNK-001-02",
-  "headline": "affluent leads on attrition risk score at 46.77, 34.40% of the total across 3 segments.",
+  "headline": "top leads on attrition risk score at 48.24, 34.74% of the total across 3 value bands.",
   "kpi_definitions": [
     "KPI-ATTRISK-019"
   ],
@@ -31,7 +31,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "segment",
+    "value_band",
     "KPI-ATTRISK-019",
     "observations"
   ],

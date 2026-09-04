@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-HLT-004",
+  "agent_name": "Care Capacity Analyst",
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "critical_care leads on overtime share of hours at 6.96%, 29.48% of the total across 4 unit types.",
+    "narrative": "Ranked by the certified definition KPI-OTSHARE-098 over 48,600 rows in DP-HLT-003.",
+    "table": {
+      "columns": [
+        "unit_type",
+        "KPI-OTSHARE-098",
+        "observations"
+      ],
+      "rows": [
+        [
+          "critical_care",
+          6.96,
+          7020
+        ],
+        [
+          "medical_surgical",
+          5.6,
+          16200
+        ],
+        [
+          "emergency",
+          5.57,
+          9720
+        ],
+        [
+          "telemetry",
+          5.48,
+          15660
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 5.0,
+        "unit": "percent",
+        "x": "unit_type",
+        "y": "KPI-OTSHARE-098"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T23:00:00+00:00",
+      "columns": [
+        "unit_id",
+        "shift_start",
+        "facility",
+        "region",
+        "unit_type",
+        "shift",
+        "worked_hours",
+        "overtime_hours",
+        "filled_shift"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-004-03",
+  "kpi_definitions": [
+    "KPI-OTSHARE-098"
+  ],
+  "notes": [],
+  "question": "Where is overtime share highest by unit type?",
+  "recorded_at": "2026-09-04T21:58:29.332837+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 14,
+    "rows_scanned": 48600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "unit_type",
+          "limit": 24,
+          "measure": "((sum(overtime_hours))::numeric / NULLIF((sum(worked_hours))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 11,
+        "rows_returned": 4,
+        "rows_scanned": 48600,
+        "tool": "query_dp_hlt_003"
+      }
+    ]
+  }
+}

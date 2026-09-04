@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DISPUTE-092
+  name: "Invoice Dispute Rate"
+  domain: finance
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Disputed amount as a share of revenue billed. Measured on money rather than on line count,
+    because one large disputed invoice is not one small one.
+  numerator_expr: "sum(disputed_amount)"
+  denominator_expr: "sum(billed_revenue)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [lane, carrier, customer, mode, service_level, region]
+  unit: percent
+  direction: lower_is_better
+  target: 1.5
+  source_of_record: DP-TRN-002
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["billing dispute rate", "freight audit exceptions"]

@@ -73,12 +73,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Which settlement patterns diverge most from peers on like claims?",
-  "recorded_at": "2026-09-04T16:01:33.509064+00:00",
+  "recorded_at": "2026-09-04T21:58:29.406787+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 23,
+    "latency_ms": 21,
     "rows_scanned": 4340,
     "runtime": "analytic",
     "tokens": {
@@ -96,7 +96,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "small",
-        "duration_ms": 19,
+        "duration_ms": 17,
         "rows_returned": 4,
         "rows_scanned": 4340,
         "tool": "query_dp_ins_001"

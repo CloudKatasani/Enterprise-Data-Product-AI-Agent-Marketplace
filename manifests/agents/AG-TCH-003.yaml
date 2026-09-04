@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TCH-003
+  name: "Service Reliability Analyst"
+  industry: technology
+  domain: operations
+  owner:
+    party_id: PTY-0047
+    team: "Site Reliability"
+    on_call: "pagerduty://reliability-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about service error rate, availability, time to acknowledge, time to
+    restore and change failure rate.
+  business_value_block:
+    analyses: [driver_ranking, comparison, trend_segmented, performance_ranking, event_analysis]
+    replaces: >-
+      The weekly reliability review and the incident tally each team assembles before it.
+    personas: [site_reliability_lead, engineering_manager, incident_commander]
+  out_of_scope:
+    - "Deploying, rolling back or restarting a service"
+    - "Paging or reassigning an on-call responder"
+    - "Individual engineer or responder performance"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TCH-003/system@v1
+  data_products:
+    - product_id: DP-TCH-002
+      columns: [service_id, observed_hour, service_tier, region, team, deployment_ring, incident_id, severity, request_count, error_count, latency_p95_ms, availability_minutes, scheduled_minutes, acknowledged_minutes, resolved_minutes, change_deployed, change_failed, on_call_page_count]
+      access: read
+  tool_bindings:
+    - tool: query_dp_tch_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TCH-002"
+      scope: "dp:DP-TCH-002:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-ERRRATE-083
+      source_product: DP-TCH-002
+      columns_used: [service_id, observed_hour, service_tier, region, team, deployment_ring, request_count, error_count]
+      grains: [day, week, month]
+      slices: [region, service_tier, team, deployment_ring]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-SVCAVAIL-084
+      source_product: DP-TCH-002
+      columns_used: [service_id, observed_hour, service_tier, region, team, availability_minutes, scheduled_minutes]
+      grains: [day, week, month]
+      slices: [service_tier, region, team]
+      analysis_depth: explain
+    - kpi_id: KPI-MTTA-085
+      source_product: DP-TCH-002
+      columns_used: [incident_id, observed_hour, service_tier, region, team, acknowledged_minutes]
+      grains: [day, week, month]
+      slices: [service_tier, region, team]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-MTTR-086
+      source_product: DP-TCH-002
+      columns_used: [incident_id, observed_hour, service_tier, region, team, resolved_minutes]
+      grains: [day, week, month]
+      slices: [service_tier, region, team]
+      analysis_depth: compare
+    - kpi_id: KPI-CHGFAIL-087
+      source_product: DP-TCH-002
+      columns_used: [service_id, observed_hour, deployment_ring, service_tier, team, change_deployed, change_failed]
+      grains: [day, week, month]
+      slices: [deployment_ring, service_tier, team]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-TCH-003-01
+      ordinal: 1
+      question: "Which regions carry the highest service error rate?"
+      kpi_class: KPI-ERRRATE-083
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the regions serving most errors, and the distance to the healthiest
+        visual: bar
+        table_columns: [region, error_rate_pct, requests]
+        must_cite: [DP-TCH-002, KPI-ERRRATE-083]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-003-02
+      ordinal: 2
+      question: "How has the error rate moved day by day?"
+      kpi_class: KPI-ERRRATE-083
+      analysis_type: event_analysis
+      expected_shape:
+        headline: >-
+          the direction of the error rate across the observed days, and its size
+        visual: line
+        table_columns: [period, error_rate_pct, requests]
+        must_cite: [DP-TCH-002, KPI-ERRRATE-083]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-003-03
+      ordinal: 3
+      question: "Which service tiers are slowest to acknowledge an incident?"
+      kpi_class: KPI-MTTA-085
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the tiers taking longest to answer a page, and the spread between them
+        visual: bar
+        table_columns: [service_tier, mean_minutes_to_acknowledge, incidents]
+        must_cite: [DP-TCH-002, KPI-MTTA-085]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-003-04
+      ordinal: 4
+      question: "How does time to restore compare across owning teams?"
+      kpi_class: KPI-MTTR-086
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the teams restoring fastest and slowest, and the gap between the ends
+        visual: bar
+        table_columns: [team, mean_minutes_to_restore, incidents]
+        must_cite: [DP-TCH-002, KPI-MTTR-086]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-003-05
+      ordinal: 5
+      question: "Which deployment rings fail changes most often?"
+      kpi_class: KPI-CHGFAIL-087
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the rings whose releases need a rollback most, and the spread across them
+        visual: bar
+        table_columns: [deployment_ring, change_failure_rate_pct, deployments]
+        must_cite: [DP-TCH-002, KPI-CHGFAIL-087]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TCH-003/
+  value_case:
+    benefit_model: "avoided_reliability_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per reliability question"
+        value: 45
+        unit: minutes
+        sample_size: 18
+        source: "site reliability time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0047

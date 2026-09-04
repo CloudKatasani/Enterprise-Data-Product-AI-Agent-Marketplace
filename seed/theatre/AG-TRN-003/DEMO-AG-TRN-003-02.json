@@ -1,0 +1,99 @@
+{
+  "agent_id": "AG-TRN-003",
+  "agent_name": "Freight Cost Analyst",
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Freight Margin Rate is 20.00% where cohort is false against 8.06% where it is true, a gap of 11.94%.",
+    "narrative": "Both cohorts are drawn from DP-TRN-002 over the same period: 24,783 observations against 4,017.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-FRTMARGIN-088",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          20.0,
+          24783
+        ],
+        [
+          "true",
+          8.06,
+          4017
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 17.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-FRTMARGIN-088"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "invoice_line_id",
+        "invoice_date",
+        "lane",
+        "carrier",
+        "customer",
+        "mode",
+        "service_level",
+        "region",
+        "billed_revenue",
+        "linehaul_cost",
+        "accessorial_cost",
+        "fuel_surcharge",
+        "tendered_to_spot"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-003-02",
+  "kpi_definitions": [
+    "KPI-FRTMARGIN-088"
+  ],
+  "notes": [],
+  "question": "Do spot-tendered movements earn a different freight margin?",
+  "recorded_at": "2026-09-04T21:58:31.547293+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 11,
+    "rows_scanned": 28800,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((sum(billed_revenue) - sum(linehaul_cost) - sum(accessorial_cost) - sum(fuel_surcharge))::numeric / NULLIF((sum(billed_revenue))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 8,
+        "rows_returned": 2,
+        "rows_scanned": 28800,
+        "tool": "query_dp_trn_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "inspection_required",
+        "material_class",
+        "plant",
+        "receipt_date",
+        "receipt_line_id",
+        "received_units",
+        "region",
+        "rejected_units",
+        "supplier_id",
+        "supplier_tier"
+      ],
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "26400",
+    "top": "3.26",
+    "top_share": "36.06"
+  },
+  "exchange_id": "DEMO-AG-MFG-002-02",
+  "headline": "electronics leads on supplier defect rate at 3.26%, 36.06% of the total across 5 material classs.",
+  "kpi_definitions": [
+    "KPI-SUPPDEF-093"
+  ],
+  "narrative": "Ranked by the certified definition KPI-SUPPDEF-093 over 26,400 rows in DP-MFG-002.",
+  "question": "Which material classes have the worst defect rate?",
+  "rows_scanned": 26400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "material_class",
+    "KPI-SUPPDEF-093",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

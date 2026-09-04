@@ -75,12 +75,12 @@
   ],
   "notes": [],
   "question": "Are follow-up appointments being scheduled within the target window?",
-  "recorded_at": "2026-09-04T16:01:33.210113+00:00",
+  "recorded_at": "2026-09-04T21:58:29.029116+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 20,
+    "latency_ms": 19,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {
@@ -98,7 +98,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
         },
         "cost_class": "small",
-        "duration_ms": 16,
+        "duration_ms": 15,
         "rows_returned": 5,
         "rows_scanned": 31200,
         "tool": "query_dp_hlt_001"

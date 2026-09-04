@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "deployment_ring",
+        "error_count",
+        "observed_hour",
+        "region",
+        "request_count",
+        "service_id",
+        "service_tier",
+        "team"
+      ],
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "30240",
+    "top": "0.69",
+    "top_share": "49.64"
+  },
+  "exchange_id": "DEMO-AG-TCH-003-01",
+  "headline": "eu-west leads on service error rate at 0.69%, 49.64% of the total across 3 regions.",
+  "kpi_definitions": [
+    "KPI-ERRRATE-083"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ERRRATE-083 over 30,240 rows in DP-TCH-002.",
+  "question": "Which regions carry the highest service error rate?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "region",
+    "KPI-ERRRATE-083",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

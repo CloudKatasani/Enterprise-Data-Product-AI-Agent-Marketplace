@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-INS-004-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "customer_id",
+        "digital_registered",
+        "distribution_channel",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-INS-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "2400",
+    "top": "70.85",
+    "top_share": "30.75"
+  },
+  "exchange_id": "DEMO-AG-INS-004-02",
+  "headline": "3-5y leads on digital enrolment rate at 70.85%, 30.75% of the total across 4 tenure bands.",
+  "kpi_definitions": [
+    "KPI-DIGITAL-105"
+  ],
+  "narrative": "Ranked by the certified definition KPI-DIGITAL-105 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "How does digital enrolment differ by tenure band?",
+  "rows_scanned": 2400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "tenure_band",
+    "KPI-DIGITAL-105",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

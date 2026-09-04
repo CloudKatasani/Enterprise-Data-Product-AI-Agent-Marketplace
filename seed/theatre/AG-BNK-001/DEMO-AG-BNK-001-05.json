@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "How did deposit balances shift after the April rate change?",
-  "recorded_at": "2026-09-04T16:01:32.642857+00:00",
+  "recorded_at": "2026-09-04T21:58:28.456000+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 12,
+    "latency_ms": 10,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {

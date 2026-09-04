@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "country_of_origin",
+        "material_class",
+        "on_time",
+        "plant",
+        "receipt_date",
+        "receipt_line_id",
+        "region",
+        "supplier_id",
+        "supplier_tier"
+      ],
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "26400",
+    "top": "96.00",
+    "top_share": "26.26"
+  },
+  "exchange_id": "DEMO-AG-MFG-002-03",
+  "headline": "DE leads on inbound on-time rate at 96.00%, 26.26% of the total across 4 country of origins.",
+  "kpi_definitions": [
+    "KPI-INBOTD-094"
+  ],
+  "narrative": "Ranked by the certified definition KPI-INBOTD-094 over 26,400 rows in DP-MFG-002.",
+  "question": "How does inbound on-time delivery differ by country of origin?",
+  "rows_scanned": 26400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "country_of_origin",
+    "KPI-INBOTD-094",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

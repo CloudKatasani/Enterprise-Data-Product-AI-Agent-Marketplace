@@ -4,39 +4,29 @@
   "agent_version_id": "AGV-AG-RTL-002-1.0.0",
   "analysis_type": "ranking",
   "answer": {
-    "headline": "electronics leads on in-stock rate at 92.58%, 20.04% of the total across 5 categorys.",
+    "headline": "express trails on in-stock rate at 86.29%, 30.90% of the total across 3 store formats.",
     "narrative": "Ranked by the certified definition KPI-INSTOCK-051 over 45,000 rows in DP-RTL-002.",
     "table": {
       "columns": [
-        "category",
+        "store_format",
         "KPI-INSTOCK-051",
         "observations"
       ],
       "rows": [
         [
-          "electronics",
-          92.58,
-          7200
+          "express",
+          86.29,
+          18000
         ],
         [
-          "grocery",
-          92.51,
-          11400
+          "compact",
+          96.46,
+          9000
         ],
         [
-          "seasonal",
-          92.33,
-          6300
-        ],
-        [
-          "apparel",
-          92.32,
-          10800
-        ],
-        [
-          "home",
-          92.24,
-          9300
+          "large",
+          96.47,
+          18000
         ]
       ]
     },
@@ -45,7 +35,7 @@
         "direction": "higher_is_better",
         "target": 96.5,
         "unit": "percent",
-        "x": "category",
+        "x": "store_format",
         "y": "KPI-INSTOCK-051"
       },
       "type": "bar"
@@ -75,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which stores have the worst in-stock rate this week?",
-  "recorded_at": "2026-09-04T16:01:33.849891+00:00",
+  "recorded_at": "2026-09-04T21:58:30.272382+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 14,
+    "latency_ms": 12,
     "rows_scanned": 45000,
     "runtime": "analytic",
     "tokens": {
@@ -91,15 +81,15 @@
       {
         "arguments": {
           "grain": "month",
-          "group_by": "category",
+          "group_by": "store_format",
           "limit": 24,
           "measure": "((count(*) filter (where on_hand_units > 0))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
           "period": "all periods",
           "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
         },
         "cost_class": "small",
-        "duration_ms": 10,
-        "rows_returned": 5,
+        "duration_ms": 9,
+        "rows_returned": 3,
         "rows_scanned": 45000,
         "tool": "query_dp_rtl_002"
       }

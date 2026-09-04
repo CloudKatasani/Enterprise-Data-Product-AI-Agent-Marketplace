@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "gap_analysis",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "defaulted",
+        "loan_id",
+        "outstanding_balance",
+        "product_type",
+        "provision_amount",
+        "region",
+        "risk_grade"
+      ],
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "19200",
+    "top": "71.59",
+    "top_share": "16.94"
+  },
+  "exchange_id": "DEMO-AG-BNK-004-04",
+  "headline": "Southeast trails on provision coverage at 71.59%, 16.94% of the total across 4 regions.",
+  "kpi_definitions": [
+    "KPI-PROVCOV-081"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PROVCOV-081 over 19,200 rows in DP-BNK-003.",
+  "question": "Where is provision coverage weakest by region?",
+  "rows_scanned": 19200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "region",
+    "KPI-PROVCOV-081",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

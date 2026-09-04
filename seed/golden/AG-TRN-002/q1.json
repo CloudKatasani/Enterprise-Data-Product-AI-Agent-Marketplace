@@ -19,11 +19,11 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "13200",
-    "top": "73.54",
-    "top_share": "33.43"
+    "top": "73.02",
+    "top_share": "33.20"
   },
   "exchange_id": "DEMO-AG-TRN-002-01",
-  "headline": "flatbed leads on asset utilization at 73.54%, 33.43% of the total across 3 equipment types.",
+  "headline": "dry_van trails on asset utilization at 73.02%, 33.20% of the total across 3 equipment types.",
   "kpi_definitions": [
     "KPI-ASSETUTIL-059"
   ],

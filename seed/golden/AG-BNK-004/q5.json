@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-BNK-004-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "defaulted",
+        "loan_id",
+        "outstanding_balance",
+        "product_type",
+        "region",
+        "risk_grade",
+        "vintage_band"
+      ],
+      "product_id": "DP-BNK-003"
+    }
+  ],
+  "claims": {
+    "current": "1.79",
+    "delta": "0.05",
+    "groups": "8",
+    "rows_scanned": "19200"
+  },
+  "exchange_id": "DEMO-AG-BNK-004-05",
+  "headline": "Non-Performing Loan Ratio is 1.79% for the quarter ending 2026-07-01, up 0.05% on the prior quarter.",
+  "kpi_definitions": [
+    "KPI-NPL-080"
+  ],
+  "narrative": "Computed from DP-BNK-003 under the certified definition KPI-NPL-080, across 8 quarters and 19,200 rows.",
+  "question": "How has the non-performing loan ratio moved quarter by quarter?",
+  "rows_scanned": 19200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-NPL-080",
+    "observations"
+  ],
+  "visual_type": "line"
+}

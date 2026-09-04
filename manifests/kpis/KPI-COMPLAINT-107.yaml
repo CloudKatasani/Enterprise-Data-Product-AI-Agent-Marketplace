@@ -1,0 +1,25 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-COMPLAINT-107
+  name: "Complaint Rate per Thousand"
+  domain: customer
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Customers raising at least one complaint in the trailing ninety days, per thousand
+    customers. Per customer rather than per contact: one person complaining four times is one
+    unhappy customer.
+  numerator_expr: "count(distinct customer_id) filter (where complaints_90d > 0) * 1000"
+  denominator_expr: "count(distinct customer_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, distribution_channel, tenure_band]
+  unit: rate
+  direction: lower_is_better
+  target: 22.0
+  source_of_record: DP-INS-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["complaint rate", "complaints per 1000"]

@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-TCH-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "acknowledged_minutes",
+        "incident_id",
+        "observed_hour",
+        "region",
+        "service_tier",
+        "team"
+      ],
+      "product_id": "DP-TCH-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "30240",
+    "top": "20.65",
+    "top_share": "65.00"
+  },
+  "exchange_id": "DEMO-AG-TCH-003-03",
+  "headline": "tier3 leads on mean time to acknowledge at 20.65 minutes, 65.00% of the total across 3 service tiers.",
+  "kpi_definitions": [
+    "KPI-MTTA-085"
+  ],
+  "narrative": "Ranked by the certified definition KPI-MTTA-085 over 30,240 rows in DP-TCH-002.",
+  "question": "Which service tiers are slowest to acknowledge an incident?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "service_tier",
+    "KPI-MTTA-085",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

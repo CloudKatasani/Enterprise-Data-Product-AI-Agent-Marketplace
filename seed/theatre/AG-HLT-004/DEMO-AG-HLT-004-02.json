@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-HLT-004",
+  "agent_name": "Care Capacity Analyst",
+  "agent_version_id": "AGV-AG-HLT-004-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "critical_care leads on agency hours share at 13.14%, 40.96% of the total across 4 unit types.",
+    "narrative": "Ranked by the certified definition KPI-AGENCY-099 over 48,600 rows in DP-HLT-003.",
+    "table": {
+      "columns": [
+        "unit_type",
+        "KPI-AGENCY-099",
+        "observations"
+      ],
+      "rows": [
+        [
+          "critical_care",
+          13.14,
+          7020
+        ],
+        [
+          "emergency",
+          6.34,
+          9720
+        ],
+        [
+          "medical_surgical",
+          6.31,
+          16200
+        ],
+        [
+          "telemetry",
+          6.29,
+          15660
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 7.0,
+        "unit": "percent",
+        "x": "unit_type",
+        "y": "KPI-AGENCY-099"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T23:00:00+00:00",
+      "columns": [
+        "unit_id",
+        "shift_start",
+        "facility",
+        "region",
+        "unit_type",
+        "shift",
+        "worked_hours",
+        "agency_hours",
+        "float_pool_used"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-HLT-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-004-02",
+  "kpi_definitions": [
+    "KPI-AGENCY-099"
+  ],
+  "notes": [],
+  "question": "Which unit types carry the most agency reliance?",
+  "recorded_at": "2026-09-04T21:58:29.317342+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 14,
+    "rows_scanned": 48600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "unit_type",
+          "limit": 24,
+          "measure": "((sum(agency_hours))::numeric / NULLIF((sum(worked_hours))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 11,
+        "rows_returned": 4,
+        "rows_scanned": 48600,
+        "tool": "query_dp_hlt_003"
+      }
+    ]
+  }
+}

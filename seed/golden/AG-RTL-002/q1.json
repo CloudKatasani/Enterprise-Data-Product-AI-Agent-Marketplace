@@ -16,13 +16,13 @@
     }
   ],
   "claims": {
-    "groups": "5",
+    "groups": "3",
     "rows_scanned": "45000",
-    "top": "92.58",
-    "top_share": "20.04"
+    "top": "86.29",
+    "top_share": "30.90"
   },
   "exchange_id": "DEMO-AG-RTL-002-01",
-  "headline": "electronics leads on in-stock rate at 92.58%, 20.04% of the total across 5 categorys.",
+  "headline": "express trails on in-stock rate at 86.29%, 30.90% of the total across 3 store formats.",
   "kpi_definitions": [
     "KPI-INSTOCK-051"
   ],
@@ -32,7 +32,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "category",
+    "store_format",
     "KPI-INSTOCK-051",
     "observations"
   ],

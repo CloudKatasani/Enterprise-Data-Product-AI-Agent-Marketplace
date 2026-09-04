@@ -1,0 +1,252 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TCH-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "167e02345c32ec8285f5304cfc765db85af8e5597327726adfefc13e9424a4e8",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TCH-003",
+    "name": "Service Reliability Analyst",
+    "industry": "technology",
+    "domain": "operations",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0047",
+      "team": "Site Reliability",
+      "on_call": "pagerduty://reliability-agents"
+    }
+  },
+  "capability_statement": "Answers questions about service error rate, availability, time to acknowledge, time to restore and change failure rate.",
+  "business_value": {
+    "analyses": [
+      "driver_ranking",
+      "comparison",
+      "trend_segmented",
+      "performance_ranking",
+      "event_analysis"
+    ],
+    "replaces": "The weekly reliability review and the incident tally each team assembles before it.",
+    "personas": [
+      "site_reliability_lead",
+      "engineering_manager",
+      "incident_commander"
+    ]
+  },
+  "out_of_scope": [
+    "Deploying, rolling back or restarting a service",
+    "Paging or reassigning an on-call responder",
+    "Individual engineer or responder performance"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-ERRRATE-083",
+      "kpi_name": "Service Error Rate",
+      "unit": "percent",
+      "source_product": "DP-TCH-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "service_tier",
+        "team",
+        "deployment_ring"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SVCAVAIL-084",
+      "kpi_name": "Service Availability",
+      "unit": "percent",
+      "source_product": "DP-TCH-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "service_tier",
+        "region",
+        "team"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-MTTA-085",
+      "kpi_name": "Mean Time to Acknowledge",
+      "unit": "minutes",
+      "source_product": "DP-TCH-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "service_tier",
+        "region",
+        "team"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-MTTR-086",
+      "kpi_name": "Mean Time to Restore",
+      "unit": "minutes",
+      "source_product": "DP-TCH-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "service_tier",
+        "region",
+        "team"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-CHGFAIL-087",
+      "kpi_name": "Change Failure Rate",
+      "unit": "percent",
+      "source_product": "DP-TCH-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "deployment_ring",
+        "service_tier",
+        "team"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TCH-002",
+      "columns": [
+        "service_id",
+        "observed_hour",
+        "service_tier",
+        "region",
+        "team",
+        "deployment_ring",
+        "incident_id",
+        "severity",
+        "request_count",
+        "error_count",
+        "latency_p95_ms",
+        "availability_minutes",
+        "scheduled_minutes",
+        "acknowledged_minutes",
+        "resolved_minutes",
+        "change_deployed",
+        "change_failed",
+        "on_call_page_count"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TCH-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TCH-003/ask",
+    "required_scope": "agent:AG-TCH-003:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which regions carry the highest service error rate?",
+      "How has the error rate moved day by day?",
+      "Which service tiers are slowest to acknowledge an incident?",
+      "How does time to restore compare across owning teams?",
+      "Which deployment rings fail changes most often?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TCH-003/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_tch_002",
+        "scope": "dp:DP-TCH-002:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TCH-002": "1.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "bdc97d4c78d5c2736cf891f55980f01c172a9beb55f22d9f762830c36c33314e"
+}

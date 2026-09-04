@@ -1,0 +1,106 @@
+{
+  "agent_id": "AG-TRN-003",
+  "agent_name": "Freight Cost Analyst",
+  "agent_version_id": "AGV-AG-TRN-003-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "air leads on cost per kilometre at $1.44, 25.13% of the total across 4 modes.",
+    "narrative": "Ranked by the certified definition KPI-COSTPERKM-089 over 28,800 rows in DP-TRN-002.",
+    "table": {
+      "columns": [
+        "mode",
+        "KPI-COSTPERKM-089",
+        "observations"
+      ],
+      "rows": [
+        [
+          "air",
+          1.44,
+          3720
+        ],
+        [
+          "ocean",
+          1.43,
+          2760
+        ],
+        [
+          "road",
+          1.43,
+          17040
+        ],
+        [
+          "rail",
+          1.43,
+          5280
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.55,
+        "unit": "currency",
+        "x": "mode",
+        "y": "KPI-COSTPERKM-089"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "invoice_line_id",
+        "invoice_date",
+        "lane",
+        "carrier",
+        "mode",
+        "region",
+        "linehaul_cost",
+        "accessorial_cost",
+        "fuel_surcharge",
+        "billable_km"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-TRN-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-003-05",
+  "kpi_definitions": [
+    "KPI-COSTPERKM-089"
+  ],
+  "notes": [],
+  "question": "How does cost per kilometre compare across modes?",
+  "recorded_at": "2026-09-04T21:58:31.584230+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 10,
+    "rows_scanned": 28800,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "mode",
+          "limit": 24,
+          "measure": "((sum(linehaul_cost) + sum(accessorial_cost) + sum(fuel_surcharge))::numeric / NULLIF((sum(billable_km))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 8,
+        "rows_returned": 4,
+        "rows_scanned": 28800,
+        "tool": "query_dp_trn_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,281 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-TCH-002
+  name: "Service Reliability & Incident"
+  industry: technology
+  domain: operations
+  archetype: source_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0047
+    team: "Site Reliability"
+    escalation: "#dp-reliability"
+  certification: certified
+spec:
+  purpose: >-
+    Per-service hourly reliability telemetry joined to the incidents and deployments that
+    explain it, so error rate, availability and response time are read from one place.
+  grain: "one row per service per hour"
+  history_months: 13
+  known_limitations: >-
+    Incident columns are populated only on the hour an incident was raised, so an incident spans
+    one row however long it ran; its duration lives in the restore and acknowledge minutes rather
+    than in a row per hour. Availability is computed from synthetic probes, which observe the
+    service the way a client does and therefore attribute a network partition to the service.
+    Services behind a shared gateway inherit the gateway's errors during a gateway incident.
+  upstream_sources: [SRC-APM, SRC-INCIDENT-MGMT, SRC-CICD, SRC-PRODUCT-EVENTS]
+  entities: [service, incident, deployment, team]
+  certified_kpis: [KPI-ERRRATE-083, KPI-SVCAVAIL-084, KPI-MTTA-085, KPI-MTTR-086, KPI-CHGFAIL-087]
+  columns:
+    - name: service_id
+      type: string
+      business_name: "Service ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Deployed service. The grain of this product together with the observed hour.
+    - name: observed_hour
+      type: timestamp
+      business_name: "Observed Hour"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hour the telemetry describes, truncated to the hour.
+    - name: service_tier
+      type: string
+      business_name: "Service Tier"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Criticality tier the service is operated to.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Deployment region the telemetry was observed in.
+    - name: team
+      type: string
+      business_name: "Owning Team"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Team that owns and is paged for the service.
+    - name: deployment_ring
+      type: string
+      business_name: "Deployment Ring"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Rollout ring the running version belongs to.
+    - name: incident_id
+      type: string
+      business_name: "Incident ID"
+      nullable: true
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Incident raised in this hour, null in an hour where none was. An incident appears once,
+        in the hour it was raised, so counting incidents does not count hours.
+    - name: severity
+      type: string
+      business_name: "Incident Severity"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Severity the incident was raised at, null where no incident was raised.
+    - name: request_count
+      type: number
+      business_name: "Requests"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Requests served in the hour.
+    - name: error_count
+      type: number
+      business_name: "Errors"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Requests that returned a server error in the hour.
+    - name: latency_p95_ms
+      type: number
+      business_name: "Latency p95"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Ninety-fifth percentile response time for the hour, in milliseconds.
+    - name: availability_minutes
+      type: number
+      business_name: "Available Minutes"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes in the hour the service answered its probe.
+    - name: scheduled_minutes
+      type: number
+      business_name: "Scheduled Minutes"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes in the hour the service was expected to be available, excluding planned windows.
+    - name: acknowledged_minutes
+      type: number
+      business_name: "Minutes to Acknowledge"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes from the incident being raised to a responder acknowledging, zero where no
+        incident was raised in the hour.
+    - name: resolved_minutes
+      type: number
+      business_name: "Minutes to Restore"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes from the incident being raised to service being restored, zero where no incident
+        was raised in the hour.
+    - name: change_deployed
+      type: boolean
+      business_name: "Change Deployed"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when a release went out to this service in the hour.
+    - name: change_failed
+      type: boolean
+      business_name: "Change Failed"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the release deployed in the hour needed a rollback or a fix forward.
+    - name: on_call_page_count
+      type: integer
+      business_name: "Pages Raised"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Pages sent to the on-call rota in the hour.
+  contract:
+    version: 1.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "every 15 minutes"
+        p95_minutes: 8
+        measured: per_partition
+      availability:
+        target_pct: 99.9
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 1.0
+        against: "apm_system_of_record"
+    deprecation_policy:
+      notice_days: 60
+      minimum_parallel_run_days: 30
+    support:
+      hours: "24x7"
+      p1_response_minutes: 15
+      on_call: "pagerduty://reliability-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US, EU]
+    consumer_obligations:
+      - "Availability figures are probe-derived and must not be published as contractual SLA"
+      - "Team-level figures must not be used for individual performance management"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 15 minutes of detection.
+  quality_rules:
+    - id: QR-TCH-002-01
+      dimension: completeness
+      column: service_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-TCH-002-02
+      dimension: uniqueness
+      columns: [service_id, observed_hour]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-TCH-002-03
+      dimension: freshness
+      rule: partition_completion_by
+      target: "15m"
+      tolerance_minutes: 8
+      severity: critical
+    - id: QR-TCH-002-04
+      dimension: validity
+      column: service_tier
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-TCH-002-05
+      dimension: consistency
+      column: error_count
+      rule: non_negative
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, mcp, stream]
+  demo_tier:
+    synthetic: true
+    rows_target: 950000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 92
+    planted_patterns:
+      - id: canary-ring-failures
+        description: >-
+            Change failure concentrates in one deployment ring, which is what the ring is for.
+      - id: tier3-slow-acknowledge
+        description: >-
+            One service tier acknowledges materially slower than the others, despite similar
+            incident volume.
+      - id: regional-error-spike
+        description: >-
+            A sustained error-rate elevation in one region across a contiguous run of hours.
+  value_case:
+    business_outcome: >-
+      Reliability reviews argue about one error rate instead of three dashboards that disagree.
+    baseline:
+      method: "weekly reliability review assembled from APM exports and incident tickets"
+      analyst_hours_month: 80
+      captured: "2026-05"
+    benefit_model: "avoided_incident_minutes * revenue_per_minute"
+    assumptions:
+      - text: "reduction in time to restore from having deployment context in the same product"
+        value: 12.0
+        unit: percent
+        sample_size: 140
+        source: "incident retrospective sample"
+        dated: 2026-06-15
+      - text: "revenue exposed per minute of tier-one downtime"
+        value: 3100.0
+        unit: usd
+        source: "FY26 revenue plan"
+        dated: 2026-01-15
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-09-04
+      reviewer: PTY-0047

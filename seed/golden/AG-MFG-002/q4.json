@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-MFG-002-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "country_of_origin",
+        "lead_time_days",
+        "material_class",
+        "receipt_date",
+        "receipt_line_id",
+        "region",
+        "supplier_id"
+      ],
+      "product_id": "DP-MFG-002"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "26400",
+    "top": "44.10",
+    "top_share": "45.00"
+  },
+  "exchange_id": "DEMO-AG-MFG-002-04",
+  "headline": "CN leads on median inbound lead time at 44.10 days, 45.00% of the total across 4 country of origins.",
+  "kpi_definitions": [
+    "KPI-INBLEAD-097"
+  ],
+  "narrative": "Ranked by the certified definition KPI-INBLEAD-097 over 26,400 rows in DP-MFG-002.",
+  "question": "Which countries of origin run the longest inbound lead time?",
+  "rows_scanned": 26400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "country_of_origin",
+    "KPI-INBLEAD-097",
+    "observations"
+  ],
+  "visual_type": "bar"
+}
