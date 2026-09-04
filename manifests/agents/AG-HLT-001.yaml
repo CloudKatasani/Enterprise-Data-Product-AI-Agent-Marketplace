@@ -25,7 +25,7 @@ spec:
     - "Patient-level advice of any kind"
     - "Anything that would identify an individual patient"
   runtime:
-    provider: mock
+    provider: analytic
     model:
       provider: anthropic
       id: marketplace-analytic-v1

@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-RTL-002-1.0.0",
+  "analysis_type": "lost_sales",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "average_selling_price",
+        "category",
+        "region",
+        "sku",
+        "store_format",
+        "unmet_demand_units"
+      ],
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "claims": {
+    "top": "213892.396200",
+    "top_share": "25.35"
+  },
+  "exchange_id": "DEMO-AG-RTL-002-04",
+  "headline": "apparel leads on lost sales estimate at $213,892.396200, 25.35% of the total across 5 categorys.",
+  "kpi_definitions": [
+    "KPI-LOSTSALES-055"
+  ],
+  "narrative": "Ranked by the certified definition KPI-LOSTSALES-055 over 45,000 rows in DP-RTL-002.",
+  "question": "What did stockouts cost us last month?",
+  "rows_scanned": 45000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "category",
+    "KPI-LOSTSALES-055",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

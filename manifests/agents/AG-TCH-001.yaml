@@ -26,7 +26,7 @@ spec:
     - "Individual user behaviour without a recorded consent basis"
     - "Any change to entitlement state"
   runtime:
-    provider: mock
+    provider: analytic
     model:
       provider: anthropic
       id: marketplace-analytic-v1

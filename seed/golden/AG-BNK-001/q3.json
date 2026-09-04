@@ -1,0 +1,37 @@
+{
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "customer_id",
+        "primary_relationship",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "claims": {
+    "current": "61.40",
+    "delta": "0.00"
+  },
+  "exchange_id": "DEMO-AG-BNK-001-03",
+  "headline": "Primary Bank Share is 61.40% for the year ending 2026-01-01, flat on the prior year.",
+  "kpi_definitions": [
+    "KPI-PBSHARE-016"
+  ],
+  "narrative": "Computed from DP-BNK-001 under the certified definition KPI-PBSHARE-016, across 4 years and 18,000 rows.",
+  "question": "What is our primary bank share trend by segment?",
+  "rows_scanned": 18000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-PBSHARE-016",
+    "observations"
+  ],
+  "visual_type": "line"
+}

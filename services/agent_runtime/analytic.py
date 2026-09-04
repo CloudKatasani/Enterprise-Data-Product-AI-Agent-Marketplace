@@ -51,6 +51,8 @@ CONFIDENCE_FULL_PATH = "answer_confidence.complete"
 CONFIDENCE_THIN_PATH = "answer_confidence.thin_evidence"
 THIN_EVIDENCE_ROWS_PATH = "answer_confidence.thin_evidence_rows"
 PERCENT_SCALE_PATH = "presentation.percent_scale"
+MEDIAN_FRACTION_PATH = "distribution.median_fraction"
+TAIL_FRACTION_PATH = "distribution.tail_fraction"
 
 
 @dataclass
@@ -83,14 +85,22 @@ def _measure_sql(kpi: dict[str, Any]) -> str:
     return f"(({numerator})::numeric / NULLIF(({denominator})::numeric, 0){scale})"
 
 
-def _time_column(product_columns: list[str], coverage_columns: list[str]) -> str:
+# Logical types from the data contract. A column is a time column because the
+# contract says so, never because its name ends in "_start": `active_at_period_start`
+# is a boolean, and date_trunc on it is a crash rather than a wrong answer only
+# by luck.
+TEMPORAL_TYPES = frozenset({"date", "timestamp", "timestamptz", "datetime"})
+
+
+def _time_column(column_types: dict[str, str], coverage_columns: list[str]) -> str:
+    """The time column the agent may read, preferring one the KPI already uses."""
+    temporal = [name for name, kind in column_types.items() if kind in TEMPORAL_TYPES]
+    if not temporal:
+        raise OutOfScope("this product publishes no time column the agent can read")
     for name in coverage_columns:
-        if name.endswith(("_date", "_timestamp", "_month", "_hour", "_start")):
+        if name in temporal:
             return name
-    for name in product_columns:
-        if name.endswith(("_date", "_timestamp", "_month", "_hour", "_start")):
-            return name
-    raise OutOfScope("this product publishes no time column the agent can read")
+    return temporal[0]
 
 
 def _load_context(
@@ -144,7 +154,8 @@ def _load_context(
     product = fetch_one(
         connection,
         "SELECT p.product_id, p.name, c.semver AS contract_version, "
-        "       array_agg(col.name ORDER BY col.ordinal) AS columns "
+        "       array_agg(col.name ORDER BY col.ordinal) AS columns, "
+        "       jsonb_object_agg(col.name, col.data_type) AS column_types "
         "FROM data_product p "
         "JOIN data_contract_version c ON c.product_id = p.product_id AND c.status = 'active' "
         "JOIN data_product_column col ON col.product_id = p.product_id "
@@ -237,12 +248,26 @@ class _Executed:
     as_of: Any
 
 
+# A certified measure is normally an aggregate. A few are per-row window
+# expressions — a propensity decile, for instance — which cannot appear beside a
+# GROUP BY. Those are computed row by row in a subquery and averaged over the
+# group, so the register keeps one definition and the runtime does not need a
+# second one for the grouped case.
+WINDOW_MARKER = " over ("
+WINDOWED_MEASURE = "window_measure"
+
+
+def _is_windowed(kpi: dict[str, Any]) -> bool:
+    return WINDOW_MARKER in (kpi["expression"] or "").lower()
+
+
 def _run(
     connection: psycopg.Connection[Any],
     context: _Context,
     plan: planner.QueryPlan,
     table: str,
     time_column: str,
+    rubric: Rubric,
 ) -> _Executed:
     measure = _measure_sql(context.kpi)
     started = time.perf_counter()
@@ -264,19 +289,27 @@ def _run(
         label = plan.slice_column or "period"
         order = "2 DESC NULLS LAST"
 
+    source = table
+    grouped_by = dimension
     if plan.shape == planner.SHAPE_DISTRIBUTION and plan.measure_column:
-        projection = (
-            f"{dimension} AS {label}, "
-            f"percentile_cont(0.5) WITHIN GROUP (ORDER BY {plan.measure_column}) AS measure, "
-            f"percentile_cont(0.9) WITHIN GROUP (ORDER BY {plan.measure_column}) AS p90, "
-            "count(*) AS observations"
+        aggregate = (
+            f"percentile_cont({rubric.number(MEDIAN_FRACTION_PATH)}) WITHIN GROUP "
+            f"(ORDER BY {plan.measure_column}) AS measure, "
+            f"percentile_cont({rubric.number(TAIL_FRACTION_PATH)}) WITHIN GROUP "
+            f"(ORDER BY {plan.measure_column}) AS tail"
         )
+    elif _is_windowed(context.kpi):
+        source = (
+            f"(SELECT {dimension} AS {label}, {measure} AS {WINDOWED_MEASURE} FROM {table}) w"
+        )
+        grouped_by = label
+        aggregate = f"avg({WINDOWED_MEASURE}) AS measure"
     else:
-        projection = f"{dimension} AS {label}, {measure} AS measure, count(*) AS observations"
+        aggregate = f"{measure} AS measure"
 
     sql = (
-        f"SELECT {projection} FROM {table} "
-        f"GROUP BY 1 HAVING count(*) > 0 ORDER BY {order} LIMIT %(limit)s"
+        f"SELECT {grouped_by} AS {label}, {aggregate}, count(*) AS observations "
+        f"FROM {source} GROUP BY 1 HAVING count(*) > 0 ORDER BY {order} LIMIT %(limit)s"
     )
     arguments = {"limit": plan.limit}
     rows = fetch_all(connection, sql, arguments)
@@ -392,12 +425,13 @@ def _compose(
     elif plan.shape == planner.SHAPE_DISTRIBUTION:
         top_label, median, observations = values[0]
         claims["median"] = median if median is not None else Decimal(0)
-        p90 = _quantise(rows[0].get("p90"), unit)
-        if p90 is not None:
-            claims["p90"] = p90
+        tail = _quantise(rows[0].get("tail"), unit)
+        tail_name = format(rubric.number(TAIL_FRACTION_PATH), ".0%")
+        if tail is not None:
+            claims["tail"] = tail
         headline = (
             f"Median {name.lower()} is {_format(median, unit)} for {_label(top_label)}, "
-            f"with the ninetieth percentile at {_format(p90, unit)}."
+            f"with the {tail_name} percentile at {_format(tail, unit)}."
         )
         narrative = (
             f"Across {observations:,} observations in {context.product['product_id']}; "
@@ -487,8 +521,10 @@ class AnalyticRuntime:
         )
 
         table = _demo_table(self._demo_schema, plan.product_id)
-        time_column = _time_column(list(context.product["columns"]), list(plan.columns_used))
-        executed = _run(connection, context, plan, table, time_column)
+        time_column = _time_column(
+            dict(context.product["column_types"]), list(plan.columns_used)
+        )
+        executed = _run(connection, context, plan, table, time_column, self._rubric)
 
         headline, narrative, visual, table_payload, claims, notes = _compose(
             context, plan, executed, self._rubric

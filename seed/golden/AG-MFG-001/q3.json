@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-MFG-001-1.0.0",
+  "analysis_type": "shift_comparison",
+  "citations": [
+    {
+      "columns": [
+        "line",
+        "passed_without_rework",
+        "plant",
+        "product_family",
+        "run_id",
+        "shift",
+        "shift_date"
+      ],
+      "product_id": "DP-MFG-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "100.00",
+    "cohort_high": "100.00",
+    "cohort_low": "0.00"
+  },
+  "exchange_id": "DEMO-AG-MFG-001-03",
+  "headline": "First Pass Yield is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "kpi_definitions": [
+    "KPI-FPY-072"
+  ],
+  "narrative": "Both cohorts are drawn from DP-MFG-001 over the same period: 12,072 observations against 528.",
+  "question": "Which shifts show the biggest first-pass-yield gap?",
+  "rows_scanned": 12600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-FPY-072",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

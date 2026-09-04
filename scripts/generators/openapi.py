@@ -35,7 +35,7 @@ GENERATION_ENV = {
     "SNOWFLAKE_USER": "generation",
     "SNOWFLAKE_ROLE": "MKT_READONLY",
     "SNOWFLAKE_PRIVATE_KEY": "",
-    "AGENT_RUNTIME": "mock",
+    "AGENT_RUNTIME": "analytic",
     "MODEL_PROVIDER": "generation",
     "MODEL_ID": "generation",
     "MODEL_MAX_TOKENS": "2000",

@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "event_impact",
+  "citations": [
+    {
+      "columns": [
+        "active_product_count",
+        "as_of_month",
+        "customer_id",
+        "ending_deposit_balance",
+        "product_family",
+        "region",
+        "segment",
+        "starting_deposit_balance"
+      ],
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "claims": {
+    "current": "5.16",
+    "delta": "1.24"
+  },
+  "exchange_id": "DEMO-AG-BNK-001-05",
+  "headline": "Deposit Balance Growth is 5.16% for the year ending 2026-01-01, up 1.24% on the prior year.",
+  "kpi_definitions": [
+    "KPI-DEPGRW-020"
+  ],
+  "narrative": "Computed from DP-BNK-001 under the certified definition KPI-DEPGRW-020, across 4 years and 18,000 rows.",
+  "question": "How did deposit balances shift after the April rate change?",
+  "rows_scanned": 18000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-DEPGRW-020",
+    "observations"
+  ],
+  "visual_type": "line"
+}

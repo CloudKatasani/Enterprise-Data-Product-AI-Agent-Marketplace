@@ -25,7 +25,7 @@ spec:
     - "Crew dispatch"
     - "Regulatory filings"
   runtime:
-    provider: mock
+    provider: analytic
     model:
       provider: anthropic
       id: marketplace-analytic-v1

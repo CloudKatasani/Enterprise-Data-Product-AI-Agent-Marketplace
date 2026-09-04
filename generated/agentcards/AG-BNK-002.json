@@ -1,0 +1,247 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-BNK-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-BNK-002",
+    "name": "Financial Crime Triage",
+    "industry": "banking",
+    "domain": "risk_compliance",
+    "autonomy_level": "L2",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0035",
+      "team": "Financial Crime Operations",
+      "on_call": "pagerduty://fincrime-agents"
+    }
+  },
+  "capability_statement": "Answers questions about surveillance alert volume, efficiency, backlog and investigator workload, and proposes a working order.",
+  "business_value": {
+    "analyses": [
+      "backlog_profile",
+      "efficiency_ranking",
+      "prioritization",
+      "before_after",
+      "workload"
+    ],
+    "replaces": "Monthly manual extract and pivot by the tuning team, plus daily queue triage by the investigations lead.",
+    "personas": [
+      "investigations_lead",
+      "tuning_analyst",
+      "compliance_officer"
+    ]
+  },
+  "out_of_scope": [
+    "Filing a suspicious activity report",
+    "Closing an alert",
+    "Naming a customer as suspicious"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-BACKLOG-025",
+      "kpi_name": "Alert Backlog Age",
+      "unit": "days",
+      "source_product": "DP-BNK-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "typology",
+        "business_line",
+        "investigator_team"
+      ],
+      "analysis_depth": "report",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-FPRATE-022",
+      "kpi_name": "False Positive Rate",
+      "unit": "percent",
+      "source_product": "DP-BNK-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "typology",
+        "business_line",
+        "rule_id"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-ALERTVOL-021",
+      "kpi_name": "Alert Volume",
+      "unit": "count",
+      "source_product": "DP-BNK-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "typology",
+        "business_line",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SARCONV-023",
+      "kpi_name": "SAR Conversion Rate",
+      "unit": "percent",
+      "source_product": "DP-BNK-002",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "typology",
+        "business_line",
+        "region"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-INVCYCLE-024",
+      "kpi_name": "Investigation Cycle Time",
+      "unit": "days",
+      "source_product": "DP-BNK-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "typology",
+        "business_line",
+        "investigator_team"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-BNK-002",
+      "columns": [
+        "alert_id",
+        "event_timestamp",
+        "typology",
+        "rule_id",
+        "business_line",
+        "region",
+        "investigator_team",
+        "disposition",
+        "sar_filed",
+        "investigation_days",
+        "age_days",
+        "alert_score",
+        "customer_risk_rating",
+        "transaction_count",
+        "transaction_value"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-BNK-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-BNK-002/ask",
+    "required_scope": "agent:AG-BNK-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "What is the alert backlog and its age profile?",
+      "Which typologies have the highest false positive rate?",
+      "Which alerts should be worked first today?",
+      "Has SAR conversion changed since the June rule tuning?",
+      "Which investigators are carrying aged alerts above SLA?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-BNK-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_bnk_002",
+        "scope": "dp:DP-BNK-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-BNK-002": "2.9.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "a3b20b5b0ce22c0651d06872cbcdcb903e3f7da60f7898bcea69af88ba2ea5b8"
+}

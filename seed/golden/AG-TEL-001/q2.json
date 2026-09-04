@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "active_at_period_start",
+        "activity_date",
+        "churn_flag",
+        "region",
+        "segment",
+        "subscriber_id",
+        "tenure_band"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "top": "45.77",
+    "top_share": "56.77"
+  },
+  "exchange_id": "DEMO-AG-TEL-001-02",
+  "headline": "consumer leads on churn rate at 45.77%, 56.77% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-CHURN-001"
+  ],
+  "narrative": "Ranked by the certified definition KPI-CHURN-001 over 25,200 rows in DP-TEL-001.",
+  "question": "Which customer segments drove the churn increase last quarter?",
+  "rows_scanned": 25200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-CHURN-001",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

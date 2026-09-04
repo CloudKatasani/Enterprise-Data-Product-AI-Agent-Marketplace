@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "gap_analysis",
+  "citations": [
+    {
+      "columns": [
+        "account_id",
+        "activity_date",
+        "feature",
+        "feature_entitled",
+        "feature_used",
+        "plan_tier",
+        "segment"
+      ],
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "claims": {
+    "top": "466.67",
+    "top_share": "30.43"
+  },
+  "exchange_id": "DEMO-AG-TCH-001-05",
+  "headline": "advanced_reporting leads on feature adoption rate at 466.67%, 30.43% of the total across 8 features.",
+  "kpi_definitions": [
+    "KPI-FEATADP-012"
+  ],
+  "narrative": "Ranked by the certified definition KPI-FEATADP-012 over 50,400 rows in DP-TCH-001.",
+  "question": "Which features have high usage but low entitlement coverage?",
+  "rows_scanned": 50400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "feature",
+    "KPI-FEATADP-012",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

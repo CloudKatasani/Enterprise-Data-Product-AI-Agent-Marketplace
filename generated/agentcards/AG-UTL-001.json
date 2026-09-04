@@ -1,0 +1,254 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-UTL-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-UTL-001",
+    "name": "Outage Impact Analyst",
+    "industry": "utilities_energy",
+    "domain": "network_asset",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0045",
+      "team": "Grid Operations",
+      "on_call": "pagerduty://grid-agents"
+    }
+  },
+  "capability_statement": "Answers questions about reliability indices, feeder contribution, asset health risk and event impact across the distribution network.",
+  "business_value": {
+    "analyses": [
+      "regulatory_tracking",
+      "contribution_ranking",
+      "risk_prioritization",
+      "event_analysis",
+      "risk_ranking"
+    ],
+    "replaces": "The annual reliability review and the manual feeder ranking that supports it.",
+    "personas": [
+      "reliability_engineer",
+      "asset_manager",
+      "regulatory_reporting_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Switching orders",
+    "Crew dispatch",
+    "Regulatory filings"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-SAIDI-061",
+      "kpi_name": "SAIDI",
+      "unit": "minutes",
+      "source_product": "DP-UTL-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "feeder",
+        "region",
+        "cause_class"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-AHI-063",
+      "kpi_name": "Asset Health Index",
+      "unit": "score",
+      "source_product": "DP-UTL-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "asset_class",
+        "region",
+        "vintage_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SAIFI-062",
+      "kpi_name": "SAIFI",
+      "unit": "count",
+      "source_product": "DP-UTL-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "feeder",
+        "region",
+        "cause_class"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-PMCOMP-065",
+      "kpi_name": "Preventive Maintenance Compliance",
+      "unit": "percent",
+      "source_product": "DP-UTL-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "asset_class",
+        "region",
+        "crew"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-UTL-001",
+      "columns": [
+        "asset_id",
+        "outage_id",
+        "observed_date",
+        "feeder",
+        "region",
+        "asset_class",
+        "vintage_band",
+        "cause_class",
+        "crew",
+        "served_customer_id",
+        "customer_interruptions",
+        "customer_interruption_minutes",
+        "restoration_minutes",
+        "asset_health_score",
+        "scheduled",
+        "completed_within_window",
+        "deferral_count",
+        "major_event_day",
+        "load_impact_mw"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-UTL-001:read"
+    },
+    {
+      "product_id": "DP-ENG-001",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "rate_class",
+        "region",
+        "feeder",
+        "consumption_kwh",
+        "interval_demand_kw"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-ENG-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-UTL-001/ask",
+    "required_scope": "agent:AG-UTL-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "What is our SAIDI year to date against the regulatory target?",
+      "Which feeders contribute most to interruption minutes?",
+      "Which poor-health assets serve the most customers?",
+      "What was the customer and load impact of last week's storm?",
+      "Which maintenance deferrals carry the highest customer-minute risk?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-UTL-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_utl_001",
+        "scope": "dp:DP-UTL-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "query_dp_eng_001",
+        "scope": "dp:DP-ENG-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-UTL-001": "3.7.0",
+      "DP-ENG-001": "2.1.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "c09efc37776fdcd6b1fc88de5a4c10a993681d95e9567d8c6f639d042553c03b"
+}

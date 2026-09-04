@@ -1,0 +1,228 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-BNK-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-BNK-001",
+    "name": "Relationship Value Advisor",
+    "industry": "banking",
+    "domain": "customer",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0048",
+      "team": "Banking Customer Domain",
+      "on_call": "pagerduty://banking-agents"
+    }
+  },
+  "capability_statement": "Answers questions about household relationship value, primacy, attrition risk and deposit movement for relationship management.",
+  "business_value": {
+    "analyses": [
+      "ranking",
+      "risk_cohort",
+      "trend_segmented",
+      "opportunity_cohort",
+      "event_impact"
+    ],
+    "replaces": "Branch-level spreadsheets refreshed monthly by the customer analytics team.",
+    "personas": [
+      "relationship_banker",
+      "regional_director",
+      "customer_analytics"
+    ]
+  },
+  "out_of_scope": [
+    "Credit decisions",
+    "Suitability advice",
+    "Individual recommendations without banker review"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-CLV-018",
+      "kpi_name": "Customer Lifetime Value",
+      "unit": "currency",
+      "source_product": "DP-BNK-001",
+      "grains": [
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "value_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-ATTRISK-019",
+      "kpi_name": "Attrition Risk Score",
+      "unit": "score",
+      "source_product": "DP-BNK-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "value_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-PBSHARE-016",
+      "kpi_name": "Primary Bank Share",
+      "unit": "percent",
+      "source_product": "DP-BNK-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "tenure_band"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DEPGRW-020",
+      "kpi_name": "Deposit Balance Growth",
+      "unit": "percent",
+      "source_product": "DP-BNK-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "product_family"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-BNK-001",
+      "columns": [
+        "customer_id",
+        "household_id",
+        "as_of_month",
+        "segment",
+        "region",
+        "tenure_band",
+        "value_band",
+        "product_family",
+        "active_product_count",
+        "primary_relationship",
+        "starting_deposit_balance",
+        "ending_deposit_balance",
+        "discounted_contribution_margin",
+        "attrition_model_score",
+        "relationship_value",
+        "last_contact_date"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-BNK-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-BNK-001/ask",
+    "required_scope": "agent:AG-BNK-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Who are my top 20 households by relationship value in the Southeast?",
+      "Which high-value customers show attrition risk this month?",
+      "What is our primary bank share trend by segment?",
+      "Which single-product customers show strong balance growth?",
+      "How did deposit balances shift after the April rate change?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-BNK-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_bnk_001",
+        "scope": "dp:DP-BNK-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-BNK-001": "5.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "b2d88a5be04973937a3db02a1a3ad3ecc9dea54cdff8b14011016ef49d76e229"
+}

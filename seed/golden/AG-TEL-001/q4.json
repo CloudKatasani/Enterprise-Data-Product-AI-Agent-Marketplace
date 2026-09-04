@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "cohort_targeting",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "churn_propensity_score",
+        "propensity_decile",
+        "region",
+        "segment",
+        "subscriber_id",
+        "tenure_band"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "top": "5.5189",
+    "top_share": "33.57"
+  },
+  "exchange_id": "DEMO-AG-TEL-001-04",
+  "headline": "consumer leads on churn propensity decile at 5.5189, 33.57% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-PROP-005"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PROP-005 over 25,200 rows in DP-TEL-001.",
+  "question": "Which subscribers should we prioritise for a save offer this week?",
+  "rows_scanned": 25200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-PROP-005",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

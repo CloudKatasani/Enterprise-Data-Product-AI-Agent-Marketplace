@@ -8,7 +8,7 @@
 # is that a number an output depends on is resolvable by rubric_version_id, and
 # "this one will never change" is not an exception the replay path can honour.
 rubric: agent_runtime
-version: 1.0.0
+version: 1.1.0
 
 # How many grouped rows an answer may carry. Wide enough for a two-year monthly
 # series, narrow enough that the table stays readable without paging.
@@ -28,6 +28,13 @@ answer_confidence:
   # Below this many rows scanned, the answer says so in its notes and carries
   # the lower confidence. An honest caveat costs less than a wrong decision.
   thin_evidence_rows: 5000
+
+distribution:
+  # A distribution question is answered with a midpoint and a tail. Which tail is
+  # a judgement about what "bad case" means for the business, so it is set here
+  # rather than assumed to be the ninetieth percentile forever.
+  median_fraction: 0.5
+  tail_fraction: 0.9
 
 presentation:
   # Ratio to percentage points. See the header: it is here so that a share

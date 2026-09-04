@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "region",
+        "save_offer_accepted",
+        "save_offer_made",
+        "segment",
+        "subscriber_id"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "100.00",
+    "cohort_high": "100.00",
+    "cohort_low": "0.00"
+  },
+  "exchange_id": "DEMO-AG-TEL-001-05",
+  "headline": "Save Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "kpi_definitions": [
+    "KPI-SAVE-003"
+  ],
+  "narrative": "Both cohorts are drawn from DP-TEL-001 over the same period: 202 observations against 24,998.",
+  "question": "Did the May retention campaign actually work?",
+  "rows_scanned": 25200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-SAVE-003",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

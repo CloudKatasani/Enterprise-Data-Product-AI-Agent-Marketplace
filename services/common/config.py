@@ -37,7 +37,10 @@ REQUIRED_VARS: tuple[str, ...] = (
 # (a private key is not needed until a real connector session is opened).
 MAY_BE_EMPTY: frozenset[str] = frozenset({"SNOWFLAKE_PRIVATE_KEY"})
 
-VALID_AGENT_RUNTIMES: frozenset[str] = frozenset({"cortex", "mock"})
+# "mock" is BUILD.md M6.3's name for the offline runtime and stays resolvable so a
+# deployment configured from the spec verbatim starts. It selects the analytic
+# runtime, which executes real queries — see services/agent_runtime/registry.py.
+VALID_AGENT_RUNTIMES: frozenset[str] = frozenset({"cortex", "analytic", "mock"})
 VALID_FLAG_SOURCES: frozenset[str] = frozenset({"env", "service"})
 
 

@@ -1,0 +1,212 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-HLT-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-HLT-001",
+    "name": "Readmission Risk Navigator",
+    "industry": "healthcare",
+    "domain": "clinical",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0050",
+      "team": "Clinical Informatics",
+      "on_call": "pagerduty://clinical-agents"
+    }
+  },
+  "capability_statement": "Answers population-level questions about readmission, length of stay, follow-up compliance and care gaps for quality improvement.",
+  "business_value": {
+    "analyses": [
+      "trend_comparison",
+      "contribution_ranking",
+      "association",
+      "compliance",
+      "programme_eval"
+    ],
+    "replaces": "Monthly manual chart abstraction and registry exports by the clinical analytics team.",
+    "personas": [
+      "quality_improvement_lead",
+      "service_line_director",
+      "population_health_analyst"
+    ]
+  },
+  "out_of_scope": [
+    "Any individual clinical recommendation, diagnosis or treatment",
+    "Patient-level advice of any kind",
+    "Anything that would identify an individual patient"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-READMIT-036",
+      "kpi_name": "Thirty Day Readmission Rate",
+      "unit": "percent",
+      "source_product": "DP-HLT-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "condition",
+        "unit",
+        "payer",
+        "discharge_disposition"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-FOLLOWUP-040",
+      "kpi_name": "Discharge to Follow-up Interval",
+      "unit": "days",
+      "source_product": "DP-HLT-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "condition",
+        "unit",
+        "payer"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-ALOS-037",
+      "kpi_name": "Average Length of Stay",
+      "unit": "days",
+      "source_product": "DP-HLT-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "condition",
+        "unit",
+        "payer"
+      ],
+      "analysis_depth": "report",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-HLT-001",
+      "columns": [
+        "encounter_id",
+        "index_encounter_id",
+        "attributed_member_id",
+        "discharge_date",
+        "condition",
+        "unit",
+        "payer",
+        "region",
+        "clinic",
+        "measure",
+        "discharge_disposition",
+        "eligible_index",
+        "readmitted_within_30d",
+        "inpatient_days",
+        "days_to_followup",
+        "gap_open_at_period_start",
+        "gap_closed",
+        "programme_enrolled"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-HLT-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-HLT-001/ask",
+    "required_scope": "agent:AG-HLT-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "What is our 30-day readmission rate and how does it compare to last year?",
+      "Which conditions and units drive the most readmissions?",
+      "Which discharge patterns are associated with higher readmission?",
+      "Are follow-up appointments being scheduled within the target window?",
+      "Did the transitional care programme reduce readmissions in the pilot units?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-HLT-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_hlt_001",
+        "scope": "dp:DP-HLT-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-HLT-001": "4.3.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "b340771bad4deabd92a7b182b68620240cb4309ee539f62e6638783e5c38b021"
+}

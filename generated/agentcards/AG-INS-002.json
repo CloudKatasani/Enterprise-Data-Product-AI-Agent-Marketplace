@@ -1,0 +1,231 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-INS-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-INS-002",
+    "name": "Underwriting Portfolio Copilot",
+    "industry": "insurance",
+    "domain": "product",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0037",
+      "team": "Underwriting Analytics",
+      "on_call": "pagerduty://underwriting-agents"
+    }
+  },
+  "capability_statement": "Answers questions about rate adequacy, retention, conversion and exposure concentration across the underwriting portfolio.",
+  "business_value": {
+    "analyses": [
+      "adequacy_ranking",
+      "concentration",
+      "trend_segmented",
+      "variance_to_plan",
+      "scenario_framing"
+    ],
+    "replaces": "Actuarial extracts refreshed quarterly and reshaped by hand for each portfolio review.",
+    "personas": [
+      "underwriting_manager",
+      "portfolio_actuary",
+      "distribution_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Binding authority",
+    "Rate filing",
+    "Individual risk acceptance"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-RATEADQ-034",
+      "kpi_name": "Rate Adequacy",
+      "unit": "ratio",
+      "source_product": "DP-INS-002",
+      "grains": [
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "coverage_line",
+        "segment",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-EXPCONC-035",
+      "kpi_name": "Exposure Concentration",
+      "unit": "percent",
+      "source_product": "DP-INS-002",
+      "grains": [
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "peril",
+        "region",
+        "coverage_line"
+      ],
+      "analysis_depth": "report",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-QTB-033",
+      "kpi_name": "Quote-to-Bind Rate",
+      "unit": "percent",
+      "source_product": "DP-INS-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "coverage_line",
+        "segment",
+        "channel"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-POLRETEN-032",
+      "kpi_name": "Policy Retention",
+      "unit": "percent",
+      "source_product": "DP-INS-002",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "coverage_line",
+        "segment",
+        "region",
+        "channel"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-INS-002",
+      "columns": [
+        "policy_id",
+        "quote_id",
+        "as_of_month",
+        "coverage_line",
+        "segment",
+        "region",
+        "county",
+        "channel",
+        "peril",
+        "written_premium",
+        "charged_premium",
+        "technical_premium",
+        "total_insured_value",
+        "in_top_accumulation_zone",
+        "up_for_renewal",
+        "renewed",
+        "bound",
+        "rate_change_pct"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-INS-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-INS-002/ask",
+    "required_scope": "agent:AG-INS-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Where is rate adequacy weakest in the commercial property book?",
+      "What is our exposure concentration by county for wind peril?",
+      "How has quote-to-bind moved since the July rate change?",
+      "Which segments are we retaining below plan?",
+      "What would a 5% increase on the worst-performing segment do to retention?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-INS-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_ins_002",
+        "scope": "dp:DP-INS-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-INS-002": "2.6.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "c06b0eef81af20a406eedb2031607a0bf1ef7979707b8dee5176b0527faf8ac7"
+}

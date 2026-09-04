@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "risk_ranking",
+  "citations": [
+    {
+      "columns": [
+        "asset_class",
+        "asset_id",
+        "completed_within_window",
+        "crew",
+        "deferral_count",
+        "observed_date",
+        "region",
+        "scheduled"
+      ],
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "claims": {
+    "top": "98.78",
+    "top_share": "25.37"
+  },
+  "exchange_id": "DEMO-AG-UTL-001-05",
+  "headline": "switch leads on preventive maintenance compliance at 98.78%, 25.37% of the total across 4 asset classs.",
+  "kpi_definitions": [
+    "KPI-PMCOMP-065"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PMCOMP-065 over 21,600 rows in DP-UTL-001.",
+  "question": "Which maintenance deferrals carry the highest customer-minute risk?",
+  "rows_scanned": 21600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "asset_class",
+    "KPI-PMCOMP-065",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "like_for_like",
+  "citations": [
+    {
+      "columns": [
+        "accessorial_cost",
+        "carrier",
+        "departure_timestamp",
+        "equipment_type",
+        "lane",
+        "linehaul_cost",
+        "loaded_miles",
+        "shipment_leg_id"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "top": "1.876813",
+    "top_share": "16.74"
+  },
+  "exchange_id": "DEMO-AG-TRN-001-04",
+  "headline": "W-01 leads on cost per mile at $1.876813, 16.74% of the total across 6 lanes.",
+  "kpi_definitions": [
+    "KPI-CPM-057"
+  ],
+  "narrative": "Ranked by the certified definition KPI-CPM-057 over 13,200 rows in DP-TRN-001.",
+  "question": "How does cost per mile compare across carriers on the same lanes?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "lane",
+    "KPI-CPM-057",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

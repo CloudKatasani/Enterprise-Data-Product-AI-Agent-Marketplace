@@ -1,0 +1,251 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TEL-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TEL-001",
+    "name": "Churn Sentinel",
+    "industry": "telecommunications",
+    "domain": "customer",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0044",
+      "team": "Telecom Analytics",
+      "on_call": "pagerduty://tel-agents"
+    }
+  },
+  "capability_statement": "Answers questions about subscriber churn, retention performance and save-offer targeting, and explains what is driving churn movement.",
+  "business_value": {
+    "analyses": [
+      "trend_explanation",
+      "variance_decomposition",
+      "driver_ranking",
+      "cohort_comparison",
+      "anomaly_triage"
+    ],
+    "replaces": "Manual pull-and-pivot cycles by the retention analytics team, typically two to three days per churn review.",
+    "personas": [
+      "retention_manager",
+      "regional_sales_director",
+      "cmo_staff"
+    ]
+  },
+  "out_of_scope": [
+    "Individual subscriber credit decisions",
+    "Pricing approval or plan change execution",
+    "Anything requiring billing write-back"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-CHURN-001",
+      "kpi_name": "Churn Rate",
+      "unit": "percent",
+      "source_product": "DP-TEL-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_band",
+        "channel"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SAVE-003",
+      "kpi_name": "Save Rate",
+      "unit": "percent",
+      "source_product": "DP-TEL-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "channel"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-PROP-005",
+      "kpi_name": "Churn Propensity Decile",
+      "unit": "index",
+      "source_product": "DP-TEL-001",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "tenure_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-IMPHRS-010",
+      "kpi_name": "Impacted Subscriber Hours",
+      "unit": "count",
+      "source_product": "DP-TEL-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TEL-001",
+      "columns": [
+        "subscriber_id",
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_band",
+        "channel",
+        "activity_date",
+        "active_at_period_start",
+        "churn_flag",
+        "save_offer_made",
+        "save_offer_accepted",
+        "propensity_decile",
+        "churn_propensity_score",
+        "ltv",
+        "contract_end_date",
+        "network_incidents_30d"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TEL-001:read"
+    },
+    {
+      "product_id": "DP-TEL-002",
+      "columns": [
+        "site_id",
+        "region",
+        "impacted_subscribers",
+        "outage_hours",
+        "impacted_subscriber_hours",
+        "observed_hour"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TEL-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TEL-001/ask",
+    "required_scope": "agent:AG-TEL-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "What is our churn rate this quarter and how does it compare to last?",
+      "Which customer segments drove the churn increase last quarter?",
+      "Are network issues contributing to churn in the Midwest?",
+      "Which subscribers should we prioritise for a save offer this week?",
+      "Did the May retention campaign actually work?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TEL-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_tel_001",
+        "scope": "dp:DP-TEL-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "query_dp_tel_002",
+        "scope": "dp:DP-TEL-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TEL-001": "3.2.0",
+      "DP-TEL-002": "2.4.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "3af8e0b9e9162b384c7ba8b453109e1b956826925608f0584b542d76cdd7dbe8"
+}

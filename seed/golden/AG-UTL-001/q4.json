@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "event_analysis",
+  "citations": [
+    {
+      "columns": [
+        "asset_id",
+        "cause_class",
+        "customer_interruptions",
+        "feeder",
+        "load_impact_mw",
+        "observed_date",
+        "outage_id",
+        "region",
+        "served_customer_id"
+      ],
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "claims": {
+    "current": "2164.9775"
+  },
+  "exchange_id": "DEMO-AG-UTL-001-04",
+  "headline": "SAIFI is 2,164.9775 for the year ending 2026-01-01.",
+  "kpi_definitions": [
+    "KPI-SAIFI-062"
+  ],
+  "narrative": "Computed from DP-UTL-001 under the certified definition KPI-SAIFI-062, across 1 years and 21,600 rows.",
+  "question": "What was the customer and load impact of last week's storm?",
+  "rows_scanned": 21600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-SAIFI-062",
+    "observations"
+  ],
+  "visual_type": "line"
+}

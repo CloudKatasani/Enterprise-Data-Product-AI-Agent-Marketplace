@@ -1,0 +1,37 @@
+{
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "pattern_detection",
+  "citations": [
+    {
+      "columns": [
+        "fault_class",
+        "fault_closed",
+        "observed_hour",
+        "region",
+        "restore_minutes",
+        "site_id"
+      ],
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "claims": {
+    "top": "331.3195",
+    "top_share": "25.56"
+  },
+  "exchange_id": "DEMO-AG-TEL-002-04",
+  "headline": "West leads on fault mean time to restore at 331.3195 hours, 25.56% of the total across 4 regions.",
+  "kpi_definitions": [
+    "KPI-FMTTR-009"
+  ],
+  "narrative": "Ranked by the certified definition KPI-FMTTR-009 over 15,120 rows in DP-TEL-002.",
+  "question": "Which faults are recurring on the same assets?",
+  "rows_scanned": 15120,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "region",
+    "KPI-FMTTR-009",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

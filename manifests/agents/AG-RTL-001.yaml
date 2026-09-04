@@ -25,7 +25,7 @@ spec:
     - "Markdown execution"
     - "Vendor negotiation positions"
   runtime:
-    provider: mock
+    provider: analytic
     model:
       provider: anthropic
       id: marketplace-analytic-v1

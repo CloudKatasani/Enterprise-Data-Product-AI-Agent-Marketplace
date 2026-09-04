@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "contribution_ranking",
+  "citations": [
+    {
+      "columns": [
+        "asset_id",
+        "cause_class",
+        "customer_interruption_minutes",
+        "feeder",
+        "major_event_day",
+        "observed_date",
+        "region",
+        "served_customer_id"
+      ],
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "claims": {
+    "top": "564492.7126",
+    "top_share": "31.34"
+  },
+  "exchange_id": "DEMO-AG-UTL-001-02",
+  "headline": "FDR-101 leads on saidi at 564,492.7126 minutes, 31.34% of the total across 7 feeders.",
+  "kpi_definitions": [
+    "KPI-SAIDI-061"
+  ],
+  "narrative": "Ranked by the certified definition KPI-SAIDI-061 over 21,600 rows in DP-UTL-001.",
+  "question": "Which feeders contribute most to interruption minutes?",
+  "rows_scanned": 21600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "feeder",
+    "KPI-SAIDI-061",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

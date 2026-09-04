@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-INS-001-1.0.0",
+  "analysis_type": "variance",
+  "citations": [
+    {
+      "columns": [
+        "claim_id",
+        "complexity_band",
+        "coverage_line",
+        "incurred_losses",
+        "region",
+        "settlement_amount",
+        "transition_timestamp",
+        "triage_rule_version"
+      ],
+      "product_id": "DP-INS-001"
+    }
+  ],
+  "claims": {
+    "top": "2276772.088235",
+    "top_share": "28.09"
+  },
+  "exchange_id": "DEMO-AG-INS-001-02",
+  "headline": "auto_liability leads on average claim severity at $2,276,772.088235, 28.09% of the total across 4 coverage lines.",
+  "kpi_definitions": [
+    "KPI-AVGSEV-028"
+  ],
+  "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 12,600 rows in DP-INS-001.",
+  "question": "Which settlement patterns diverge most from peers on like claims?",
+  "rows_scanned": 12600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "coverage_line",
+    "KPI-AVGSEV-028",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

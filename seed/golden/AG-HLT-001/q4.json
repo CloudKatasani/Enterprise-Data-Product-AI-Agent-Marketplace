@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-HLT-001-1.0.0",
+  "analysis_type": "compliance",
+  "citations": [
+    {
+      "columns": [
+        "clinic",
+        "condition",
+        "days_to_followup",
+        "discharge_date",
+        "encounter_id",
+        "payer",
+        "unit"
+      ],
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "claims": {
+    "top": "7.7100",
+    "top_share": "20.24"
+  },
+  "exchange_id": "DEMO-AG-HLT-001-04",
+  "headline": "hip_replacement leads on discharge to follow-up interval at 7.7100 days, 20.24% of the total across 5 conditions.",
+  "kpi_definitions": [
+    "KPI-FOLLOWUP-040"
+  ],
+  "narrative": "Ranked by the certified definition KPI-FOLLOWUP-040 over 31,200 rows in DP-HLT-001.",
+  "question": "Are follow-up appointments being scheduled within the target window?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "condition",
+    "KPI-FOLLOWUP-040",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

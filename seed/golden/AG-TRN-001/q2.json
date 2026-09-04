@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "root_cause",
+  "citations": [
+    {
+      "columns": [
+        "carrier",
+        "customer",
+        "delivered_within_window",
+        "delivery_attempted",
+        "departure_timestamp",
+        "lane",
+        "region",
+        "service_level",
+        "shipment_leg_id"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "top": "96.90",
+    "top_share": "17.28"
+  },
+  "exchange_id": "DEMO-AG-TRN-001-02",
+  "headline": "SE-01 leads on on-time delivery rate at 96.90%, 17.28% of the total across 6 lanes.",
+  "kpi_definitions": [
+    "KPI-OTD-056"
+  ],
+  "narrative": "Ranked by the certified definition KPI-OTD-056 over 13,200 rows in DP-TRN-001.",
+  "question": "What is driving late deliveries on the Northeast lanes?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "lane",
+    "KPI-OTD-056",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

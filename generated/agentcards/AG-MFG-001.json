@@ -1,0 +1,260 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-MFG-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-MFG-001",
+    "name": "Yield & Downtime Analyst",
+    "industry": "manufacturing",
+    "domain": "operations",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0053",
+      "team": "Manufacturing Excellence",
+      "on_call": "pagerduty://manufacturing-agents"
+    }
+  },
+  "capability_statement": "Answers questions about equipment effectiveness, downtime reasons, first pass yield, scrap and changeover across lines and shifts.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "pareto",
+      "shift_comparison",
+      "programme_eval",
+      "concentration"
+    ],
+    "replaces": "The daily production meeting's manual downtime tally and the weekly yield pack.",
+    "personas": [
+      "plant_manager",
+      "continuous_improvement_lead",
+      "production_supervisor"
+    ]
+  },
+  "out_of_scope": [
+    "Equipment parameter changes",
+    "Maintenance scheduling without planner approval",
+    "Any change to a production order"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-OEE-071",
+      "kpi_name": "Overall Equipment Effectiveness",
+      "unit": "percent",
+      "source_product": "DP-MFG-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "line",
+        "plant",
+        "shift",
+        "product_family"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DOWNTIME-073",
+      "kpi_name": "Unplanned Downtime Hours",
+      "unit": "hours",
+      "source_product": "DP-MFG-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "line",
+        "plant",
+        "shift",
+        "reason_code"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-FPY-072",
+      "kpi_name": "First Pass Yield",
+      "unit": "percent",
+      "source_product": "DP-MFG-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "line",
+        "plant",
+        "shift",
+        "product_family"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-CHANGEOVER-075",
+      "kpi_name": "Changeover Time",
+      "unit": "minutes",
+      "source_product": "DP-MFG-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "line",
+        "plant",
+        "product_family",
+        "shift"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SCRAP-074",
+      "kpi_name": "Scrap Rate",
+      "unit": "percent",
+      "source_product": "DP-MFG-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "line",
+        "plant",
+        "product_family",
+        "root_cause"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-MFG-001",
+      "columns": [
+        "run_id",
+        "line",
+        "plant",
+        "shift",
+        "shift_date",
+        "product_family",
+        "reason_code",
+        "downtime_type",
+        "root_cause",
+        "availability_rate",
+        "performance_rate",
+        "quality_rate",
+        "started_units",
+        "scrapped_units",
+        "passed_without_rework",
+        "downtime_hours",
+        "changeover_minutes",
+        "standardised_changeover"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-MFG-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-MFG-001/ask",
+    "required_scope": "agent:AG-MFG-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "What is OEE by line this week and where did we lose the most?",
+      "What are the top downtime reasons on Line 3?",
+      "Which shifts show the biggest first-pass-yield gap?",
+      "Did changeover standardization reduce changeover time?",
+      "Where is scrap concentrated by product and root cause?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-MFG-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_mfg_001",
+        "scope": "dp:DP-MFG-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-MFG-001": "2.8.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "6d1bad4c295b3f34dca5ea4abbeab5a967f4907e538073bc48f6b0a143741b21"
+}

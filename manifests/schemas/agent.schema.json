@@ -77,7 +77,7 @@
           "required": ["provider", "model", "prompt_ref"],
           "additionalProperties": false,
           "properties": {
-            "provider": { "type": "string", "enum": ["cortex", "mock"] },
+            "provider": { "type": "string", "enum": ["cortex", "analytic"] },
             "model": {
               "type": "object",
               "required": ["provider", "id", "temperature", "max_tokens"],

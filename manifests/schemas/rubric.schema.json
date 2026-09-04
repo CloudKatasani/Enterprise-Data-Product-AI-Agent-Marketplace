@@ -849,6 +849,7 @@
       "required": [
         "answer_row_limit",
         "cost_per_relative_unit_usd",
+        "distribution",
         "answer_confidence",
         "presentation"
       ],
@@ -882,6 +883,22 @@
             "thin_evidence_rows": {
               "type": "integer",
               "minimum": 1
+            }
+          }
+        },
+        "distribution": {
+          "type": "object",
+          "required": [
+            "median_fraction",
+            "tail_fraction"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "median_fraction": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "tail_fraction": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
             }
           }
         },

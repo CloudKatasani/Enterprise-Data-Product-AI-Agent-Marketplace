@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "period_comparison",
+  "citations": [
+    {
+      "columns": [
+        "active_at_period_start",
+        "activity_date",
+        "churn_flag",
+        "region",
+        "segment",
+        "subscriber_id",
+        "tenure_band"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "current": "20.48",
+    "delta": "-0.47"
+  },
+  "exchange_id": "DEMO-AG-TEL-001-01",
+  "headline": "Churn Rate is 20.48% for the quarter ending 2026-07-01, down 0.47% on the prior quarter.",
+  "kpi_definitions": [
+    "KPI-CHURN-001"
+  ],
+  "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 2 quarters and 25,200 rows.",
+  "question": "What is our churn rate this quarter and how does it compare to last?",
+  "rows_scanned": 25200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-CHURN-001",
+    "observations"
+  ],
+  "visual_type": "line"
+}

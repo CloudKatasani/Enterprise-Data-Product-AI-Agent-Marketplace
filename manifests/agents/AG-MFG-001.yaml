@@ -25,7 +25,7 @@ spec:
     - "Maintenance scheduling without planner approval"
     - "Any change to a production order"
   runtime:
-    provider: mock
+    provider: analytic
     model:
       provider: anthropic
       id: marketplace-analytic-v1

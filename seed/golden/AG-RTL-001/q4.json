@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-RTL-001-1.0.0",
+  "analysis_type": "opportunity_matrix",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "category",
+        "on_hand_units",
+        "region",
+        "sku",
+        "units_received",
+        "units_sold"
+      ],
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "claims": {
+    "top": "9.39",
+    "top_share": "29.58"
+  },
+  "exchange_id": "DEMO-AG-RTL-001-04",
+  "headline": "seasonal leads on sell-through rate at 9.39%, 29.58% of the total across 5 categorys.",
+  "kpi_definitions": [
+    "KPI-SELLTHRU-053"
+  ],
+  "narrative": "Ranked by the certified definition KPI-SELLTHRU-053 over 45,000 rows in DP-RTL-002.",
+  "question": "Which SKUs have high sell-through but poor in-stock?",
+  "rows_scanned": 45000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "runtime": "analytic",
+  "table_columns": [
+    "category",
+    "KPI-SELLTHRU-053",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -25,7 +25,7 @@ spec:
     - "Changing a forecast"
     - "Committing to a vendor"
   runtime:
-    provider: mock
+    provider: analytic
     model:
       provider: anthropic
       id: marketplace-analytic-v1
