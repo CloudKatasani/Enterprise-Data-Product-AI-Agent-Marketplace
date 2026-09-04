@@ -158,6 +158,16 @@ def choose_slice(question: str, slices: list[str], columns: list[str]) -> str | 
     for name in eligible:
         if name.replace("_", " ") in lowered or name in lowered:
             return name
+    # Then on the noun the column name ends in. A reader asks "which categories
+    # hold visitors longest", not "which entry categories": the qualifier is
+    # part of the column's name, not of the question. Exact matches are taken
+    # first above, so a product carrying both `category` and `entry_category`
+    # still resolves the unqualified word to the unqualified column.
+    asked = _words(question)
+    for name in eligible:
+        noun = name.rsplit("_", 1)[-1]
+        if noun in asked or f"{noun}s" in asked or noun.rstrip("y") + "ies" in asked:
+            return name
     return eligible[0]
 
 

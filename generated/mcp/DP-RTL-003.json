@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-RTL-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "e3907c67cfe5f6a0bf970d3e3e080796aefa5731f02cd93c3c8cb9c4c93a5cbe",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-RTL-003",
+  "product": {
+    "id": "DP-RTL-003",
+    "name": "Visit & Conversion Funnel",
+    "version": "1.0.0",
+    "sensitivity": "internal",
+    "contains_pii": false,
+    "grain": "one row per visit"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-RTL-003:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_visit_customer",
+      "description": "Return certified measures for Visit & Conversion Funnel by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,week,month]",
+        "slices": "array[enum[channel,store_format,entry_category,device_class,traffic_source]]",
+        "kpi_ids": "array[enum[KPI-CONVRATE-048,KPI-ABANDON-076,KPI-VISITDWELL-077]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 31200,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": false,
+    "max_rows_per_call": 31200,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-RTL-003",
+    "contract_version": "1.0.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "Visit counts are sensor and session derived and must not be reported as unique shoppers",
+    "Dwell is right-censored and must be labelled as such where it is reported alone"
+  ]
+}

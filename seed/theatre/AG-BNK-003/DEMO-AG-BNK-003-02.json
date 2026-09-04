@@ -72,12 +72,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "How does product density compare across regions?",
-  "recorded_at": "2026-09-04T15:22:22.698513+00:00",
+  "recorded_at": "2026-09-04T16:01:32.789481+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 30,
+    "latency_ms": 28,
     "rows_scanned": 500,
     "runtime": "analytic",
     "tokens": {

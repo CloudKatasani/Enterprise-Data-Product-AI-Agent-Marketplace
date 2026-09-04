@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ABANDON-076
+  name: "Basket Abandonment Rate"
+  domain: customer
+  steward: PTY-0040
+  status: certified
+spec:
+  business_definition: >-
+    Share of visits that started a basket and ended without a purchase. Measured against started
+    baskets, not against all visits, so browsing without intent does not read as abandonment.
+  numerator_expr: "count(distinct visit_id) filter (where basket_abandoned)"
+  denominator_expr: "count(distinct visit_id) filter (where basket_started)"
+  grains_supported: [day, week, month]
+  slices_supported: [region, channel, store_format, entry_category]
+  unit: percent
+  direction: lower_is_better
+  target: 62.0
+  source_of_record: DP-RTL-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["abandonment", "walk-away rate"]

@@ -12,6 +12,7 @@ import os
 
 import pytest
 
+from scripts.seeders._base import load_directory
 from services.common import http_status
 from services.common.principal import Principal
 from services.common.rubrics import load_current
@@ -139,7 +140,14 @@ def test_filters_narrow_the_result_set(catalog, ranking) -> None:
 
     page, _ = _list(catalog, ranking, filters=ProductFilters(industry=["retail"]))
 
-    assert {item["product_id"] for item in page.items} == {"DP-RTL-001", "DP-RTL-002"}
+    # The retail products the manifests declare, not a list that has to be
+    # edited every time the estate gains one.
+    retail = {
+        manifest["metadata"]["id"]
+        for manifest in load_directory("products")
+        if manifest["metadata"]["industry"] == "retail"
+    }
+    assert {item["product_id"] for item in page.items} == retail
 
 
 def test_an_endpoint_filter_does_not_duplicate_a_product(catalog, ranking) -> None:

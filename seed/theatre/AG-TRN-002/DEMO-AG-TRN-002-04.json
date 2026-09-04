@@ -61,12 +61,12 @@
   ],
   "notes": [],
   "question": "Do legs delivered within the window use their hours differently?",
-  "recorded_at": "2026-09-04T15:22:24.737567+00:00",
+  "recorded_at": "2026-09-04T16:01:35.165580+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 6,
+    "latency_ms": 7,
     "rows_scanned": 13200,
     "runtime": "analytic",
     "tokens": {

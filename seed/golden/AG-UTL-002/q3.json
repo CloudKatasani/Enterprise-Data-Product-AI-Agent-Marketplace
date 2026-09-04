@@ -17,18 +17,18 @@
   ],
   "claims": {
     "groups": "3",
-    "rows_scanned": "7440",
-    "top": "193.90",
+    "rows_scanned": "21600",
+    "top": "195.40",
     "top_share": "34.05"
   },
   "exchange_id": "DEMO-AG-UTL-002-03",
-  "headline": "Coastal leads on average restoration time at 193.90 minutes, 34.05% of the total across 3 regions.",
+  "headline": "Coastal leads on average restoration time at 195.40 minutes, 34.05% of the total across 3 regions.",
   "kpi_definitions": [
     "KPI-RESTORE-064"
   ],
-  "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 21,600 rows in DP-UTL-001.",
   "question": "How does restoration time compare across regions?",
-  "rows_scanned": 7440,
+  "rows_scanned": 21600,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

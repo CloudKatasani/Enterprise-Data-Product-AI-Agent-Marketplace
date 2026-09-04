@@ -82,7 +82,7 @@
   ],
   "notes": [],
   "question": "What is on-time delivery this week and where is it worst?",
-  "recorded_at": "2026-09-04T15:22:24.667392+00:00",
+  "recorded_at": "2026-09-04T16:01:35.090246+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

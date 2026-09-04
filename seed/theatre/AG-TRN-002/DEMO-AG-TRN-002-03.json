@@ -96,12 +96,12 @@
   ],
   "notes": [],
   "question": "How has asset utilization moved week by week?",
-  "recorded_at": "2026-09-04T15:22:24.729569+00:00",
+  "recorded_at": "2026-09-04T16:01:35.156729+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 7,
+    "latency_ms": 10,
     "rows_scanned": 13200,
     "runtime": "analytic",
     "tokens": {
@@ -119,7 +119,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_trn_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 6,
         "rows_returned": 9,
         "rows_scanned": 13200,
         "tool": "query_dp_trn_001"

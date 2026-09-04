@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Where is therapeutic substitution weakest by therapeutic class?",
-  "recorded_at": "2026-09-04T15:22:23.378836+00:00",
+  "recorded_at": "2026-09-04T16:01:33.474140+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 10,
+    "latency_ms": 11,
     "rows_scanned": 30600,
     "runtime": "analytic",
     "tokens": {

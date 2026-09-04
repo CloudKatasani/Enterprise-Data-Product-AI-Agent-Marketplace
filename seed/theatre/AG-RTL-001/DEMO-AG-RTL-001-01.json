@@ -121,7 +121,7 @@
   ],
   "notes": [],
   "question": "How are comparable sales trending by category this week?",
-  "recorded_at": "2026-09-04T15:22:23.659824+00:00",
+  "recorded_at": "2026-09-04T16:01:33.751495+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
@@ -144,7 +144,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "small",
-        "duration_ms": 10,
+        "duration_ms": 9,
         "rows_returned": 14,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

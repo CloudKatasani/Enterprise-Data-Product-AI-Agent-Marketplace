@@ -1,77 +1,92 @@
 {
   "agent_id": "AG-RTL-003",
-  "agent_name": "Trading Margin Analyst",
+  "agent_name": "Trading Performance Analyst",
   "agent_version_id": "AGV-AG-RTL-003-1.0.0",
-  "analysis_type": "contribution_ranking",
+  "analysis_type": "comparison",
   "answer": {
-    "headline": "marketplace leads on gross margin rate at 35.75%, 33.44% of the total across 3 channels.",
-    "narrative": "Ranked by the certified definition KPI-GMRATE-049 over 23,400 rows in DP-RTL-001.",
+    "headline": "electronics leads on median visit dwell at 12.80 minutes, 29.39% of the total across 6 entry categorys.",
+    "narrative": "Ranked by the certified definition KPI-VISITDWELL-077 over 78,000 rows in DP-RTL-003.",
     "table": {
       "columns": [
-        "channel",
-        "KPI-GMRATE-049",
+        "entry_category",
+        "KPI-VISITDWELL-077",
         "observations"
       ],
       "rows": [
         [
-          "marketplace",
-          35.75,
-          2338
+          "electronics",
+          12.8,
+          12967
         ],
         [
-          "digital",
-          35.61,
-          6931
+          "beauty",
+          6.2,
+          8535
         ],
         [
-          "store",
-          35.56,
-          14131
+          "home",
+          6.2,
+          12992
+        ],
+        [
+          "toys",
+          6.14,
+          8769
+        ],
+        [
+          "apparel",
+          6.13,
+          17268
+        ],
+        [
+          "grocery",
+          6.08,
+          17469
         ]
       ]
     },
     "visual": {
       "spec": {
         "direction": "higher_is_better",
-        "target": 38.0,
-        "unit": "percent",
-        "x": "channel",
-        "y": "KPI-GMRATE-049"
+        "target": 8.0,
+        "unit": "minutes",
+        "x": "entry_category",
+        "y": "KPI-VISITDWELL-077"
       },
       "type": "bar"
     }
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-04T00:00:00+00:00",
       "columns": [
-        "business_date",
-        "category",
+        "visit_id",
+        "visit_timestamp",
         "region",
         "channel",
-        "net_sales",
-        "cost_of_goods_sold",
-        "comparable_store"
+        "store_format",
+        "entry_category",
+        "dwell_seconds"
       ],
-      "contract_version": "6.2.0",
-      "product_id": "DP-RTL-001"
+      "contract_version": "1.0.0",
+      "product_id": "DP-RTL-003"
     }
   ],
   "confidence": 0.93,
   "confidence_display": "0.93",
   "exchange_id": "DEMO-AG-RTL-003-05",
   "kpi_definitions": [
-    "KPI-GMRATE-049"
+    "KPI-VISITDWELL-077"
   ],
   "notes": [],
-  "question": "Which channels contribute most to gross margin?",
-  "recorded_at": "2026-09-04T15:22:23.883106+00:00",
+  "question": "Which categories hold visitors longest?",
+  "recorded_at": "2026-09-04T16:01:34.300235+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 8,
-    "rows_scanned": 23400,
+    "latency_ms": 49,
+    "rows_scanned": 78000,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -81,17 +96,17 @@
       {
         "arguments": {
           "grain": "month",
-          "group_by": "channel",
+          "group_by": "entry_category",
           "limit": 24,
-          "measure": "((sum(net_sales) - sum(cost_of_goods_sold))::numeric / NULLIF((sum(net_sales))::numeric, 0) * 100)",
+          "measure": "(percentile_cont(0.5) within group (order by dwell_seconds / 60.0))",
           "period": "all periods",
-          "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_003"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
-        "rows_returned": 3,
-        "rows_scanned": 23400,
-        "tool": "query_dp_rtl_001"
+        "duration_ms": 46,
+        "rows_returned": 6,
+        "rows_scanned": 78000,
+        "tool": "query_dp_rtl_003"
       }
     ]
   }

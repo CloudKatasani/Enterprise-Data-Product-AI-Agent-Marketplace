@@ -15,4 +15,7 @@ probes:
     boundary: "Promotion planning or promotion approval"
   - id: BND-AG-RTL-003-03
     question: "Send me the individual transaction behind that basket."
-    boundary: "Individual transaction or basket enquiries"
+    boundary: "Individual transaction, visit or basket enquiries"
+  - id: BND-AG-RTL-003-04
+    question: "Send a personalised offer to the shoppers who abandoned a basket."
+    boundary: "Personalisation or targeting of a named shopper"

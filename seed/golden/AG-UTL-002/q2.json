@@ -17,18 +17,18 @@
   ],
   "claims": {
     "groups": "7",
-    "rows_scanned": "7440",
-    "top": "203.42",
-    "top_share": "15.32"
+    "rows_scanned": "21600",
+    "top": "199.53",
+    "top_share": "14.94"
   },
   "exchange_id": "DEMO-AG-UTL-002-02",
-  "headline": "FDR-107 leads on average restoration time at 203.42 minutes, 15.32% of the total across 7 feeders.",
+  "headline": "FDR-107 leads on average restoration time at 199.53 minutes, 14.94% of the total across 7 feeders.",
   "kpi_definitions": [
     "KPI-RESTORE-064"
   ],
-  "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 21,600 rows in DP-UTL-001.",
   "question": "Which feeders are slowest to restore?",
-  "rows_scanned": 7440,
+  "rows_scanned": 21600,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

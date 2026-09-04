@@ -424,3 +424,37 @@ DP-RTL-001, is one row per transaction line: a visit that did not convert has no
 and `transaction_id` are one-to-one across all 23,400 rows, and conversion computes to 100.00%
 everywhere. The measure needs a visit-grain product, which is a supply gap to raise rather than
 a number to publish.
+
+### D-038 — Conversion rate gets a product that can hold a visit that bought nothing (2026-09-04)
+**Context** D-037 left `KPI-CONVRATE-048` uncovered. Its source of record, DP-RTL-001, is one row
+per transaction line: a visit that did not convert has no row at all, `visit_id` and
+`transaction_id` were one-to-one across every row, and the measure computed to 100.00% in every
+slice. The denominator the definition asks for did not exist in the data.
+**Decision** DP-RTL-003, "Visit & Conversion Funnel" — one row per visit, converted or not, with
+`transaction_id` nullable. That null is the whole product: it is what a transaction-grain table
+cannot express. `KPI-CONVRATE-048` is repointed at it and removed from DP-RTL-001's certified
+list, and two measures that only exist at this grain are certified alongside it —
+`KPI-ABANDON-076` (basket abandonment, against started baskets rather than all visits, so
+browsing without intent does not read as abandonment) and `KPI-VISITDWELL-077` (median visit
+dwell). AG-RTL-003 binds the new product and covers all three, so the estate gains a product and
+no uncovered-KPI debt; it is renamed Trading Performance Analyst, because margin and conversion
+are one conversation for the person asking.
+**Consequence** Conversion reads 19.5% against the KPI's own 24% target, and the three planted
+patterns are visible: store converts at 25.2% against 10.9% digital, express format trails the
+other two at 14.6%, and electronics holds visitors nearly twice as long as any other category
+while converting worst. The last of those is the finding the funnel exists to produce and the one
+a transaction-grain table can never produce, because the visits that make it are exactly the rows
+it does not have.
+
+Two runtime defects surfaced, both from the new product's shape:
+
+* The non-poolable test compared `count(DISTINCT key)` against `count(*)`, so a column that is
+  null four fifths of the time read as a key recurring across periods, and a measure that pools
+  perfectly well was restricted to one month. It now compares against `count(key)`, and both
+  sides ignore nulls. This also lifted a false restriction on `KPI-RESTORE-064`, whose
+  `outage_id` is unique wherever it is present.
+* A question naming a slice by its unqualified noun — "which categories hold visitors longest",
+  against a column named `entry_category` — matched no slice and silently answered by whichever
+  one the coverage map happened to list first. The slice matcher now falls back to the noun the
+  column name ends in, after exact matches, so a product carrying both `category` and
+  `entry_category` still resolves the bare word to the bare column.

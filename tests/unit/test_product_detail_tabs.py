@@ -12,6 +12,7 @@ import os
 
 import pytest
 
+from scripts.seeders._base import load_directory
 from services.catalog import detail
 from services.common.principal import Principal
 from services.common.rubrics import load_current
@@ -233,7 +234,13 @@ def test_every_seed_product_assembles_all_eight_tabs(catalog) -> None:
         cursor.execute("SELECT product_id FROM data_product WHERE tenant_id = %s", (TENANT,))
         product_ids = [row["product_id"] for row in cursor.fetchall()]
 
-    assert len(product_ids) == 15
+    # Against the manifests rather than a number: the point is that the seeded
+    # estate is the authored one and that every product in it assembles, not
+    # that the catalogue is a particular size.
+    authored = {
+        manifest["metadata"]["id"] for manifest in load_directory("products")
+    }
+    assert set(product_ids) == authored
     for product_id in product_ids:
         tabs = detail.assemble(catalog, product_id, CONSUMER)
         assert set(tabs) == set(detail.TABS), product_id

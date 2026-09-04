@@ -1,72 +1,78 @@
 {
   "agent_id": "AG-RTL-003",
-  "agent_name": "Trading Margin Analyst",
+  "agent_name": "Trading Performance Analyst",
   "agent_version_id": "AGV-AG-RTL-003-1.0.0",
-  "analysis_type": "like_for_like",
+  "analysis_type": "efficiency_ranking",
   "answer": {
-    "headline": "Gross Margin Rate is 35.61% where cohort is false against 35.59% where it is true, a gap of 0.02%.",
-    "narrative": "Both cohorts are drawn from DP-RTL-001 over the same period: 1,890 observations against 21,510.",
+    "headline": "store leads on conversion rate at 25.24%, 53.84% of the total across 3 channels.",
+    "narrative": "Ranked by the certified definition KPI-CONVRATE-048 over 78,000 rows in DP-RTL-003.",
     "table": {
       "columns": [
-        "cohort",
-        "KPI-GMRATE-049",
+        "channel",
+        "KPI-CONVRATE-048",
         "observations"
       ],
       "rows": [
         [
-          "false",
-          35.61,
-          1890
+          "store",
+          25.24,
+          46934
         ],
         [
-          "true",
-          35.59,
-          21510
+          "digital",
+          10.85,
+          23273
+        ],
+        [
+          "marketplace",
+          10.79,
+          7793
         ]
       ]
     },
     "visual": {
       "spec": {
         "direction": "higher_is_better",
-        "target": 38.0,
+        "target": 24.0,
         "unit": "percent",
-        "x": "cohort",
-        "y": "KPI-GMRATE-049"
+        "x": "channel",
+        "y": "KPI-CONVRATE-048"
       },
-      "type": "comparison_bars"
+      "type": "bar"
     }
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-04T00:00:00+00:00",
       "columns": [
-        "business_date",
-        "category",
+        "visit_id",
+        "transaction_id",
+        "visit_timestamp",
         "region",
         "channel",
-        "net_sales",
-        "cost_of_goods_sold",
-        "comparable_store"
+        "store_format",
+        "entry_category",
+        "converted"
       ],
-      "contract_version": "6.2.0",
-      "product_id": "DP-RTL-001"
+      "contract_version": "1.0.0",
+      "product_id": "DP-RTL-003"
     }
   ],
   "confidence": 0.93,
   "confidence_display": "0.93",
   "exchange_id": "DEMO-AG-RTL-003-03",
   "kpi_definitions": [
-    "KPI-GMRATE-049"
+    "KPI-CONVRATE-048"
   ],
   "notes": [],
-  "question": "Do comparable stores trade at a different margin rate?",
-  "recorded_at": "2026-09-04T15:22:23.861157+00:00",
+  "question": "Which channels convert visits into purchases best?",
+  "recorded_at": "2026-09-04T16:01:34.101924+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 9,
-    "rows_scanned": 23400,
+    "latency_ms": 163,
+    "rows_scanned": 78000,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -75,18 +81,18 @@
     "tool_calls": [
       {
         "arguments": {
-          "grain": "year",
-          "group_by": "cohort",
+          "grain": "month",
+          "group_by": "channel",
           "limit": 24,
-          "measure": "((sum(net_sales) - sum(cost_of_goods_sold))::numeric / NULLIF((sum(net_sales))::numeric, 0) * 100)",
+          "measure": "((count(distinct transaction_id))::numeric / NULLIF((count(distinct visit_id))::numeric, 0) * 100)",
           "period": "all periods",
-          "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_003"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
-        "rows_returned": 2,
-        "rows_scanned": 23400,
-        "tool": "query_dp_rtl_001"
+        "duration_ms": 161,
+        "rows_returned": 3,
+        "rows_scanned": 78000,
+        "tool": "query_dp_rtl_003"
       }
     ]
   }

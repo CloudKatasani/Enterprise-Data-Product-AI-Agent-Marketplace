@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which subscribers should we prioritise for a save offer this week?",
-  "recorded_at": "2026-09-04T15:22:24.463352+00:00",
+  "recorded_at": "2026-09-04T16:01:34.905285+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 17,
+    "latency_ms": 18,
     "rows_scanned": 25200,
     "runtime": "analytic",
     "tokens": {

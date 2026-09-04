@@ -24,7 +24,7 @@ spec:
     is a subset rather than the whole.
   upstream_sources: [SRC-POS, SRC-ECOM, SRC-LOYALTY, SRC-PROMO-PLAN]
   entities: [transaction, item, store, promotion]
-  certified_kpis: [KPI-COMPSALES-046, KPI-BASKET-047, KPI-CONVRATE-048, KPI-GMRATE-049, KPI-PROMOLIFT-050]
+  certified_kpis: [KPI-COMPSALES-046, KPI-BASKET-047, KPI-GMRATE-049, KPI-PROMOLIFT-050]
   columns:
     - name: transaction_id
       type: string

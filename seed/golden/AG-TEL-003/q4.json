@@ -16,13 +16,13 @@
     }
   ],
   "claims": {
-    "groups": "4",
+    "groups": "3",
     "rows_scanned": "15120",
     "top": "0.71",
-    "top_share": "25.45"
+    "top_share": "33.81"
   },
   "exchange_id": "DEMO-AG-TEL-003-04",
-  "headline": "Denver leads on dropped call rate at 0.71%, 25.45% of the total across 4 regions.",
+  "headline": "fixed_wireless leads on dropped call rate at 0.71%, 33.81% of the total across 3 technologys.",
   "kpi_definitions": [
     "KPI-DROP-007"
   ],
@@ -32,7 +32,7 @@
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "region",
+    "technology",
     "KPI-DROP-007",
     "observations"
   ],

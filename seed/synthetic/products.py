@@ -993,8 +993,96 @@ DP_MFG_001 = _spec(
     notes="Line 3 downtime on two reason codes; night shift yields lower; changeover tightens",
 )
 
+# ---------------------------------------------------------------------------
+# DP-RTL-003 — Visit & Conversion Funnel
+# Planted: digital converts at roughly half the store rate and mobile worst of
+# all, express-format locations carry the weakest conversion of the three, and
+# one category holds visitors longest while converting worst — the finding a
+# transaction-grain table cannot produce, because a visit that bought nothing
+# has no transaction row to appear in.
+# ---------------------------------------------------------------------------
+RTL3_CATEGORIES = [("apparel", 4), ("home", 3), ("electronics", 3), ("grocery", 4),
+                   ("beauty", 2), ("toys", 2)]
+RTL3_CHANNELS = [("store", 6), ("digital", 3), ("marketplace", 1)]
+RTL3_FORMATS = [("large", 3), ("compact", 4), ("express", 3)]
+# The category that holds attention and does not sell.
+BROWSING_CATEGORY = "electronics"
+
+_RTL3_CHANNEL = weighted(RTL3_CHANNELS, E, P, k("ch"))
+_RTL3_FORMAT = weighted(RTL3_FORMATS, E, k("fmt"))
+_RTL3_CATEGORY = weighted(RTL3_CATEGORIES, E, P, k("cat"))
+# Mobile only exists off the shop floor, so the device draw is keyed the same
+# way the column is and reused in the conversion term rather than re-derived.
+_RTL3_DEVICE = f"(CASE WHEN {rnd(E, P, k('dev'))} < 0.62 THEN 'mobile' ELSE 'desktop' END)"
+
+DP_RTL_003 = _spec(
+    "DP-RTL-003",
+    entity_column="visit_id", entity_count=2600,
+    time_column="visit_timestamp", grain="hour", periods=300,
+    expressions={
+        "visit_id": "('VIS-' || lpad(entity::text, 8, '0') || '-' || period::text)",
+        "visit_timestamp": "period_at",
+        "business_date": "period_at::date",
+        "region": pick(["North", "South", "East", "West"], E, k("reg")),
+        "channel": _RTL3_CHANNEL,
+        "store_format": _RTL3_FORMAT,
+        "entry_category": _RTL3_CATEGORY,
+        "device_class": f"(CASE WHEN {_RTL3_CHANNEL} <> 'store' THEN {_RTL3_DEVICE} END)",
+        "traffic_source": (
+            f"(CASE WHEN {_RTL3_CHANNEL} <> 'store' "
+            f"      THEN {pick(['organic', 'paid_search', 'email', 'social'], E, P, k('src'))} "
+            " END)"
+        ),
+        "loyalty_identified": f"({rnd(E, P, k('loy'))} < 0.38)",
+        # The three planted gaps, multiplied onto a store base near the KPI's
+        # own 24% target. A visit converts or it does not; everything else about
+        # the row follows from that, so this term is computed first and read by
+        # the columns below it.
+        "converted": (
+            f"({rnd(E, P, k('conv'))} < "
+            "  0.30"
+            f"  * (CASE WHEN {_RTL3_CHANNEL} = 'store' THEN 1.0 ELSE 0.52 END)"
+            f"  * (CASE WHEN {_RTL3_CHANNEL} <> 'store' AND {_RTL3_DEVICE} = 'mobile' "
+            "          THEN 0.74 ELSE 1.0 END)"
+            f"  * (CASE WHEN {_RTL3_FORMAT} = 'express' THEN 0.68 ELSE 1.0 END)"
+            f"  * (CASE WHEN {_RTL3_CATEGORY} = '{BROWSING_CATEGORY}' THEN 0.55 ELSE 1.0 END)"
+            f"  * (1 + {seasonal(0.18, 'period', 24)})"
+            ")"
+        ),
+        # Referential integrity with DP-RTL-001: a converted visit carries a
+        # transaction id in that product's shape, and an unconverted one carries
+        # nothing at all. The null is the column that makes the measure possible.
+        "transaction_id": (
+            "(CASE WHEN converted "
+            "      THEN ('TXN-' || lpad(entity::text, 8, '0') || '-' || period::text) END)"
+        ),
+        "basket_started": (
+            f"(converted OR {rnd(E, P, k('basket'))} < 0.41)"
+        ),
+        "basket_abandoned": "(basket_started AND NOT converted)",
+        "items_viewed": (
+            f"(1 + floor({rnd(E, P, k('items'))} * 9 "
+            f"  + (CASE WHEN {_RTL3_CATEGORY} = '{BROWSING_CATEGORY}' THEN 5 ELSE 0 END)))::int"
+        ),
+        # The browsing category holds attention roughly twice as long, which is
+        # what makes "long dwell, weak conversion" a finding rather than noise.
+        "dwell_seconds": (
+            f"round((60 + {rnd(E, P, k('dwell'))} * 540 "
+            f"  + (CASE WHEN {_RTL3_CATEGORY} = '{BROWSING_CATEGORY}' THEN 420 ELSE 0 END) "
+            "   + (CASE WHEN converted THEN 180 ELSE 0 END))::numeric, 1)"
+        ),
+        "net_sales": (
+            "(CASE WHEN converted "
+            f"      THEN round(((9 + {rnd(E, P, k('sales'))} * 130) * "
+            f"        (1 + {seasonal(0.25, 'period', 168)}))::numeric, 2) END)"
+        ),
+    },
+    notes="digital and mobile convert worse; express format trails; electronics holds and does not sell",
+)
+
 ALL_SPECS = [
     DP_TEL_001, DP_TEL_002, DP_TCH_001, DP_BNK_001, DP_BNK_002, DP_INS_001, DP_INS_002,
-    DP_HLT_001, DP_HLT_002, DP_RTL_001, DP_RTL_002, DP_TRN_001, DP_UTL_001, DP_ENG_001,
+    DP_HLT_001, DP_HLT_002, DP_RTL_001, DP_RTL_002, DP_RTL_003, DP_TRN_001, DP_UTL_001,
+    DP_ENG_001,
     DP_MFG_001,
 ]

@@ -1,5 +1,5 @@
 # AUTO-GENERATED FROM manifests/products/DP-RTL-001.yaml BY scripts/gen.py — DO NOT EDIT
-# generator_version: 1.0.0  manifest_hash: 6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c  generated_at: 2026-09-04T02:51:21+00:00
+# generator_version: 1.0.0  manifest_hash: e3907c67cfe5f6a0bf970d3e3e080796aefa5731f02cd93c3c8cb9c4c93a5cbe  generated_at: 2026-09-04T15:57:42+00:00
 
 """MCP server for DP-RTL-001 — Omnichannel Sales & Basket Analytics.
 
@@ -22,7 +22,7 @@ server = ProductServer(
     product_id=PRODUCT_ID,
     contract_version=CONTRACT_VERSION,
     purpose_required=PURPOSE_REQUIRED,
-    certified_kpis=['KPI-COMPSALES-046', 'KPI-BASKET-047', 'KPI-CONVRATE-048', 'KPI-GMRATE-049', 'KPI-PROMOLIFT-050'],
+    certified_kpis=['KPI-COMPSALES-046', 'KPI-BASKET-047', 'KPI-GMRATE-049', 'KPI-PROMOLIFT-050'],
     sliceable_columns=['category', 'channel', 'store_format', 'promotion'],
     supported_grains=['day', 'week', 'month', 'quarter', 'year'],
     row_limit=32000,

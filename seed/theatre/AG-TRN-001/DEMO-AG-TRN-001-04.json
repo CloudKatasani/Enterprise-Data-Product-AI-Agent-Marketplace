@@ -81,7 +81,7 @@
   ],
   "notes": [],
   "question": "How does cost per mile compare across carriers on the same lanes?",
-  "recorded_at": "2026-09-04T15:22:24.696800+00:00",
+  "recorded_at": "2026-09-04T16:01:35.119719+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

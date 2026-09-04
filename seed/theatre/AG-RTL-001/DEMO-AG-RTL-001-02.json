@@ -81,7 +81,7 @@
   ],
   "notes": [],
   "question": "Which categories are missing plan and why?",
-  "recorded_at": "2026-09-04T15:22:23.671012+00:00",
+  "recorded_at": "2026-09-04T16:01:33.761620+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
@@ -104,7 +104,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "small",
-        "duration_ms": 7,
+        "duration_ms": 6,
         "rows_returned": 6,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

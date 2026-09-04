@@ -3,13 +3,13 @@
     "from": "manifests/agents/AG-RTL-003.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "manifest_hash": "b19d9c1d53c449c5c72458246e8e75e88b9a5eabae7dd21f0270abf73785450c",
     "warning": "DO NOT EDIT"
   },
   "schema": "marketplace/agentcard/v1",
   "agent": {
     "id": "AG-RTL-003",
-    "name": "Trading Margin Analyst",
+    "name": "Trading Performance Analyst",
     "industry": "retail",
     "domain": "finance",
     "autonomy_level": "L1",
@@ -20,16 +20,16 @@
       "on_call": "pagerduty://retail-finance-agents"
     }
   },
-  "capability_statement": "Answers questions about gross margin rate by category, region and channel, and where the book trades thinnest.",
+  "capability_statement": "Answers questions about gross margin rate, visit conversion, basket abandonment and dwell by category, region, channel and store format.",
   "business_value": {
     "analyses": [
       "performance_ranking",
       "trend_segmented",
-      "like_for_like",
+      "efficiency_ranking",
       "comparison",
-      "contribution_ranking"
+      "distribution"
     ],
-    "replaces": "The weekly trading margin review and the conversion pack the finance business partner builds.",
+    "replaces": "The weekly trading review and the footfall-to-till reconciliation done in a spreadsheet.",
     "personas": [
       "trading_finance_partner",
       "category_finance_manager",
@@ -39,7 +39,8 @@
   "out_of_scope": [
     "Retail price changes or markdown approval",
     "Promotion planning or promotion approval",
-    "Individual transaction or basket enquiries"
+    "Individual transaction, visit or basket enquiries",
+    "Personalisation or targeting of a named shopper"
   ],
   "coverage": [
     {
@@ -59,6 +60,66 @@
         "channel"
       ],
       "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-CONVRATE-048",
+      "kpi_name": "Conversion Rate",
+      "unit": "percent",
+      "source_product": "DP-RTL-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "channel",
+        "store_format",
+        "entry_category"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-ABANDON-076",
+      "kpi_name": "Basket Abandonment Rate",
+      "unit": "percent",
+      "source_product": "DP-RTL-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "channel",
+        "store_format",
+        "entry_category"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-VISITDWELL-077",
+      "kpi_name": "Median Visit Dwell",
+      "unit": "minutes",
+      "source_product": "DP-RTL-003",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "channel",
+        "store_format",
+        "entry_category"
+      ],
+      "analysis_depth": "compare",
       "eval_accuracy_pct": null,
       "eval_sample_size": null
     }
@@ -81,6 +142,28 @@
       ],
       "access": "read",
       "required_scope": "dp:DP-RTL-001:read"
+    },
+    {
+      "product_id": "DP-RTL-003",
+      "columns": [
+        "visit_id",
+        "transaction_id",
+        "visit_timestamp",
+        "business_date",
+        "region",
+        "channel",
+        "store_format",
+        "entry_category",
+        "device_class",
+        "loyalty_identified",
+        "converted",
+        "basket_started",
+        "basket_abandoned",
+        "items_viewed",
+        "dwell_seconds"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-RTL-003:read"
     }
   ],
   "invocation": {
@@ -116,9 +199,9 @@
     "questions": [
       "Which categories have the weakest gross margin rate?",
       "How has gross margin rate moved month by month?",
-      "Do comparable stores trade at a different margin rate?",
-      "How does gross margin rate compare across regions?",
-      "Which channels contribute most to gross margin?"
+      "Which channels convert visits into purchases best?",
+      "Where do we abandon most baskets by store format?",
+      "Which categories hold visitors longest?"
     ]
   },
   "bundle": {
@@ -137,6 +220,12 @@
         "row_limit": 10000
       },
       {
+        "tool": "query_dp_rtl_003",
+        "scope": "dp:DP-RTL-003:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
         "tool": "get_kpi_definition",
         "scope": "kpi:read",
         "cost_class": "trivial",
@@ -150,7 +239,8 @@
       }
     ],
     "upstream_contract_versions": {
-      "DP-RTL-001": "6.2.0"
+      "DP-RTL-001": "6.2.0",
+      "DP-RTL-003": "1.0.0"
     },
     "guardrails": {
       "grounding": {
@@ -165,5 +255,5 @@
       "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
     }
   },
-  "bundle_hash": "e84844565bf9b50547a2f26fc0a309b3c146baf5c5d365a45489e9bc7ca13d01"
+  "bundle_hash": "10a4012896267c7f26cb773fb2188fe8792f2ca3da268726ed5e932c2590e46b"
 }

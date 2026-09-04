@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM manifests/products/DP-RTL-001.yaml BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: 6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c  generated_at: 2026-09-04T02:50:43+00:00
+-- generator_version: 1.0.0  manifest_hash: e3907c67cfe5f6a0bf970d3e3e080796aefa5731f02cd93c3c8cb9c4c93a5cbe  generated_at: 2026-09-04T15:57:41+00:00
 
 -- Governed consumption view for DP-RTL-001 — Omnichannel Sales & Basket Analytics
 -- contract 6.2.0, max sensitivity internal, contains PII: false
@@ -45,7 +45,6 @@ SELECT
   comparable_store,
   (sum(net_sales) - sum(prior_year_net_sales)) / NULLIF(sum(prior_year_net_sales), 0) * 100 AS kpi_compsales_046,  -- Comparable Sales Growth (KPI-COMPSALES-046), unit percent
   (sum(net_sales)) / NULLIF(count(distinct transaction_id), 0) AS kpi_basket_047,  -- Average Basket Value (KPI-BASKET-047), unit currency
-  (count(distinct transaction_id)) / NULLIF(count(distinct visit_id), 0) * 100 AS kpi_convrate_048,  -- Conversion Rate (KPI-CONVRATE-048), unit percent
   (sum(net_sales) - sum(cost_of_goods_sold)) / NULLIF(sum(net_sales), 0) * 100 AS kpi_gmrate_049,  -- Gross Margin Rate (KPI-GMRATE-049), unit percent
   (sum(promoted_sales) - sum(baseline_sales)) / NULLIF(sum(baseline_sales), 0) * 100 AS kpi_promolift_050  -- Promotion Lift (KPI-PROMOLIFT-050), unit percent
 FROM DP_RTL_001.V_DP_RTL_001

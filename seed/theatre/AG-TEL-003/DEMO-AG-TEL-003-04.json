@@ -4,34 +4,29 @@
   "agent_version_id": "AGV-AG-TEL-003-1.0.0",
   "analysis_type": "driver_ranking",
   "answer": {
-    "headline": "Denver leads on dropped call rate at 0.71%, 25.45% of the total across 4 regions.",
+    "headline": "fixed_wireless leads on dropped call rate at 0.71%, 33.81% of the total across 3 technologys.",
     "narrative": "Ranked by the certified definition KPI-DROP-007 over 15,120 rows in DP-TEL-002.",
     "table": {
       "columns": [
-        "region",
+        "technology",
         "KPI-DROP-007",
         "observations"
       ],
       "rows": [
         [
-          "Denver",
+          "fixed_wireless",
           0.71,
-          2352
+          1512
         ],
         [
-          "Midwest",
+          "5g",
           0.7,
-          4872
+          7224
         ],
         [
-          "West",
+          "4g",
           0.69,
-          3360
-        ],
-        [
-          "Northeast",
-          0.69,
-          4536
+          6384
         ]
       ]
     },
@@ -40,7 +35,7 @@
         "direction": "lower_is_better",
         "target": 0.6,
         "unit": "percent",
-        "x": "region",
+        "x": "technology",
         "y": "KPI-DROP-007"
       },
       "type": "bar"
@@ -70,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which technologies drive the dropped call rate?",
-  "recorded_at": "2026-09-04T15:22:24.651135+00:00",
+  "recorded_at": "2026-09-04T16:01:35.074850+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 9,
+    "latency_ms": 6,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {
@@ -86,15 +81,15 @@
       {
         "arguments": {
           "grain": "month",
-          "group_by": "region",
+          "group_by": "technology",
           "limit": 24,
           "measure": "((sum(dropped_calls))::numeric / NULLIF((sum(established_calls))::numeric, 0) * 100)",
           "period": "all periods",
           "table": "MARKETPLACE_DEMO.t_dp_tel_002"
         },
         "cost_class": "small",
-        "duration_ms": 5,
-        "rows_returned": 4,
+        "duration_ms": 3,
+        "rows_returned": 3,
         "rows_scanned": 15120,
         "tool": "query_dp_tel_002"
       }

@@ -72,7 +72,7 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "How is product density distributed across tenure bands?",
-  "recorded_at": "2026-09-04T15:22:22.774204+00:00",
+  "recorded_at": "2026-09-04T16:01:32.863952+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

@@ -1,6 +1,6 @@
 {
   "agent_id": "AG-RTL-003",
-  "agent_name": "Trading Margin Analyst",
+  "agent_name": "Trading Performance Analyst",
   "agent_version_id": "AGV-AG-RTL-003-1.0.0",
   "analysis_type": "performance_ranking",
   "answer": {
@@ -80,12 +80,12 @@
   ],
   "notes": [],
   "question": "Which categories have the weakest gross margin rate?",
-  "recorded_at": "2026-09-04T15:22:23.837619+00:00",
+  "recorded_at": "2026-09-04T16:01:33.923153+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 8,
+    "latency_ms": 10,
     "rows_scanned": 23400,
     "runtime": "analytic",
     "tokens": {
@@ -103,7 +103,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
+        "duration_ms": 7,
         "rows_returned": 6,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

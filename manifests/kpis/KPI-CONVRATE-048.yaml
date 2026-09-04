@@ -8,15 +8,16 @@ metadata:
   status: certified
 spec:
   business_definition: >-
-    Share of store or site visits that resulted in a purchase.
+    Share of store or site visits that resulted in a purchase. Counted over visits, which means
+    the denominator includes the visits that bought nothing.
   numerator_expr: "count(distinct transaction_id)"
   denominator_expr: "count(distinct visit_id)"
   grains_supported: [day, week, month]
-  slices_supported: [region, channel, store_format]
+  slices_supported: [region, channel, store_format, entry_category]
   unit: percent
   direction: higher_is_better
   target: 24.0
-  source_of_record: DP-RTL-001
+  source_of_record: DP-RTL-003
   forum_approved_at: 2026-05-18
   last_reviewed: 2026-07-01
   review_months: 12

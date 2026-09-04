@@ -16,19 +16,19 @@
     }
   ],
   "claims": {
-    "groups": "5",
-    "rows_scanned": "7440",
-    "top": "198.02",
-    "top_share": "26.03"
+    "groups": "6",
+    "rows_scanned": "21600",
+    "top": "192.98",
+    "top_share": "20.18"
   },
   "exchange_id": "DEMO-AG-UTL-002-01",
-  "headline": "third_party leads on average restoration time at 198.02 minutes, 26.03% of the total across 5 cause classs.",
+  "headline": "third_party leads on average restoration time at 192.98 minutes, 20.18% of the total across 6 cause classs.",
   "kpi_definitions": [
     "KPI-RESTORE-064"
   ],
-  "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 21,600 rows in DP-UTL-001.",
   "question": "Which cause classes take longest to restore?",
-  "rows_scanned": 7440,
+  "rows_scanned": 21600,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

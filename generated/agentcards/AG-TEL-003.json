@@ -3,7 +3,7 @@
     "from": "manifests/agents/AG-TEL-003.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "manifest_hash": "b19d9c1d53c449c5c72458246e8e75e88b9a5eabae7dd21f0270abf73785450c",
     "warning": "DO NOT EDIT"
   },
   "schema": "marketplace/agentcard/v1",

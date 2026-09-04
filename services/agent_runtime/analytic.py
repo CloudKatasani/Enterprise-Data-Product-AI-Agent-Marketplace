@@ -541,8 +541,13 @@ def _needs_single_period(
     keys = _distinct_keys(kpi)
     if not keys:
         return False
+    # Against ``count(key)``, not ``count(*)``: both sides then ignore nulls.
+    # DP-RTL-003 carries one row per visit and a transaction id only where the
+    # visit converted, so a comparison against the row count reads four fifths
+    # of the column being null as the same key appearing in several periods,
+    # and restricts a measure that pools perfectly well.
     projections = ", ".join(
-        f"count(DISTINCT {key}) < count(*) AS recurs_{index}"
+        f"count(DISTINCT {key}) < count({key}) AS recurs_{index}"
         for index, key in enumerate(keys)
     )
     row = fetch_one(connection, f"SELECT {projections} FROM {table}")

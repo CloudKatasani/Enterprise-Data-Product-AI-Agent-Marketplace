@@ -1,39 +1,40 @@
 {
   "agent_version_id": "AGV-AG-RTL-003-1.0.0",
-  "analysis_type": "comparison",
+  "analysis_type": "gap_analysis",
   "citations": [
     {
       "columns": [
-        "business_date",
-        "category",
+        "basket_abandoned",
+        "basket_started",
         "channel",
-        "comparable_store",
-        "cost_of_goods_sold",
-        "net_sales",
-        "region"
+        "entry_category",
+        "region",
+        "store_format",
+        "visit_id",
+        "visit_timestamp"
       ],
-      "product_id": "DP-RTL-001"
+      "product_id": "DP-RTL-003"
     }
   ],
   "claims": {
-    "groups": "4",
-    "rows_scanned": "23400",
-    "top": "35.65",
-    "top_share": "25.04"
+    "groups": "3",
+    "rows_scanned": "78000",
+    "top": "70.26",
+    "top_share": "37.05"
   },
   "exchange_id": "DEMO-AG-RTL-003-04",
-  "headline": "West leads on gross margin rate at 35.65%, 25.04% of the total across 4 regions.",
+  "headline": "express leads on basket abandonment rate at 70.26%, 37.05% of the total across 3 store formats.",
   "kpi_definitions": [
-    "KPI-GMRATE-049"
+    "KPI-ABANDON-076"
   ],
-  "narrative": "Ranked by the certified definition KPI-GMRATE-049 over 23,400 rows in DP-RTL-001.",
-  "question": "How does gross margin rate compare across regions?",
-  "rows_scanned": 23400,
+  "narrative": "Ranked by the certified definition KPI-ABANDON-076 over 78,000 rows in DP-RTL-003.",
+  "question": "Where do we abandon most baskets by store format?",
+  "rows_scanned": 78000,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "region",
-    "KPI-GMRATE-049",
+    "store_format",
+    "KPI-ABANDON-076",
     "observations"
   ],
   "visual_type": "bar"

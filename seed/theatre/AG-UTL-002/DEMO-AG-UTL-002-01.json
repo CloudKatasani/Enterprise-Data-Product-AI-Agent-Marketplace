@@ -4,8 +4,8 @@
   "agent_version_id": "AGV-AG-UTL-002-1.0.0",
   "analysis_type": "driver_ranking",
   "answer": {
-    "headline": "third_party leads on average restoration time at 198.02 minutes, 26.03% of the total across 5 cause classs.",
-    "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "headline": "third_party leads on average restoration time at 192.98 minutes, 20.18% of the total across 6 cause classs.",
+    "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 21,600 rows in DP-UTL-001.",
     "table": {
       "columns": [
         "cause_class",
@@ -15,28 +15,33 @@
       "rows": [
         [
           "third_party",
-          198.02,
-          106
+          192.98,
+          277
+        ],
+        [
+          "weather",
+          192.06,
+          112
         ],
         [
           "equipment",
-          191.63,
-          115
+          191.72,
+          287
         ],
         [
           "animal",
-          187.04,
-          121
+          190.58,
+          300
         ],
         [
           "vegetation",
-          184.09,
-          132
+          189.06,
+          306
         ],
         [
           "None",
           null,
-          6966
+          20318
         ]
       ]
     },
@@ -75,13 +80,13 @@
   ],
   "notes": [],
   "question": "Which cause classes take longest to restore?",
-  "recorded_at": "2026-09-04T15:22:24.873626+00:00",
+  "recorded_at": "2026-09-04T16:01:35.286004+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 29,
-    "rows_scanned": 7440,
+    "latency_ms": 14,
+    "rows_scanned": 21600,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -94,13 +99,13 @@
           "group_by": "cause_class",
           "limit": 24,
           "measure": "((sum(restoration_minutes))::numeric / NULLIF((count(distinct outage_id))::numeric, 0))",
-          "period": "2026-08-01",
+          "period": "all periods",
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 26,
-        "rows_returned": 5,
-        "rows_scanned": 7440,
+        "duration_ms": 10,
+        "rows_returned": 6,
+        "rows_scanned": 21600,
         "tool": "query_dp_utl_001"
       }
     ]

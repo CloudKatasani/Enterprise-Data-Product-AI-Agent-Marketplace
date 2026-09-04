@@ -3,7 +3,7 @@
     "from": "manifests/products/DP-BNK-002.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0",
+    "manifest_hash": "e3907c67cfe5f6a0bf970d3e3e080796aefa5731f02cd93c3c8cb9c4c93a5cbe",
     "warning": "DO NOT EDIT"
   },
   "server": "mcp://marketplace.${TENANT}.internal/dp/DP-BNK-002",

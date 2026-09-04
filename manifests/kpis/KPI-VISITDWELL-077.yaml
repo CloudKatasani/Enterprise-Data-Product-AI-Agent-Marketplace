@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-VISITDWELL-077
+  name: "Median Visit Dwell"
+  domain: customer
+  steward: PTY-0040
+  status: certified
+spec:
+  business_definition: >-
+    Median minutes from the first to the last observed event in a visit. The median rather than
+    the mean, because a handful of visits left open by a missing exit event would carry the mean.
+  expression: "percentile_cont(0.5) within group (order by dwell_seconds / 60.0)"
+  grains_supported: [day, week, month]
+  slices_supported: [region, channel, store_format, entry_category]
+  unit: minutes
+  direction: higher_is_better
+  target: 8.0
+  source_of_record: DP-RTL-003
+  forum_approved_at: 2026-09-04
+  last_reviewed: 2026-09-04
+  review_months: 12
+  synonyms: ["visit duration", "time in store"]
