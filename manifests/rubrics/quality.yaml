@@ -1,0 +1,44 @@
+# Data product quality rubric.
+#
+# Every weight, band and blocker in the quality engine is read from here at
+# runtime by rubric_version_id. Changing a weight and re-seeding re-scores the
+# estate with no code change (M1 acceptance).
+rubric: data_product_quality
+version: 1.0.0
+dimensions:
+  - { code: completeness, weight: 0.20 }
+  - { code: accuracy,     weight: 0.20 }
+  - { code: freshness,    weight: 0.20 }
+  - { code: consistency,  weight: 0.15 }
+  - { code: validity,     weight: 0.15 }
+  - { code: uniqueness,   weight: 0.10 }
+archetype_overrides:
+  document_corpus:
+    completeness: 0.30
+    accuracy: 0.25
+    freshness: 0.25
+    consistency: 0.00
+    validity: 0.15
+    uniqueness: 0.05
+# Estate scoring: a thousand hygienic sandbox tables must not mask ungoverned
+# crown jewels, so Tier-1 assets dominate the denominator (15.1).
+tier_weights:
+  tier1: 5.0
+  tier2: 2.0
+  tier3: 1.0
+bands:
+  - { min: 90, code: exemplary,  label: "Exemplary" }
+  - { min: 75, code: healthy,    label: "Healthy" }
+  - { min: 60, code: watch,      label: "Watch" }
+  - { min: 40, code: at_risk,    label: "At Risk" }
+  - { min: 0,  code: unfit,      label: "Not Fit for Consumption" }
+hard_blockers:
+  - { when: "critical_rule_failed", caps_composite_at: 39 }
+  - { when: "classified_column_unprotected", caps_composite_at: 49 }
+below_band_actions:
+  unfit:
+    flag_in_catalog: true
+    banner_on_attached_agents: true
+  at_risk:
+    flag_in_catalog: true
+    banner_on_attached_agents: false

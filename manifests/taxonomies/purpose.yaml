@@ -1,0 +1,54 @@
+apiVersion: marketplace/v1
+kind: Taxonomy
+taxonomy: purpose
+entries:
+  - code: analytics
+    label: Analytics and reporting
+    description: Descriptive and diagnostic analysis producing internal reporting.
+    requires_free_text: true
+    rank_order: 1
+  - code: retention_campaign
+    label: Retention and campaign targeting
+    description: Selecting and targeting customers for a retention or marketing action.
+    requires_free_text: true
+    rank_order: 2
+  - code: risk_management
+    label: Risk management
+    description: Measuring, monitoring and mitigating financial, operational or insured risk.
+    requires_free_text: true
+    rank_order: 3
+  - code: regulatory_reporting
+    label: Regulatory reporting
+    description: Producing a submission or disclosure required by a regulator.
+    requires_free_text: true
+    rank_order: 4
+  - code: operational_planning
+    label: Operational planning
+    description: Planning capacity, inventory, maintenance, staffing or routing.
+    requires_free_text: true
+    rank_order: 5
+  - code: product_development
+    label: Product development
+    description: Informing product, pricing or feature decisions.
+    requires_free_text: true
+    rank_order: 6
+  - code: customer_service
+    label: Customer service
+    description: Supporting an individual customer interaction or service recovery.
+    requires_free_text: true
+    rank_order: 7
+  - code: fraud_investigation
+    label: Fraud and financial crime investigation
+    description: Investigating a suspected fraud, money laundering or sanctions concern.
+    requires_free_text: true
+    rank_order: 8
+  - code: clinical_quality
+    label: Clinical quality improvement
+    description: Improving care quality, safety and outcomes at a population level.
+    requires_free_text: true
+    rank_order: 9
+  - code: model_training
+    label: Model training and evaluation
+    description: Training, evaluating or monitoring a machine learning model.
+    requires_free_text: true
+    rank_order: 10

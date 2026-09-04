@@ -1,0 +1,29 @@
+# Catalog ranking rubric. Search fusion, facet ordering and the featured band
+# on the landing page all resolve their coefficients from here.
+rubric: catalog_ranking
+version: 1.0.0
+weights:
+  semantic_match: 0.35
+  quality_normalized: 0.20
+  active_consumers_90d_normalized: 0.15
+  certification_multiplier: 0.15
+  peer_affinity: 0.10
+  staleness_penalty: -0.05
+certification_multiplier:
+  certified: 1.0
+  published: 0.8
+  beta: 0.5
+  deprecated: 0.0
+featured_ranking:
+  formula: "adoption_velocity * quality_composite * recency_decay"
+  min_cards: 12
+  max_cards: 24
+fusion:
+  method: rrf
+  k: 60
+  # An exact name match must never lose to a semantic neighbour (M4 acceptance).
+  exact_name_boost: 1000
+page_size:
+  default: 24
+  max: 100
+  facet_values: 12

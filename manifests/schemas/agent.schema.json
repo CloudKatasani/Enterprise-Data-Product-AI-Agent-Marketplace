@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:marketplace:agent",
+  "title": "Agent manifest",
+  "description": "Capability, coverage map, scope and demo exchanges (BUILD.md 7.2).",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "const": "marketplace/v1" },
+    "kind": { "const": "Agent" },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "name", "industry", "domain", "owner", "autonomy_level",
+                   "certification"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "urn:marketplace:common#/$defs/agentId" },
+        "name": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "industry": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "domain": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "owner": { "$ref": "urn:marketplace:common#/$defs/owner" },
+        "autonomy_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] },
+        "certification": { "$ref": "urn:marketplace:common#/$defs/certification" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": [
+        "capability_statement",
+        "business_value_block",
+        "out_of_scope",
+        "runtime",
+        "data_products",
+        "tool_bindings",
+        "kpi_coverage",
+        "guardrails",
+        "budgets",
+        "demo_exchanges",
+        "evaluation",
+        "value_case"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "capability_statement": {
+          "type": "string",
+          "minLength": 90,
+          "maxLength": 140,
+          "description": "Matches the CHECK on agent_version.capability_statement."
+        },
+        "business_value_block": {
+          "type": "object",
+          "required": ["analyses", "replaces", "personas"],
+          "additionalProperties": false,
+          "properties": {
+            "analyses": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+            },
+            "replaces": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" },
+            "personas": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+            }
+          }
+        },
+        "out_of_scope": {
+          "type": "array",
+          "minItems": 1,
+          "description": "I7: an agent that refuses nothing has no boundary.",
+          "items": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+        },
+        "runtime": {
+          "type": "object",
+          "required": ["provider", "model", "prompt_ref"],
+          "additionalProperties": false,
+          "properties": {
+            "provider": { "type": "string", "enum": ["cortex", "mock"] },
+            "model": {
+              "type": "object",
+              "required": ["provider", "id", "temperature", "max_tokens"],
+              "additionalProperties": false,
+              "properties": {
+                "provider": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+                "id": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+                "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+                "max_tokens": { "type": "integer", "minimum": 1 }
+              }
+            },
+            "prompt_ref": { "type": "string", "pattern": "^prompts/AG-[A-Z]{3}-[0-9]{3}/[a-z_]+@v[0-9]+$" }
+          }
+        },
+        "data_products": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["product_id", "columns", "access"],
+            "additionalProperties": false,
+            "properties": {
+              "product_id": { "$ref": "urn:marketplace:common#/$defs/productId" },
+              "columns": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+              },
+              "access": { "type": "string", "enum": ["read", "read_pii"] }
+            }
+          }
+        },
+        "tool_bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["tool", "scope", "cost_class"],
+            "additionalProperties": false,
+            "properties": {
+              "tool": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+              "endpoint": { "type": "string" },
+              "scope": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+              "cost_class": {
+                "type": "string",
+                "enum": ["trivial", "small", "medium", "large"]
+              },
+              "row_limit": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "kpi_coverage": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["kpi_id", "source_product", "columns_used", "grains", "slices",
+                         "analysis_depth"],
+            "additionalProperties": false,
+            "properties": {
+              "kpi_id": { "$ref": "urn:marketplace:common#/$defs/kpiId" },
+              "source_product": { "$ref": "urn:marketplace:common#/$defs/productId" },
+              "columns_used": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+              "grains": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+              "slices": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+              "analysis_depth": {
+                "type": "string",
+                "enum": ["report", "compare", "explain", "rank_drivers", "forecast"]
+              },
+              "eval_accuracy": { "$ref": "urn:marketplace:common#/$defs/percent" },
+              "eval_sample_size": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "guardrails": {
+          "type": "object",
+          "required": ["grounding", "injection_defence", "output_filters", "refusal_policy"],
+          "additionalProperties": false,
+          "properties": {
+            "grounding": {
+              "type": "object",
+              "required": ["require_citation_on_numerics", "on_failure"],
+              "additionalProperties": false,
+              "properties": {
+                "require_citation_on_numerics": { "const": true },
+                "on_failure": { "const": "return_error" }
+              }
+            },
+            "injection_defence": { "type": "string", "pattern": "^v[0-9]+$" },
+            "output_filters": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "enum": ["pii_pattern", "credential_pattern", "phi_pattern", "pci_pattern"]
+              }
+            },
+            "refusal_policy": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" }
+          }
+        },
+        "budgets": {
+          "type": "object",
+          "required": ["p95_latency_ms", "cost_per_answer_usd"],
+          "additionalProperties": false,
+          "properties": {
+            "p95_latency_ms": { "type": "integer", "minimum": 1 },
+            "cost_per_answer_usd": { "type": "number", "minimum": 0 }
+          }
+        },
+        "demo_exchanges": {
+          "type": "array",
+          "minItems": 5,
+          "description": "I3: fewer than five and the agent cannot publish.",
+          "items": {
+            "type": "object",
+            "required": ["id", "ordinal", "question", "kpi_class", "analysis_type",
+                         "expected_shape", "data_tier", "max_latency_ms",
+                         "golden_answer_ref", "tolerance_pct"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "pattern": "^DEMO-AG-[A-Z]{3}-[0-9]{3}-[0-9]{2}$" },
+              "ordinal": { "type": "integer", "minimum": 1 },
+              "question": { "type": "string", "minLength": 15 },
+              "kpi_class": { "$ref": "urn:marketplace:common#/$defs/kpiId" },
+              "analysis_type": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+              "expected_shape": {
+                "type": "object",
+                "required": ["headline", "visual", "table_columns", "must_cite"],
+                "additionalProperties": false,
+                "properties": {
+                  "headline": { "$ref": "urn:marketplace:common#/$defs/meaningfulText" },
+                  "visual": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+                  "table_columns": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string" }
+                  },
+                  "must_cite": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+                }
+              },
+              "data_tier": { "type": "string", "enum": ["demo", "live"] },
+              "max_latency_ms": { "type": "integer", "minimum": 1 },
+              "golden_answer_ref": { "type": "string", "pattern": "^seed/golden/.+\\.json$" },
+              "tolerance_pct": { "$ref": "urn:marketplace:common#/$defs/percent" }
+            }
+          }
+        },
+        "evaluation": {
+          "type": "object",
+          "required": ["suites", "pass_threshold_pct", "cases_ref"],
+          "additionalProperties": false,
+          "properties": {
+            "suites": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "golden_accuracy", "groundedness", "boundary_refusal", "adversarial",
+                  "entitlement", "compositional_exposure", "consistency", "cost_latency"
+                ]
+              },
+              "allOf": [
+                { "contains": { "const": "groundedness" } },
+                { "contains": { "const": "boundary_refusal" } },
+                { "contains": { "const": "entitlement" } }
+              ]
+            },
+            "pass_threshold_pct": { "$ref": "urn:marketplace:common#/$defs/percent" },
+            "cases_ref": { "type": "string", "pattern": "^seed/eval/AG-[A-Z]{3}-[0-9]{3}/$" }
+          }
+        },
+        "value_case": {
+          "type": "object",
+          "required": ["benefit_model", "assumptions"],
+          "additionalProperties": false,
+          "properties": {
+            "business_outcome": { "type": "string" },
+            "benefit_model": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+            "baseline": {
+              "type": "object",
+              "required": ["method", "captured"],
+              "additionalProperties": false,
+              "properties": {
+                "method": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+                "analyst_hours_month": { "type": "number", "minimum": 0 },
+                "captured": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" }
+              }
+            },
+            "attribution_confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+            "assumptions": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "urn:marketplace:common#/$defs/valueAssumption" }
+            },
+            "review": {
+              "type": "object",
+              "required": ["last_reviewed", "reviewer"],
+              "additionalProperties": false,
+              "properties": {
+                "last_reviewed": { "$ref": "urn:marketplace:common#/$defs/isoDate" },
+                "reviewer": { "$ref": "urn:marketplace:common#/$defs/partyId" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

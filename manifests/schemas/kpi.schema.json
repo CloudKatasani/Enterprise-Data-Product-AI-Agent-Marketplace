@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:marketplace:kpi",
+  "title": "KPI manifest",
+  "description": "Exactly one authoritative definition per KPI name per tenant (I1).",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "const": "marketplace/v1" },
+    "kind": { "const": "Kpi" },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "name", "domain", "steward", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "urn:marketplace:common#/$defs/kpiId" },
+        "name": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "domain": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "steward": { "$ref": "urn:marketplace:common#/$defs/partyId" },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "certified", "deprecated", "superseded"]
+        },
+        "superseded_by": { "$ref": "urn:marketplace:common#/$defs/kpiId" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": [
+        "business_definition",
+        "grains_supported",
+        "slices_supported",
+        "unit",
+        "last_reviewed",
+        "review_months"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "business_definition": { "type": "string", "minLength": 20 },
+        "numerator_expr": { "type": "string" },
+        "denominator_expr": { "type": "string" },
+        "expression": { "type": "string" },
+        "grains_supported": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "enum": ["day", "week", "month", "quarter", "year"] }
+        },
+        "slices_supported": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" }
+        },
+        "inclusions": { "type": "array", "items": { "type": "string" } },
+        "exclusions": { "type": "array", "items": { "type": "string" } },
+        "unit": {
+          "type": "string",
+          "enum": ["percent", "count", "currency", "ratio", "days", "hours", "minutes", "index"]
+        },
+        "direction": { "type": "string", "enum": ["higher_is_better", "lower_is_better"] },
+        "target": { "type": "number" },
+        "source_of_record": { "$ref": "urn:marketplace:common#/$defs/productId" },
+        "forum_approved_at": { "$ref": "urn:marketplace:common#/$defs/isoDate" },
+        "last_reviewed": { "$ref": "urn:marketplace:common#/$defs/isoDate" },
+        "review_months": { "type": "integer", "minimum": 1, "maximum": 36 },
+        "synonyms": { "type": "array", "items": { "type": "string" } }
+      },
+      "anyOf": [
+        { "required": ["expression"] },
+        { "required": ["numerator_expr", "denominator_expr"] }
+      ]
+    }
+  }
+}

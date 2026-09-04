@@ -1,0 +1,32 @@
+# Mesh edge rubric. Both meshes compute strength from these weights and hold
+# any edge below the confidence floor for review rather than rendering it (I6).
+rubric: mesh_edges
+version: 1.0.0
+data_mesh_weights:
+  source_overlap_jaccard: 0.30
+  entity_overlap: 0.25
+  kpi_overlap: 0.20
+  semantic_similarity: 0.15
+  co_consumption_lift: 0.10
+render_threshold: 0.25
+duplication_alert:
+  source_overlap_min: 0.80
+  semantic_similarity_min: 0.80
+review_required_below_confidence: 0.80
+agent_mesh_weights:
+  shared_data_product: 0.35
+  kpi_coverage_overlap: 0.30
+  semantic_similarity: 0.15
+  same_domain: 0.10
+  co_usage_lift: 0.10
+consolidation_candidate:
+  coverage_overlap_min: 0.70
+  shared_product_min: 0.70
+co_consumption_session_minutes: 60
+layout:
+  # Server-side pre-warm so the client paints a settled layout immediately (13.3).
+  prewarm_ticks: 300
+  link_distance: 90
+  charge_strength: -220
+  collide_radius: 18
+  featured_node_cap: 60

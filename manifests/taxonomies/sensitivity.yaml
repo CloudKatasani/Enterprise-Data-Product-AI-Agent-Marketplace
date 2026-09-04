@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Taxonomy
+taxonomy: sensitivity
+entries:
+  - code: public
+    label: Public
+    description: Publishable outside the organisation without further control.
+    rank_order: 1
+    requires_purpose: false
+  - code: internal
+    label: Internal
+    description: Available across the organisation to authenticated staff.
+    rank_order: 2
+    requires_purpose: false
+  - code: confidential
+    label: Confidential
+    description: Restricted to a declared purpose; includes personal data.
+    rank_order: 3
+    requires_purpose: true
+  - code: restricted
+    label: Restricted
+    description: Highest tier; special category, regulated or supervisory data.
+    rank_order: 4
+    requires_purpose: true

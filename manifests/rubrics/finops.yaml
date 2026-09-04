@@ -1,0 +1,19 @@
+# FinOps rubric. Unit economics, budgets and retirement candidates.
+rubric: finops
+version: 1.0.0
+targets:
+  cost_per_accepted_answer_vs_manual_max_ratio: 0.35
+  value_ratio_min_after_4q: 3.0
+  demo_tier_share_of_inference_max: 0.05
+budgets:
+  soft_threshold_pct: 80
+  hard_threshold_pct: 100
+cost_classes:
+  trivial: 1
+  small: 10
+  medium: 100
+  large: 1000
+dormant_grant_days: 60
+retirement_candidate:
+  no_queries_days: 90
+  min_annual_cost_usd: 2500
