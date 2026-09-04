@@ -18,3 +18,15 @@ MILLISECOND = timedelta(milliseconds=1)
 def elapsed_ms(started: float) -> int:
     """Milliseconds since `started`, which must come from `time.perf_counter()`."""
     return int(timedelta(seconds=time.perf_counter() - started) / MILLISECOND)
+
+
+HOUR = timedelta(hours=1)
+
+
+def hours_in(days: int) -> int:
+    """Hours in a number of days.
+
+    Same reason as `elapsed_ms`: the conversion asks `timedelta` for the ratio
+    rather than restating 24 in application source.
+    """
+    return int(timedelta(days=days) / HOUR)

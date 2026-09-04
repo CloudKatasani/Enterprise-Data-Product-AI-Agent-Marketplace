@@ -57,7 +57,7 @@
       "by": "scripts/gen.py",
       "from": "services/api/main.py",
       "generator_version": "1.0.0",
-      "manifest_hash": "b3d17c02e589fce02a3ff31e6c3af378737a38f66bd8d22370136b3756e43953",
+      "manifest_hash": "ebb58cdc4b9bdea63d7cb36ad934afc97d4d407107f2d253acbc4fbf635d9e3d",
       "warning": "DO NOT EDIT"
     }
   },
@@ -754,6 +754,310 @@
         "summary": "Accept or reject an answer; a rejected defect becomes an evaluation case",
         "tags": [
           "agents"
+        ]
+      }
+    },
+    "/api/v1/demand": {
+      "get": {
+        "operationId": "demand_board_api_v1_demand_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Demand Board Api V1 Demand Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The public demand board",
+        "tags": [
+          "demand"
+        ]
+      },
+      "post": {
+        "operationId": "submit_demand_api_v1_demand_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Submit Demand Api V1 Demand Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "File new-supply demand",
+        "tags": [
+          "demand"
+        ]
+      }
+    },
+    "/api/v1/demand/check": {
+      "post": {
+        "operationId": "check_demand_api_v1_demand_check_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Check Demand Api V1 Demand Check Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Does the estate already supply this? Run before submitting.",
+        "tags": [
+          "demand"
+        ]
+      }
+    },
+    "/api/v1/demand/{demand_id}/vote": {
+      "post": {
+        "operationId": "vote_demand_api_v1_demand__demand_id__vote_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "demand_id",
+            "required": true,
+            "schema": {
+              "title": "Demand Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Vote Demand Api V1 Demand  Demand Id  Vote Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Vote, with the one-line use case that makes it countable",
+        "tags": [
+          "demand"
         ]
       }
     },
@@ -1884,6 +2188,828 @@
         "summary": "Tier-weighted estate quality with its breakdown",
         "tags": [
           "quality"
+        ]
+      }
+    },
+    "/api/v1/requests/access": {
+      "post": {
+        "operationId": "create_access_api_v1_requests_access_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Create Access Api V1 Requests Access Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Draft an access request; it is evaluated on creation",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/access/evaluate": {
+      "post": {
+        "operationId": "evaluate_access_api_v1_requests_access_evaluate_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Evaluate Access Api V1 Requests Access Evaluate Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "What will happen to this request, before it is submitted",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/access/{request_id}/decide": {
+      "post": {
+        "operationId": "decide_access_api_v1_requests_access__request_id__decide_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Decide Access Api V1 Requests Access  Request Id  Decide Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Record one approver's decision",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/access/{request_id}/submit": {
+      "post": {
+        "operationId": "submit_access_api_v1_requests_access__request_id__submit_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Submit Access Api V1 Requests Access  Request Id  Submit Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Submit an evaluated request; a blocked one is refused",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/audit.ndjson": {
+      "get": {
+        "operationId": "audit_export_api_v1_requests_audit_ndjson_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "event",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Event"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Audit Export Api V1 Requests Audit Ndjson Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The audit trail as newline-delimited JSON",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/backlog": {
+      "get": {
+        "operationId": "public_backlog_api_v1_requests_backlog_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "asset_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Asset Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Public Backlog Api V1 Requests Backlog Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The public backlog, declines included with their reasons",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/enhancement": {
+      "post": {
+        "operationId": "create_enhancement_api_v1_requests_enhancement_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Create Enhancement Api V1 Requests Enhancement Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Raise an enhancement request against an asset",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/enhancement/{request_id}/advance": {
+      "post": {
+        "operationId": "advance_enhancement_api_v1_requests_enhancement__request_id__advance_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Advance Enhancement Api V1 Requests Enhancement  Request Id  Advance Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Move an enhancement request along its lifecycle",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/entitlements": {
+      "get": {
+        "operationId": "entitlement_register_api_v1_requests_entitlements_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "principal_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Principal Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mine",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Mine",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Entitlement Register Api V1 Requests Entitlements Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The entitlement register: who holds what, for what, until when",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/api/v1/requests/{request_id}/history": {
+      "get": {
+        "operationId": "request_history_api_v1_requests__request_id__history_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "workflow",
+            "required": false,
+            "schema": {
+              "default": "access",
+              "title": "Workflow",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Request History Api V1 Requests  Request Id  History Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Every transition, in order, with its actor",
+        "tags": [
+          "requests"
         ]
       }
     }

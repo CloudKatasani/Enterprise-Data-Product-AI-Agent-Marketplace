@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: fbb3ffd6721e1ee7d8fd5fb08735ed416f5d4af8855002b3a319a5670d827d46  generated_at: 2026-09-04T02:21:56+00:00
+-- generator_version: 1.0.0  manifest_hash: bd01fc98cf644f2985bc60d15d0721a5205b142500b9db4c971c14530b1c3dfe  generated_at: 2026-09-04T05:30:31+00:00
 
 -- parties, org units and role assignments
 
@@ -9,7 +9,8 @@ CREATE TABLE org_unit (
   tenant_id TEXT NOT NULL REFERENCES tenant(tenant_id),  -- Tenant that owns this row; carried into every RLS policy.
   name TEXT NOT NULL,
   parent_org_unit_id TEXT REFERENCES org_unit(org_unit_id),
-  cost_centre TEXT
+  cost_centre TEXT,
+  region TEXT  -- Where this unit's people sit. Residency policy compares a requester's region against the product's permitted regions, so a cross-border request is a fact rather than a judgement.
 );
 ALTER TABLE org_unit ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_unit FORCE ROW LEVEL SECURITY;

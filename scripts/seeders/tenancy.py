@@ -26,9 +26,11 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
         for unit in ORG_UNITS:
             cursor.execute(
                 "INSERT INTO org_unit (org_unit_id, tenant_id, name, parent_org_unit_id, "
-                "cost_centre) VALUES (%s, %s, %s, %s, %s) "
-                "ON CONFLICT (org_unit_id) DO UPDATE SET name = EXCLUDED.name",
-                (unit["id"], tenant, unit["name"], unit["parent"], unit["cost_centre"]),
+                "cost_centre, region) VALUES (%s, %s, %s, %s, %s, %s) "
+                "ON CONFLICT (org_unit_id) DO UPDATE SET name = EXCLUDED.name, "
+                "  region = EXCLUDED.region",
+                (unit["id"], tenant, unit["name"], unit["parent"], unit["cost_centre"],
+                 unit["region"]),
             )
         for party in PARTIES:
             cursor.execute(

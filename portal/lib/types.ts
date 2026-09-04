@@ -392,3 +392,100 @@ export interface AgentAnswer {
     effective_scope: 'intersection' | 'direct';
   };
 }
+
+export interface PolicyEvaluation {
+  path: 'auto' | 'owner' | 'owner_steward' | 'owner_privacy_security' | 'blocked';
+  label: string;
+  approvers: string[];
+  sla_days: number;
+  due_at: string | null;
+  policy_version_id: string;
+  blocked: boolean;
+  automatic: boolean;
+  reasons: string[];
+  alternatives: { product_id: string; name: string; sensitivity: string; why: string }[];
+  facts: {
+    asset_type: string;
+    asset_id: string;
+    sensitivity: string;
+    contains_pii: boolean;
+    residency: string[];
+    has_classified_columns: boolean;
+    purpose_code: string;
+  };
+}
+
+export interface DuplicateMatch {
+  candidate_id: string;
+  candidate_name: string;
+  similarity: number;
+  contributing_factors: Record<string, number>;
+  confidence: number;
+  rationale: string;
+}
+
+export interface DuplicateCheck {
+  verdict: 'blocking' | 'advisory' | 'clear' | 'architect_review';
+  blocking: boolean;
+  matches: DuplicateMatch[];
+  rubric_version_id: string;
+}
+
+export interface Grant {
+  grant_id: string;
+  principal_id: string;
+  display_name: string | null;
+  asset_type: string;
+  asset_id: string;
+  access_level: string;
+  purpose_code: string;
+  purpose_text: string;
+  platform_role: string;
+  oauth_scopes: string[];
+  granted_at: string;
+  expires_at: string;
+  revoked_at: string | null;
+  last_used_at: string | null;
+  columns: string[];
+  live: boolean;
+}
+
+export interface BacklogItem {
+  request_id: string;
+  title: string;
+  body: string;
+  state: string;
+  requester_party_id: string;
+  submitted_at: string;
+  sla_due_at: string | null;
+  closed_at: string | null;
+  asset_type: string | null;
+  asset_id: string | null;
+  votes: number;
+  decline: { reason_code: string; reason_text: string } | null;
+}
+
+export interface DemandItem {
+  demand_id: string;
+  state: string;
+  score: number | null;
+  score_breakdown: Record<string, { weight: number; assessment: number; contribution: number }> | null;
+  theme_id: string | null;
+  decline_reason_public: string | null;
+  title: string;
+  body: string;
+  requester_party_id: string;
+  submitted_at: string;
+  votes: number;
+  teams: number;
+}
+
+export interface DemandTheme {
+  theme_id: string;
+  label: string;
+  summary: string;
+  distinct_team_count: number;
+  escalated_at: string | null;
+  confidence: number;
+  rationale: string;
+}

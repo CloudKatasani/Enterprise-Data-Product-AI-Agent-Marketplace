@@ -13,21 +13,25 @@ from __future__ import annotations
 
 from typing import Any
 
+# Regions are ISO-style short codes matching the residency lists on the data
+# contracts. A unit whose people sit outside a product's permitted regions makes
+# the request cross-border, which is a fact the policy can act on rather than a
+# judgement someone has to make.
 ORG_UNITS: list[dict[str, Any]] = [
-    {"id": "OU-ROOT", "name": "Enterprise", "parent": None, "cost_centre": "CC-0000"},
-    {"id": "OU-DATA", "name": "Data & Analytics", "parent": "OU-ROOT", "cost_centre": "CC-1000"},
-    {"id": "OU-GOV", "name": "Data Governance", "parent": "OU-DATA", "cost_centre": "CC-1100"},
-    {"id": "OU-PLAT", "name": "Data Platform", "parent": "OU-DATA", "cost_centre": "CC-1200"},
-    {"id": "OU-SEC", "name": "Security & Privacy", "parent": "OU-ROOT", "cost_centre": "CC-2000"},
-    {"id": "OU-TEL", "name": "Telecom Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3100"},
-    {"id": "OU-TCH", "name": "Technology Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3200"},
-    {"id": "OU-BNK", "name": "Banking Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3300"},
-    {"id": "OU-INS", "name": "Insurance Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3400"},
-    {"id": "OU-HLT", "name": "Healthcare Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3500"},
-    {"id": "OU-RTL", "name": "Retail Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3600"},
-    {"id": "OU-TRN", "name": "Transportation Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3700"},
-    {"id": "OU-UTL", "name": "Utilities & Energy Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3800"},
-    {"id": "OU-MFG", "name": "Manufacturing Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3900"},
+    {"id": "OU-ROOT", "name": "Enterprise", "parent": None, "cost_centre": "CC-0000", "region": "US"},
+    {"id": "OU-DATA", "name": "Data & Analytics", "parent": "OU-ROOT", "cost_centre": "CC-1000", "region": "US"},
+    {"id": "OU-GOV", "name": "Data Governance", "parent": "OU-DATA", "cost_centre": "CC-1100", "region": "US"},
+    {"id": "OU-PLAT", "name": "Data Platform", "parent": "OU-DATA", "cost_centre": "CC-1200", "region": "US"},
+    {"id": "OU-SEC", "name": "Security & Privacy", "parent": "OU-ROOT", "cost_centre": "CC-2000", "region": "US"},
+    {"id": "OU-TEL", "name": "Telecom Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3100", "region": "US"},
+    {"id": "OU-TCH", "name": "Technology Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3200", "region": "US"},
+    {"id": "OU-BNK", "name": "Banking Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3300", "region": "US"},
+    {"id": "OU-INS", "name": "Insurance Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3400", "region": "EU"},
+    {"id": "OU-HLT", "name": "Healthcare Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3500", "region": "US"},
+    {"id": "OU-RTL", "name": "Retail Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3600", "region": "US"},
+    {"id": "OU-TRN", "name": "Transportation Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3700", "region": "US"},
+    {"id": "OU-UTL", "name": "Utilities & Energy Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3800", "region": "EU"},
+    {"id": "OU-MFG", "name": "Manufacturing Business Unit", "parent": "OU-ROOT", "cost_centre": "CC-3900", "region": "APAC"},
 ]
 
 

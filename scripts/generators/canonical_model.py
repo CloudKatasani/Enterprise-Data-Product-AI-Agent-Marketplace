@@ -152,6 +152,10 @@ IDENTITY: list[Table] = [
             Column("name", "TEXT", null=False),
             Column("parent_org_unit_id", "TEXT", references="org_unit(org_unit_id)"),
             Column("cost_centre", "TEXT"),
+            Column("region", "TEXT",
+                   comment="Where this unit's people sit. Residency policy compares a "
+                           "requester's region against the product's permitted regions, "
+                           "so a cross-border request is a fact rather than a judgement."),
         ],
     ),
     Table(

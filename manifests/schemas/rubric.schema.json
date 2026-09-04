@@ -478,7 +478,9 @@
       "required": [
         "criteria",
         "duplicate_detection",
-        "theme_escalation"
+        "theme_escalation",
+        "clustering",
+        "presentation"
       ],
       "additionalProperties": false,
       "properties": {
@@ -543,8 +545,55 @@
         },
         "sla_hours": {
           "type": "object",
-          "additionalProperties": {
-            "type": "integer"
+          "required": [
+            "enhancement_triage",
+            "demand_triage",
+            "escalation_at_fraction_of_sla",
+            "auto_close_unverified_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enhancement_triage": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "demand_triage": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "escalation_at_fraction_of_sla": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "auto_close_unverified_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "clustering": {
+          "type": "object",
+          "required": [
+            "label_words"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "label_words": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "presentation": {
+          "type": "object",
+          "required": [
+            "precision"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "precision": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         }
       }

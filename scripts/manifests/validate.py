@@ -159,13 +159,29 @@ def validate_document(manifest: LoadedManifest, registry: Registry) -> list[Vali
     return errors
 
 
-def validate_rubric(manifest: LoadedManifest, registry: Registry) -> list[ValidationError]:
-    schema = json.loads((SCHEMA_DIR / "rubric.schema.json").read_text(encoding="utf-8"))
+def validate_against(
+    manifest: LoadedManifest, registry: Registry, schema_name: str
+) -> list[ValidationError]:
+    """Validate a manifest that names its own kind by a top-level key.
+
+    Rubrics and policies are configuration rather than assets, so they carry
+    ``rubric:`` or ``policy:`` at the top level instead of ``kind:``. The schema
+    is chosen by the directory they live in.
+    """
+    schema = json.loads((SCHEMA_DIR / schema_name).read_text(encoding="utf-8"))
     validator = Draft202012Validator(schema, registry=registry)
     errors: list[ValidationError] = []
     for error in sorted(validator.iter_errors(manifest.data), key=lambda e: list(e.absolute_path)):
         errors.append(_error_from(manifest, _pointer(list(error.absolute_path)), _explain(error)))
     return errors
+
+
+def validate_rubric(manifest: LoadedManifest, registry: Registry) -> list[ValidationError]:
+    return validate_against(manifest, registry, "rubric.schema.json")
+
+
+def validate_policy(manifest: LoadedManifest, registry: Registry) -> list[ValidationError]:
+    return validate_against(manifest, registry, "policy.schema.json")
 
 
 def _load_all(directory: Path) -> tuple[list[LoadedManifest], list[ValidationError]]:
@@ -464,11 +480,15 @@ def validate_all(root: Path | None = None) -> list[ValidationError]:
     errors.extend(load_errors)
     rubrics, load_errors = _load_all(manifests_root / "rubrics")
     errors.extend(load_errors)
+    policies, load_errors = _load_all(manifests_root / "policies")
+    errors.extend(load_errors)
 
     for manifest in [*products, *agents, *kpis, *taxonomies]:
         errors.extend(validate_document(manifest, registry))
     for manifest in rubrics:
         errors.extend(validate_rubric(manifest, registry))
+    for manifest in policies:
+        errors.extend(validate_policy(manifest, registry))
 
     # Cross-manifest rules only make sense once every document parses.
     if not errors:

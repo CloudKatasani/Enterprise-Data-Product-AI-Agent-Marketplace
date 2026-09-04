@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: b3d17c02e589fce02a3ff31e6c3af378737a38f66bd8d22370136b3756e43953  generated_at: 2026-09-04T05:03:26+00:00
+// generator_version: 1.0.0  manifest_hash: ebb58cdc4b9bdea63d7cb36ad934afc97d4d407107f2d253acbc4fbf635d9e3d  generated_at: 2026-09-04T05:45:55+00:00
 
 /* eslint-disable */
 /**
@@ -91,6 +91,26 @@ export class MarketplaceClient {
     return request(this.baseUrl, 'POST', `/api/v1/agents/${agent_id}/feedback`, undefined, body, options);
   }
 
+  /** The public demand board */
+  getDemand(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/demand`, undefined, undefined, options);
+  }
+
+  /** File new-supply demand */
+  postDemand(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/demand`, undefined, body, options);
+  }
+
+  /** Does the estate already supply this? Run before submitting. */
+  postDemandCheck(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/demand/check`, undefined, body, options);
+  }
+
+  /** Vote, with the one-line use case that makes it countable */
+  postDemandDemand_idVote(demand_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/demand/${demand_id}/vote`, undefined, body, options);
+  }
+
   /** Hybrid search across products, agents and KPIs */
   getDiscover(query?: { q?: unknown, asset_type?: unknown, limit?: unknown }, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/discover`, query, undefined, options);
@@ -164,6 +184,56 @@ export class MarketplaceClient {
   /** Tier-weighted estate quality with its breakdown */
   getQualityEstate(options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/quality/estate`, undefined, undefined, options);
+  }
+
+  /** Draft an access request; it is evaluated on creation */
+  postRequestsAccess(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/requests/access`, undefined, body, options);
+  }
+
+  /** What will happen to this request, before it is submitted */
+  postRequestsAccessEvaluate(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/requests/access/evaluate`, undefined, body, options);
+  }
+
+  /** Record one approver's decision */
+  postRequestsAccessRequest_idDecide(request_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/requests/access/${request_id}/decide`, undefined, body, options);
+  }
+
+  /** Submit an evaluated request; a blocked one is refused */
+  postRequestsAccessRequest_idSubmit(request_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/requests/access/${request_id}/submit`, undefined, undefined, options);
+  }
+
+  /** The audit trail as newline-delimited JSON */
+  getRequestsAudit.ndjson(query?: { event?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/requests/audit.ndjson`, query, undefined, options);
+  }
+
+  /** The public backlog, declines included with their reasons */
+  getRequestsBacklog(query?: { asset_id?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/requests/backlog`, query, undefined, options);
+  }
+
+  /** Raise an enhancement request against an asset */
+  postRequestsEnhancement(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/requests/enhancement`, undefined, body, options);
+  }
+
+  /** Move an enhancement request along its lifecycle */
+  postRequestsEnhancementRequest_idAdvance(request_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/requests/enhancement/${request_id}/advance`, undefined, body, options);
+  }
+
+  /** The entitlement register: who holds what, for what, until when */
+  getRequestsEntitlements(query?: { principal_id?: unknown, mine?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/requests/entitlements`, query, undefined, options);
+  }
+
+  /** Every transition, in order, with its actor */
+  getRequestsRequest_idHistory(request_id: string, query?: { workflow?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/requests/${request_id}/history`, query, undefined, options);
   }
 
 }
