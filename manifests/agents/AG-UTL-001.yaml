@@ -1,0 +1,188 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-UTL-001
+  name: "Outage Impact Analyst"
+  industry: utilities_energy
+  domain: network_asset
+  owner:
+    party_id: PTY-0045
+    team: "Grid Operations"
+    on_call: "pagerduty://grid-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about reliability indices, feeder contribution, asset health risk and
+    event impact across the distribution network.
+  business_value_block:
+    analyses: [regulatory_tracking, contribution_ranking, risk_prioritization, event_analysis, risk_ranking]
+    replaces: >-
+      The annual reliability review and the manual feeder ranking that supports it.
+    personas: [reliability_engineer, asset_manager, regulatory_reporting_lead]
+  out_of_scope:
+    - "Switching orders"
+    - "Crew dispatch"
+    - "Regulatory filings"
+  runtime:
+    provider: mock
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-UTL-001/system@v1
+  data_products:
+    - product_id: DP-UTL-001
+      columns: [asset_id, outage_id, observed_date, feeder, region, asset_class, vintage_band, cause_class, crew, served_customer_id, customer_interruptions, customer_interruption_minutes, restoration_minutes, asset_health_score, scheduled, completed_within_window, deferral_count, major_event_day, load_impact_mw]
+      access: read
+    - product_id: DP-ENG-001
+      columns: [meter_id, interval_start, rate_class, region, feeder, consumption_kwh, interval_demand_kw]
+      access: read
+  tool_bindings:
+    - tool: query_dp_utl_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-UTL-001"
+      scope: "dp:DP-UTL-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: query_dp_eng_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-ENG-001"
+      scope: "dp:DP-ENG-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-SAIDI-061
+      source_product: DP-UTL-001
+      columns_used: [asset_id, customer_interruption_minutes, served_customer_id, feeder, region, cause_class, major_event_day, observed_date]
+      grains: [month, quarter, year]
+      slices: [feeder, region, cause_class]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-AHI-063
+      source_product: DP-UTL-001
+      columns_used: [asset_id, asset_health_score, asset_class, vintage_band, region, served_customer_id, deferral_count, observed_date]
+      grains: [month, quarter, year]
+      slices: [asset_class, region, vintage_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-SAIFI-062
+      source_product: DP-UTL-001
+      columns_used: [asset_id, customer_interruptions, served_customer_id, feeder, region, cause_class, outage_id, load_impact_mw, observed_date]
+      grains: [month, quarter, year]
+      slices: [feeder, region, cause_class]
+      analysis_depth: explain
+    - kpi_id: KPI-PMCOMP-065
+      source_product: DP-UTL-001
+      columns_used: [asset_id, scheduled, completed_within_window, deferral_count, asset_class, region, crew, observed_date]
+      grains: [month, quarter, year]
+      slices: [asset_class, region, crew]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-UTL-001-01
+      ordinal: 1
+      question: "What is our SAIDI year to date against the regulatory target?"
+      kpi_class: KPI-SAIDI-061
+      analysis_type: regulatory_tracking
+      expected_shape:
+        headline: >-
+          the year-to-date index against target, with the major event day exclusion stated
+        visual: line_vs_target
+        table_columns: [period, saidi_minutes, target_minutes, variance]
+        must_cite: [DP-UTL-001, KPI-SAIDI-061]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-UTL-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-001-02
+      ordinal: 2
+      question: "Which feeders contribute most to interruption minutes?"
+      kpi_class: KPI-SAIDI-061
+      analysis_type: contribution_ranking
+      expected_shape:
+        headline: >-
+          the feeders carrying most customer minutes, and their cumulative share
+        visual: pareto
+        table_columns: [feeder, customer_interruption_minutes, share_pct, cumulative_share_pct]
+        must_cite: [DP-UTL-001, KPI-SAIDI-061]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-UTL-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-001-03
+      ordinal: 3
+      question: "Which poor-health assets serve the most customers?"
+      kpi_class: KPI-AHI-063
+      analysis_type: risk_prioritization
+      expected_shape:
+        headline: >-
+          the assets where condition and customers served overlap worst
+        visual: matrix
+        table_columns: [asset_id, asset_class, asset_health_score, customers_served]
+        must_cite: [DP-UTL-001, KPI-AHI-063]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-UTL-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-001-04
+      ordinal: 4
+      question: "What was the customer and load impact of last week's storm?"
+      kpi_class: KPI-SAIFI-062
+      analysis_type: event_analysis
+      expected_shape:
+        headline: >-
+          the interruptions, customer minutes and load the event cost
+        visual: timeline_plus_map
+        table_columns: [cause_class, customer_interruptions, customer_interruption_minutes, load_impact_mw]
+        must_cite: [DP-UTL-001, KPI-SAIFI-062]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-UTL-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-001-05
+      ordinal: 5
+      question: "Which maintenance deferrals carry the highest customer-minute risk?"
+      kpi_class: KPI-PMCOMP-065
+      analysis_type: risk_ranking
+      expected_shape:
+        headline: >-
+          the deferred work whose assets serve the most customers
+        visual: table
+        table_columns: [asset_id, asset_class, deferral_count, customers_served]
+        must_cite: [DP-UTL-001, KPI-PMCOMP-065]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-UTL-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-UTL-001/
+  value_case:
+    benefit_model: "avoided_customer_minutes * regulatory_value_per_customer_minute"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per reliability question"
+        value: 70
+        unit: minutes
+        sample_size: 17
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0045

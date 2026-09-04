@@ -17,6 +17,7 @@ warning, because rule 7 is to fail closed.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
@@ -257,6 +258,38 @@ def cross_validate(
                     )
                 )
 
+    # A KPI's expression must resolve against the columns of its source product.
+    # A definition that references a column nobody publishes cannot be computed,
+    # and finding that out at query time is finding it out too late.
+    product_columns = {
+        manifest.data["metadata"]["id"]: {
+            column["name"] for column in manifest.data["spec"]["columns"]
+        }
+        for manifest in products
+    }
+    for manifest in kpis:
+        spec = manifest.data.get("spec", {})
+        source = spec.get("source_of_record")
+        if source is None or source not in product_columns:
+            continue
+        for field in ("expression", "numerator_expr", "denominator_expr"):
+            body = spec.get(field)
+            if not body:
+                continue
+            unknown = sorted(
+                identifier
+                for identifier in _identifiers(body)
+                if identifier not in product_columns[source]
+            )
+            if unknown:
+                errors.append(
+                    _error_from(
+                        manifest,
+                        f"/spec/{field}",
+                        f"references {', '.join(unknown)}, which {source} does not publish",
+                    )
+                )
+
     for manifest in agents:
         spec = manifest.data.get("spec", {})
         bound_columns: dict[str, set[str]] = {}
@@ -362,6 +395,30 @@ def cross_validate(
                     )
 
     return errors
+
+
+# SQL keywords, functions and literals that appear in a KPI expression and are
+# not column references.
+SQL_VOCABULARY = frozenset(
+    """
+    select from where filter and or not null is in as by group order over partition within
+    count sum avg min max distinct case when then else end coalesce nullif cast interval
+    date timestamp true false percentile_cont percentile_disc ntile row_number rank dense_rank
+    abs round floor ceil greatest least extract epoch desc asc
+    """.split()
+)
+
+_IDENTIFIER = re.compile(r"\b[a-z_][a-z0-9_]*\b")
+
+
+def _identifiers(expression: str) -> set[str]:
+    """Column-like identifiers in a SQL expression, excluding SQL vocabulary."""
+    without_strings = re.sub(r"'[^']*'", " ", expression.lower())
+    return {
+        token
+        for token in _IDENTIFIER.findall(without_strings)
+        if token not in SQL_VOCABULARY
+    }
 
 
 def _side_by_side(first: LoadedManifest, second: LoadedManifest) -> str:

@@ -1,0 +1,174 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-HLT-001
+  name: "Readmission Risk Navigator"
+  industry: healthcare
+  domain: clinical
+  owner:
+    party_id: PTY-0050
+    team: "Clinical Informatics"
+    on_call: "pagerduty://clinical-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers population-level questions about readmission, length of stay, follow-up compliance
+    and care gaps for quality improvement.
+  business_value_block:
+    analyses: [trend_comparison, contribution_ranking, association, compliance, programme_eval]
+    replaces: >-
+      Monthly manual chart abstraction and registry exports by the clinical analytics team.
+    personas: [quality_improvement_lead, service_line_director, population_health_analyst]
+  out_of_scope:
+    - "Any individual clinical recommendation, diagnosis or treatment"
+    - "Patient-level advice of any kind"
+    - "Anything that would identify an individual patient"
+  runtime:
+    provider: mock
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-HLT-001/system@v1
+  data_products:
+    - product_id: DP-HLT-001
+      columns: [encounter_id, index_encounter_id, attributed_member_id, discharge_date, condition, unit, payer, region, clinic, measure, discharge_disposition, eligible_index, readmitted_within_30d, inpatient_days, days_to_followup, gap_open_at_period_start, gap_closed, programme_enrolled]
+      access: read
+  tool_bindings:
+    - tool: query_dp_hlt_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-001"
+      scope: "dp:DP-HLT-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-READMIT-036
+      source_product: DP-HLT-001
+      columns_used: [encounter_id, index_encounter_id, eligible_index, readmitted_within_30d, condition, unit, payer, discharge_disposition, programme_enrolled, discharge_date]
+      grains: [month, quarter, year]
+      slices: [condition, unit, payer, discharge_disposition]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-FOLLOWUP-040
+      source_product: DP-HLT-001
+      columns_used: [encounter_id, days_to_followup, condition, unit, payer, clinic, discharge_date]
+      grains: [month, quarter]
+      slices: [condition, unit, payer]
+      analysis_depth: compare
+    - kpi_id: KPI-ALOS-037
+      source_product: DP-HLT-001
+      columns_used: [encounter_id, inpatient_days, condition, unit, payer, discharge_date]
+      grains: [month, quarter]
+      slices: [condition, unit, payer]
+      analysis_depth: report
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-HLT-001-01
+      ordinal: 1
+      question: "What is our 30-day readmission rate and how does it compare to last year?"
+      kpi_class: KPI-READMIT-036
+      analysis_type: trend_comparison
+      expected_shape:
+        headline: >-
+          the current rate, the movement against the prior year, and where it concentrates
+        visual: line
+        table_columns: [period, readmission_rate, delta_pp, eligible_discharges]
+        must_cite: [DP-HLT-001, KPI-READMIT-036]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-001-02
+      ordinal: 2
+      question: "Which conditions and units drive the most readmissions?"
+      kpi_class: KPI-READMIT-036
+      analysis_type: contribution_ranking
+      expected_shape:
+        headline: >-
+          the conditions and units accounting for most readmissions, and their cumulative share
+        visual: pareto
+        table_columns: [condition, unit, readmissions, cumulative_share_pct]
+        must_cite: [DP-HLT-001, KPI-READMIT-036]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-001-03
+      ordinal: 3
+      question: "Which discharge patterns are associated with higher readmission?"
+      kpi_class: KPI-READMIT-036
+      analysis_type: association
+      expected_shape:
+        headline: >-
+          which discharge dispositions carry materially higher readmission, and by how much
+        visual: comparison_bars
+        table_columns: [discharge_disposition, readmission_rate, delta_pp, discharges]
+        must_cite: [DP-HLT-001, KPI-READMIT-036]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-001-04
+      ordinal: 4
+      question: "Are follow-up appointments being scheduled within the target window?"
+      kpi_class: KPI-FOLLOWUP-040
+      analysis_type: compliance
+      expected_shape:
+        headline: >-
+          the share of discharges with follow-up inside the window, and where it fails
+        visual: gauge_segmented
+        table_columns: [unit, within_window_pct, median_days, discharges]
+        must_cite: [DP-HLT-001, KPI-FOLLOWUP-040]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-001-05
+      ordinal: 5
+      question: "Did the transitional care programme reduce readmissions in the pilot units?"
+      kpi_class: KPI-READMIT-036
+      analysis_type: programme_eval
+      expected_shape:
+        headline: >-
+          whether readmission moved for enrolled patients against comparable non-enrolled ones
+        visual: dual_line
+        table_columns: [cohort, readmission_rate, delta_pp, discharges]
+        must_cite: [DP-HLT-001, KPI-READMIT-036]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-HLT-001/
+  value_case:
+    benefit_model: "avoided_readmissions * average_readmission_cost - programme_cost"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per readmission question"
+        value: 90
+        unit: minutes
+        sample_size: 18
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0050

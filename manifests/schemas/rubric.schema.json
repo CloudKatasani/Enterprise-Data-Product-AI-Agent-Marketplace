@@ -20,7 +20,8 @@
         "finops",
         "agent_evaluation",
         "platform_harvest",
-        "semantic_search"
+        "semantic_search",
+        "agent_runtime"
       ]
     },
     "version": {
@@ -134,6 +135,18 @@
       },
       "then": {
         "$ref": "#/$defs/semanticSearch"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "agent_runtime"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/agentRuntime"
       }
     }
   ],
@@ -826,6 +839,62 @@
           "properties": {
             "min_similarity": {
               "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            }
+          }
+        }
+      }
+    },
+    "agentRuntime": {
+      "type": "object",
+      "required": [
+        "answer_row_limit",
+        "cost_per_relative_unit_usd",
+        "answer_confidence",
+        "presentation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "answer_row_limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cost_per_relative_unit_usd": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "answer_confidence": {
+          "type": "object",
+          "required": [
+            "complete",
+            "thin_evidence",
+            "thin_evidence_rows"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "thin_evidence": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "thin_evidence_rows": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "presentation": {
+          "type": "object",
+          "required": [
+            "percent_scale"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "percent_scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
             }
           }
         }

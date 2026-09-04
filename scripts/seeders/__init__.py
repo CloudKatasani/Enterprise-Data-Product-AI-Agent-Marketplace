@@ -20,7 +20,7 @@ Seeder = Callable[["psycopg.Connection[Any]", str], int]
 
 
 def _seeders() -> list[tuple[str, Seeder]]:
-    from scripts.seeders import kpis, products, rubrics, taxonomies, tenancy
+    from scripts.seeders import agents, kpis, products, rubrics, taxonomies, tenancy
 
     return [
         # Tenancy first: the source-system taxonomy is tenant-scoped, so the
@@ -30,6 +30,7 @@ def _seeders() -> list[tuple[str, Seeder]]:
         ("rubrics", rubrics.seed),
         ("kpis", kpis.seed),
         ("data products", products.seed),
+        ("agents", agents.seed),
         ("kpi source back-fill", kpis.backfill_source_of_record),
         ("search index", _reindex),
     ]

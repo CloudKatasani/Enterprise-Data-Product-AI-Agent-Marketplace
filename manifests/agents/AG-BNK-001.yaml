@@ -1,0 +1,180 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-BNK-001
+  name: "Relationship Value Advisor"
+  industry: banking
+  domain: customer
+  owner:
+    party_id: PTY-0048
+    team: "Banking Customer Domain"
+    on_call: "pagerduty://banking-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about household relationship value, primacy, attrition risk and deposit
+    movement for relationship management.
+  business_value_block:
+    analyses: [ranking, risk_cohort, trend_segmented, opportunity_cohort, event_impact]
+    replaces: >-
+      Branch-level spreadsheets refreshed monthly by the customer analytics team.
+    personas: [relationship_banker, regional_director, customer_analytics]
+  out_of_scope:
+    - "Credit decisions"
+    - "Suitability advice"
+    - "Individual recommendations without banker review"
+  runtime:
+    provider: mock
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-BNK-001/system@v1
+  data_products:
+    - product_id: DP-BNK-001
+      columns: [customer_id, household_id, as_of_month, segment, region, tenure_band, value_band, product_family, active_product_count, primary_relationship, starting_deposit_balance, ending_deposit_balance, discounted_contribution_margin, attrition_model_score, relationship_value, last_contact_date]
+      access: read
+  tool_bindings:
+    - tool: query_dp_bnk_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-BNK-001"
+      scope: "dp:DP-BNK-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-CLV-018
+      source_product: DP-BNK-001
+      columns_used: [customer_id, household_id, discounted_contribution_margin, relationship_value, segment, region, as_of_month]
+      grains: [quarter, year]
+      slices: [segment, region, value_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-ATTRISK-019
+      source_product: DP-BNK-001
+      columns_used: [customer_id, attrition_model_score, value_band, segment, region, as_of_month]
+      grains: [month, quarter]
+      slices: [segment, region, value_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-PBSHARE-016
+      source_product: DP-BNK-001
+      columns_used: [customer_id, primary_relationship, segment, region, tenure_band, as_of_month]
+      grains: [month, quarter, year]
+      slices: [segment, region, tenure_band]
+      analysis_depth: compare
+    - kpi_id: KPI-DEPGRW-020
+      source_product: DP-BNK-001
+      columns_used: [customer_id, starting_deposit_balance, ending_deposit_balance, segment, region, product_family, active_product_count, as_of_month]
+      grains: [month, quarter, year]
+      slices: [segment, region, product_family]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-BNK-001-01
+      ordinal: 1
+      question: "Who are my top 20 households by relationship value in the Southeast?"
+      kpi_class: KPI-CLV-018
+      analysis_type: ranking
+      expected_shape:
+        headline: >-
+          the concentration of relationship value in the region's largest households
+        visual: table_with_sparklines
+        table_columns: [household_id, segment, relationship_value, products_held]
+        must_cite: [DP-BNK-001, KPI-CLV-018]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-BNK-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-001-02
+      ordinal: 2
+      question: "Which high-value customers show attrition risk this month?"
+      kpi_class: KPI-ATTRISK-019
+      analysis_type: risk_cohort
+      expected_shape:
+        headline: >-
+          how much relationship value sits behind the elevated-risk cohort
+        visual: ranked_table
+        table_columns: [value_band, customers, mean_risk_score, relationship_value]
+        must_cite: [DP-BNK-001, KPI-ATTRISK-019]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-BNK-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-001-03
+      ordinal: 3
+      question: "What is our primary bank share trend by segment?"
+      kpi_class: KPI-PBSHARE-016
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of primacy and which segment is moving it
+        visual: line
+        table_columns: [period, segment, primary_share_pct, delta_pp]
+        must_cite: [DP-BNK-001, KPI-PBSHARE-016]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-BNK-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-001-04
+      ordinal: 4
+      question: "Which single-product customers show strong balance growth?"
+      kpi_class: KPI-DEPGRW-020
+      analysis_type: opportunity_cohort
+      expected_shape:
+        headline: >-
+          the size of the single-product cohort whose balances are growing fastest
+        visual: table
+        table_columns: [segment, customers, balance_growth_pct, avg_balance]
+        must_cite: [DP-BNK-001, KPI-DEPGRW-020]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-BNK-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-001-05
+      ordinal: 5
+      question: "How did deposit balances shift after the April rate change?"
+      kpi_class: KPI-DEPGRW-020
+      analysis_type: event_impact
+      expected_shape:
+        headline: >-
+          the balance movement either side of the change and which segment drove it
+        visual: before_after_line
+        table_columns: [period, segment, balance_growth_pct, ending_balance]
+        must_cite: [DP-BNK-001, KPI-DEPGRW-020]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-BNK-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-BNK-001/
+  value_case:
+    benefit_model: "retained_relationship_value * intervention_success_rate - servicing_cost"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per relationship question"
+        value: 45
+        unit: minutes
+        sample_size: 31
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0048

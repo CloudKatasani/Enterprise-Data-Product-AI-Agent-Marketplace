@@ -1,0 +1,190 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TEL-001
+  name: "Churn Sentinel"
+  industry: telecommunications
+  domain: customer
+  owner:
+    party_id: PTY-0044
+    team: "Telecom Analytics"
+    on_call: "pagerduty://tel-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about subscriber churn, retention performance and save-offer targeting,
+    and explains what is driving churn movement.
+  business_value_block:
+    analyses: [trend_explanation, variance_decomposition, driver_ranking, cohort_comparison, anomaly_triage]
+    replaces: >-
+      Manual pull-and-pivot cycles by the retention analytics team, typically two to three days
+      per churn review.
+    personas: [retention_manager, regional_sales_director, cmo_staff]
+  out_of_scope:
+    - "Individual subscriber credit decisions"
+    - "Pricing approval or plan change execution"
+    - "Anything requiring billing write-back"
+  runtime:
+    provider: mock
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TEL-001/system@v1
+  data_products:
+    - product_id: DP-TEL-001
+      columns: [subscriber_id, segment, region, plan_type, tenure_band, channel, activity_date, active_at_period_start, churn_flag, save_offer_made, save_offer_accepted, propensity_decile, churn_propensity_score, ltv, contract_end_date, network_incidents_30d]
+      access: read
+    - product_id: DP-TEL-002
+      columns: [site_id, region, impacted_subscribers, outage_hours, impacted_subscriber_hours, observed_hour]
+      access: read
+  tool_bindings:
+    - tool: query_dp_tel_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-001"
+      scope: "dp:DP-TEL-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: query_dp_tel_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-002"
+      scope: "dp:DP-TEL-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-CHURN-001
+      source_product: DP-TEL-001
+      columns_used: [subscriber_id, churn_flag, segment, region, tenure_band, active_at_period_start, activity_date]
+      grains: [day, week, month, quarter]
+      slices: [segment, region, plan_type, tenure_band, channel]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-SAVE-003
+      source_product: DP-TEL-001
+      columns_used: [subscriber_id, save_offer_made, save_offer_accepted, segment, region, activity_date]
+      grains: [week, month, quarter]
+      slices: [segment, region, channel]
+      analysis_depth: compare
+    - kpi_id: KPI-PROP-005
+      source_product: DP-TEL-001
+      columns_used: [subscriber_id, churn_propensity_score, propensity_decile, segment, region, tenure_band, activity_date]
+      grains: [day, week, month]
+      slices: [segment, region, tenure_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-IMPHRS-010
+      source_product: DP-TEL-002
+      columns_used: [site_id, impacted_subscribers, outage_hours, impacted_subscriber_hours, region, observed_hour]
+      grains: [day, week, month]
+      slices: [region]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-TEL-001-01
+      ordinal: 1
+      question: "What is our churn rate this quarter and how does it compare to last?"
+      kpi_class: KPI-CHURN-001
+      analysis_type: period_comparison
+      expected_shape:
+        headline: >-
+          a single sentence with the current rate, the delta against the prior period, and the
+          concentration driving it
+        visual: line_with_delta_callout
+        table_columns: [period, churn_rate, delta_pp, contribution_pct]
+        must_cite: [DP-TEL-001, KPI-CHURN-001]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-001-02
+      ordinal: 2
+      question: "Which customer segments drove the churn increase last quarter?"
+      kpi_class: KPI-CHURN-001
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the segments contributing most of the movement, with each one's share of the change
+        visual: waterfall
+        table_columns: [segment, churn_rate, delta_pp, contribution_pct]
+        must_cite: [DP-TEL-001, KPI-CHURN-001]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-001-03
+      ordinal: 3
+      question: "Are network issues contributing to churn in the Midwest?"
+      kpi_class: KPI-IMPHRS-010
+      analysis_type: correlation
+      expected_shape:
+        headline: >-
+          whether impacted subscriber hours track churn in the region, and how strongly
+        visual: scatter_plus_table
+        table_columns: [region, impacted_subscriber_hours, churn_rate]
+        must_cite: [DP-TEL-002, KPI-IMPHRS-010]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-001-04
+      ordinal: 4
+      question: "Which subscribers should we prioritise for a save offer this week?"
+      kpi_class: KPI-PROP-005
+      analysis_type: cohort_targeting
+      expected_shape:
+        headline: >-
+          the size and composition of the highest-propensity cohort worth an offer this week
+        visual: ranked_table
+        table_columns: [propensity_decile, subscribers, churn_rate, avg_ltv]
+        must_cite: [DP-TEL-001, KPI-PROP-005]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-001-05
+      ordinal: 5
+      question: "Did the May retention campaign actually work?"
+      kpi_class: KPI-SAVE-003
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          whether the save rate moved for the treated cohort against a comparable untreated one
+        visual: dual_line
+        table_columns: [period, save_rate, offers_made, offers_accepted]
+        must_cite: [DP-TEL-001, KPI-SAVE-003]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TEL-001/
+  value_case:
+    benefit_model: "answered_questions * acceptance_rate * avg_manual_minutes / 60 * rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per churn driver question"
+        value: 55
+        unit: minutes
+        sample_size: 34
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0044

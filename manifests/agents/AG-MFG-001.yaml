@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-MFG-001
+  name: "Yield & Downtime Analyst"
+  industry: manufacturing
+  domain: operations
+  owner:
+    party_id: PTY-0053
+    team: "Manufacturing Excellence"
+    on_call: "pagerduty://manufacturing-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about equipment effectiveness, downtime reasons, first pass yield, scrap
+    and changeover across lines and shifts.
+  business_value_block:
+    analyses: [performance_ranking, pareto, shift_comparison, programme_eval, concentration]
+    replaces: >-
+      The daily production meeting's manual downtime tally and the weekly yield pack.
+    personas: [plant_manager, continuous_improvement_lead, production_supervisor]
+  out_of_scope:
+    - "Equipment parameter changes"
+    - "Maintenance scheduling without planner approval"
+    - "Any change to a production order"
+  runtime:
+    provider: mock
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-MFG-001/system@v1
+  data_products:
+    - product_id: DP-MFG-001
+      columns: [run_id, line, plant, shift, shift_date, product_family, reason_code, downtime_type, root_cause, availability_rate, performance_rate, quality_rate, started_units, scrapped_units, passed_without_rework, downtime_hours, changeover_minutes, standardised_changeover]
+      access: read
+  tool_bindings:
+    - tool: query_dp_mfg_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-MFG-001"
+      scope: "dp:DP-MFG-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-OEE-071
+      source_product: DP-MFG-001
+      columns_used: [run_id, line, plant, shift, availability_rate, performance_rate, quality_rate, product_family, shift_date]
+      grains: [day, week, month, quarter]
+      slices: [line, plant, shift, product_family]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-DOWNTIME-073
+      source_product: DP-MFG-001
+      columns_used: [run_id, line, plant, shift, downtime_hours, downtime_type, reason_code, shift_date]
+      grains: [day, week, month, quarter]
+      slices: [line, plant, shift, reason_code]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-FPY-072
+      source_product: DP-MFG-001
+      columns_used: [run_id, line, plant, shift, passed_without_rework, product_family, shift_date]
+      grains: [day, week, month, quarter]
+      slices: [line, plant, shift, product_family]
+      analysis_depth: compare
+    - kpi_id: KPI-CHANGEOVER-075
+      source_product: DP-MFG-001
+      columns_used: [run_id, line, plant, shift, changeover_minutes, standardised_changeover, product_family, shift_date]
+      grains: [week, month, quarter]
+      slices: [line, plant, product_family, shift]
+      analysis_depth: explain
+    - kpi_id: KPI-SCRAP-074
+      source_product: DP-MFG-001
+      columns_used: [run_id, line, plant, scrapped_units, started_units, product_family, root_cause, shift_date]
+      grains: [day, week, month, quarter]
+      slices: [line, plant, product_family, root_cause]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-MFG-001-01
+      ordinal: 1
+      question: "What is OEE by line this week and where did we lose the most?"
+      kpi_class: KPI-OEE-071
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          OEE by line and which of availability, performance or quality cost the most
+        visual: oee_waterfall
+        table_columns: [line, oee_pct, availability_rate, quality_rate]
+        must_cite: [DP-MFG-001, KPI-OEE-071]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-001-02
+      ordinal: 2
+      question: "What are the top downtime reasons on Line 3?"
+      kpi_class: KPI-DOWNTIME-073
+      analysis_type: pareto
+      expected_shape:
+        headline: >-
+          the reason codes accounting for most unplanned hours, and their cumulative share
+        visual: reason_code_ranking
+        table_columns: [reason_code, downtime_hours, share_pct, cumulative_share_pct]
+        must_cite: [DP-MFG-001, KPI-DOWNTIME-073]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-001-03
+      ordinal: 3
+      question: "Which shifts show the biggest first-pass-yield gap?"
+      kpi_class: KPI-FPY-072
+      analysis_type: shift_comparison
+      expected_shape:
+        headline: >-
+          the shift carrying the lowest first pass yield on comparable work
+        visual: box_plot
+        table_columns: [shift, first_pass_yield_pct, runs, delta_pp]
+        must_cite: [DP-MFG-001, KPI-FPY-072]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-001-04
+      ordinal: 4
+      question: "Did changeover standardization reduce changeover time?"
+      kpi_class: KPI-CHANGEOVER-075
+      analysis_type: programme_eval
+      expected_shape:
+        headline: >-
+          whether the changeover distribution moved after standardisation, not just the mean
+        visual: distribution_shift
+        table_columns: [standardised_changeover, median_minutes, p90_minutes, runs]
+        must_cite: [DP-MFG-001, KPI-CHANGEOVER-075]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-001-05
+      ordinal: 5
+      question: "Where is scrap concentrated by product and root cause?"
+      kpi_class: KPI-SCRAP-074
+      analysis_type: concentration
+      expected_shape:
+        headline: >-
+          the product families and root causes carrying most scrap, and their share
+        visual: treemap_plus_pareto
+        table_columns: [product_family, root_cause, scrap_rate, share_pct]
+        must_cite: [DP-MFG-001, KPI-SCRAP-074]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-MFG-001/
+  value_case:
+    benefit_model: "recovered_production_hours * contribution_margin_per_hour - cost"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per production question"
+        value: 45
+        unit: minutes
+        sample_size: 28
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0053

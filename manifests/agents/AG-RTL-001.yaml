@@ -1,0 +1,188 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-RTL-001
+  name: "Merchandising Performance Agent"
+  industry: retail
+  domain: customer
+  owner:
+    party_id: PTY-0051
+    team: "Merchandising Analytics"
+    on_call: "pagerduty://retail-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about comparable sales, margin, promotion performance and basket
+    composition, and explains where the plan was missed.
+  business_value_block:
+    analyses: [trend_by_category, variance_decomposition, promotion_eval, opportunity_matrix, basket_composition]
+    replaces: >-
+      The weekly trading pack assembled by hand by the merchandising analytics team.
+    personas: [category_manager, trading_director, merchandising_analyst]
+  out_of_scope:
+    - "Price changes"
+    - "Markdown execution"
+    - "Vendor negotiation positions"
+  runtime:
+    provider: mock
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-RTL-001/system@v1
+  data_products:
+    - product_id: DP-RTL-001
+      columns: [transaction_id, visit_id, business_date, category, sku, region, channel, store_format, promotion, comparable_store, net_sales, prior_year_net_sales, cost_of_goods_sold, promoted_sales, baseline_sales, units, basket_item_count]
+      access: read
+    - product_id: DP-RTL-002
+      columns: [sku, location_id, activity_date, category, region, on_hand_units, units_sold, units_received]
+      access: read
+  tool_bindings:
+    - tool: query_dp_rtl_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-RTL-001"
+      scope: "dp:DP-RTL-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: query_dp_rtl_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-RTL-002"
+      scope: "dp:DP-RTL-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-COMPSALES-046
+      source_product: DP-RTL-001
+      columns_used: [transaction_id, net_sales, prior_year_net_sales, comparable_store, category, region, channel, business_date]
+      grains: [week, month, quarter, year]
+      slices: [category, region, channel, store_format]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-PROMOLIFT-050
+      source_product: DP-RTL-001
+      columns_used: [promotion, promoted_sales, baseline_sales, category, region, cost_of_goods_sold, net_sales, business_date]
+      grains: [week, month, quarter]
+      slices: [category, promotion, region]
+      analysis_depth: explain
+    - kpi_id: KPI-BASKET-047
+      source_product: DP-RTL-001
+      columns_used: [transaction_id, net_sales, basket_item_count, category, region, channel, business_date]
+      grains: [day, week, month, quarter]
+      slices: [category, region, channel]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-SELLTHRU-053
+      source_product: DP-RTL-002
+      columns_used: [sku, units_sold, units_received, on_hand_units, category, region, activity_date]
+      grains: [week, month, quarter]
+      slices: [category, region]
+      analysis_depth: compare
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-RTL-001-01
+      ordinal: 1
+      question: "How are comparable sales trending by category this week?"
+      kpi_class: KPI-COMPSALES-046
+      analysis_type: trend_by_category
+      expected_shape:
+        headline: >-
+          which categories are up and down on a like-for-like basis, and by how much
+        visual: heatmap
+        table_columns: [category, comp_sales_growth_pct, net_sales, delta_pct]
+        must_cite: [DP-RTL-001, KPI-COMPSALES-046]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-001-02
+      ordinal: 2
+      question: "Which categories are missing plan and why?"
+      kpi_class: KPI-COMPSALES-046
+      analysis_type: variance_decomposition
+      expected_shape:
+        headline: >-
+          the categories behind plan and whether traffic or basket explains it
+        visual: waterfall
+        table_columns: [category, comp_sales_growth_pct, contribution_pct, net_sales]
+        must_cite: [DP-RTL-001, KPI-COMPSALES-046]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-001-03
+      ordinal: 3
+      question: "Did the back-to-school promotion deliver incremental margin?"
+      kpi_class: KPI-PROMOLIFT-050
+      analysis_type: promotion_eval
+      expected_shape:
+        headline: >-
+          the incremental sales the promotion produced and whether the margin followed
+        visual: lift_analysis
+        table_columns: [promotion, promo_lift_pct, incremental_sales, gross_margin_rate]
+        must_cite: [DP-RTL-001, KPI-PROMOLIFT-050]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-001-04
+      ordinal: 4
+      question: "Which SKUs have high sell-through but poor in-stock?"
+      kpi_class: KPI-SELLTHRU-053
+      analysis_type: opportunity_matrix
+      expected_shape:
+        headline: >-
+          the SKUs selling well while unavailable, and what that is worth
+        visual: quadrant
+        table_columns: [sku, sell_through_rate, in_stock_rate, units_sold]
+        must_cite: [DP-RTL-002, KPI-SELLTHRU-053]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-001-05
+      ordinal: 5
+      question: "Where is basket size declining and what is leaving the basket?"
+      kpi_class: KPI-BASKET-047
+      analysis_type: basket_composition
+      expected_shape:
+        headline: >-
+          where average basket value is falling and which category left it
+        visual: affinity_shift
+        table_columns: [category, average_basket_value, delta_pct, basket_item_count]
+        must_cite: [DP-RTL-001, KPI-BASKET-047]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-RTL-001/
+  value_case:
+    benefit_model: "faster_markdown_decisions * margin_protected + promotion_reallocation"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per trading question"
+        value: 55
+        unit: minutes
+        sample_size: 33
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0051
