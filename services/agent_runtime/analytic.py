@@ -18,6 +18,7 @@ and a number in the table cannot disagree.
 
 from __future__ import annotations
 
+import re
 import time
 from dataclasses import dataclass
 from decimal import ROUND_HALF_EVEN, Decimal
@@ -30,9 +31,11 @@ from services.agent_runtime.base import (
     Answer,
     AskRequest,
     Citation,
+    EntitlementShortfall,
     OutOfScope,
     ToolCall,
 )
+from services.agents.entitlement import Readable, readable_columns
 from services.common.db import fetch_all, fetch_one
 from services.common.rubrics import Rubric
 from services.common.timing import elapsed_ms
@@ -65,6 +68,7 @@ class _Context:
     product: dict[str, Any]
     exchange: dict[str, Any] | None
     demo_schema: str
+    readable: Readable
 
 
 def _demo_table(schema: str, product_id: str) -> str:
@@ -116,6 +120,18 @@ def _load_context(
         if exchange is None:
             raise OutOfScope(f"no curated exchange {request.exchange_id} for this agent version")
 
+    version = fetch_one(
+        connection,
+        "SELECT autonomy_level, out_of_scope FROM agent_version WHERE agent_version_id = %s",
+        (request.agent_version_id,),
+    )
+    if version is None:
+        raise OutOfScope(f"no agent version {request.agent_version_id}")
+    if exchange is None:
+        # Curated exchanges are the steward's own questions and are not probed
+        # for action intent; anything else is.
+        _refuse_at_boundary(connection, request.question, version)
+
     coverage_rows = fetch_all(
         connection,
         "SELECT * FROM agent_kpi_coverage WHERE agent_version_id = %s ORDER BY kpi_id",
@@ -133,7 +149,9 @@ def _load_context(
                 f"the exchange cites {exchange['kpi_class']}, which this version does not cover"
             )
     else:
-        coverage = _match_coverage(connection, request.question, coverage_rows)
+        coverage = _match_coverage(
+            connection, request.question, coverage_rows, list(version["out_of_scope"])
+        )
 
     kpi = fetch_one(
         connection, "SELECT * FROM kpi_definition WHERE kpi_id = %s", (coverage["kpi_id"],)
@@ -149,6 +167,26 @@ def _load_context(
     if binding is None:
         raise OutOfScope(
             f"this agent version is not bound to {coverage['source_product_id']}"
+        )
+
+    machine = fetch_one(
+        connection,
+        "SELECT a.machine_identity FROM agent a "
+        "JOIN agent_version v ON v.agent_id = a.agent_id WHERE v.agent_version_id = %s",
+        (request.agent_version_id,),
+    )
+    readable = readable_columns(
+        connection,
+        principal_id=request.principal_id,
+        product_id=coverage["source_product_id"],
+        agent_identity=machine["machine_identity"] if machine else None,
+    )
+    if not readable.granted:
+        raise EntitlementShortfall(
+            f"this answer reads {coverage['source_product_id']}, which you hold no live "
+            "grant on",
+            asset_id=coverage["source_product_id"],
+            required_scope=readable.scope,
         )
 
     product = fetch_one(
@@ -174,11 +212,176 @@ def _load_context(
         product=product,
         exchange=exchange,
         demo_schema=demo_schema,
+        readable=readable,
     )
 
 
+# These agents answer analytical questions about aggregates. Two kinds of
+# request are refused before coverage is even consulted, because a coverage map
+# that happens to mention "claims" must not make "is this claim covered?"
+# answerable:
+#
+#   1. a request to *do* something, and
+#   2. a request about one pointed-at or named record.
+#
+# Both are recognised lexically. That is a real limitation and worth stating: it
+# is a vocabulary of action and of singularity, not an understanding of intent.
+# It is extended when a boundary is declared that it does not yet catch, and the
+# boundary probes in seed/eval/<agent>/boundary.yaml are what prove it still
+# catches the ones already declared.
+ACTION_VERBS = frozenset({
+    "activate", "agree", "apply", "approve", "authorise", "authorize", "bind", "book",
+    "cancel", "carry", "change", "close", "commit", "create", "credit", "delete",
+    "disable", "dispatch", "draft", "drop", "enable", "execute", "extend", "file",
+    "increase", "issue", "lower", "move", "open", "order", "place", "put", "raise",
+    "reduce", "reroute", "reschedule", "retune", "revoke", "schedule", "send", "sent",
+    "set", "sign", "split", "submit", "substitute", "switch", "turn", "update", "write",
+})
+
+# Words that make a question about one record rather than a population.
+SINGULAR_MARKERS = frozenset({"individual", "named", "specific", "personally"})
+
+# A request for the records themselves rather than a measure over them. Asking
+# for record numbers is asking to re-identify, and it is refused whatever the
+# caller's grant says, because the runtime has no shape of answer that returns
+# rows of identifiers.
+IDENTIFIER_NOUNS = frozenset({
+    "address", "addresses", "email", "emails", "id", "identifier", "identifiers", "ids",
+    "mrn", "mrns", "name", "names", "number", "numbers", "phone", "record", "records",
+    "ssn",
+})
+LISTING_VERBS = frozenset({"give", "list", "return", "show", "tell"})
+
+# "this week" is a period, not a record. Time nouns after "this"/"these" do not
+# make a question singular.
+PERIOD_NOUNS = frozenset({
+    "week", "weeks", "month", "months", "quarter", "quarters", "year", "years",
+    "day", "days", "period", "periods", "shift", "shifts", "season", "hour", "hours",
+})
+
+# Words that carry no signal when matching a question to a declared boundary.
+STOPWORDS = frozenset({
+    "a", "an", "and", "any", "are", "as", "at", "be", "by", "do", "for", "from", "give",
+    "has", "have", "how", "in", "is", "it", "me", "my", "of", "on", "or", "our", "should",
+    "that", "the", "their", "them", "there", "these", "this", "to", "us", "was", "we",
+    "what", "when", "where", "which", "who", "will", "with", "without", "you", "your",
+})
+
+# Suffixes stripped before comparing a question to a declared boundary, so
+# "file the SAR" reaches "Filing a suspicious activity report". Crude, and
+# deliberately so: a stemmer that is wrong in an interesting way is worse here
+# than one that is wrong in a boring way.
+SUFFIXES = ("ing", "ies", "ed", "es", "s")
+
+
+def _stem(word: str) -> str:
+    for suffix in SUFFIXES:
+        if len(word) > len(suffix) and word.endswith(suffix):
+            return word[: -len(suffix)]
+    return word
+
+
+def _significant(text: str) -> set[str]:
+    return {
+        _stem(word)
+        for word in re.findall(r"[a-z]+", text.lower())
+        if word not in STOPWORDS
+    }
+
+
+def _nearest_boundary(question: str, boundaries: list[str]) -> str | None:
+    """The declared boundary a refused question is closest to.
+
+    Used only to write the refusal. Naming the limit the consumer hit is the
+    difference between a refusal they can act on and a dead end.
+    """
+    words = _significant(question)
+    best: tuple[int, str] | None = None
+    for boundary in boundaries:
+        overlap = len(words & _significant(boundary))
+        if overlap and (best is None or overlap > best[0]):
+            best = (overlap, boundary)
+    return best[1] if best else None
+
+
+def _asks_for_action(question: str) -> bool:
+    return bool(set(re.findall(r"[a-z]+", question.lower())) & ACTION_VERBS)
+
+
+def _asks_for_identifiers(question: str) -> bool:
+    words = set(re.findall(r"[a-z]+", question.lower()))
+    return bool(words & LISTING_VERBS and words & IDENTIFIER_NOUNS)
+
+
+def _asks_about_one_record(question: str) -> bool:
+    words = re.findall(r"[a-z]+", question.lower())
+    if set(words) & SINGULAR_MARKERS:
+        return True
+    for index, word in enumerate(words[:-1]):
+        if word in {"this", "these"} and words[index + 1] not in PERIOD_NOUNS:
+            return True
+    return False
+
+
+def _refuse_at_boundary(
+    connection: psycopg.Connection[Any], question: str, version: dict[str, Any]
+) -> None:
+    """Refuse an action or single-record request, naming the boundary it crosses."""
+    if _asks_for_action(question):
+        opening = (
+            "That asks for something to be done. This agent explains what the data says; "
+            "it does not carry anything out."
+        )
+    elif _asks_for_identifiers(question):
+        opening = (
+            "That asks for the records themselves. This agent returns measures over "
+            "populations; it has no shape of answer that lists identifiers."
+        )
+    elif _asks_about_one_record(question):
+        opening = (
+            "That asks about one record. This agent answers on populations, using the "
+            "certified measures it is bound to."
+        )
+    else:
+        return
+
+    boundaries = list(version["out_of_scope"])
+    named = _nearest_boundary(question, boundaries)
+    if named:
+        opening += f' The boundary it crosses is "{named}".'
+    elif boundaries:
+        opening += " Its declared boundaries are: " + "; ".join(boundaries) + "."
+    raise OutOfScope(opening, _covering_agents(connection, question))
+
+
+def _covering_agents(connection: psycopg.Connection[Any], question: str) -> list[str]:
+    """Other published agents whose capability statement matches the question.
+
+    A refusal that names a route is worth more than a refusal that does not.
+    """
+    words = _significant(question)
+    if not words:
+        return []
+    rows = fetch_all(
+        connection,
+        "SELECT a.agent_id, v.capability_statement FROM agent a "
+        "JOIN agent_version v ON v.agent_version_id = a.current_version_id "
+        "WHERE v.status = 'published'",
+    )
+    scored = sorted(
+        
+            (-len(words & _significant(row["capability_statement"])), row["agent_id"])
+            for row in rows
+        
+    )
+    return [agent_id for score, agent_id in scored if score]
+
+
 def _match_coverage(
-    connection: psycopg.Connection[Any], question: str, coverage_rows: list[dict[str, Any]]
+    connection: psycopg.Connection[Any],
+    question: str,
+    coverage_rows: list[dict[str, Any]],
+    boundaries: list[str],
 ) -> dict[str, Any]:
     """Place a free-form question against the coverage map, or refuse.
 
@@ -213,11 +416,13 @@ def _match_coverage(
             best = (score, row)
 
     if best is None:
-        raise OutOfScope(
-            "This agent does not cover that question. It answers on: "
-            + ", ".join(sorted(row["kpi_id"] for row in coverage_rows))
-            + "."
-        )
+        named = _nearest_boundary(question, boundaries)
+        detail = "This agent does not cover that question. It answers on: " + ", ".join(
+            sorted(row["kpi_id"] for row in coverage_rows)
+        ) + "."
+        if named:
+            detail += f' It has also declared "{named}" out of scope.'
+        raise OutOfScope(detail, _covering_agents(connection, question))
     return best[1]
 
 
@@ -516,9 +721,20 @@ class AnalyticRuntime:
             analysis_type=analysis_type,
             coverage=context.coverage,
             kpi=context.kpi,
-            binding_columns=list(context.binding["columns_allowed"]),
+            # I12: the agent's binding intersected with the caller's grant. The
+            # planner only ever sees columns both sides hold.
+            binding_columns=sorted(
+                set(context.binding["columns_allowed"]) & context.readable.columns
+            ),
             limit=int(self._rubric.number(ROW_LIMIT_PATH)),
         )
+
+        if not context.readable.permits(plan.columns_used):
+            raise EntitlementShortfall(
+                f"answering this needs more of {plan.product_id} than your grant covers",
+                asset_id=plan.product_id,
+                required_scope=context.readable.scope,
+            )
 
         table = _demo_table(self._demo_schema, plan.product_id)
         time_column = _time_column(

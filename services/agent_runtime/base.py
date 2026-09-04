@@ -38,6 +38,22 @@ class OutOfScope(Exception):
         super().__init__(detail)
 
 
+class EntitlementShortfall(Exception):
+    """The caller may not read what the question needs.
+
+    Distinct from OutOfScope: the agent covers the question, the caller is not
+    entitled to the answer. It names the asset and the scope to request, and
+    never the columns that are missing — telling a caller which column they
+    cannot see tells them the column exists.
+    """
+
+    def __init__(self, detail: str, *, asset_id: str, required_scope: str) -> None:
+        self.detail = detail
+        self.asset_id = asset_id
+        self.required_scope = required_scope
+        super().__init__(detail)
+
+
 class RuntimeUnavailable(RuntimeError):
     """The configured runtime cannot answer. Never silently downgraded."""
 
