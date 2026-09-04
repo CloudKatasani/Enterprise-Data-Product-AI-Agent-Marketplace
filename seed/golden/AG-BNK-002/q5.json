@@ -28,7 +28,7 @@
   "narrative": "Ranked by the certified definition KPI-INVCYCLE-024 over 14,400 rows in DP-BNK-002.",
   "question": "Which investigators are carrying aged alerts above SLA?",
   "rows_scanned": 14400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "typology",

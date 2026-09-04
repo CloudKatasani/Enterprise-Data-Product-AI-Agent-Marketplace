@@ -28,7 +28,7 @@
   "narrative": "Ranked by the certified definition KPI-FMTTR-009 over 15,120 rows in DP-TEL-002.",
   "question": "Which faults are recurring on the same assets?",
   "rows_scanned": 15120,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "region",

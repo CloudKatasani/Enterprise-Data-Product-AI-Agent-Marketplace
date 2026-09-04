@@ -8,7 +8,7 @@
 # is that a number an output depends on is resolvable by rubric_version_id, and
 # "this one will never change" is not an exception the replay path can honour.
 rubric: agent_runtime
-version: 1.1.0
+version: 1.2.0
 
 # How many grouped rows an answer may carry. Wide enough for a two-year monthly
 # series, narrow enough that the table stays readable without paging.
@@ -40,3 +40,8 @@ presentation:
   # Ratio to percentage points. See the header: it is here so that a share
   # quoted in an answer's prose replays from the answer's own rubric version.
   percent_scale: 100
+  # How many decimal places a cost and a confidence are shown to. Server-side,
+  # because the portal carries no numeric literals: a display precision chosen
+  # in a component is a number nobody can find later.
+  cost_precision: 4
+  confidence_precision: 2

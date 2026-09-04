@@ -131,6 +131,12 @@ class Answer:
     # grounding validator checks each one against the citations (M7.3).
     claims: dict[str, Decimal] = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
+    # Display strings, formatted by the runtime from its rubric. The portal
+    # carries no numeric literals, so a precision chosen in a component would be
+    # a number nobody could find later; it is chosen here and travels with the
+    # answer it describes.
+    cost_display: str = ""
+    confidence_display: str = ""
 
     def document(self) -> dict[str, Any]:
         return {
@@ -149,8 +155,10 @@ class Answer:
                 "latency_ms": self.latency_ms,
                 "tokens": {"in": self.tokens_in, "out": self.tokens_out},
                 "cost_usd": float(self.cost_usd),
+                "cost_display": self.cost_display,
             },
             "confidence": float(self.confidence),
+            "confidence_display": self.confidence_display,
             "notes": list(self.notes),
         }
 

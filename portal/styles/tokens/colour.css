@@ -71,6 +71,11 @@
   --text-inverse: var(--colour-ink-000);
   --text-on-hero: #eef0f4;
   --focus-ring: var(--colour-accent-500);
+  /* Accent as a role. Components reference the role, never the ramp step, so a
+   * palette change is one edit here. */
+  --text-accent: var(--colour-accent-600);
+  --border-accent: var(--colour-accent-500);
+  --colour-accent: var(--colour-accent-500);
 
   /* Hero scrim. 13.3 requires the constellation to sit behind a scrim that
    * guarantees 4.5:1 contrast for hero copy. CI asserts the rendered result. */
@@ -88,6 +93,9 @@
     --surface-hero: var(--colour-ink-950);
     --border-subtle: var(--colour-ink-800);
     --border-strong: var(--colour-ink-700);
+    --text-accent: var(--colour-accent-300);
+    --border-accent: var(--colour-accent-300);
+    --colour-accent: var(--colour-accent-300);
     --text-primary: var(--colour-ink-025);
     --text-secondary: var(--colour-ink-300);
     --text-muted: var(--colour-ink-400);
@@ -111,5 +119,8 @@
   --text-muted: var(--colour-ink-400);
   --text-inverse: var(--colour-ink-950);
   --focus-ring: var(--colour-accent-300);
+  --text-accent: var(--colour-accent-300);
+  --border-accent: var(--colour-accent-300);
+  --colour-accent: var(--colour-accent-300);
   --hero-scrim: rgba(10, 14, 24, 0.88);
 }

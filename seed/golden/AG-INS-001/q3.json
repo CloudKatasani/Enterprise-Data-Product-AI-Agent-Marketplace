@@ -29,7 +29,7 @@
   "narrative": "Ranked by the certified definition KPI-CLMCYCLE-027 over 12,600 rows in DP-INS-001.",
   "question": "What is driving cycle time increase in auto physical damage?",
   "rows_scanned": 12600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "coverage_line",

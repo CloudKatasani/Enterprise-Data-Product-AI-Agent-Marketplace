@@ -19,19 +19,19 @@
   ],
   "claims": {
     "groups": "3",
-    "rows_scanned": "17280",
-    "top": "97.67",
-    "top_share": "33.71"
+    "rows_scanned": "480",
+    "top": "100.00",
+    "top_share": "33.33"
   },
   "exchange_id": "DEMO-AG-INS-002-04",
-  "headline": "commercial_property leads on policy retention at 97.67%, 33.71% of the total across 3 segments.",
+  "headline": "commercial_auto leads on policy retention at 100.00%, 33.33% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-POLRETEN-032"
   ],
-  "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 17,280 rows in DP-INS-002.",
+  "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 480 rows in DP-INS-002. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which segments are we retaining below plan?",
-  "rows_scanned": 17280,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rows_scanned": 480,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "segment",

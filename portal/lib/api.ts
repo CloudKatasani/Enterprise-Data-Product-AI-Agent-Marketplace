@@ -92,3 +92,47 @@ export async function apiTry<T>(
     };
   }
 }
+
+/**
+ * POST that returns the problem rather than raising it.
+ *
+ * The agent invocation contract has four outcomes and three of them are
+ * problems (403, 422, 424). Treating those as exceptions would push the demo
+ * console into an error boundary, when in fact a refusal is a first-class thing
+ * to render — often the most interesting thing on the page.
+ */
+export async function apiPost<T>(
+  path: string,
+  body: unknown,
+): Promise<{ ok: true; data: T } | { ok: false; problem: Problem }> {
+  try {
+    const response = await fetch(`${apiBaseUrl()}${path}`, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        ...callerHeaders(),
+      },
+      body: JSON.stringify(body),
+      cache: 'no-store',
+    });
+
+    const payload = (await response.json().catch(() => ({
+      type: 'about:blank',
+      status: response.status,
+      detail: response.statusText,
+    }))) as unknown;
+
+    if (!response.ok) return { ok: false, problem: payload as Problem };
+    return { ok: true, data: payload as T };
+  } catch (error) {
+    return {
+      ok: false,
+      problem: {
+        type: 'unreachable',
+        status: SERVICE_UNAVAILABLE,
+        detail: error instanceof Error ? error.message : 'the API is unreachable',
+      },
+    };
+  }
+}

@@ -31,7 +31,7 @@
   "narrative": "Computed from DP-HLT-001 under the certified definition KPI-READMIT-036, across 1 years and 31,200 rows.",
   "question": "What is our 30-day readmission rate and how does it compare to last year?",
   "rows_scanned": 31200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "period",

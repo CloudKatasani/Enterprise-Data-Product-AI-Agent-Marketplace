@@ -29,7 +29,7 @@
   "narrative": "Ranked by the certified definition KPI-BACKLOG-025 over 14,400 rows in DP-BNK-002.",
   "question": "What is the alert backlog and its age profile?",
   "rows_scanned": 14400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "typology",

@@ -54,6 +54,8 @@ CONFIDENCE_FULL_PATH = "answer_confidence.complete"
 CONFIDENCE_THIN_PATH = "answer_confidence.thin_evidence"
 THIN_EVIDENCE_ROWS_PATH = "answer_confidence.thin_evidence_rows"
 PERCENT_SCALE_PATH = "presentation.percent_scale"
+COST_PRECISION_PATH = "presentation.cost_precision"
+CONFIDENCE_PRECISION_PATH = "presentation.confidence_precision"
 MEDIAN_FRACTION_PATH = "distribution.median_fraction"
 TAIL_FRACTION_PATH = "distribution.tail_fraction"
 
@@ -281,6 +283,10 @@ def _stem(word: str) -> str:
     return word
 
 
+def _words(text: str) -> set[str]:
+    return set(re.findall(r"[a-z]+", text.lower()))
+
+
 def _significant(text: str) -> set[str]:
     return {
         _stem(word)
@@ -406,11 +412,13 @@ def _match_coverage(
         terms = by_id.get(row["kpi_id"], {"name": "", "synonyms": []})
         candidates = [terms["name"], *terms["synonyms"]]
         score = sum(1 for term in candidates if term and term in lowered)
-        # A word-level fallback so "churn" finds "Churn Rate".
+        # A word-level fallback so "churn" finds "Churn Rate". Words are taken
+        # with the same regex the boundary matcher uses, not by splitting on
+        # whitespace: "churn?" is the word "churn" with a question mark, and a
+        # split that keeps the punctuation matches nothing.
+        asked = _words(lowered)
         score += sum(
-            1 for term in candidates if term and any(
-                word in lowered.split() for word in term.split()
-            )
+            1 for term in candidates if term and (_words(term) & asked)
         )
         if score and (best is None or score > best[0]):
             best = (score, row)
@@ -437,6 +445,19 @@ def _quantise(value: Any, unit: str) -> Decimal | None:
     return number.quantize(MEASURE, rounding=ROUND_HALF_EVEN)
 
 
+DEFAULT_GRAIN = "month"
+
+# date_trunc accepts "quarter"; interval arithmetic does not. One period at each
+# grain, spelled the way Postgres will take it.
+GRAIN_INTERVAL = {
+    "hour": "1 hour",
+    "day": "1 day",
+    "week": "1 week",
+    "month": "1 month",
+    "quarter": "3 months",
+    "year": "1 year",
+}
+
 # ---------------------------------------------------------------------------
 # Query execution
 # ---------------------------------------------------------------------------
@@ -451,6 +472,8 @@ class _Executed:
     rows_scanned: int
     duration_ms: int
     as_of: Any
+    covers: Any
+    grain: str
 
 
 # A certified measure is normally an aggregate. A few are per-row window
@@ -460,6 +483,47 @@ class _Executed:
 # second one for the grouped case.
 WINDOW_MARKER = " over ("
 WINDOWED_MEASURE = "window_measure"
+
+DISTINCT_COLUMN = re.compile(r"count\s*\(\s*distinct\s+([a-z_][a-z0-9_]*)", re.IGNORECASE)
+
+
+def _distinct_keys(kpi: dict[str, Any]) -> list[str]:
+    parts = [kpi["numerator_expr"], kpi["denominator_expr"], kpi["expression"]]
+    return sorted({
+        match.lower()
+        for part in parts
+        if part
+        for match in DISTINCT_COLUMN.findall(part)
+    })
+
+
+def _needs_single_period(
+    connection: psycopg.Connection[Any], kpi: dict[str, Any], table: str
+) -> bool:
+    """Whether this measure may be pooled across periods, decided from the data.
+
+    A distinct count is not additive, but that only matters when the thing being
+    counted recurs. ``count(distinct transaction_id)`` over two months is the
+    number of transactions in both, because a transaction happens once. But
+    ``count(distinct subscriber_id) filter (where churn_flag)`` over thirty-six
+    months counts everyone who ever churned against everyone who was ever
+    active, which is a lifetime attrition figure wearing a monthly rate's name —
+    and it is out by two orders of magnitude.
+
+    So the question is not "is there a DISTINCT" but "does this key recur", and
+    the data answers it: a key whose distinct count is below the row count
+    appears in more than one period. Where it does, the measure is computed
+    inside a single period and the answer says which.
+    """
+    keys = _distinct_keys(kpi)
+    if not keys:
+        return False
+    projections = ", ".join(
+        f"count(DISTINCT {key}) < count(*) AS recurs_{index}"
+        for index, key in enumerate(keys)
+    )
+    row = fetch_one(connection, f"SELECT {projections} FROM {table}")
+    return row is not None and any(row.values())
 
 
 def _is_windowed(kpi: dict[str, Any]) -> bool:
@@ -476,9 +540,16 @@ def _run(
 ) -> _Executed:
     measure = _measure_sql(context.kpi)
     started = time.perf_counter()
+    grain = plan.grain or DEFAULT_GRAIN
+    if grain not in GRAIN_INTERVAL:
+        raise OutOfScope(
+            f"{grain!r} is not a grain this runtime can compute at; it supports "
+            + ", ".join(sorted(GRAIN_INTERVAL))
+        )
+    period = f"date_trunc('{grain}', {time_column})"
 
     if plan.shape == planner.SHAPE_PERIOD:
-        dimension = f"date_trunc('{plan.grain}', {time_column})"
+        dimension = period
         label = "period"
         order = "1"
     elif plan.shape == planner.SHAPE_COHORT:
@@ -486,13 +557,37 @@ def _run(
         label = "cohort"
         order = "1"
     elif plan.shape == planner.SHAPE_DISTRIBUTION:
-        dimension = plan.slice_column or f"date_trunc('{plan.grain}', {time_column})"
+        dimension = plan.slice_column or period
         label = plan.slice_column or "period"
         order = "1"
     else:
-        dimension = plan.slice_column or f"date_trunc('{plan.grain or 'month'}', {time_column})"
+        dimension = plan.slice_column or period
         label = plan.slice_column or "period"
         order = "2 DESC NULLS LAST"
+
+    # Grouping by period already isolates each one; the other shapes collapse
+    # the time axis, and a non-additive measure cannot survive that.
+    restrict = ""
+    scanned_where = ""
+    covers: Any = None
+    if plan.shape != planner.SHAPE_PERIOD and _needs_single_period(
+        connection, context.kpi, table
+    ):
+        # The *latest complete* period, not simply the latest. A load that ended
+        # one day into September makes September a period with one day in it,
+        # and a rate computed over one day of a month is not a monthly rate. A
+        # period counts as complete when the data reaches its final day.
+        latest_complete = (
+            f"(SELECT coalesce(max(p.period) FILTER (WHERE p.last >= "
+            f"   p.period + '{GRAIN_INTERVAL[grain]}'::interval - '1 day'::interval), "
+            f"   max(p.period)) "
+            f" FROM (SELECT {period} AS period, max({time_column}) AS last "
+            f"       FROM {table} GROUP BY 1) p)"
+        )
+        restrict = f" WHERE {period} = {latest_complete}"
+        scanned_where = restrict
+        latest = fetch_one(connection, f"SELECT {latest_complete} AS covers")
+        covers = latest["covers"] if latest else None
 
     source = table
     grouped_by = dimension
@@ -505,8 +600,10 @@ def _run(
         )
     elif _is_windowed(context.kpi):
         source = (
-            f"(SELECT {dimension} AS {label}, {measure} AS {WINDOWED_MEASURE} FROM {table}) w"
+            f"(SELECT {dimension} AS {label}, {measure} AS {WINDOWED_MEASURE} "
+            f"FROM {table}{restrict}) w"
         )
+        restrict = ""
         grouped_by = label
         aggregate = f"avg({WINDOWED_MEASURE}) AS measure"
     else:
@@ -514,12 +611,16 @@ def _run(
 
     sql = (
         f"SELECT {grouped_by} AS {label}, {aggregate}, count(*) AS observations "
-        f"FROM {source} GROUP BY 1 HAVING count(*) > 0 ORDER BY {order} LIMIT %(limit)s"
+        f"FROM {source}{restrict} GROUP BY 1 HAVING count(*) > 0 "
+        f"ORDER BY {order} LIMIT %(limit)s"
     )
     arguments = {"limit": plan.limit}
     rows = fetch_all(connection, sql, arguments)
 
-    scanned = fetch_one(connection, f"SELECT count(*) AS rows FROM {table}")
+    # What was actually read, not what the table holds. A restricted query that
+    # reported the whole table would overstate its own evidence, and the
+    # thin-evidence check reads this number.
+    scanned = fetch_one(connection, f"SELECT count(*) AS rows FROM {table}{scanned_where}")
     as_of = fetch_one(connection, f"SELECT max({time_column}) AS as_of FROM {table}")
     duration_ms = elapsed_ms(started)
 
@@ -532,11 +633,14 @@ def _run(
             "table": table,
             "measure": measure,
             "group_by": label,
-            "grain": plan.grain,
+            "grain": grain,
+            "period": _label(covers) if covers is not None else "all periods",
         },
         rows_scanned=int(scanned["rows"]) if scanned else 0,
         duration_ms=duration_ms,
         as_of=as_of["as_of"] if as_of else None,
+        covers=covers,
+        grain=grain,
     )
 
 
@@ -631,6 +735,7 @@ def _compose(
         narrative = (
             f"Both cohorts are drawn from {context.product['product_id']} over the same "
             f"period: {top_count:,} observations against {bottom_count:,}."
+            + _coverage_note(executed)
         )
     elif plan.shape == planner.SHAPE_DISTRIBUTION:
         top_label, median, observations = values[0]
@@ -651,6 +756,7 @@ def _compose(
         narrative = (
             f"Across {observations:,} observations in {context.product['product_id']}; "
             f"the spread, not the mean, is what the question asked about."
+            + _coverage_note(executed)
         )
     else:
         top_label, top, top_count = values[0]
@@ -667,6 +773,7 @@ def _compose(
         narrative = (
             f"Ranked by the certified definition {context.kpi['kpi_id']} over "
             f"{executed.rows_scanned:,} rows in {context.product['product_id']}."
+            + _coverage_note(executed)
         )
 
     # The prose states how much was read and how many groups came back. Those
@@ -700,6 +807,32 @@ def _compose(
         },
     }
     return headline, narrative, visual, table, claims, notes
+
+
+def _fixed(value: Decimal, places: Decimal) -> str:
+    """A decimal rendered to a rubric-chosen number of places."""
+    return f"{value:.{int(places)}f}"
+
+
+def _money(value: Decimal, places: Decimal) -> str:
+    return f"${_fixed(value, places)}"
+
+
+def _coverage_note(executed: _Executed) -> str:
+    """Say which period the measure covers, when it covers only one.
+
+    An answer restricted to the latest period and an answer pooled over the
+    whole window are different numbers, and the reader cannot tell them apart
+    from the figure alone. So the answer says which it is, in the sentence
+    rather than in a footnote.
+    """
+    if executed.covers is None:
+        return ""
+    return (
+        f" Computed within the {executed.grain} beginning {_label(executed.covers)}, "
+        "because this measure counts entities that recur and cannot be pooled "
+        "across periods."
+    )
 
 
 def _label(value: Any) -> str:
@@ -819,6 +952,10 @@ class AnalyticRuntime:
             runtime=self.name,
             claims=claims,
             notes=notes,
+            cost_display=_money(cost, self._rubric.number(COST_PRECISION_PATH)),
+            confidence_display=_fixed(
+                confidence, self._rubric.number(CONFIDENCE_PRECISION_PATH)
+            ),
         )
 
     def _tool_cost_class(

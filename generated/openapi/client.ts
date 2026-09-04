@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: 41f8878e4bab4d5358d0f8e39a0a55223c796713485df545c88111033d8b682a  generated_at: 2026-09-04T03:45:22+00:00
+// generator_version: 1.0.0  manifest_hash: b3d17c02e589fce02a3ff31e6c3af378737a38f66bd8d22370136b3756e43953  generated_at: 2026-09-04T05:03:26+00:00
 
 /* eslint-disable */
 /**
@@ -55,6 +55,41 @@ async function request<T>(
 
 export class MarketplaceClient {
   constructor(private readonly baseUrl: string) {}
+
+  /** Filter and page the agent catalog */
+  getAgents(query?: { industry?: unknown, domain?: unknown, autonomy?: unknown, certification?: unknown, kpi?: unknown, product?: unknown, sort?: unknown, cursor?: unknown, limit?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/agents`, query, undefined, options);
+  }
+
+  /** Full agent listing */
+  getAgentsAgent_id(agent_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/agents/${agent_id}`, undefined, undefined, options);
+  }
+
+  /** Ask the agent a question and receive an answer with its trace */
+  postAgentsAgent_idAsk(agent_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/agents/${agent_id}/ask`, undefined, body, options);
+  }
+
+  /** KPI coverage with evaluation accuracy and sample size */
+  getAgentsAgent_idCoverage(agent_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/agents/${agent_id}/coverage`, undefined, undefined, options);
+  }
+
+  /** Curated exchanges and their validation state */
+  getAgentsAgent_idDemo(agent_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/agents/${agent_id}/demo`, undefined, undefined, options);
+  }
+
+  /** Suite results, pass rate and regression history */
+  getAgentsAgent_idEvaluation(agent_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/agents/${agent_id}/evaluation`, undefined, undefined, options);
+  }
+
+  /** Accept or reject an answer; a rejected defect becomes an evaluation case */
+  postAgentsAgent_idFeedback(agent_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/agents/${agent_id}/feedback`, undefined, body, options);
+  }
 
   /** Hybrid search across products, agents and KPIs */
   getDiscover(query?: { q?: unknown, asset_type?: unknown, limit?: unknown }, options: RequestOptions = {}): Promise<unknown> {

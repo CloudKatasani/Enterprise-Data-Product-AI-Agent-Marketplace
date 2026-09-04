@@ -39,7 +39,6 @@ What each suite is actually asserting:
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Any
@@ -54,6 +53,7 @@ from services.agent_runtime.base import (
     OutOfScope,
     RuntimeUnavailable,
 )
+from services.agents.grounding import check as check_grounding
 from services.common.config import REPO_ROOT
 from services.common.db import fetch_all, fetch_one
 from services.common.rubrics import Rubric, load_current
@@ -100,15 +100,7 @@ PERCENT_POINTS = Decimal("0.01")
 PERCENT_SCALE_PATH = "presentation.percent_scale"
 RUNTIME_RUBRIC = "agent_runtime"
 
-# A number the prose asserts, as opposed to a number inside a label. "DP-RTL-001"
-# and "2026-08-31" are names of things; the "001" and the "31" in them are not
-# claims and demanding a citation for them would make the check noise. So
-# label-shaped tokens are dropped first and the numeric pattern runs on what is
-# left.
-NUMERIC_IN_PROSE = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
-HAS_LETTER = re.compile(r"[A-Za-z]")
-ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
-TRIM = ".,;:!?%$()[]\"'" 
+
 
 
 @dataclass
@@ -205,40 +197,6 @@ class RunResult:
 # ---------------------------------------------------------------------------
 # Shared checks
 # ---------------------------------------------------------------------------
-
-
-def numbers_in(text: str) -> set[str]:
-    kept = []
-    for token in text.split():
-        bare = token.strip(TRIM)
-        if not bare or HAS_LETTER.search(bare) or ISO_DATE.fullmatch(bare):
-            continue
-        kept.append(bare)
-    return {
-        match.replace(",", "") for token in kept for match in NUMERIC_IN_PROSE.findall(token)
-    }
-
-
-def ungrounded_numbers(answer: Answer) -> set[str]:
-    """Numbers asserted in prose that no claim accounts for.
-
-    Claims are compared as normalised strings rather than parsed, because what
-    the reader sees is the string. A claim of 1.360 does not ground a sentence
-    that says 1.36 unless the composer wrote 1.36.
-    """
-    claimed = set()
-    for value in answer.claims.values():
-        text = f"{value:,}"
-        claimed.add(text.replace(",", ""))
-        claimed.add(str(abs(value)))
-        claimed.add(str(value))
-        claimed.add(text.replace(",", "").rstrip("0").rstrip("."))
-    stated = numbers_in(answer.headline) | numbers_in(answer.narrative)
-    return {
-        number
-        for number in stated
-        if number not in claimed and number.rstrip("0").rstrip(".") not in claimed
-    }
 
 
 def _ask(
@@ -338,16 +296,12 @@ def suite_groundedness(
                            f"no answer to check: {error}", True)
             )
             continue
-        loose = ungrounded_numbers(answer)
-        if loose:
-            detail = "prose asserts " + ", ".join(sorted(loose)) + " with no matching claim"
-        elif not answer.citations:
-            detail = "the answer carries claims but no citation"
-        else:
-            detail = f"{len(answer.claims)} claim(s), all cited"
+        verdict = check_grounding(answer)
         cases.append(
-            CaseResult(case_id, SUITE_GROUNDEDNESS, exchange["question"],
-                       not loose and bool(answer.citations), detail, True)
+            CaseResult(
+                case_id, SUITE_GROUNDEDNESS, exchange["question"], verdict.grounded,
+                verdict.reason() or f"{len(answer.claims)} claim(s), all cited", True,
+            )
         )
     return cases
 
@@ -457,9 +411,9 @@ def suite_adversarial(
                     f"cited columns on {citation.product_id} outside its binding: "
                     + ", ".join(sorted(extra))
                 )
-        loose = ungrounded_numbers(answer)
-        if loose:
-            breaches.append("asserted " + ", ".join(sorted(loose)) + " with no claim behind it")
+        verdict = check_grounding(answer)
+        if not verdict.grounded:
+            breaches.append(verdict.reason())
 
         cases.append(
             CaseResult(payload_id, SUITE_ADVERSARIAL, question, not breaches,

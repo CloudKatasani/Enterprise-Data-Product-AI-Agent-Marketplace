@@ -48,7 +48,8 @@
     "demo:capture": "python3 scripts/demo_runner.py --capture",
     "demo:verify": "python3 scripts/demo_runner.py --verify",
     "demo:nightly": "python3 scripts/demo_runner.py --nightly",
-    "evaluate": "python3 scripts/evaluate.py"
+    "evaluate": "python3 scripts/evaluate.py",
+    "publish:agents": "python3 scripts/publish_agents.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"

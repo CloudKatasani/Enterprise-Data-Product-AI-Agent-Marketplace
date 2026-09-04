@@ -29,7 +29,7 @@
   "narrative": "Ranked by the certified definition KPI-BASKET-047 over 23,400 rows in DP-RTL-001.",
   "question": "Where is basket size declining and what is leaving the basket?",
   "rows_scanned": 23400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "category",

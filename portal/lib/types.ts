@@ -295,3 +295,100 @@ export interface EndpointRow {
   documentation_ref: string;
   granted: boolean;
 }
+
+export interface AgentCard {
+  agent_id: string;
+  name: string;
+  capability_statement: string;
+  industry: string;
+  domain: string;
+  autonomy_level: string;
+  certification: string;
+  status: string;
+  version: string;
+  out_of_scope: string[];
+  personas: string[];
+  owner: { party_id: string; name: string | null; on_call: string | null };
+  coverage: { kpis: number; data_products: number };
+  demo: { validated_exchanges: number };
+  evaluation: {
+    pass_rate_pct: number | null;
+    groundedness_pct: number | null;
+    threshold_pct: number;
+    passed: boolean | null;
+  };
+  budgets: { p95_latency_ms: number; cost_per_answer_usd: number };
+  adoption: { answers_30d: number };
+  access: { granted: boolean; required_scope: string; request_access_url: string };
+}
+
+export interface CoverageRow {
+  kpi_id: string;
+  kpi_name: string;
+  source_product_id: string;
+  columns_used: string[];
+  supported_grains: string[];
+  supported_slices: string[];
+  analysis_depth: string;
+  eval_accuracy: number | null;
+  eval_sample_size: number | null;
+}
+
+export interface DemoExchange {
+  exchange_id: string;
+  ordinal: number;
+  question: string;
+  kpi_class: string;
+  analysis_type: string;
+  expected_shape: Record<string, unknown>;
+  last_validated: string | null;
+}
+
+export interface Citation {
+  product_id: string;
+  contract_version: string;
+  columns: string[];
+  as_of: string | null;
+}
+
+export interface ToolCallTrace {
+  tool: string;
+  arguments: Record<string, unknown>;
+  rows_returned: number;
+  rows_scanned: number;
+  duration_ms: number;
+  cost_class: string;
+}
+
+export interface AnswerBody {
+  headline: string;
+  narrative: string;
+  visual: { type: string; spec: Record<string, unknown> };
+  table: { columns: string[]; rows: (string | number | null)[][] };
+}
+
+export interface AgentAnswer {
+  answer: AnswerBody;
+  citations: Citation[];
+  kpi_definitions: string[];
+  trace: {
+    runtime: string;
+    tool_calls: ToolCallTrace[];
+    rows_scanned: number;
+    latency_ms: number;
+    tokens: { in: number; out: number };
+    cost_usd: number;
+    cost_display: string;
+  };
+  confidence: number;
+  confidence_display: string;
+  notes: string[];
+  interaction_id: string;
+  grounded: boolean;
+  tier: 'demo' | 'live';
+  scope: {
+    agent_identity: string | null;
+    on_behalf_of: string | null;
+    effective_scope: 'intersection' | 'direct';
+  };
+}

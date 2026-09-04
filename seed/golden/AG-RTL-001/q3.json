@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-PROMOLIFT-050 over 23,400 rows in DP-RTL-001.",
   "question": "Did the back-to-school promotion deliver incremental margin?",
   "rows_scanned": 23400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "promotion",

@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-SCRAP-074 over 12,600 rows in DP-MFG-001.",
   "question": "Where is scrap concentrated by product and root cause?",
   "rows_scanned": 12600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "root_cause",

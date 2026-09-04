@@ -60,9 +60,16 @@ DP_TEL_001 = _spec(
         "active_at_period_start": "true",
         # The concentration: 13-24 month tenure in the Midwest churns hardest,
         # and network incidents roughly double the base rate.
+        #
+        # The base is per subscriber-day and is set so the monthly rate lands
+        # near KPI-CHURN-001's own target of 1.4%. It was ten times higher, which
+        # made the planted patterns easy to see and made every headline the
+        # telecom agent produced — 14% monthly churn — obviously wrong to anyone
+        # who works in telecom. A demo whose numbers are implausible teaches the
+        # reader to stop reading the numbers, which is the opposite of the point.
         "churn_flag": (
             f"({rnd(E, P, k('churn'))} < "
-            "  0.0012"
+            "  0.00013"
             f"  * (CASE WHEN {TEL_001_TENURE} = '13-24m' THEN 3.4 ELSE 1.0 END)"
             f"  * (CASE WHEN {weighted(TEL_001_REGIONS, E)} = 'Midwest' THEN 2.1 ELSE 1.0 END)"
             "  * (CASE WHEN network_incidents_30d >= 3 THEN 2.0 ELSE 1.0 END)"

@@ -35,4 +35,23 @@
   --ribbon-band-height: 320px;
   --constellation-height: 520px;
   --theatre-height: 460px;
+
+  /* Demo console geometry. The rail has a fixed width so the answer column
+   * does not reflow when a trace happens to be long, and so both boxes are
+   * reserved before paint. */
+  --trace-rail-width: 320px;
+  --bar-label-width: 128px;
+  --bar-value-width: 88px;
+  --bar-height: 8px;
+
+  /* Reading measures. Prose past ~72 characters costs comprehension. */
+  --measure-prose: 68ch;
+  --measure-chip: 32ch;
+  --measure-wide: 1440px;
+
+  /* Hover feedback that costs nothing to composite. */
+  --opacity-hover: 0.78;
+
+  --border-width-accent: 3px;
+  --card-limit-list-height: 60px;
 }

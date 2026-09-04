@@ -46,6 +46,8 @@ CORTEX_PROVIDER = "snowflake"
 CONFIDENCE_FULL_PATH = "answer_confidence.complete"
 CONFIDENCE_THIN_PATH = "answer_confidence.thin_evidence"
 THIN_EVIDENCE_ROWS_PATH = "answer_confidence.thin_evidence_rows"
+COST_PRECISION_PATH = "presentation.cost_precision"
+CONFIDENCE_PRECISION_PATH = "presentation.confidence_precision"
 
 REQUIRED_ENV = ("SNOWFLAKE_ACCOUNT", "SNOWFLAKE_USER", "SNOWFLAKE_ROLE", "SNOWFLAKE_PRIVATE_KEY")
 
@@ -162,9 +164,26 @@ class CortexRuntime:
             cost_usd=Decimal(str(usage["cost_usd"])),
             confidence=confidence,
             runtime=self.name,
-            claims={key: Decimal(str(value)) for key, value in (payload.get("claims") or {}).items()},
+            claims={
+                key: Decimal(str(value))
+                for key, value in (payload.get("claims") or {}).items()
+            },
             notes=list(payload.get("notes") or []),
+            cost_display=_money(
+                Decimal(str(usage["cost_usd"])), self._rubric.number(COST_PRECISION_PATH)
+            ),
+            confidence_display=_fixed(
+                confidence, self._rubric.number(CONFIDENCE_PRECISION_PATH)
+            ),
         )
+
+
+def _fixed(value: Decimal, places: Decimal) -> str:
+    return f"{value:.{int(places)}f}"
+
+
+def _money(value: Decimal, places: Decimal) -> str:
+    return f"${_fixed(value, places)}"
 
 
 def _require_shape(payload: Any) -> None:

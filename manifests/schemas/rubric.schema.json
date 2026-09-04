@@ -922,13 +922,23 @@
         "presentation": {
           "type": "object",
           "required": [
-            "percent_scale"
+            "percent_scale",
+            "cost_precision",
+            "confidence_precision"
           ],
           "additionalProperties": false,
           "properties": {
             "percent_scale": {
               "type": "number",
               "exclusiveMinimum": 0
+            },
+            "cost_precision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "confidence_precision": {
+              "type": "integer",
+              "minimum": 0
             }
           }
         }

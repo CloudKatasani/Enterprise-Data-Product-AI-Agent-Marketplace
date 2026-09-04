@@ -17,7 +17,7 @@
   ],
   "claims": {
     "groups": "8",
-    "rows_scanned": "50400",
+    "rows_scanned": "17360",
     "top": "466.67",
     "top_share": "30.43"
   },
@@ -26,10 +26,10 @@
   "kpi_definitions": [
     "KPI-FEATADP-012"
   ],
-  "narrative": "Ranked by the certified definition KPI-FEATADP-012 over 50,400 rows in DP-TCH-001.",
+  "narrative": "Ranked by the certified definition KPI-FEATADP-012 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which features have high usage but low entitlement coverage?",
-  "rows_scanned": 50400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rows_scanned": 17360,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "feature",

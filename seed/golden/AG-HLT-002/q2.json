@@ -28,7 +28,7 @@
   "narrative": "Ranked by the certified definition KPI-FORMADH-041 over 30,600 rows in DP-HLT-002.",
   "question": "Where is formulary adherence lowest?",
   "rows_scanned": 30600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "therapeutic_class",

@@ -139,4 +139,304 @@
   .agent-card {
     min-height: var(--card-agent-height);
   }
+
+  /* -------------------------------------------------------------------
+   * The demo console (M7.1, M7.2).
+   *
+   * Two columns above the medium breakpoint, answer first in source order so
+   * the reading order is the reading order. The trace rail is not collapsible:
+   * it stacks under the answer on narrow screens rather than disappearing,
+   * because "what did this read and what did it cost" is not a detail.
+   * ---------------------------------------------------------------- */
+  .demo-console {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .demo-console-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .demo-console-body {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .demo-console-body {
+      grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    }
+  }
+
+  .demo-question-picker {
+    padding-block: var(--space-sm);
+    border-block: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .demo-question-chip {
+    display: inline-flex;
+    max-width: var(--measure-chip);
+    align-items: baseline;
+    gap: var(--space-3xs);
+    overflow: hidden;
+    padding: var(--space-3xs) var(--space-sm);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity var(--duration-micro) var(--ease-standard);
+  }
+
+  .demo-question-chip[aria-current] {
+    border-color: var(--border-accent);
+    color: var(--text-accent);
+  }
+
+  /* -------------------------------------------------------------------
+   * The answer.
+   * ---------------------------------------------------------------- */
+  .answer-panel {
+    padding: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+  }
+
+  .answer-visual {
+    margin-top: var(--space-lg);
+  }
+
+  .answer-bars {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .answer-bar-row {
+    display: grid;
+    grid-template-columns: var(--bar-label-width) minmax(0, 1fr) var(--bar-value-width);
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+  }
+
+  .answer-bar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .answer-bar-track {
+    height: var(--bar-height);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+  }
+
+  /* The bar grows by transform alone. Animating width would lay out and paint
+   * every frame; scaleX composites (rule 4, 13.6). */
+  .answer-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(--colour-accent);
+    transform-origin: left center;
+    transition: transform var(--duration-slow) var(--ease-entrance);
+  }
+
+  .answer-bar-value {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--text-primary);
+  }
+
+  .answer-table-wrap {
+    margin-top: var(--space-lg);
+    overflow-x: auto;
+  }
+
+  .answer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-2xs);
+  }
+
+  .answer-table th {
+    padding: var(--space-2xs) var(--space-sm);
+    border-bottom: var(--border-width-hairline) solid var(--border-strong);
+    color: var(--text-muted);
+    font-weight: var(--weight-medium);
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .answer-table td {
+    padding: var(--space-2xs) var(--space-sm);
+    border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  .answer-citations {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  /* -------------------------------------------------------------------
+   * The trace rail. Visible by default; never behind a toggle (M7.2).
+   * ---------------------------------------------------------------- */
+  .trace-rail {
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+  }
+
+  .trace-figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .trace-section {
+    padding-top: var(--space-sm);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .trace-subhead {
+    margin-bottom: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .trace-list {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .trace-call {
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+  }
+
+  .trace-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3xs);
+  }
+
+  .trace-chip {
+    display: inline-flex;
+    padding: var(--space-3xs) var(--space-2xs);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+  }
+
+  /* -------------------------------------------------------------------
+   * Refusals. Designed surfaces, not error text (M7.4).
+   * ---------------------------------------------------------------- */
+  .refusal-panel {
+    padding: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-left: var(--border-width-accent) solid var(--colour-band-watch);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+  }
+
+  .refusal-panel[data-kind='ungrounded'] {
+    border-left-color: var(--colour-band-unfit);
+  }
+
+  .refusal-title {
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .refusal-body {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .refusal-section {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .refusal-subhead {
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .refusal-scope {
+    display: inline-block;
+    margin-top: var(--space-2xs);
+    padding: var(--space-3xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    font-size: var(--text-2xs);
+    color: var(--text-primary);
+  }
+
+  .refusal-action {
+    display: inline-flex;
+    align-items: center;
+    margin-top: var(--space-md);
+    padding: var(--space-2xs) var(--space-md);
+    border: var(--border-width-hairline) solid var(--border-accent);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+    transition: opacity var(--duration-micro) var(--ease-standard);
+  }
+
+  .refusal-action:hover {
+    opacity: var(--opacity-hover);
+  }
+
+  .tab-heading {
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  /* The card shows the agent's declared limits and clips rather than counting
+   * them in the component: the card has a fixed height, and how many fit is a
+   * geometry question, not a number for a component to decide. */
+  .card-limit-list {
+    max-height: var(--card-limit-list-height);
+    overflow: hidden;
+  }
 }

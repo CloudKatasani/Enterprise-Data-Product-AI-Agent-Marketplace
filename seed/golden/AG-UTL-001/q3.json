@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-AHI-063 over 21,600 rows in DP-UTL-001.",
   "question": "Which poor-health assets serve the most customers?",
   "rows_scanned": 21600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-2634c1a1954a",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
   "runtime": "analytic",
   "table_columns": [
     "asset_class",

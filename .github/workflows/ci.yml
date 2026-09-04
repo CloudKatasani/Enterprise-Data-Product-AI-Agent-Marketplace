@@ -115,6 +115,11 @@ jobs:
       - name: evaluate agents
         run: npm run evaluate
 
+      # Publishing is a separate act from passing, and there is no override:
+      # a version that does not clear the gate stays a draft and CI fails.
+      - name: publish agents that clear the gate
+        run: npm run publish:agents
+
       - name: unit
         run: npm run test:unit
 

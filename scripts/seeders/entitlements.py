@@ -29,6 +29,8 @@ from services.common.db import fetch_all
 SCOPE_COLUMNS = "columns"
 ACCESS_READ_DATA = "read_data"
 ASSET_DATA_PRODUCT = "data_product"
+ASSET_AGENT = "agent"
+ACCESS_AGENT_INVOKE = "agent_invoke"
 REQUEST_ACCESS = "access"
 STATE_APPROVED = "approved"
 PURPOSE = "analytics"
@@ -54,6 +56,10 @@ PERSONA_PURPOSE = {
 
 def _scope_for(product_id: str) -> str:
     return f"dp:{product_id}:read"
+
+
+def _invoke_scope(agent_id: str) -> str:
+    return f"agent:{agent_id}:invoke"
 
 
 def _bindings(connection: psycopg.Connection[Any]) -> list[dict[str, Any]]:
@@ -173,6 +179,39 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                 purpose_text=PERSONA_PURPOSE[label],
                 columns=columns,
             )
+
+    # Invoking an agent is a grant of its own. Holding the data the agent reads
+    # does not imply permission to ask the agent, and the reverse is exactly the
+    # partial-permission case the catalog is built to show: an agent you may
+    # invoke, on data you may only partly see, gives you the part you may see.
+    for agent in fetch_all(
+        connection, "SELECT agent_id FROM agent ORDER BY agent_id"
+    ):
+        for party_id, label, _sensitivities in PERSONAS:
+            grant_id = f"GRT-{party_id}-{agent['agent_id']}"
+            request_id = f"REQ-{grant_id}"
+            purpose_text = PERSONA_PURPOSE[label]
+            connection.execute(
+                "INSERT INTO request (request_id, tenant_id, request_type, state, "
+                "  requester_party_id, title, body, purpose_code, purpose_text, policy_path, "
+                "  submitted_at, closed_at) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now(), now()) "
+                "ON CONFLICT (request_id) DO NOTHING",
+                (request_id, tenant, REQUEST_ACCESS, STATE_APPROVED, party_id,
+                 f"Invoke {agent['agent_id']}", purpose_text, PURPOSE, purpose_text, "owner"),
+            )
+            connection.execute(
+                "INSERT INTO entitlement_grant (grant_id, tenant_id, request_id, "
+                "  principal_id, asset_type, asset_id, access_level, purpose_code, "
+                "  purpose_text, platform_role, oauth_scopes, granted_at, expires_at) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now(), "
+                "        now() + %s::interval) ON CONFLICT (grant_id) DO NOTHING",
+                (grant_id, tenant, request_id, party_id, ASSET_AGENT, agent["agent_id"],
+                 ACCESS_AGENT_INVOKE, PURPOSE, purpose_text,
+                 f"MKT_{agent['agent_id'].replace('-', '_')}_INVOKE",
+                 [_invoke_scope(agent["agent_id"])], GRANT_MONTHS),
+            )
+            written += 1
 
     for row in _bindings(connection):
         columns = _agent_columns(connection, row["agent_id"], row["product_id"])
