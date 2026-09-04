@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Generator entry point — manifests/ -> generated/.
+"""Generator entry point — manifests/ + the canonical model -> generated/.
 
-The individual generators land in M2. This entry point exists from M0 so the
-`gen-diff` CI step is wired from the first commit: whatever exists under
-generated/ must be reproducible from manifests/ with no diff.
+Deterministic: the same inputs produce byte-identical outputs, which is what lets
+CI run `npm run gen && git diff --exit-code generated/` as a gate (I9).
+
+Usage:
+    python3 scripts/gen.py             # every generator
+    python3 scripts/gen.py gen:ddl     # one generator
 """
 
 from __future__ import annotations
@@ -13,13 +16,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from scripts.generators.registry import run_all  # noqa: E402
+
 
 def main(argv: list[str]) -> int:
-    try:
-        from scripts.gen import run_all
-    except ImportError:
-        print("gen: no generators registered yet (M2)")
-        return 0
     return run_all(argv)
 
 
