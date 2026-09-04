@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-BNK-003",
+  "agent_name": "Cross-Hold Analyst",
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "distribution",
+  "answer": {
+    "headline": "Median products per customer is 3.00 for 0-2y, with p90 at 6.00.",
+    "narrative": "Across 117 observations in DP-BNK-001; the spread, not the mean, is what the question asked about. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "tenure_band",
+        "KPI-PPC-017",
+        "observations"
+      ],
+      "rows": [
+        [
+          "0-2y",
+          3.0,
+          117
+        ],
+        [
+          "10y+",
+          4.0,
+          124
+        ],
+        [
+          "3-5y",
+          3.0,
+          125
+        ],
+        [
+          "6-10y",
+          4.0,
+          134
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 2.8,
+        "unit": "count",
+        "x": "tenure_band",
+        "y": "KPI-PPC-017"
+      },
+      "type": "histogram"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "active_product_count",
+        "segment",
+        "region",
+        "tenure_band",
+        "primary_relationship"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-BNK-003-05",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "How is product density distributed across tenure bands?",
+  "recorded_at": "2026-09-04T15:22:22.774204+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 28,
+    "rows_scanned": 500,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "tenure_band",
+          "limit": 24,
+          "measure": "((sum(active_product_count))::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 25,
+        "rows_returned": 4,
+        "rows_scanned": 500,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

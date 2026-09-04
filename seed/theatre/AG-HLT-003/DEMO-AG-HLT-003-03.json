@@ -1,0 +1,107 @@
+{
+  "agent_id": "AG-HLT-003",
+  "agent_name": "Care Access & Adherence Analyst",
+  "agent_version_id": "AGV-AG-HLT-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "heart_failure leads on emergency department utilization rate at 1,976.92, 28.35% of the total across 5 conditions.",
+    "narrative": "Ranked by the certified definition KPI-EDUTIL-038 over 8,060 rows in DP-HLT-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "condition",
+        "KPI-EDUTIL-038",
+        "observations"
+      ],
+      "rows": [
+        [
+          "heart_failure",
+          1976.92,
+          2305
+        ],
+        [
+          "pneumonia",
+          1492.31,
+          1688
+        ],
+        [
+          "copd",
+          1396.15,
+          1732
+        ],
+        [
+          "sepsis",
+          1073.36,
+          1158
+        ],
+        [
+          "hip_replacement",
+          1034.88,
+          1177
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "rate",
+        "x": "condition",
+        "y": "KPI-EDUTIL-038"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "ed_encounter_id",
+        "attributed_member_id",
+        "discharge_date",
+        "condition",
+        "payer",
+        "region"
+      ],
+      "contract_version": "4.3.0",
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-003-03",
+  "kpi_definitions": [
+    "KPI-EDUTIL-038"
+  ],
+  "notes": [],
+  "question": "Which conditions drive emergency department utilization?",
+  "recorded_at": "2026-09-04T15:22:23.336601+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 56,
+    "rows_scanned": 8060,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "condition",
+          "limit": 24,
+          "measure": "((count(distinct ed_encounter_id) * 1000)::numeric / NULLIF((count(distinct attributed_member_id))::numeric, 0))",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 53,
+        "rows_returned": 5,
+        "rows_scanned": 8060,
+        "tool": "query_dp_hlt_001"
+      }
+    ]
+  }
+}

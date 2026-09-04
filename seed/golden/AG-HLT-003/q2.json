@@ -1,0 +1,44 @@
+{
+  "agent_version_id": "AGV-AG-HLT-003-1.0.0",
+  "analysis_type": "programme_eval",
+  "citations": [
+    {
+      "columns": [
+        "clinic",
+        "discharge_date",
+        "encounter_id",
+        "gap_closed",
+        "gap_open_at_period_start",
+        "measure",
+        "payer",
+        "programme_enrolled"
+      ],
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "0.65",
+    "cohort_high": "78.74",
+    "cohort_high_observations": "5726",
+    "cohort_low": "78.09",
+    "cohort_low_observations": "25474",
+    "groups": "2",
+    "rows_scanned": "31200"
+  },
+  "exchange_id": "DEMO-AG-HLT-003-02",
+  "headline": "Care Gap Closure is 78.74% where cohort is true against 78.09% where it is false, a gap of 0.65%.",
+  "kpi_definitions": [
+    "KPI-CAREGAP-039"
+  ],
+  "narrative": "Both cohorts are drawn from DP-HLT-001 over the same period: 5,726 observations against 25,474.",
+  "question": "Do members enrolled in a care programme close more gaps?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-CAREGAP-039",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

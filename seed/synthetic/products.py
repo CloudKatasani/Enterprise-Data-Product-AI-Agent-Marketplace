@@ -370,7 +370,11 @@ DP_INS_001 = _spec(
         "adjuster_team": pick(["team_north", "team_south", "team_central"], E, k("team")),
         "claim_status": pick(CLAIM_STATUSES, E, P, k("status")),
         "incurred_losses": f"round({uniform(400, 42000, E, k('loss'))}::numeric, 2)",
-        "earned_premium": f"round({uniform(600, 30000, E, k('prem'))}::numeric, 2)",
+        # Premium is drawn wide enough to sit above losses. The range was
+        # originally picked beside the loss range rather than against it, which
+        # put the book's loss ratio at 157% — a number no insurer survives, and
+        # one nothing read until an agent covered KPI-LOSSRATIO-026.
+        "earned_premium": f"round({uniform(4000, 64000, E, k('prem'))}::numeric, 2)",
         # The decomposition: auto physical damage sits far longer at vendor
         # assignment, which is where the extra days come from.
         "cycle_days": (

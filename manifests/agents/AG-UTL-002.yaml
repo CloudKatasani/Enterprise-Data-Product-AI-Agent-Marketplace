@@ -1,0 +1,162 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-UTL-002
+  name: "Restoration Performance Analyst"
+  industry: utilities_energy
+  domain: operations
+  owner:
+    party_id: PTY-0045
+    team: "Field Restoration"
+    on_call: "pagerduty://restoration-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about average restoration time across feeders, regions and cause classes,
+    and where restoration is slowest.
+  business_value_block:
+    analyses: [performance_ranking, comparison, trend_segmented, driver_ranking, distribution]
+    replaces: >-
+      The monthly restoration review and the crew performance cut the field manager builds by hand.
+    personas: [field_operations_manager, restoration_lead, reliability_engineer]
+  out_of_scope:
+    - "Crew dispatch or work order assignment"
+    - "Switching orders or network reconfiguration"
+    - "Individual customer outage enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-UTL-002/system@v1
+  data_products:
+    - product_id: DP-UTL-001
+      columns: [outage_id, observed_date, feeder, region, asset_class, cause_class, crew, restoration_minutes, major_event_day, load_impact_mw]
+      access: read
+  tool_bindings:
+    - tool: query_dp_utl_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-UTL-001"
+      scope: "dp:DP-UTL-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-RESTORE-064
+      source_product: DP-UTL-001
+      columns_used: [outage_id, observed_date, feeder, region, cause_class, restoration_minutes, major_event_day]
+      grains: [month, quarter]
+      slices: [feeder, region, cause_class]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 5000
+    cost_per_answer_usd: 0.05
+  demo_exchanges:
+    - id: DEMO-AG-UTL-002-01
+      ordinal: 1
+      question: "Which cause classes take longest to restore?"
+      kpi_class: KPI-RESTORE-064
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the causes taking longest to restore, and the spread across the classes
+        visual: bar
+        table_columns: [cause_class, average_restoration_minutes, outages]
+        must_cite: [DP-UTL-001, KPI-RESTORE-064]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-UTL-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-002-02
+      ordinal: 2
+      question: "Which feeders are slowest to restore?"
+      kpi_class: KPI-RESTORE-064
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the feeders with the longest restoration times, and the gap to the fastest
+        visual: bar
+        table_columns: [feeder, average_restoration_minutes, outages]
+        must_cite: [DP-UTL-001, KPI-RESTORE-064]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-UTL-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-002-03
+      ordinal: 3
+      question: "How does restoration time compare across regions?"
+      kpi_class: KPI-RESTORE-064
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the regions above and below the network restoration time
+        visual: bar
+        table_columns: [region, average_restoration_minutes, outages]
+        must_cite: [DP-UTL-001, KPI-RESTORE-064]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-UTL-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-002-04
+      ordinal: 4
+      question: "How has restoration time moved month by month?"
+      kpi_class: KPI-RESTORE-064
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of restoration time over the observed months, and its size
+        visual: line
+        table_columns: [period, average_restoration_minutes, outages]
+        must_cite: [DP-UTL-001, KPI-RESTORE-064]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-UTL-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-UTL-002-05
+      ordinal: 5
+      question: "How is restoration time distributed across feeders?"
+      kpi_class: KPI-RESTORE-064
+      analysis_type: distribution
+      expected_shape:
+        headline: >-
+          how far apart the fastest and slowest feeders sit on restoration time
+        visual: histogram
+        table_columns: [feeder, average_restoration_minutes, outages]
+        must_cite: [DP-UTL-001, KPI-RESTORE-064]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-UTL-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-UTL-002/
+  value_case:
+    benefit_model: "avoided_restoration_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per restoration performance question"
+        value: 48
+        unit: minutes
+        sample_size: 12
+        source: "field operations time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0045

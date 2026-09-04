@@ -1,0 +1,229 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-HLT-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-HLT-003",
+    "name": "Care Access & Adherence Analyst",
+    "industry": "healthcare",
+    "domain": "operations",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0038",
+      "team": "Population Health Operations",
+      "on_call": "pagerduty://population-health-agents"
+    }
+  },
+  "capability_statement": "Answers questions about care gap closure, emergency department utilization and therapeutic substitution across the attributed population.",
+  "business_value": {
+    "analyses": [
+      "gap_analysis",
+      "comparison",
+      "trend_segmented",
+      "cohort_comparison",
+      "performance_ranking"
+    ],
+    "replaces": "The monthly population health pack and the formulary adherence review that sits beside it.",
+    "personas": [
+      "population_health_lead",
+      "care_management_director",
+      "pharmacy_operations_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Clinical decisions or treatment recommendations",
+    "Outreach scheduling or patient contact",
+    "Identifying individual patients or members"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-CAREGAP-039",
+      "kpi_name": "Care Gap Closure",
+      "unit": "percent",
+      "source_product": "DP-HLT-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "measure",
+        "payer",
+        "clinic"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-EDUTIL-038",
+      "kpi_name": "Emergency Department Utilization Rate",
+      "unit": "rate",
+      "source_product": "DP-HLT-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "condition",
+        "payer",
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SUBST-045",
+      "kpi_name": "Therapeutic Substitution Rate",
+      "unit": "percent",
+      "source_product": "DP-HLT-002",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "therapeutic_class",
+        "facility"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-HLT-001",
+      "columns": [
+        "encounter_id",
+        "attributed_member_id",
+        "ed_encounter_id",
+        "discharge_date",
+        "condition",
+        "payer",
+        "region",
+        "clinic",
+        "measure",
+        "gap_open_at_period_start",
+        "gap_closed",
+        "programme_enrolled"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-HLT-001:read"
+    },
+    {
+      "product_id": "DP-HLT-002",
+      "columns": [
+        "item_id",
+        "facility",
+        "activity_date",
+        "therapeutic_class",
+        "item_class",
+        "service_line",
+        "on_formulary",
+        "substitution_eligible",
+        "substituted"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-HLT-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-HLT-003/ask",
+    "required_scope": "agent:AG-HLT-003:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 7000,
+    "cost_per_answer_usd": 0.08
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which quality measures have the weakest care gap closure?",
+      "Do members enrolled in a care programme close more gaps?",
+      "Which conditions drive emergency department utilization?",
+      "How has emergency department utilization moved by month?",
+      "Where is therapeutic substitution weakest by therapeutic class?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-HLT-003/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_hlt_001",
+        "scope": "dp:DP-HLT-001:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "query_dp_hlt_002",
+        "scope": "dp:DP-HLT-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-HLT-001": "4.3.0",
+      "DP-HLT-002": "1.8.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "phi_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "42d72bb45cf999017b46776768c854c68b8f5151a9a594b5a23944b6ac345336"
+}

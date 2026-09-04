@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "concentration",
+  "citations": [
+    {
+      "columns": [
+        "active_product_count",
+        "as_of_month",
+        "customer_id",
+        "primary_relationship",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "500",
+    "top": "3.60",
+    "top_share": "33.99"
+  },
+  "exchange_id": "DEMO-AG-BNK-003-01",
+  "headline": "private leads on products per customer at 3.60, 33.99% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PPC-017 over 500 rows in DP-BNK-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which segments hold the most products per customer?",
+  "rows_scanned": 500,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-PPC-017",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,94 @@
+{
+  "agent_id": "AG-INS-003",
+  "agent_name": "Underwriting Result Analyst",
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Gross Written Premium is $622,216,893.76 where cohort is false against $139,489,456.16 where it is true, a gap of $482,727,437.60.",
+    "narrative": "Both cohorts are drawn from DP-INS-002 over the same period: 14,448 observations against 2,832.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-WRITTENPREM-031",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          622216893.76,
+          14448
+        ],
+        [
+          "true",
+          139489456.16,
+          2832
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": null,
+        "unit": "currency",
+        "x": "cohort",
+        "y": "KPI-WRITTENPREM-031"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "policy_id",
+        "as_of_month",
+        "coverage_line",
+        "segment",
+        "region",
+        "channel",
+        "written_premium",
+        "bound"
+      ],
+      "contract_version": "2.6.0",
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-INS-003-05",
+  "kpi_definitions": [
+    "KPI-WRITTENPREM-031"
+  ],
+  "notes": [],
+  "question": "How does written premium differ between bound and unbound quotes?",
+  "recorded_at": "2026-09-04T15:22:23.596777+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 8,
+    "rows_scanned": 17280,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "(sum(written_premium))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_002"
+        },
+        "cost_class": "medium",
+        "duration_ms": 5,
+        "rows_returned": 2,
+        "rows_scanned": 17280,
+        "tool": "query_dp_ins_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "agent_id": "AG-HLT-003",
+  "agent_name": "Care Access & Adherence Analyst",
+  "agent_version_id": "AGV-AG-HLT-003-1.0.0",
+  "analysis_type": "compliance_ranking",
+  "answer": {
+    "headline": "analgesia leads on therapeutic substitution rate at 24.26%, 21.97% of the total across 5 therapeutic classs.",
+    "narrative": "Ranked by the certified definition KPI-SUBST-045 over 30,600 rows in DP-HLT-002.",
+    "table": {
+      "columns": [
+        "therapeutic_class",
+        "KPI-SUBST-045",
+        "observations"
+      ],
+      "rows": [
+        [
+          "analgesia",
+          24.26,
+          6120
+        ],
+        [
+          "cardiovascular",
+          22.41,
+          6480
+        ],
+        [
+          "oncology",
+          22.38,
+          4320
+        ],
+        [
+          "anti_infective",
+          21.67,
+          9360
+        ],
+        [
+          "immunology",
+          19.72,
+          4320
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 22.0,
+        "unit": "percent",
+        "x": "therapeutic_class",
+        "y": "KPI-SUBST-045"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "item_id",
+        "activity_date",
+        "therapeutic_class",
+        "facility",
+        "substitution_eligible",
+        "substituted"
+      ],
+      "contract_version": "1.8.0",
+      "product_id": "DP-HLT-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-003-05",
+  "kpi_definitions": [
+    "KPI-SUBST-045"
+  ],
+  "notes": [],
+  "question": "Where is therapeutic substitution weakest by therapeutic class?",
+  "recorded_at": "2026-09-04T15:22:23.378836+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 10,
+    "rows_scanned": 30600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "therapeutic_class",
+          "limit": 24,
+          "measure": "((count(*) filter (where substituted))::numeric / NULLIF((count(*) filter (where substitution_eligible))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 7,
+        "rows_returned": 5,
+        "rows_scanned": 30600,
+        "tool": "query_dp_hlt_002"
+      }
+    ]
+  }
+}

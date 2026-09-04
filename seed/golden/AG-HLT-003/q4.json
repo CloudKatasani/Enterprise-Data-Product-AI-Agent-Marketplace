@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-HLT-003-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "attributed_member_id",
+        "condition",
+        "discharge_date",
+        "ed_encounter_id",
+        "payer",
+        "region"
+      ],
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "claims": {
+    "current": "961.54",
+    "delta": "-6000.00",
+    "groups": "5",
+    "rows_scanned": "31200"
+  },
+  "exchange_id": "DEMO-AG-HLT-003-04",
+  "headline": "Emergency Department Utilization Rate is 961.54 for the month ending 2026-09-01, down 6,000.00 on the prior month.",
+  "kpi_definitions": [
+    "KPI-EDUTIL-038"
+  ],
+  "narrative": "Computed from DP-HLT-001 under the certified definition KPI-EDUTIL-038, across 5 months and 31,200 rows.",
+  "question": "How has emergency department utilization moved by month?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-EDUTIL-038",
+    "observations"
+  ],
+  "visual_type": "line"
+}

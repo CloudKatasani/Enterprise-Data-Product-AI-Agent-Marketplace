@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "channel",
+        "claim_id",
+        "coverage_line",
+        "earned_premium",
+        "incurred_losses",
+        "region",
+        "transition_timestamp"
+      ],
+      "product_id": "DP-INS-001"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "12600",
+    "top": "88.39",
+    "top_share": "31.53"
+  },
+  "exchange_id": "DEMO-AG-INS-003-01",
+  "headline": "auto_liability leads on loss ratio at 88.39%, 31.53% of the total across 4 coverage lines.",
+  "kpi_definitions": [
+    "KPI-LOSSRATIO-026"
+  ],
+  "narrative": "Ranked by the certified definition KPI-LOSSRATIO-026 over 12,600 rows in DP-INS-001.",
+  "question": "Which coverage lines have the worst loss ratio?",
+  "rows_scanned": 12600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "coverage_line",
+    "KPI-LOSSRATIO-026",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

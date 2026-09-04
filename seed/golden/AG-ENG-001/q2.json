@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "interval_demand_kw",
+        "interval_start",
+        "meter_id",
+        "rate_class",
+        "region"
+      ],
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "30240",
+    "top": "0.39",
+    "top_share": "33.91"
+  },
+  "exchange_id": "DEMO-AG-ENG-001-02",
+  "headline": "residential leads on load factor at 0.39, 33.91% of the total across 3 rate classs.",
+  "kpi_definitions": [
+    "KPI-LOADFACT-067"
+  ],
+  "narrative": "Ranked by the certified definition KPI-LOADFACT-067 over 30,240 rows in DP-ENG-001.",
+  "question": "How does load factor differ by rate class?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "rate_class",
+    "KPI-LOADFACT-067",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

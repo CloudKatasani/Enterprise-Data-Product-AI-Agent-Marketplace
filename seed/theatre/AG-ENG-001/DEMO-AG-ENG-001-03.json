@@ -1,0 +1,97 @@
+{
+  "agent_id": "AG-ENG-001",
+  "agent_name": "Load & Demand Analyst",
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "apartment leads on consumption per customer at 171.89, 33.73% of the total across 3 dwelling types.",
+    "narrative": "Ranked by the certified definition KPI-CONSPC-068 over 17,100 rows in DP-ENG-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "dwelling_type",
+        "KPI-CONSPC-068",
+        "observations"
+      ],
+      "rows": [
+        [
+          "apartment",
+          171.89,
+          5605
+        ],
+        [
+          "commercial",
+          170.3,
+          4275
+        ],
+        [
+          "detached",
+          167.48,
+          7220
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "count",
+        "x": "dwelling_type",
+        "y": "KPI-CONSPC-068"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "consumption_kwh",
+        "rate_class",
+        "region",
+        "dwelling_type"
+      ],
+      "contract_version": "2.1.0",
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-ENG-001-03",
+  "kpi_definitions": [
+    "KPI-CONSPC-068"
+  ],
+  "notes": [],
+  "question": "How does consumption per customer vary by dwelling type?",
+  "recorded_at": "2026-09-04T15:22:22.851565+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 51,
+    "rows_scanned": 17100,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "dwelling_type",
+          "limit": 24,
+          "measure": "((sum(consumption_kwh))::numeric / NULLIF((count(distinct meter_id))::numeric, 0))",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_eng_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 48,
+        "rows_returned": 3,
+        "rows_scanned": 17100,
+        "tool": "query_dp_eng_001"
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "gap_analysis",
+  "citations": [
+    {
+      "columns": [
+        "interval_start",
+        "meter_id",
+        "meter_type",
+        "rate_class",
+        "read_type",
+        "region"
+      ],
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "claims": {
+    "groups": "2",
+    "rows_scanned": "30240",
+    "top": "43.19",
+    "top_share": "100.00"
+  },
+  "exchange_id": "DEMO-AG-ENG-001-05",
+  "headline": "non_communicating leads on estimated read rate at 43.19%, 100.00% of the total across 2 meter types.",
+  "kpi_definitions": [
+    "KPI-ESTREAD-070"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ESTREAD-070 over 30,240 rows in DP-ENG-001.",
+  "question": "Which meter types drive our estimated read rate?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "meter_type",
+    "KPI-ESTREAD-070",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

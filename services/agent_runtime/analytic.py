@@ -463,6 +463,13 @@ def _quantise(value: Any, unit: str, rubric: Rubric) -> Decimal | None:
 
 DEFAULT_GRAIN = "month"
 
+# The alias the grouped dimension is selected under. It is not the slice's own
+# name because a slice can be called `measure` — DP-HLT-001 has a column of that
+# name — and `SELECT measure AS measure, (...) AS measure` returns the wrong one
+# of the two silently. The presentation label stays the business name; only the
+# result-set key is reserved.
+DIMENSION_ALIAS = "dim_value"
+
 # date_trunc accepts "quarter"; interval arithmetic does not. One period at each
 # grain, spelled the way Postgres will take it.
 GRAIN_INTERVAL = {
@@ -546,6 +553,16 @@ def _is_windowed(kpi: dict[str, Any]) -> bool:
     return WINDOW_MARKER in (kpi["expression"] or "").lower()
 
 
+def _narrower(left: str, right: str) -> str:
+    """The finer of two grains, by the planner's coarsest-last ordering."""
+    order = planner.GRAIN_ORDER
+    if left not in order:
+        return right
+    if right not in order:
+        return left
+    return left if order.index(left) <= order.index(right) else right
+
+
 def _run(
     connection: psycopg.Connection[Any],
     context: _Context,
@@ -590,21 +607,31 @@ def _run(
     restrict = ""
     scanned_where = ""
     covers: Any = None
+    restrict_grain = grain
     if plan.shape != planner.SHAPE_PERIOD and _needs_single_period(
         connection, context.kpi, table
     ):
+        # Never wider than a month. A question with no time word asks at the
+        # coarsest grain the KPI supports, and a year-wide window pools twelve
+        # monthly snapshots — which is the very thing this restriction exists to
+        # prevent. Products per customer over a year is twelve times products
+        # per customer, and it would carry a note claiming it had not been
+        # pooled. A grain finer than a month is kept as asked.
+        restrict_grain = _narrower(grain, DEFAULT_GRAIN)
+        restrict_period = f"date_trunc('{restrict_grain}', {time_column})"
         # The *latest complete* period, not simply the latest. A load that ended
         # one day into September makes September a period with one day in it,
         # and a rate computed over one day of a month is not a monthly rate. A
         # period counts as complete when the data reaches its final day.
         latest_complete = (
             f"(SELECT coalesce(max(p.period) FILTER (WHERE p.last >= "
-            f"   p.period + '{GRAIN_INTERVAL[grain]}'::interval - '1 day'::interval), "
+            f"   p.period + '{GRAIN_INTERVAL[restrict_grain]}'::interval "
+            f"   - '1 day'::interval), "
             f"   max(p.period)) "
-            f" FROM (SELECT {period} AS period, max({time_column}) AS last "
+            f" FROM (SELECT {restrict_period} AS period, max({time_column}) AS last "
             f"       FROM {table} GROUP BY 1) p)"
         )
-        restrict = f" WHERE {period} = {latest_complete}"
+        restrict = f" WHERE {restrict_period} = {latest_complete}"
         scanned_where = restrict
         latest = fetch_one(connection, f"SELECT {latest_complete} AS covers")
         covers = latest["covers"] if latest else None
@@ -620,17 +647,17 @@ def _run(
         )
     elif _is_windowed(context.kpi):
         source = (
-            f"(SELECT {dimension} AS {label}, {measure} AS {WINDOWED_MEASURE} "
+            f"(SELECT {dimension} AS {DIMENSION_ALIAS}, {measure} AS {WINDOWED_MEASURE} "
             f"FROM {table}{restrict}) w"
         )
         restrict = ""
-        grouped_by = label
+        grouped_by = DIMENSION_ALIAS
         aggregate = f"avg({WINDOWED_MEASURE}) AS measure"
     else:
         aggregate = f"{measure} AS measure"
 
     sql = (
-        f"SELECT {grouped_by} AS {label}, {aggregate}, count(*) AS observations "
+        f"SELECT {grouped_by} AS {DIMENSION_ALIAS}, {aggregate}, count(*) AS observations "
         f"FROM {source}{restrict} GROUP BY 1 HAVING count(*) > 0 "
         f"ORDER BY {order} LIMIT %(limit)s"
     )
@@ -660,7 +687,7 @@ def _run(
         duration_ms=duration_ms,
         as_of=as_of["as_of"] if as_of else None,
         covers=covers,
-        grain=grain,
+        grain=restrict_grain,
     )
 
 
@@ -708,7 +735,7 @@ def _compose(
         )
 
     values = [
-        (row[label], _quantise(row["measure"], unit, rubric), row["observations"])
+        (row[DIMENSION_ALIAS], _quantise(row["measure"], unit, rubric), row["observations"])
         for row in rows
     ]
     total = sum((value for _, value, _ in values if value is not None), start=Decimal(0))
@@ -916,6 +943,7 @@ class AnalyticRuntime:
             # I12: the agent's binding intersected with the caller's grant. The
             # planner only ever sees columns both sides hold.
             binding_columns=readable_binding,
+            column_types=dict(context.product["column_types"]),
             limit=int(self._rubric.number(ROW_LIMIT_PATH)),
         )
 

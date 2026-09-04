@@ -1,0 +1,94 @@
+{
+  "agent_id": "AG-HLT-003",
+  "agent_name": "Care Access & Adherence Analyst",
+  "agent_version_id": "AGV-AG-HLT-003-1.0.0",
+  "analysis_type": "programme_eval",
+  "answer": {
+    "headline": "Care Gap Closure is 78.74% where cohort is true against 78.09% where it is false, a gap of 0.65%.",
+    "narrative": "Both cohorts are drawn from DP-HLT-001 over the same period: 5,726 observations against 25,474.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-CAREGAP-039",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          78.09,
+          25474
+        ],
+        [
+          "true",
+          78.74,
+          5726
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 78.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-CAREGAP-039"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "encounter_id",
+        "discharge_date",
+        "measure",
+        "payer",
+        "clinic",
+        "gap_open_at_period_start",
+        "gap_closed",
+        "programme_enrolled"
+      ],
+      "contract_version": "4.3.0",
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-003-02",
+  "kpi_definitions": [
+    "KPI-CAREGAP-039"
+  ],
+  "notes": [],
+  "question": "Do members enrolled in a care programme close more gaps?",
+  "recorded_at": "2026-09-04T15:22:23.278421+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 14,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((count(*) filter (where gap_closed))::numeric / NULLIF((count(*) filter (where gap_open_at_period_start))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 9,
+        "rows_returned": 2,
+        "rows_scanned": 31200,
+        "tool": "query_dp_hlt_001"
+      }
+    ]
+  }
+}

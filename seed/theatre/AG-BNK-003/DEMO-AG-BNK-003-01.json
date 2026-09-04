@@ -1,0 +1,100 @@
+{
+  "agent_id": "AG-BNK-003",
+  "agent_name": "Cross-Hold Analyst",
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "concentration",
+  "answer": {
+    "headline": "private leads on products per customer at 3.60, 33.99% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-PPC-017 over 500 rows in DP-BNK-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-PPC-017",
+        "observations"
+      ],
+      "rows": [
+        [
+          "private",
+          3.6,
+          50
+        ],
+        [
+          "mass",
+          3.6,
+          308
+        ],
+        [
+          "affluent",
+          3.39,
+          142
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 2.8,
+        "unit": "count",
+        "x": "segment",
+        "y": "KPI-PPC-017"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "active_product_count",
+        "segment",
+        "region",
+        "tenure_band",
+        "primary_relationship"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-BNK-003-01",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Which segments hold the most products per customer?",
+  "recorded_at": "2026-09-04T15:22:22.667120+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 31,
+    "rows_scanned": 500,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((sum(active_product_count))::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 27,
+        "rows_returned": 3,
+        "rows_scanned": 500,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

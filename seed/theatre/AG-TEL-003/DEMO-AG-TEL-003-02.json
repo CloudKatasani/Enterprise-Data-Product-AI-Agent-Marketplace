@@ -1,0 +1,110 @@
+{
+  "agent_id": "AG-TEL-003",
+  "agent_name": "Subscriber Experience Analyst",
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Retention Rate is 100.00% for the month ending 2026-09-01, up 1.43% on the prior month.",
+    "narrative": "Computed from DP-TEL-001 under the certified definition KPI-RETEN-002, across 5 months and 25,200 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-RETEN-002",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-05-01",
+          99.05,
+          5040
+        ],
+        [
+          "2026-06-01",
+          99.05,
+          6300
+        ],
+        [
+          "2026-07-01",
+          98.57,
+          6510
+        ],
+        [
+          "2026-08-01",
+          98.57,
+          6510
+        ],
+        [
+          "2026-09-01",
+          100.0,
+          840
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 98.6,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-RETEN-002"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "activity_date",
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_band",
+        "active_at_period_start",
+        "churn_flag",
+        "save_offer_accepted"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-003-02",
+  "kpi_definitions": [
+    "KPI-RETEN-002"
+  ],
+  "notes": [],
+  "question": "How has retention rate moved month by month?",
+  "recorded_at": "2026-09-04T15:22:24.628564+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 23,
+    "rows_scanned": 25200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct subscriber_id) filter (where active_at_period_start) - count(distinct subscriber_id) filter (where churn_flag))::numeric / NULLIF((count(distinct subscriber_id) filter (where active_at_period_start))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 18,
+        "rows_returned": 5,
+        "rows_scanned": 25200,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

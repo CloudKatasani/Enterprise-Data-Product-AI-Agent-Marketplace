@@ -10,8 +10,8 @@ spec:
   business_definition: >-
     Average demand divided by peak demand over the period, the measure of how evenly load is
     spread.
-  numerator_expr: "sum(consumption_kwh)"
-  denominator_expr: "max(interval_demand_kw) * period_hours"
+  numerator_expr: "avg(interval_demand_kw)"
+  denominator_expr: "max(interval_demand_kw)"
   grains_supported: [month, quarter, year]
   slices_supported: [rate_class, region]
   unit: ratio

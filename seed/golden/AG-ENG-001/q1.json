@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "concentration",
+  "citations": [
+    {
+      "columns": [
+        "feeder",
+        "interval_demand_kw",
+        "interval_start",
+        "meter_id",
+        "rate_class",
+        "region"
+      ],
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "claims": {
+    "groups": "7",
+    "rows_scanned": "30240",
+    "top": "5.48",
+    "top_share": "14.33"
+  },
+  "exchange_id": "DEMO-AG-ENG-001-01",
+  "headline": "FDR-106 leads on peak demand at 5.48, 14.33% of the total across 7 feeders.",
+  "kpi_definitions": [
+    "KPI-PEAKDEM-066"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PEAKDEM-066 over 30,240 rows in DP-ENG-001.",
+  "question": "Where is peak demand concentrated across our feeders?",
+  "rows_scanned": 30240,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "feeder",
+    "KPI-PEAKDEM-066",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "period_comparison",
+  "citations": [
+    {
+      "columns": [
+        "account_id",
+        "activated",
+        "activity_date",
+        "daily_active_account",
+        "monthly_active_account",
+        "plan_tier",
+        "region",
+        "segment"
+      ],
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "claims": {
+    "current": "0.94",
+    "delta": "-0.06",
+    "groups": "14",
+    "rows_scanned": "50400"
+  },
+  "exchange_id": "DEMO-AG-TCH-002-02",
+  "headline": "DAU to MAU Ratio is 0.94 for the week ending 2026-08-31, down 0.06 on the prior week.",
+  "kpi_definitions": [
+    "KPI-DAUMAU-011"
+  ],
+  "narrative": "Computed from DP-TCH-001 under the certified definition KPI-DAUMAU-011, across 14 weeks and 50,400 rows.",
+  "question": "Has the DAU to MAU ratio held up week on week?",
+  "rows_scanned": 50400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-DAUMAU-011",
+    "observations"
+  ],
+  "visual_type": "line"
+}

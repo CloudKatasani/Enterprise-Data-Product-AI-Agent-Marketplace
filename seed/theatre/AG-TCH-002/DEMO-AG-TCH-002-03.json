@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-TCH-002",
+  "agent_name": "Account Retention Analyst",
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "smb leads on net revenue retention at 106.15%, 33.40% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-NRR-015 over 50,400 rows in DP-TCH-001.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-NRR-015",
+        "observations"
+      ],
+      "rows": [
+        [
+          "smb",
+          106.15,
+          24480
+        ],
+        [
+          "mid_market",
+          106.03,
+          15120
+        ],
+        [
+          "enterprise",
+          105.59,
+          10800
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 112.0,
+        "unit": "percent",
+        "x": "segment",
+        "y": "KPI-NRR-015"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "activity_date",
+        "plan_tier",
+        "segment",
+        "region",
+        "starting_recurring_revenue",
+        "ending_recurring_revenue"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-002-03",
+  "kpi_definitions": [
+    "KPI-NRR-015"
+  ],
+  "notes": [],
+  "question": "Which segments hold up net revenue retention best?",
+  "recorded_at": "2026-09-04T15:22:24.324874+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 14,
+    "rows_scanned": 50400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((sum(ending_recurring_revenue))::numeric / NULLIF((sum(starting_recurring_revenue))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 12,
+        "rows_returned": 3,
+        "rows_scanned": 50400,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

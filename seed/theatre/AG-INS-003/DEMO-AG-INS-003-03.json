@@ -1,0 +1,93 @@
+{
+  "agent_id": "AG-INS-003",
+  "agent_name": "Underwriting Result Analyst",
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Loss Ratio is 70.35% for the quarter ending 2026-07-01, flat on the prior quarter.",
+    "narrative": "Computed from DP-INS-001 under the certified definition KPI-LOSSRATIO-026, across 2 quarters and 12,600 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-LOSSRATIO-026",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-04-01",
+          70.35,
+          3360
+        ],
+        [
+          "2026-07-01",
+          70.35,
+          9240
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 62.0,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-LOSSRATIO-026"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "claim_id",
+        "transition_timestamp",
+        "coverage_line",
+        "region",
+        "channel",
+        "incurred_losses",
+        "earned_premium"
+      ],
+      "contract_version": "3.0.0",
+      "product_id": "DP-INS-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-INS-003-03",
+  "kpi_definitions": [
+    "KPI-LOSSRATIO-026"
+  ],
+  "notes": [],
+  "question": "How has loss ratio moved quarter by quarter?",
+  "recorded_at": "2026-09-04T15:22:23.577906+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 7,
+    "rows_scanned": 12600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(incurred_losses))::numeric / NULLIF((sum(earned_premium))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 5,
+        "rows_returned": 2,
+        "rows_scanned": 12600,
+        "tool": "query_dp_ins_001"
+      }
+    ]
+  }
+}

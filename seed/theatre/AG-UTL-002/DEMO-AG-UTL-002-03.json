@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-UTL-002",
+  "agent_name": "Restoration Performance Analyst",
+  "agent_version_id": "AGV-AG-UTL-002-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "Coastal leads on average restoration time at 193.90 minutes, 34.05% of the total across 3 regions.",
+    "narrative": "Ranked by the certified definition KPI-RESTORE-064 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-RESTORE-064",
+        "observations"
+      ],
+      "rows": [
+        [
+          "Coastal",
+          193.9,
+          2573
+        ],
+        [
+          "North",
+          189.98,
+          2325
+        ],
+        [
+          "Central",
+          185.56,
+          2542
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 110.0,
+        "unit": "minutes",
+        "x": "region",
+        "y": "KPI-RESTORE-064"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "outage_id",
+        "observed_date",
+        "feeder",
+        "region",
+        "cause_class",
+        "restoration_minutes",
+        "major_event_day"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-002-03",
+  "kpi_definitions": [
+    "KPI-RESTORE-064"
+  ],
+  "notes": [],
+  "question": "How does restoration time compare across regions?",
+  "recorded_at": "2026-09-04T15:22:24.934886+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 29,
+    "rows_scanned": 7440,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "((sum(restoration_minutes))::numeric / NULLIF((count(distinct outage_id))::numeric, 0))",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 26,
+        "rows_returned": 3,
+        "rows_scanned": 7440,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

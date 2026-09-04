@@ -16,28 +16,25 @@
     }
   ],
   "claims": {
-    "cohort_gap": "100.00",
-    "cohort_high": "100.00",
-    "cohort_high_observations": "5136",
-    "cohort_low": "0.00",
-    "cohort_low_observations": "8304",
-    "groups": "2",
-    "rows_scanned": "13440"
+    "groups": "3",
+    "rows_scanned": "17360",
+    "top": "93.33",
+    "top_share": "35.81"
   },
   "exchange_id": "DEMO-AG-TCH-001-04",
-  "headline": "Activation Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "headline": "enterprise leads on activation rate at 93.33%, 35.81% of the total across 3 plan tiers.",
   "kpi_definitions": [
     "KPI-ACTIV-013"
   ],
-  "narrative": "Both cohorts are drawn from DP-TCH-001 over the same period: 5,136 observations against 8,304. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-ACTIV-013 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Did the March onboarding change improve activation?",
-  "rows_scanned": 13440,
+  "rows_scanned": 17360,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "cohort",
+    "plan_tier",
     "KPI-ACTIV-013",
     "observations"
   ],
-  "visual_type": "comparison_bars"
+  "visual_type": "bar"
 }

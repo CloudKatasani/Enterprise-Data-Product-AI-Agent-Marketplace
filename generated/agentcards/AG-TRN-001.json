@@ -3,7 +3,7 @@
     "from": "manifests/agents/AG-TRN-001.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
     "warning": "DO NOT EDIT"
   },
   "schema": "marketplace/agentcard/v1",

@@ -1,0 +1,117 @@
+{
+  "agent_id": "AG-ENG-001",
+  "agent_name": "Load & Demand Analyst",
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "concentration",
+  "answer": {
+    "headline": "FDR-106 leads on peak demand at 5.48, 14.33% of the total across 7 feeders.",
+    "narrative": "Ranked by the certified definition KPI-PEAKDEM-066 over 30,240 rows in DP-ENG-001.",
+    "table": {
+      "columns": [
+        "feeder",
+        "KPI-PEAKDEM-066",
+        "observations"
+      ],
+      "rows": [
+        [
+          "FDR-106",
+          5.48,
+          4368
+        ],
+        [
+          "FDR-102",
+          5.47,
+          5712
+        ],
+        [
+          "FDR-104",
+          5.47,
+          3528
+        ],
+        [
+          "FDR-101",
+          5.47,
+          4368
+        ],
+        [
+          "FDR-107",
+          5.47,
+          4872
+        ],
+        [
+          "FDR-105",
+          5.45,
+          3696
+        ],
+        [
+          "FDR-103",
+          5.44,
+          3696
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "count",
+        "x": "feeder",
+        "y": "KPI-PEAKDEM-066"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "interval_demand_kw",
+        "rate_class",
+        "region",
+        "feeder"
+      ],
+      "contract_version": "2.1.0",
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-ENG-001-01",
+  "kpi_definitions": [
+    "KPI-PEAKDEM-066"
+  ],
+  "notes": [],
+  "question": "Where is peak demand concentrated across our feeders?",
+  "recorded_at": "2026-09-04T15:22:22.787636+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 12,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "feeder",
+          "limit": 24,
+          "measure": "(max(interval_demand_kw))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_eng_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 7,
+        "rows_scanned": 30240,
+        "tool": "query_dp_eng_001"
+      }
+    ]
+  }
+}

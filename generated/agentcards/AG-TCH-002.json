@@ -1,0 +1,187 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TCH-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TCH-002",
+    "name": "Account Retention Analyst",
+    "industry": "technology",
+    "domain": "customer",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0033",
+      "team": "Customer Success Analytics",
+      "on_call": "pagerduty://customer-success-agents"
+    }
+  },
+  "capability_statement": "Answers questions about daily to monthly active ratio and net revenue retention by plan tier, segment and region.",
+  "business_value": {
+    "analyses": [
+      "trend_segmented",
+      "period_comparison",
+      "performance_ranking",
+      "comparison",
+      "contribution_ranking"
+    ],
+    "replaces": "The quarterly retention review and the engagement slide the customer success lead rebuilds.",
+    "personas": [
+      "customer_success_lead",
+      "revenue_operations_analyst",
+      "chief_customer_officer"
+    ]
+  },
+  "out_of_scope": [
+    "Renewal negotiation or discount approval",
+    "Customer outreach or campaign execution",
+    "Individual account health enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-DAUMAU-011",
+      "kpi_name": "DAU to MAU Ratio",
+      "unit": "ratio",
+      "source_product": "DP-TCH-001",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "plan_tier",
+        "segment",
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-NRR-015",
+      "kpi_name": "Net Revenue Retention",
+      "unit": "percent",
+      "source_product": "DP-TCH-001",
+      "grains": [
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "plan_tier",
+        "segment",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TCH-001",
+      "columns": [
+        "account_id",
+        "activity_date",
+        "plan_tier",
+        "segment",
+        "region",
+        "acquisition_channel",
+        "daily_active_account",
+        "monthly_active_account",
+        "activated",
+        "starting_recurring_revenue",
+        "ending_recurring_revenue",
+        "renewal_date"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TCH-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TCH-002/ask",
+    "required_scope": "agent:AG-TCH-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 5000,
+    "cost_per_answer_usd": 0.05
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "How has the DAU to MAU ratio moved month by month?",
+      "Has the DAU to MAU ratio held up week on week?",
+      "Which segments hold up net revenue retention best?",
+      "How does net revenue retention differ by plan tier?",
+      "How has net revenue retention moved quarter by quarter?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TCH-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_tch_001",
+        "scope": "dp:DP-TCH-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TCH-001": "4.1.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "445a9c039210e054aa4f7450b6529dce01a9a631982bb1112ccb95b4bb7a1064"
+}

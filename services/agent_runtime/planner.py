@@ -168,6 +168,7 @@ def resolve(
     coverage: dict[str, Any],
     kpi: dict[str, Any],
     binding_columns: list[str],
+    column_types: dict[str, str],
     limit: int,
 ) -> QueryPlan:
     shape = ANALYSIS_SHAPE.get(analysis_type)
@@ -193,13 +194,21 @@ def resolve(
     if shape in (SHAPE_SLICE, SHAPE_COHORT, SHAPE_DISTRIBUTION):
         slice_column = choose_slice(question, list(coverage["supported_slices"]), columns)
     if shape == SHAPE_COHORT:
-        cohort_column = _cohort_column(columns)
+        cohort_column = _cohort_column(columns, kpi)
         if cohort_column is None:
             # No binary cohort in the granted columns: comparing populations is
             # then a slice comparison, which is what the reader wanted anyway.
             shape = SHAPE_SLICE
     if shape == SHAPE_DISTRIBUTION:
-        measure_column = _numeric_column(columns, kpi)
+        measure_column = _numeric_column(columns, kpi, column_types)
+        if measure_column is None:
+            # Nothing the agent may read is the column the measure is taken
+            # over — the entitlement narrowed it away, or the KPI is a ratio
+            # with no single measured column. A spread cannot be computed over
+            # a column that is not there, and picking another one at random
+            # would take the median of an identifier or a date. So the question
+            # becomes the slice comparison it can actually answer.
+            shape = SHAPE_SLICE
 
     return QueryPlan(
         kpi_id=coverage["kpi_id"],
@@ -224,17 +233,51 @@ COHORT_MARKERS = (
 )
 
 
-def _cohort_column(columns: list[str]) -> str | None:
+def _cohort_column(columns: list[str], kpi: dict[str, Any]) -> str | None:
+    """A binary column that splits the population, but not one the measure uses.
+
+    Splitting a save rate by ``save_offer_accepted`` compares the accepted
+    offers against the rest and reports 100% against 0%, which is the
+    definition restated rather than a finding. A cohort has to be independent
+    of the measure to say anything, so a column the KPI's own expression
+    references is not eligible; where none of the others is, the question is a
+    slice comparison instead.
+    """
+    used = _expression_columns(kpi)
     for marker in COHORT_MARKERS:
-        if marker in columns:
+        if marker in columns and marker not in used:
             return marker
     return None
 
 
-def _numeric_column(columns: list[str], kpi: dict[str, Any]) -> str | None:
-    """The column a distribution is taken over: the one the KPI expression measures."""
-    expression = kpi.get("expression") or kpi.get("numerator_expr") or ""
+def _expression_columns(kpi: dict[str, Any]) -> set[str]:
+    parts = [kpi.get("numerator_expr"), kpi.get("denominator_expr"), kpi.get("expression")]
+    text = " ".join(part for part in parts if part).lower()
+    return set(re.findall(r"[a-z_][a-z0-9_]*", text))
+
+
+# Contract types a spread can be taken over. A median of a boolean is a
+# statement about how the flag is stored, and a median of an identifier is not a
+# statement about anything.
+NUMERIC_TYPES = frozenset({"number", "integer"})
+
+
+def _numeric_column(
+    columns: list[str], kpi: dict[str, Any], column_types: dict[str, str]
+) -> str | None:
+    """The column a distribution is taken over: the one the KPI measures.
+
+    Both halves of the test matter. The column has to be the measured one —
+    the denominator's ``count(distinct customer_id)`` is not what "how is it
+    distributed" asks about — and it has to be a number, because the caller's
+    entitlement decides which columns survive and the first survivor may be a
+    date.
+    """
+    parts = [kpi.get("expression"), kpi.get("numerator_expr")]
+    expression = " ".join(part for part in parts if part)
     for name in columns:
+        if column_types.get(name) not in NUMERIC_TYPES:
+            continue
         if re.search(rf"\b{re.escape(name)}\b", expression):
             return name
-    return columns[0] if columns else None
+    return None

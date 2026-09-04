@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-TEL-003",
+  "agent_name": "Subscriber Experience Analyst",
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "urban leads on dropped call rate at 0.70%, 33.49% of the total across 3 site classs.",
+    "narrative": "Ranked by the certified definition KPI-DROP-007 over 15,120 rows in DP-TEL-002.",
+    "table": {
+      "columns": [
+        "site_class",
+        "KPI-DROP-007",
+        "observations"
+      ],
+      "rows": [
+        [
+          "urban",
+          0.7,
+          6888
+        ],
+        [
+          "rural",
+          0.7,
+          3864
+        ],
+        [
+          "suburban",
+          0.69,
+          4368
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 0.6,
+        "unit": "percent",
+        "x": "site_class",
+        "y": "KPI-DROP-007"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "site_id",
+        "observed_hour",
+        "region",
+        "site_class",
+        "technology",
+        "established_calls",
+        "dropped_calls"
+      ],
+      "contract_version": "2.4.0",
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-003-05",
+  "kpi_definitions": [
+    "KPI-DROP-007"
+  ],
+  "notes": [],
+  "question": "How does the dropped call rate differ across site classes?",
+  "recorded_at": "2026-09-04T15:22:24.659055+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 15120,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "site_class",
+          "limit": 24,
+          "measure": "((sum(dropped_calls))::numeric / NULLIF((sum(established_calls))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 3,
+        "rows_scanned": 15120,
+        "tool": "query_dp_tel_002"
+      }
+    ]
+  }
+}

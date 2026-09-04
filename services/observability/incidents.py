@@ -170,6 +170,44 @@ def _incident_id(finding: Finding, at: datetime) -> str:
     return f"INC-{finding.asset_id}-{finding.signal}-{at:%Y%m%d}"
 
 
+def _write_impacts(
+    connection: psycopg.Connection[Any],
+    tenant: str,
+    incident_id: str,
+    radius: BlastRadius,
+    *,
+    banner: bool,
+    at: datetime,
+    refresh: bool,
+) -> None:
+    """Record one impact row per affected asset, notified and bannered.
+
+    ``refresh`` decides what happens to a row that is already there: on a fresh
+    raise the notification is restated, and on a re-raise of an incident that is
+    already open it is left alone, so only consumers that were not there before
+    are notified now.
+    """
+    conflict = (
+        "ON CONFLICT (impact_id) DO UPDATE SET notified_at = EXCLUDED.notified_at, "
+        "  banner_active = EXCLUDED.banner_active"
+        if refresh
+        else "ON CONFLICT (impact_id) DO NOTHING"
+    )
+    for asset_type, assets in (
+        (ASSET_PRODUCT, radius.products), (ASSET_AGENT, radius.agents)
+    ):
+        for affected in assets:
+            connection.execute(
+                "INSERT INTO incident_impact (impact_id, tenant_id, incident_id, "
+                "  affected_asset_type, affected_asset_id, consumer_count, notified_at, "
+                "  banner_active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) " + conflict,
+                (
+                    f"IMP-{incident_id}-{affected}", tenant, incident_id, asset_type,
+                    affected, radius.consumers, at, banner,
+                ),
+            )
+
+
 def raise_incident(
     connection: psycopg.Connection[Any],
     tenant: str,
@@ -197,10 +235,21 @@ def raise_incident(
         "WHERE incident_id = %s",
         (incident_id,),
     )
+    banner = bool(rubric.flag(BANNER_PATH))
+
     if existing is not None and existing["status"] in OPEN_STATUSES:
         # The same signal on the same asset on the same day is one incident.
         # Raising a second would split the consumer notifications and make the
         # count of open incidents a measure of how often the scanner ran.
+        #
+        # The blast radius is still re-read and any consumer missing from it is
+        # notified now: an agent bound to the product after the incident opened
+        # is reading the same broken data as the rest, and the payload already
+        # names it as impacted. Consumers already notified keep their original
+        # timestamp, because the deadline runs from when they were first told.
+        _write_impacts(
+            connection, tenant, incident_id, radius, banner=banner, at=now, refresh=False
+        )
         #
         # The same shape comes back either way. A caller that gets a thinner
         # payload on the second call has to branch on whether it was first,
@@ -228,22 +277,7 @@ def raise_incident(
         ),
     )
 
-    banner = bool(rubric.flag(BANNER_PATH))
-    for asset_type, assets in (
-        (ASSET_PRODUCT, radius.products), (ASSET_AGENT, radius.agents)
-    ):
-        for affected in assets:
-            connection.execute(
-                "INSERT INTO incident_impact (impact_id, tenant_id, incident_id, "
-                "  affected_asset_type, affected_asset_id, consumer_count, notified_at, "
-                "  banner_active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) "
-                "ON CONFLICT (impact_id) DO UPDATE SET notified_at = EXCLUDED.notified_at, "
-                "  banner_active = EXCLUDED.banner_active",
-                (
-                    f"IMP-{incident_id}-{affected}", tenant, incident_id, asset_type,
-                    affected, radius.consumers, now, banner,
-                ),
-            )
+    _write_impacts(connection, tenant, incident_id, radius, banner=banner, at=now, refresh=True)
 
     return {
         "incident_id": incident_id,

@@ -1,0 +1,203 @@
+{
+  "agent_id": "AG-BNK-003",
+  "agent_name": "Cross-Hold Analyst",
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Products per Customer is 3.54 for the month ending 2025-09-01, flat on the prior month.",
+    "narrative": "Computed from DP-BNK-001 under the certified definition KPI-PPC-017, across 24 months and 18,000 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-PPC-017",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2023-10-01",
+          3.54,
+          500
+        ],
+        [
+          "2023-11-01",
+          3.54,
+          500
+        ],
+        [
+          "2023-12-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-01-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-02-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-03-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-04-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-05-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-06-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-07-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-08-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-09-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-10-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-11-01",
+          3.54,
+          500
+        ],
+        [
+          "2024-12-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-01-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-02-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-03-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-04-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-05-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-06-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-07-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-08-01",
+          3.54,
+          500
+        ],
+        [
+          "2025-09-01",
+          3.54,
+          500
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 2.8,
+        "unit": "count",
+        "x": "period",
+        "y": "KPI-PPC-017"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "active_product_count",
+        "segment",
+        "region",
+        "tenure_band",
+        "primary_relationship"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-003-03",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "notes": [],
+  "question": "How has products per customer moved month by month?",
+  "recorded_at": "2026-09-04T15:22:22.712945+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 13,
+    "rows_scanned": 18000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(active_product_count))::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 10,
+        "rows_returned": 24,
+        "rows_scanned": 18000,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

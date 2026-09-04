@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "programme_eval",
+  "citations": [
+    {
+      "columns": [
+        "curtailed_during_event",
+        "enrolled_and_called",
+        "interval_start",
+        "meter_id",
+        "programme",
+        "rate_class",
+        "region"
+      ],
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "17100",
+    "top": "80.77",
+    "top_share": "52.41"
+  },
+  "exchange_id": "DEMO-AG-ENG-001-04",
+  "headline": "direct_load_control leads on demand response event response rate at 80.77%, 52.41% of the total across 3 programmes.",
+  "kpi_definitions": [
+    "KPI-DRRESP-069"
+  ],
+  "narrative": "Ranked by the certified definition KPI-DRRESP-069 over 17,100 rows in DP-ENG-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which demand response programmes are getting the best response?",
+  "rows_scanned": 17100,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "programme",
+    "KPI-DRRESP-069",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

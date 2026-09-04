@@ -16,28 +16,25 @@
     }
   ],
   "claims": {
-    "cohort_gap": "100.00",
-    "cohort_high": "100.00",
-    "cohort_high_observations": "12072",
-    "cohort_low": "0.00",
-    "cohort_low_observations": "528",
-    "groups": "2",
-    "rows_scanned": "12600"
+    "groups": "3",
+    "rows_scanned": "12600",
+    "top": "97.62",
+    "top_share": "33.96"
   },
   "exchange_id": "DEMO-AG-MFG-001-03",
-  "headline": "First Pass Yield is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "headline": "day leads on first pass yield at 97.62%, 33.96% of the total across 3 shifts.",
   "kpi_definitions": [
     "KPI-FPY-072"
   ],
-  "narrative": "Both cohorts are drawn from DP-MFG-001 over the same period: 12,072 observations against 528.",
+  "narrative": "Ranked by the certified definition KPI-FPY-072 over 12,600 rows in DP-MFG-001.",
   "question": "Which shifts show the biggest first-pass-yield gap?",
   "rows_scanned": 12600,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "cohort",
+    "shift",
     "KPI-FPY-072",
     "observations"
   ],
-  "visual_type": "comparison_bars"
+  "visual_type": "bar"
 }

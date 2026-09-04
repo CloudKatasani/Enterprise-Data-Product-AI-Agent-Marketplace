@@ -76,12 +76,12 @@
   ],
   "notes": [],
   "question": "Which items are at risk of stockout this week?",
-  "recorded_at": "2026-09-04T08:34:02.931069+00:00",
+  "recorded_at": "2026-09-04T15:22:23.200894+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 14,
+    "latency_ms": 12,
     "rows_scanned": 30600,
     "runtime": "analytic",
     "tokens": {
@@ -99,7 +99,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
         },
         "cost_class": "small",
-        "duration_ms": 10,
+        "duration_ms": 8,
         "rows_returned": 5,
         "rows_scanned": 30600,
         "tool": "query_dp_hlt_002"

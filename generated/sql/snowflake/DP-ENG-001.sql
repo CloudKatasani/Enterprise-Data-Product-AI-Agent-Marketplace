@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM manifests/products/DP-ENG-001.yaml BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: 6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c  generated_at: 2026-09-04T02:50:43+00:00
+-- generator_version: 1.0.0  manifest_hash: 99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0  generated_at: 2026-09-04T15:18:50+00:00
 
 -- Governed consumption view for DP-ENG-001 — Smart Meter Consumption & Load Profile
 -- contract 2.1.0, max sensitivity confidential, contains PII: true
@@ -46,7 +46,7 @@ SELECT
   read_type,
   enrolled_and_called,
   max(interval_demand_kw) AS kpi_peakdem_066,  -- Peak Demand (KPI-PEAKDEM-066), unit count
-  (sum(consumption_kwh)) / NULLIF(max(interval_demand_kw) * period_hours, 0) AS kpi_loadfact_067,  -- Load Factor (KPI-LOADFACT-067), unit ratio
+  (avg(interval_demand_kw)) / NULLIF(max(interval_demand_kw), 0) AS kpi_loadfact_067,  -- Load Factor (KPI-LOADFACT-067), unit ratio
   (sum(consumption_kwh)) / NULLIF(count(distinct meter_id), 0) AS kpi_conspc_068,  -- Consumption per Customer (KPI-CONSPC-068), unit count
   (count(distinct meter_id) filter (where curtailed_during_event)) / NULLIF(count(distinct meter_id) filter (where enrolled_and_called), 0) * 100 AS kpi_drresp_069,  -- Demand Response Event Response Rate (KPI-DRRESP-069), unit percent
   (count(*) filter (where read_type = 'estimated')) / NULLIF(count(*), 0) * 100 AS kpi_estread_070  -- Estimated Read Rate (KPI-ESTREAD-070), unit percent

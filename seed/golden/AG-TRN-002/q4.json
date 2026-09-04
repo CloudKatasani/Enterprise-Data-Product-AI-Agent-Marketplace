@@ -1,0 +1,44 @@
+{
+  "agent_version_id": "AGV-AG-TRN-002-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "available_hours",
+        "carrier",
+        "delivered_within_window",
+        "departure_timestamp",
+        "equipment_type",
+        "region",
+        "revenue_hours",
+        "shipment_leg_id"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "6.20",
+    "cohort_high": "73.63",
+    "cohort_high_observations": "12336",
+    "cohort_low": "67.43",
+    "cohort_low_observations": "864",
+    "groups": "2",
+    "rows_scanned": "13200"
+  },
+  "exchange_id": "DEMO-AG-TRN-002-04",
+  "headline": "Asset Utilization is 73.63% where cohort is true against 67.43% where it is false, a gap of 6.20%.",
+  "kpi_definitions": [
+    "KPI-ASSETUTIL-059"
+  ],
+  "narrative": "Both cohorts are drawn from DP-TRN-001 over the same period: 12,336 observations against 864.",
+  "question": "Do legs delivered within the window use their hours differently?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-ASSETUTIL-059",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

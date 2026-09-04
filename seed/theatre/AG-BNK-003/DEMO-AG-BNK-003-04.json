@@ -1,0 +1,95 @@
+{
+  "agent_id": "AG-BNK-003",
+  "agent_name": "Cross-Hold Analyst",
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Products per Customer is 3.67 where cohort is false against 3.46 where it is true, a gap of 0.21.",
+    "narrative": "Both cohorts are drawn from DP-BNK-001 over the same period: 193 observations against 307. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-PPC-017",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          3.67,
+          193
+        ],
+        [
+          "true",
+          3.46,
+          307
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 2.8,
+        "unit": "count",
+        "x": "cohort",
+        "y": "KPI-PPC-017"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "as_of_month",
+        "active_product_count",
+        "segment",
+        "region",
+        "tenure_band",
+        "primary_relationship"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-BNK-003-04",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Do customers with a primary relationship hold more products?",
+  "recorded_at": "2026-09-04T15:22:22.744119+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 29,
+    "rows_scanned": 500,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((sum(active_product_count))::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 26,
+        "rows_returned": 2,
+        "rows_scanned": 500,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

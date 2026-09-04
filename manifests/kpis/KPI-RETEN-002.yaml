@@ -10,7 +10,7 @@ spec:
   business_definition: >-
     Share of subscribers active at the start of the period who remained connected throughout it.
     The complement of churn rate on the same denominator.
-  numerator_expr: "count(distinct subscriber_id) filter (where not churn_flag)"
+  numerator_expr: "count(distinct subscriber_id) filter (where active_at_period_start) - count(distinct subscriber_id) filter (where churn_flag)"
   denominator_expr: "count(distinct subscriber_id) filter (where active_at_period_start)"
   grains_supported: [day, week, month, quarter]
   slices_supported: [segment, region, plan_type, tenure_band]

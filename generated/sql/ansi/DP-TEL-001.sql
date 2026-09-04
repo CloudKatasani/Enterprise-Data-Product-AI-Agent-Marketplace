@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM manifests/products/DP-TEL-001.yaml BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: 6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c  generated_at: 2026-09-04T02:50:43+00:00
+-- generator_version: 1.0.0  manifest_hash: 99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0  generated_at: 2026-09-04T15:18:50+00:00
 
 -- Governed consumption view for DP-TEL-001 — Subscriber Churn & Retention 360
 -- contract 3.2.0, max sensitivity confidential, contains PII: true
@@ -48,7 +48,7 @@ SELECT
   save_offer_accepted,
   contract_end_date,
   (count(distinct subscriber_id) filter (where churn_flag)) / NULLIF(count(distinct subscriber_id) filter (where active_at_period_start), 0) * 100 AS kpi_churn_001,  -- Churn Rate (KPI-CHURN-001), unit percent
-  (count(distinct subscriber_id) filter (where not churn_flag)) / NULLIF(count(distinct subscriber_id) filter (where active_at_period_start), 0) * 100 AS kpi_reten_002,  -- Retention Rate (KPI-RETEN-002), unit percent
+  (count(distinct subscriber_id) filter (where active_at_period_start) - count(distinct subscriber_id) filter (where churn_flag)) / NULLIF(count(distinct subscriber_id) filter (where active_at_period_start), 0) * 100 AS kpi_reten_002,  -- Retention Rate (KPI-RETEN-002), unit percent
   (count(distinct subscriber_id) filter (where save_offer_accepted)) / NULLIF(count(distinct subscriber_id) filter (where save_offer_made), 0) * 100 AS kpi_save_003,  -- Save Rate (KPI-SAVE-003), unit percent
   avg(tenure_days) AS kpi_tenure_004,  -- Average Subscriber Tenure (KPI-TENURE-004), unit days
   ntile(10) over (order by churn_propensity_score desc) AS kpi_prop_005  -- Churn Propensity Decile (KPI-PROP-005), unit index

@@ -1,0 +1,176 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-INS-003
+  name: "Underwriting Result Analyst"
+  industry: insurance
+  domain: finance
+  owner:
+    party_id: PTY-0036
+    team: "Insurance Finance"
+    on_call: "pagerduty://insurance-finance-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about loss ratio and gross written premium by coverage line, region,
+    channel and segment.
+  business_value_block:
+    analyses: [performance_ranking, comparison, trend_segmented, contribution_ranking, variance]
+    replaces: >-
+      The monthly underwriting result pack and the premium walk each finance lead rebuilds by hand.
+    personas: [underwriting_finance_lead, portfolio_actuary, chief_underwriting_officer]
+  out_of_scope:
+    - "Reserving decisions or reserve adequacy opinions"
+    - "Rate filing or pricing changes"
+    - "Individual policy or claim enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-INS-003/system@v1
+  data_products:
+    - product_id: DP-INS-001
+      columns: [claim_id, policy_id, transition_timestamp, coverage_line, region, channel, claim_status, incurred_losses, earned_premium]
+      access: read
+    - product_id: DP-INS-002
+      columns: [policy_id, quote_id, as_of_month, coverage_line, segment, region, channel, written_premium, technical_premium, charged_premium, bound, renewed]
+      access: read
+  tool_bindings:
+    - tool: query_dp_ins_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-INS-001"
+      scope: "dp:DP-INS-001:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: query_dp_ins_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-INS-002"
+      scope: "dp:DP-INS-002:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-LOSSRATIO-026
+      source_product: DP-INS-001
+      columns_used: [claim_id, transition_timestamp, coverage_line, region, channel, incurred_losses, earned_premium]
+      grains: [month, quarter, year]
+      slices: [coverage_line, region, channel]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-WRITTENPREM-031
+      source_product: DP-INS-002
+      columns_used: [policy_id, as_of_month, coverage_line, segment, region, channel, written_premium, bound]
+      grains: [month, quarter, year]
+      slices: [coverage_line, segment, region, channel]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 7000
+    cost_per_answer_usd: 0.08
+  demo_exchanges:
+    - id: DEMO-AG-INS-003-01
+      ordinal: 1
+      question: "Which coverage lines have the worst loss ratio?"
+      kpi_class: KPI-LOSSRATIO-026
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the coverage lines running hottest on loss ratio, and the spread across the book
+        visual: bar
+        table_columns: [coverage_line, loss_ratio_pct, earned_premium]
+        must_cite: [DP-INS-001, KPI-LOSSRATIO-026]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-INS-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-003-02
+      ordinal: 2
+      question: "How does loss ratio compare across distribution channels?"
+      kpi_class: KPI-LOSSRATIO-026
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the channels above and below the book loss ratio, and the gap between them
+        visual: bar
+        table_columns: [channel, loss_ratio_pct, earned_premium]
+        must_cite: [DP-INS-001, KPI-LOSSRATIO-026]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-INS-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-003-03
+      ordinal: 3
+      question: "How has loss ratio moved quarter by quarter?"
+      kpi_class: KPI-LOSSRATIO-026
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of loss ratio over the observed quarters, and its size
+        visual: line
+        table_columns: [period, loss_ratio_pct, earned_premium]
+        must_cite: [DP-INS-001, KPI-LOSSRATIO-026]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-INS-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-003-04
+      ordinal: 4
+      question: "Which segments contribute most gross written premium?"
+      kpi_class: KPI-WRITTENPREM-031
+      analysis_type: contribution_ranking
+      expected_shape:
+        headline: >-
+          the segments carrying most written premium, and their share of the book
+        visual: pareto
+        table_columns: [segment, written_premium, share_pct]
+        must_cite: [DP-INS-002, KPI-WRITTENPREM-031]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-INS-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-003-05
+      ordinal: 5
+      question: "How does written premium differ between bound and unbound quotes?"
+      kpi_class: KPI-WRITTENPREM-031
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          the premium written on bound business against the rest of the quoted book
+        visual: bar
+        table_columns: [cohort, written_premium, policies]
+        must_cite: [DP-INS-002, KPI-WRITTENPREM-031]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-INS-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-INS-003/
+  value_case:
+    benefit_model: "avoided_underwriting_result_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per underwriting result question"
+        value: 70
+        unit: minutes
+        sample_size: 9
+        source: "insurance finance time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0036

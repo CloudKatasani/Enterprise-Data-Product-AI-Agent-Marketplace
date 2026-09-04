@@ -1,0 +1,92 @@
+{
+  "agent_id": "AG-ENG-001",
+  "agent_name": "Load & Demand Analyst",
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "gap_analysis",
+  "answer": {
+    "headline": "non_communicating leads on estimated read rate at 43.19%, 100.00% of the total across 2 meter types.",
+    "narrative": "Ranked by the certified definition KPI-ESTREAD-070 over 30,240 rows in DP-ENG-001.",
+    "table": {
+      "columns": [
+        "meter_type",
+        "KPI-ESTREAD-070",
+        "observations"
+      ],
+      "rows": [
+        [
+          "non_communicating",
+          43.19,
+          7560
+        ],
+        [
+          "communicating",
+          0.0,
+          22680
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.5,
+        "unit": "percent",
+        "x": "meter_type",
+        "y": "KPI-ESTREAD-070"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "read_type",
+        "rate_class",
+        "region",
+        "meter_type"
+      ],
+      "contract_version": "2.1.0",
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-ENG-001-05",
+  "kpi_definitions": [
+    "KPI-ESTREAD-070"
+  ],
+  "notes": [],
+  "question": "Which meter types drive our estimated read rate?",
+  "recorded_at": "2026-09-04T15:22:22.914671+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 11,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "meter_type",
+          "limit": 24,
+          "measure": "((count(*) filter (where read_type = 'estimated'))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_eng_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 7,
+        "rows_returned": 2,
+        "rows_scanned": 30240,
+        "tool": "query_dp_eng_001"
+      }
+    ]
+  }
+}

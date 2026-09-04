@@ -173,6 +173,26 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                 )
                 written += 1
 
+            # Re-seeding an authored version reconciles rather than adds to it.
+            # A coverage row the manifest has dropped would otherwise outlive
+            # the binding it reads, and the publish gate would go on refusing
+            # the version over a KPI it no longer claims to answer.
+            cursor.execute(
+                "DELETE FROM agent_kpi_coverage WHERE agent_version_id = %s "
+                "AND kpi_id <> ALL(%s)",
+                (version_id, [entry["kpi_id"] for entry in spec["kpi_coverage"]]),
+            )
+            cursor.execute(
+                "DELETE FROM demo_exchange WHERE agent_version_id = %s "
+                "AND exchange_id <> ALL(%s)",
+                (version_id, [exchange["id"] for exchange in spec["demo_exchanges"]]),
+            )
+            cursor.execute(
+                "DELETE FROM agent_product_binding WHERE agent_version_id = %s "
+                "AND product_id <> ALL(%s)",
+                (version_id, [b["product_id"] for b in spec["data_products"]]),
+            )
+
             for entry in spec["kpi_coverage"]:
                 cursor.execute(
                     """

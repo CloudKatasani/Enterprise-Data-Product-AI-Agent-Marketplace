@@ -1,0 +1,97 @@
+{
+  "agent_id": "AG-TEL-003",
+  "agent_name": "Subscriber Experience Analyst",
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "unlimited leads on average subscriber tenure at 1,062.75 days, 34.19% of the total across 3 plan types.",
+    "narrative": "Ranked by the certified definition KPI-TENURE-004 over 25,200 rows in DP-TEL-001.",
+    "table": {
+      "columns": [
+        "plan_type",
+        "KPI-TENURE-004",
+        "observations"
+      ],
+      "rows": [
+        [
+          "unlimited",
+          1062.75,
+          13680
+        ],
+        [
+          "legacy",
+          1062.22,
+          3240
+        ],
+        [
+          "tiered",
+          983.28,
+          8280
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": null,
+        "unit": "days",
+        "x": "plan_type",
+        "y": "KPI-TENURE-004"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "activity_date",
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_days"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-003-03",
+  "kpi_definitions": [
+    "KPI-TENURE-004"
+  ],
+  "notes": [],
+  "question": "How does average subscriber tenure differ by plan type?",
+  "recorded_at": "2026-09-04T15:22:24.639872+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 9,
+    "rows_scanned": 25200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "plan_type",
+          "limit": 24,
+          "measure": "(avg(tenure_days))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 6,
+        "rows_returned": 3,
+        "rows_scanned": 25200,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

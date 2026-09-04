@@ -1,0 +1,43 @@
+{
+  "agent_version_id": "AGV-AG-RTL-003-1.0.0",
+  "analysis_type": "like_for_like",
+  "citations": [
+    {
+      "columns": [
+        "business_date",
+        "category",
+        "channel",
+        "comparable_store",
+        "cost_of_goods_sold",
+        "net_sales",
+        "region"
+      ],
+      "product_id": "DP-RTL-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "0.02",
+    "cohort_high": "35.61",
+    "cohort_high_observations": "1890",
+    "cohort_low": "35.59",
+    "cohort_low_observations": "21510",
+    "groups": "2",
+    "rows_scanned": "23400"
+  },
+  "exchange_id": "DEMO-AG-RTL-003-03",
+  "headline": "Gross Margin Rate is 35.61% where cohort is false against 35.59% where it is true, a gap of 0.02%.",
+  "kpi_definitions": [
+    "KPI-GMRATE-049"
+  ],
+  "narrative": "Both cohorts are drawn from DP-RTL-001 over the same period: 1,890 observations against 21,510.",
+  "question": "Do comparable stores trade at a different margin rate?",
+  "rows_scanned": 23400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-GMRATE-049",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

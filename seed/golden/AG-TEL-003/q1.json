@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "active_at_period_start",
+        "activity_date",
+        "churn_flag",
+        "plan_type",
+        "region",
+        "save_offer_accepted",
+        "segment",
+        "subscriber_id",
+        "tenure_band"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "6510",
+    "top": "100.00",
+    "top_share": "33.75"
+  },
+  "exchange_id": "DEMO-AG-TEL-003-01",
+  "headline": "enterprise leads on retention rate at 100.00%, 33.75% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-RETEN-002"
+  ],
+  "narrative": "Ranked by the certified definition KPI-RETEN-002 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which segments retain subscribers best?",
+  "rows_scanned": 6510,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-RETEN-002",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

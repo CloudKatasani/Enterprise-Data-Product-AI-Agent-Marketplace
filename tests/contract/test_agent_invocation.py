@@ -144,7 +144,12 @@ def test_an_action_request_returns_422_naming_the_boundary(
         client, agent["agent_id"],
         question="Approve the change and close the alert now.",
     ).json()["detail"]
-    assert "boundary" in detail or "does not cover" in detail
+    # The refusal has to point at a limit the agent actually declares, whether
+    # it can name the nearest one or has to list them all. Checking for the
+    # word "boundary" only tested which of those two sentences was written.
+    declared = agent["out_of_scope"]
+    assert declared, "the agent under test declares no boundary"
+    assert any(limit in detail for limit in declared), detail
 
 
 # ---------------------------------------------------------------------------

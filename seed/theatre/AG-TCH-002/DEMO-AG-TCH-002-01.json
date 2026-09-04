@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-TCH-002",
+  "agent_name": "Account Retention Analyst",
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "DAU to MAU Ratio is 0.91 for the month ending 2026-09-01, down 0.09 on the prior month.",
+    "narrative": "Computed from DP-TCH-001 under the certified definition KPI-DAUMAU-011, across 4 months and 50,400 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-DAUMAU-011",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-06-01",
+          1.0,
+          13440
+        ],
+        [
+          "2026-07-01",
+          1.0,
+          17360
+        ],
+        [
+          "2026-08-01",
+          1.0,
+          17360
+        ],
+        [
+          "2026-09-01",
+          0.91,
+          2240
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 0.42,
+        "unit": "ratio",
+        "x": "period",
+        "y": "KPI-DAUMAU-011"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "activity_date",
+        "plan_tier",
+        "segment",
+        "region",
+        "daily_active_account",
+        "monthly_active_account",
+        "activated"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-002-01",
+  "kpi_definitions": [
+    "KPI-DAUMAU-011"
+  ],
+  "notes": [],
+  "question": "How has the DAU to MAU ratio moved month by month?",
+  "recorded_at": "2026-09-04T15:22:24.265877+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 39,
+    "rows_scanned": 50400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct daily_active_account))::numeric / NULLIF((count(distinct monthly_active_account))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 35,
+        "rows_returned": 4,
+        "rows_scanned": 50400,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

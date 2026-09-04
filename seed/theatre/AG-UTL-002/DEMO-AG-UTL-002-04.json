@@ -1,0 +1,103 @@
+{
+  "agent_id": "AG-UTL-002",
+  "agent_name": "Restoration Performance Analyst",
+  "agent_version_id": "AGV-AG-UTL-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Average Restoration Time is 194.38 minutes for the month ending 2026-09-01, up 4.59 minutes on the prior month.",
+    "narrative": "Computed from DP-UTL-001 under the certified definition KPI-RESTORE-064, across 4 months and 21,600 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-RESTORE-064",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-06-01",
+          193.95,
+          5760
+        ],
+        [
+          "2026-07-01",
+          189.86,
+          7440
+        ],
+        [
+          "2026-08-01",
+          189.79,
+          7440
+        ],
+        [
+          "2026-09-01",
+          194.38,
+          960
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 110.0,
+        "unit": "minutes",
+        "x": "period",
+        "y": "KPI-RESTORE-064"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "outage_id",
+        "observed_date",
+        "feeder",
+        "region",
+        "cause_class",
+        "restoration_minutes",
+        "major_event_day"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-002-04",
+  "kpi_definitions": [
+    "KPI-RESTORE-064"
+  ],
+  "notes": [],
+  "question": "How has restoration time moved month by month?",
+  "recorded_at": "2026-09-04T15:22:24.949492+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 13,
+    "rows_scanned": 21600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(restoration_minutes))::numeric / NULLIF((count(distinct outage_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 9,
+        "rows_returned": 4,
+        "rows_scanned": 21600,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

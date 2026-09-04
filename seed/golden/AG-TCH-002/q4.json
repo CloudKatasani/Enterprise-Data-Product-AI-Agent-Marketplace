@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "account_id",
+        "activity_date",
+        "ending_recurring_revenue",
+        "plan_tier",
+        "region",
+        "segment",
+        "starting_recurring_revenue"
+      ],
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "50400",
+    "top": "106.14",
+    "top_share": "33.41"
+  },
+  "exchange_id": "DEMO-AG-TCH-002-04",
+  "headline": "growth leads on net revenue retention at 106.14%, 33.41% of the total across 3 plan tiers.",
+  "kpi_definitions": [
+    "KPI-NRR-015"
+  ],
+  "narrative": "Ranked by the certified definition KPI-NRR-015 over 50,400 rows in DP-TCH-001.",
+  "question": "How does net revenue retention differ by plan tier?",
+  "rows_scanned": 50400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "plan_tier",
+    "KPI-NRR-015",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

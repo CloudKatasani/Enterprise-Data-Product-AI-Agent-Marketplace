@@ -1,0 +1,246 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-ENG-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-ENG-001",
+    "name": "Load & Demand Analyst",
+    "industry": "utilities_energy",
+    "domain": "customer",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0043",
+      "team": "Metering & Demand",
+      "on_call": "pagerduty://metering-agents"
+    }
+  },
+  "capability_statement": "Answers questions about peak demand, load factor, consumption per customer, demand response take-up and estimated read rate.",
+  "business_value": {
+    "analyses": [
+      "concentration",
+      "comparison",
+      "programme_eval",
+      "gap_analysis",
+      "ranking"
+    ],
+    "replaces": "The monthly load report and the spreadsheet that ranks feeders by contribution to peak.",
+    "personas": [
+      "demand_planner",
+      "rate_analyst",
+      "metering_operations_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Rate setting or tariff design",
+    "Individual customer billing disputes",
+    "Load forecasting beyond the observed period"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-PEAKDEM-066",
+      "kpi_name": "Peak Demand",
+      "unit": "count",
+      "source_product": "DP-ENG-001",
+      "grains": [
+        "day",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "rate_class",
+        "region",
+        "feeder"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-LOADFACT-067",
+      "kpi_name": "Load Factor",
+      "unit": "ratio",
+      "source_product": "DP-ENG-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "rate_class",
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-CONSPC-068",
+      "kpi_name": "Consumption per Customer",
+      "unit": "count",
+      "source_product": "DP-ENG-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "rate_class",
+        "region",
+        "dwelling_type"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DRRESP-069",
+      "kpi_name": "Demand Response Event Response Rate",
+      "unit": "percent",
+      "source_product": "DP-ENG-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "programme",
+        "rate_class",
+        "region"
+      ],
+      "analysis_depth": "report",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-ESTREAD-070",
+      "kpi_name": "Estimated Read Rate",
+      "unit": "percent",
+      "source_product": "DP-ENG-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "rate_class",
+        "region",
+        "meter_type"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-ENG-001",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "rate_class",
+        "region",
+        "feeder",
+        "dwelling_type",
+        "meter_type",
+        "programme",
+        "read_type",
+        "consumption_kwh",
+        "interval_demand_kw",
+        "period_hours",
+        "enrolled_and_called",
+        "curtailed_during_event",
+        "temperature_c"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-ENG-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-ENG-001/ask",
+    "required_scope": "agent:AG-ENG-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Where is peak demand concentrated across our feeders?",
+      "How does load factor differ by rate class?",
+      "How does consumption per customer vary by dwelling type?",
+      "Which demand response programmes are getting the best response?",
+      "Which meter types drive our estimated read rate?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-ENG-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_eng_001",
+        "scope": "dp:DP-ENG-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-ENG-001": "2.1.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "8fd9ad72501efeb6c396d40757672c67518167056226bd4580a7793386817efc"
+}

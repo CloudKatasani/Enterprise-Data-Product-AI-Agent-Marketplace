@@ -1,0 +1,99 @@
+{
+  "agent_id": "AG-TRN-002",
+  "agent_name": "Fleet Utilisation Analyst",
+  "agent_version_id": "AGV-AG-TRN-002-1.0.0",
+  "analysis_type": "gap_analysis",
+  "answer": {
+    "headline": "carrier_bravo leads on asset utilization at 73.34%, 33.39% of the total across 3 carriers.",
+    "narrative": "Ranked by the certified definition KPI-ASSETUTIL-059 over 13,200 rows in DP-TRN-001.",
+    "table": {
+      "columns": [
+        "carrier",
+        "KPI-ASSETUTIL-059",
+        "observations"
+      ],
+      "rows": [
+        [
+          "carrier_bravo",
+          73.34,
+          3870
+        ],
+        [
+          "carrier_alpha",
+          73.24,
+          5317
+        ],
+        [
+          "carrier_charlie",
+          73.09,
+          4013
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 78.0,
+        "unit": "percent",
+        "x": "carrier",
+        "y": "KPI-ASSETUTIL-059"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "shipment_leg_id",
+        "departure_timestamp",
+        "equipment_type",
+        "region",
+        "carrier",
+        "revenue_hours",
+        "available_hours",
+        "delivered_within_window"
+      ],
+      "contract_version": "2.2.0",
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-002-05",
+  "kpi_definitions": [
+    "KPI-ASSETUTIL-059"
+  ],
+  "notes": [],
+  "question": "Which carriers have the widest utilisation gap to the best?",
+  "recorded_at": "2026-09-04T15:22:24.744902+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 13200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "carrier",
+          "limit": 24,
+          "measure": "((sum(revenue_hours))::numeric / NULLIF((sum(available_hours))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 3,
+        "rows_scanned": 13200,
+        "tool": "query_dp_trn_001"
+      }
+    ]
+  }
+}

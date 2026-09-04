@@ -1,0 +1,182 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-HLT-003
+  name: "Care Access & Adherence Analyst"
+  industry: healthcare
+  domain: operations
+  owner:
+    party_id: PTY-0038
+    team: "Population Health Operations"
+    on_call: "pagerduty://population-health-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about care gap closure, emergency department utilization and therapeutic
+    substitution across the attributed population.
+  business_value_block:
+    analyses: [gap_analysis, comparison, trend_segmented, cohort_comparison, performance_ranking]
+    replaces: >-
+      The monthly population health pack and the formulary adherence review that sits beside it.
+    personas: [population_health_lead, care_management_director, pharmacy_operations_lead]
+  out_of_scope:
+    - "Clinical decisions or treatment recommendations"
+    - "Outreach scheduling or patient contact"
+    - "Identifying individual patients or members"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-HLT-003/system@v1
+  data_products:
+    - product_id: DP-HLT-001
+      columns: [encounter_id, attributed_member_id, ed_encounter_id, discharge_date, condition, payer, region, clinic, measure, gap_open_at_period_start, gap_closed, programme_enrolled]
+      access: read
+    - product_id: DP-HLT-002
+      columns: [item_id, facility, activity_date, therapeutic_class, item_class, service_line, on_formulary, substitution_eligible, substituted]
+      access: read
+  tool_bindings:
+    - tool: query_dp_hlt_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-001"
+      scope: "dp:DP-HLT-001:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: query_dp_hlt_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-002"
+      scope: "dp:DP-HLT-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-CAREGAP-039
+      source_product: DP-HLT-001
+      columns_used: [encounter_id, discharge_date, measure, payer, clinic, gap_open_at_period_start, gap_closed, programme_enrolled]
+      grains: [month, quarter, year]
+      slices: [measure, payer, clinic]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-EDUTIL-038
+      source_product: DP-HLT-001
+      columns_used: [ed_encounter_id, attributed_member_id, discharge_date, condition, payer, region]
+      grains: [month, quarter, year]
+      slices: [condition, payer, region]
+      analysis_depth: explain
+    - kpi_id: KPI-SUBST-045
+      source_product: DP-HLT-002
+      columns_used: [item_id, activity_date, therapeutic_class, facility, substitution_eligible, substituted]
+      grains: [month, quarter]
+      slices: [therapeutic_class, facility]
+      analysis_depth: compare
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, phi_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 7000
+    cost_per_answer_usd: 0.08
+  demo_exchanges:
+    - id: DEMO-AG-HLT-003-01
+      ordinal: 1
+      question: "Which quality measures have the weakest care gap closure?"
+      kpi_class: KPI-CAREGAP-039
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the measures closing fewest gaps, and the distance to the best performer
+        visual: bar
+        table_columns: [measure, closure_rate_pct, open_gaps]
+        must_cite: [DP-HLT-001, KPI-CAREGAP-039]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-HLT-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-003-02
+      ordinal: 2
+      question: "Do members enrolled in a care programme close more gaps?"
+      kpi_class: KPI-CAREGAP-039
+      analysis_type: programme_eval
+      expected_shape:
+        headline: >-
+          the difference in gap closure between enrolled and non-enrolled members
+        visual: bar
+        table_columns: [cohort, closure_rate_pct, open_gaps]
+        must_cite: [DP-HLT-001, KPI-CAREGAP-039]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-HLT-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-003-03
+      ordinal: 3
+      question: "Which conditions drive emergency department utilization?"
+      kpi_class: KPI-EDUTIL-038
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the conditions contributing most emergency visits per thousand members
+        visual: bar
+        table_columns: [condition, ed_visits_per_1000, members]
+        must_cite: [DP-HLT-001, KPI-EDUTIL-038]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-HLT-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-003-04
+      ordinal: 4
+      question: "How has emergency department utilization moved by month?"
+      kpi_class: KPI-EDUTIL-038
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of emergency utilization over the observed months
+        visual: line
+        table_columns: [period, ed_visits_per_1000, members]
+        must_cite: [DP-HLT-001, KPI-EDUTIL-038]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-HLT-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-003-05
+      ordinal: 5
+      question: "Where is therapeutic substitution weakest by therapeutic class?"
+      kpi_class: KPI-SUBST-045
+      analysis_type: compliance_ranking
+      expected_shape:
+        headline: >-
+          the therapeutic classes substituting least of what was eligible
+        visual: bar
+        table_columns: [therapeutic_class, substitution_rate_pct, eligible_lines]
+        must_cite: [DP-HLT-002, KPI-SUBST-045]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-HLT-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-HLT-003/
+  value_case:
+    benefit_model: "avoided_population_health_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per care gap or utilization question"
+        value: 65
+        unit: minutes
+        sample_size: 11
+        source: "population health analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0038

@@ -1,0 +1,93 @@
+{
+  "agent_id": "AG-TCH-002",
+  "agent_name": "Account Retention Analyst",
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Net Revenue Retention is 105.93% for the quarter ending 2026-07-01, up 0.11% on the prior quarter.",
+    "narrative": "Computed from DP-TCH-001 under the certified definition KPI-NRR-015, across 2 quarters and 50,400 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-NRR-015",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-04-01",
+          105.82,
+          13440
+        ],
+        [
+          "2026-07-01",
+          105.93,
+          36960
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 112.0,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-NRR-015"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "activity_date",
+        "plan_tier",
+        "segment",
+        "region",
+        "starting_recurring_revenue",
+        "ending_recurring_revenue"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-002-05",
+  "kpi_definitions": [
+    "KPI-NRR-015"
+  ],
+  "notes": [],
+  "question": "How has net revenue retention moved quarter by quarter?",
+  "recorded_at": "2026-09-04T15:22:24.368009+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 23,
+    "rows_scanned": 50400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(ending_recurring_revenue))::numeric / NULLIF((sum(starting_recurring_revenue))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 18,
+        "rows_returned": 2,
+        "rows_scanned": 50400,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

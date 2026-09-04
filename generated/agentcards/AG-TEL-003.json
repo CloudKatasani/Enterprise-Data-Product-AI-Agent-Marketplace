@@ -1,0 +1,229 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TEL-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TEL-003",
+    "name": "Subscriber Experience Analyst",
+    "industry": "telecommunications",
+    "domain": "customer",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0031",
+      "team": "Subscriber Experience",
+      "on_call": "pagerduty://subscriber-experience-agents"
+    }
+  },
+  "capability_statement": "Answers questions about retention rate, average subscriber tenure and dropped call rate by segment, region, plan type and technology.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "comparison",
+      "trend_segmented",
+      "cohort_comparison",
+      "driver_ranking"
+    ],
+    "replaces": "The monthly subscriber experience review and the tenure cut each base manager builds by hand.",
+    "personas": [
+      "base_management_lead",
+      "service_experience_manager",
+      "regional_commercial_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Retention offer approval or discount authorisation",
+    "Network configuration or cell retune requests",
+    "Individual subscriber account enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-RETEN-002",
+      "kpi_name": "Retention Rate",
+      "unit": "percent",
+      "source_product": "DP-TEL-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_band"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-TENURE-004",
+      "kpi_name": "Average Subscriber Tenure",
+      "unit": "days",
+      "source_product": "DP-TEL-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "segment",
+        "region",
+        "plan_type"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DROP-007",
+      "kpi_name": "Dropped Call Rate",
+      "unit": "percent",
+      "source_product": "DP-TEL-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "site_class",
+        "technology"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TEL-001",
+      "columns": [
+        "subscriber_id",
+        "activity_date",
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_days",
+        "tenure_band",
+        "channel",
+        "active_at_period_start",
+        "churn_flag",
+        "save_offer_accepted"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TEL-001:read"
+    },
+    {
+      "product_id": "DP-TEL-002",
+      "columns": [
+        "site_id",
+        "observed_hour",
+        "region",
+        "site_class",
+        "technology",
+        "established_calls",
+        "dropped_calls"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TEL-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TEL-003/ask",
+    "required_scope": "agent:AG-TEL-003:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 7000,
+    "cost_per_answer_usd": 0.08
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which segments retain subscribers best?",
+      "How has retention rate moved month by month?",
+      "How does average subscriber tenure differ by plan type?",
+      "Which technologies drive the dropped call rate?",
+      "How does the dropped call rate differ across site classes?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TEL-003/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_tel_001",
+        "scope": "dp:DP-TEL-001:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "query_dp_tel_002",
+        "scope": "dp:DP-TEL-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TEL-001": "3.2.0",
+      "DP-TEL-002": "2.4.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "2d2a2a32d06801ebb4c75ac27c7a415ae01fd203b8f7d050b71c3ea57c1cbb4b"
+}

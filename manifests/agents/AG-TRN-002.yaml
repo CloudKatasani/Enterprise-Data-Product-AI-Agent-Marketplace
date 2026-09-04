@@ -1,0 +1,162 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TRN-002
+  name: "Fleet Utilisation Analyst"
+  industry: transportation
+  domain: network_asset
+  owner:
+    party_id: PTY-0042
+    team: "Fleet Asset Management"
+    on_call: "pagerduty://fleet-asset-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about asset utilization across equipment types, regions and carriers, and
+    where revenue hours are being lost.
+  business_value_block:
+    analyses: [efficiency_ranking, comparison, trend_segmented, cohort_comparison, gap_analysis]
+    replaces: >-
+      The weekly fleet utilisation sheet and the equipment ranking the asset manager rebuilds.
+    personas: [fleet_asset_manager, capacity_planner, carrier_performance_lead]
+  out_of_scope:
+    - "Equipment repositioning or dispatch instructions"
+    - "Carrier contracting or rate negotiation"
+    - "Individual shipment or tractor enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TRN-002/system@v1
+  data_products:
+    - product_id: DP-TRN-001
+      columns: [shipment_leg_id, departure_timestamp, lane, carrier, equipment_type, region, facility, service_level, revenue_hours, available_hours, dwell_hours, delivered_within_window]
+      access: read
+  tool_bindings:
+    - tool: query_dp_trn_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TRN-001"
+      scope: "dp:DP-TRN-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-ASSETUTIL-059
+      source_product: DP-TRN-001
+      columns_used: [shipment_leg_id, departure_timestamp, equipment_type, region, carrier, revenue_hours, available_hours, delivered_within_window]
+      grains: [week, month, quarter]
+      slices: [equipment_type, region, carrier]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 5000
+    cost_per_answer_usd: 0.05
+  demo_exchanges:
+    - id: DEMO-AG-TRN-002-01
+      ordinal: 1
+      question: "Which equipment types are utilised least?"
+      kpi_class: KPI-ASSETUTIL-059
+      analysis_type: efficiency_ranking
+      expected_shape:
+        headline: >-
+          the equipment types earning fewest of their available hours
+        visual: bar
+        table_columns: [equipment_type, asset_utilization_pct, available_hours]
+        must_cite: [DP-TRN-001, KPI-ASSETUTIL-059]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TRN-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-002-02
+      ordinal: 2
+      question: "How does asset utilization compare across regions?"
+      kpi_class: KPI-ASSETUTIL-059
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the regions above and below fleet utilisation, and the gap between the ends
+        visual: bar
+        table_columns: [region, asset_utilization_pct, available_hours]
+        must_cite: [DP-TRN-001, KPI-ASSETUTIL-059]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TRN-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-002-03
+      ordinal: 3
+      question: "How has asset utilization moved week by week?"
+      kpi_class: KPI-ASSETUTIL-059
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of fleet utilisation over the observed weeks, and its size
+        visual: line
+        table_columns: [period, asset_utilization_pct, available_hours]
+        must_cite: [DP-TRN-001, KPI-ASSETUTIL-059]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TRN-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-002-04
+      ordinal: 4
+      question: "Do legs delivered within the window use their hours differently?"
+      kpi_class: KPI-ASSETUTIL-059
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          the utilisation difference between on-window and missed-window legs
+        visual: bar
+        table_columns: [cohort, asset_utilization_pct, available_hours]
+        must_cite: [DP-TRN-001, KPI-ASSETUTIL-059]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TRN-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TRN-002-05
+      ordinal: 5
+      question: "Which carriers have the widest utilisation gap to the best?"
+      kpi_class: KPI-ASSETUTIL-059
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the carriers furthest from the best utilisation on the fleet
+        visual: bar
+        table_columns: [carrier, asset_utilization_pct, available_hours]
+        must_cite: [DP-TRN-001, KPI-ASSETUTIL-059]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TRN-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TRN-002/
+  value_case:
+    benefit_model: "avoided_fleet_utilisation_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per fleet utilisation question"
+        value: 42
+        unit: minutes
+        sample_size: 10
+        source: "fleet analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0042

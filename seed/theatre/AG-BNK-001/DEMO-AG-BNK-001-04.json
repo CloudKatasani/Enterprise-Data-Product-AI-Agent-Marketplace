@@ -66,12 +66,12 @@
   ],
   "notes": [],
   "question": "Which single-product customers show strong balance growth?",
-  "recorded_at": "2026-09-04T08:34:02.523151+00:00",
+  "recorded_at": "2026-09-04T15:22:22.530250+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 11,
+    "latency_ms": 12,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {

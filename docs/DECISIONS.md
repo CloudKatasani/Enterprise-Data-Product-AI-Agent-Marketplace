@@ -379,3 +379,48 @@ keying it on the approval is both correct and unique by construction.
 **Consequence** Revocation ends an access rather than blacklisting a person, and re-granting
 works. This is the worst shape a permission bug can take — both sides believe access was
 given — and it was invisible until a test tried the same journey twice.
+
+### D-037 — Nine more agents, and the six defects covering them exposed (2026-09-04)
+**Context** The agent catalogue had fourteen agents against fifteen data products, and 55 of the
+75 certified KPIs were answerable by nobody. Coverage was uneven in the two ways the browse
+experience shows: three industries had one agent or none in a whole business domain, and the
+`finance` domain existed in the taxonomy with nothing in it.
+**Decision** Nine agents, chosen so that each covers only KPIs no existing agent covers —
+AG-ENG-001, AG-BNK-003, AG-HLT-003, AG-INS-003, AG-RTL-003, AG-TCH-002, AG-TEL-003, AG-TRN-002,
+AG-UTL-002. Every industry and every business domain in the taxonomy now has at least one agent,
+and 74 of 75 KPIs are covered. Manufacturing keeps its single agent: all five of its KPIs are
+already answered by AG-MFG-001, and a second one would be the duplication the agent mesh exists
+to flag.
+**Consequence** Writing an agent against a KPI is the first thing that reads that KPI, and six
+defects surfaced that way — each fixed here rather than routed around:
+
+* `KPI-LOADFACT-067` multiplied a bare `period_hours` outside an aggregate, so any query over it
+  failed. Its numerator and denominator now compute the ratio its own business definition
+  states: average demand over peak demand.
+* `KPI-RETEN-002` counted subscribers with any non-churn row, which on daily data is everyone.
+  Retention read 100% while churn on the same denominator read 2.3%. It is now the complement it
+  claims to be: active at period start, less churned.
+* A measure that cannot be pooled across periods was restricted to the latest complete period
+  *at the grain the question asked for* — so a question with no time word pooled a year of
+  monthly snapshots and carried a note saying it had not. The restriction is now never wider
+  than a month.
+* A cohort split on a column the KPI's own expression uses is the definition restated: save rate
+  was "100% where the save offer was accepted against 0% where it was not". Such a column is no
+  longer eligible, and the question becomes the slice comparison it can answer.
+* `SELECT measure AS measure, (...) AS measure` returned the wrong one of the two, silently:
+  DP-HLT-001 has a slice column named `measure`. The grouped dimension now has a reserved alias.
+* A distribution fell back to the first readable column when none matched the KPI expression,
+  which under a narrowed entitlement was a date — `percentile_cont` over a date, and a crash.
+  The column must now be both the measured one and numeric, else the question degrades to a
+  slice comparison.
+
+The same first reading recalibrated one generated column. DP-INS-001's `earned_premium` was
+drawn from a range picked beside the loss range rather than against it, putting the book's loss
+ratio at 157% — a number no insurer survives, and one nothing read until an agent covered
+`KPI-LOSSRATIO-026`. The range now yields about 70%.
+
+**Consequence** `KPI-CONVRATE-048` is left uncovered, and deliberately. Its source of record,
+DP-RTL-001, is one row per transaction line: a visit that did not convert has no row, `visit_id`
+and `transaction_id` are one-to-one across all 23,400 rows, and conversion computes to 100.00%
+everywhere. The measure needs a visit-grain product, which is a supply gap to raise rather than
+a number to publish.

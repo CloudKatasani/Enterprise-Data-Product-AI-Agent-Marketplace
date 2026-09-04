@@ -1,0 +1,113 @@
+{
+  "agent_id": "AG-RTL-003",
+  "agent_name": "Trading Margin Analyst",
+  "agent_version_id": "AGV-AG-RTL-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "toys leads on gross margin rate at 35.68%, 16.70% of the total across 6 categorys.",
+    "narrative": "Ranked by the certified definition KPI-GMRATE-049 over 23,400 rows in DP-RTL-001.",
+    "table": {
+      "columns": [
+        "category",
+        "KPI-GMRATE-049",
+        "observations"
+      ],
+      "rows": [
+        [
+          "toys",
+          35.68,
+          2626
+        ],
+        [
+          "electronics",
+          35.66,
+          3920
+        ],
+        [
+          "beauty",
+          35.61,
+          2636
+        ],
+        [
+          "grocery",
+          35.6,
+          5128
+        ],
+        [
+          "home",
+          35.6,
+          3848
+        ],
+        [
+          "apparel",
+          35.47,
+          5242
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 38.0,
+        "unit": "percent",
+        "x": "category",
+        "y": "KPI-GMRATE-049"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "business_date",
+        "category",
+        "region",
+        "channel",
+        "net_sales",
+        "cost_of_goods_sold",
+        "comparable_store"
+      ],
+      "contract_version": "6.2.0",
+      "product_id": "DP-RTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-RTL-003-01",
+  "kpi_definitions": [
+    "KPI-GMRATE-049"
+  ],
+  "notes": [],
+  "question": "Which categories have the weakest gross margin rate?",
+  "recorded_at": "2026-09-04T15:22:23.837619+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 8,
+    "rows_scanned": 23400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "category",
+          "limit": 24,
+          "measure": "((sum(net_sales) - sum(cost_of_goods_sold))::numeric / NULLIF((sum(net_sales))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 6,
+        "rows_returned": 6,
+        "rows_scanned": 23400,
+        "tool": "query_dp_rtl_001"
+      }
+    ]
+  }
+}

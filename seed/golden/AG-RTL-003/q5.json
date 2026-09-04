@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-RTL-003-1.0.0",
+  "analysis_type": "contribution_ranking",
+  "citations": [
+    {
+      "columns": [
+        "business_date",
+        "category",
+        "channel",
+        "comparable_store",
+        "cost_of_goods_sold",
+        "net_sales",
+        "region"
+      ],
+      "product_id": "DP-RTL-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "23400",
+    "top": "35.75",
+    "top_share": "33.44"
+  },
+  "exchange_id": "DEMO-AG-RTL-003-05",
+  "headline": "marketplace leads on gross margin rate at 35.75%, 33.44% of the total across 3 channels.",
+  "kpi_definitions": [
+    "KPI-GMRATE-049"
+  ],
+  "narrative": "Ranked by the certified definition KPI-GMRATE-049 over 23,400 rows in DP-RTL-001.",
+  "question": "Which channels contribute most to gross margin?",
+  "rows_scanned": 23400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "channel",
+    "KPI-GMRATE-049",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

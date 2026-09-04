@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "dropped_calls",
+        "established_calls",
+        "observed_hour",
+        "region",
+        "site_class",
+        "site_id",
+        "technology"
+      ],
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "15120",
+    "top": "0.70",
+    "top_share": "33.49"
+  },
+  "exchange_id": "DEMO-AG-TEL-003-05",
+  "headline": "urban leads on dropped call rate at 0.70%, 33.49% of the total across 3 site classs.",
+  "kpi_definitions": [
+    "KPI-DROP-007"
+  ],
+  "narrative": "Ranked by the certified definition KPI-DROP-007 over 15,120 rows in DP-TEL-002.",
+  "question": "How does the dropped call rate differ across site classes?",
+  "rows_scanned": 15120,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "site_class",
+    "KPI-DROP-007",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

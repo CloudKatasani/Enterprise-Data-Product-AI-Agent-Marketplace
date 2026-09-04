@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "channel",
+        "claim_id",
+        "coverage_line",
+        "earned_premium",
+        "incurred_losses",
+        "region",
+        "transition_timestamp"
+      ],
+      "product_id": "DP-INS-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "12600",
+    "top": "82.88",
+    "top_share": "38.60"
+  },
+  "exchange_id": "DEMO-AG-INS-003-02",
+  "headline": "broker leads on loss ratio at 82.88%, 38.60% of the total across 3 channels.",
+  "kpi_definitions": [
+    "KPI-LOSSRATIO-026"
+  ],
+  "narrative": "Ranked by the certified definition KPI-LOSSRATIO-026 over 12,600 rows in DP-INS-001.",
+  "question": "How does loss ratio compare across distribution channels?",
+  "rows_scanned": 12600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "channel",
+    "KPI-LOSSRATIO-026",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

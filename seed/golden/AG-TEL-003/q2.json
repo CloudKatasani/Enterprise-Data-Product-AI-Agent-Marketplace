@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "active_at_period_start",
+        "activity_date",
+        "churn_flag",
+        "plan_type",
+        "region",
+        "save_offer_accepted",
+        "segment",
+        "subscriber_id",
+        "tenure_band"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "current": "100.00",
+    "delta": "1.43",
+    "groups": "5",
+    "rows_scanned": "25200"
+  },
+  "exchange_id": "DEMO-AG-TEL-003-02",
+  "headline": "Retention Rate is 100.00% for the month ending 2026-09-01, up 1.43% on the prior month.",
+  "kpi_definitions": [
+    "KPI-RETEN-002"
+  ],
+  "narrative": "Computed from DP-TEL-001 under the certified definition KPI-RETEN-002, across 5 months and 25,200 rows.",
+  "question": "How has retention rate moved month by month?",
+  "rows_scanned": 25200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-RETEN-002",
+    "observations"
+  ],
+  "visual_type": "line"
+}

@@ -15,28 +15,25 @@
     }
   ],
   "claims": {
-    "cohort_gap": "100.00",
-    "cohort_high": "100.00",
-    "cohort_high_observations": "95",
-    "cohort_low": "0.00",
-    "cohort_low_observations": "11245",
-    "groups": "2",
-    "rows_scanned": "11340"
+    "groups": "3",
+    "rows_scanned": "6510",
+    "top": "44.93",
+    "top_share": "35.80"
   },
   "exchange_id": "DEMO-AG-TEL-001-05",
-  "headline": "Save Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "headline": "consumer leads on save rate at 44.93%, 35.80% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-SAVE-003"
   ],
-  "narrative": "Both cohorts are drawn from DP-TEL-001 over the same period: 95 observations against 11,245. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-SAVE-003 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Did the May retention campaign actually work?",
-  "rows_scanned": 11340,
+  "rows_scanned": 6510,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
-    "cohort",
+    "segment",
     "KPI-SAVE-003",
     "observations"
   ],
-  "visual_type": "comparison_bars"
+  "visual_type": "bar"
 }

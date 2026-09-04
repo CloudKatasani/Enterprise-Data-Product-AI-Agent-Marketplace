@@ -1,0 +1,166 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-UTL-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-UTL-002",
+    "name": "Restoration Performance Analyst",
+    "industry": "utilities_energy",
+    "domain": "operations",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0045",
+      "team": "Field Restoration",
+      "on_call": "pagerduty://restoration-agents"
+    }
+  },
+  "capability_statement": "Answers questions about average restoration time across feeders, regions and cause classes, and where restoration is slowest.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "comparison",
+      "trend_segmented",
+      "driver_ranking",
+      "distribution"
+    ],
+    "replaces": "The monthly restoration review and the crew performance cut the field manager builds by hand.",
+    "personas": [
+      "field_operations_manager",
+      "restoration_lead",
+      "reliability_engineer"
+    ]
+  },
+  "out_of_scope": [
+    "Crew dispatch or work order assignment",
+    "Switching orders or network reconfiguration",
+    "Individual customer outage enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-RESTORE-064",
+      "kpi_name": "Average Restoration Time",
+      "unit": "minutes",
+      "source_product": "DP-UTL-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "feeder",
+        "region",
+        "cause_class"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-UTL-001",
+      "columns": [
+        "outage_id",
+        "observed_date",
+        "feeder",
+        "region",
+        "asset_class",
+        "cause_class",
+        "crew",
+        "restoration_minutes",
+        "major_event_day",
+        "load_impact_mw"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-UTL-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-UTL-002/ask",
+    "required_scope": "agent:AG-UTL-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 5000,
+    "cost_per_answer_usd": 0.05
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which cause classes take longest to restore?",
+      "Which feeders are slowest to restore?",
+      "How does restoration time compare across regions?",
+      "How has restoration time moved month by month?",
+      "How is restoration time distributed across feeders?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-UTL-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_utl_001",
+        "scope": "dp:DP-UTL-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-UTL-001": "3.7.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "f0e3614370f4aa44f6d9646c1996105881f3695e563077b3fd03bf1e020e0219"
+}

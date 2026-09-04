@@ -4,24 +4,29 @@
   "agent_version_id": "AGV-AG-TCH-001-1.0.0",
   "analysis_type": "cohort_comparison",
   "answer": {
-    "headline": "Activation Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
-    "narrative": "Both cohorts are drawn from DP-TCH-001 over the same period: 5,136 observations against 8,304. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "headline": "enterprise leads on activation rate at 93.33%, 35.81% of the total across 3 plan tiers.",
+    "narrative": "Ranked by the certified definition KPI-ACTIV-013 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
-        "cohort",
+        "plan_tier",
         "KPI-ACTIV-013",
         "observations"
       ],
       "rows": [
         [
-          "false",
-          0.0,
-          8304
+          "enterprise",
+          93.33,
+          3720
         ],
         [
-          "true",
-          100.0,
-          5136
+          "starter",
+          85.19,
+          6696
+        ],
+        [
+          "growth",
+          82.14,
+          6944
         ]
       ]
     },
@@ -30,10 +35,10 @@
         "direction": "higher_is_better",
         "target": 68.0,
         "unit": "percent",
-        "x": "cohort",
+        "x": "plan_tier",
         "y": "KPI-ACTIV-013"
       },
-      "type": "comparison_bars"
+      "type": "bar"
     }
   },
   "citations": [
@@ -60,13 +65,13 @@
   ],
   "notes": [],
   "question": "Did the March onboarding change improve activation?",
-  "recorded_at": "2026-09-04T08:34:03.705526+00:00",
+  "recorded_at": "2026-09-04T15:22:24.143575+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 83,
-    "rows_scanned": 13440,
+    "latency_ms": 73,
+    "rows_scanned": 17360,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -76,16 +81,16 @@
       {
         "arguments": {
           "grain": "quarter",
-          "group_by": "cohort",
+          "group_by": "plan_tier",
           "limit": 24,
           "measure": "((count(distinct account_id) filter (where activated))::numeric / NULLIF((count(distinct account_id) filter (where onboarded))::numeric, 0) * 100)",
-          "period": "2026-04-01",
+          "period": "2026-08-01",
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 80,
-        "rows_returned": 2,
-        "rows_scanned": 13440,
+        "duration_ms": 70,
+        "rows_returned": 3,
+        "rows_scanned": 17360,
         "tool": "query_dp_tch_001"
       }
     ]

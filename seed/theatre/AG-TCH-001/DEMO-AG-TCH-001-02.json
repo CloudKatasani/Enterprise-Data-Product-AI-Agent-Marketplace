@@ -90,12 +90,12 @@
   ],
   "notes": [],
   "question": "Which accounts show adoption decline ahead of renewal?",
-  "recorded_at": "2026-09-04T08:34:03.593531+00:00",
+  "recorded_at": "2026-09-04T15:22:24.044158+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 87,
+    "latency_ms": 80,
     "rows_scanned": 17360,
     "runtime": "analytic",
     "tokens": {
@@ -113,7 +113,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 85,
+        "duration_ms": 75,
         "rows_returned": 8,
         "rows_scanned": 17360,
         "tool": "query_dp_tch_001"

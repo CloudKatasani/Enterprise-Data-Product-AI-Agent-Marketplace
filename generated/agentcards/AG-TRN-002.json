@@ -1,0 +1,169 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TRN-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TRN-002",
+    "name": "Fleet Utilisation Analyst",
+    "industry": "transportation",
+    "domain": "network_asset",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0042",
+      "team": "Fleet Asset Management",
+      "on_call": "pagerduty://fleet-asset-agents"
+    }
+  },
+  "capability_statement": "Answers questions about asset utilization across equipment types, regions and carriers, and where revenue hours are being lost.",
+  "business_value": {
+    "analyses": [
+      "efficiency_ranking",
+      "comparison",
+      "trend_segmented",
+      "cohort_comparison",
+      "gap_analysis"
+    ],
+    "replaces": "The weekly fleet utilisation sheet and the equipment ranking the asset manager rebuilds.",
+    "personas": [
+      "fleet_asset_manager",
+      "capacity_planner",
+      "carrier_performance_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Equipment repositioning or dispatch instructions",
+    "Carrier contracting or rate negotiation",
+    "Individual shipment or tractor enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-ASSETUTIL-059",
+      "kpi_name": "Asset Utilization",
+      "unit": "percent",
+      "source_product": "DP-TRN-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "equipment_type",
+        "region",
+        "carrier"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TRN-001",
+      "columns": [
+        "shipment_leg_id",
+        "departure_timestamp",
+        "lane",
+        "carrier",
+        "equipment_type",
+        "region",
+        "facility",
+        "service_level",
+        "revenue_hours",
+        "available_hours",
+        "dwell_hours",
+        "delivered_within_window"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TRN-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TRN-002/ask",
+    "required_scope": "agent:AG-TRN-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 5000,
+    "cost_per_answer_usd": 0.05
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which equipment types are utilised least?",
+      "How does asset utilization compare across regions?",
+      "How has asset utilization moved week by week?",
+      "Do legs delivered within the window use their hours differently?",
+      "Which carriers have the widest utilisation gap to the best?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TRN-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_trn_001",
+        "scope": "dp:DP-TRN-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TRN-001": "2.2.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "26f7ca83da99c5fa7202d6553c9bcda7241edcb4027923e0034e290b5f417a46"
+}

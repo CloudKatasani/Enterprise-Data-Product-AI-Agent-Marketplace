@@ -1,0 +1,94 @@
+{
+  "agent_id": "AG-TRN-002",
+  "agent_name": "Fleet Utilisation Analyst",
+  "agent_version_id": "AGV-AG-TRN-002-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Asset Utilization is 73.63% where cohort is true against 67.43% where it is false, a gap of 6.20%.",
+    "narrative": "Both cohorts are drawn from DP-TRN-001 over the same period: 12,336 observations against 864.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-ASSETUTIL-059",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          67.43,
+          864
+        ],
+        [
+          "true",
+          73.63,
+          12336
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 78.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-ASSETUTIL-059"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "shipment_leg_id",
+        "departure_timestamp",
+        "equipment_type",
+        "region",
+        "carrier",
+        "revenue_hours",
+        "available_hours",
+        "delivered_within_window"
+      ],
+      "contract_version": "2.2.0",
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-002-04",
+  "kpi_definitions": [
+    "KPI-ASSETUTIL-059"
+  ],
+  "notes": [],
+  "question": "Do legs delivered within the window use their hours differently?",
+  "recorded_at": "2026-09-04T15:22:24.737567+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 13200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((sum(revenue_hours))::numeric / NULLIF((sum(available_hours))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 2,
+        "rows_scanned": 13200,
+        "tool": "query_dp_trn_001"
+      }
+    ]
+  }
+}

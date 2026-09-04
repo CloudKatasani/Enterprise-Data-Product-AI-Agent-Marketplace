@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TRN-002-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "available_hours",
+        "carrier",
+        "delivered_within_window",
+        "departure_timestamp",
+        "equipment_type",
+        "region",
+        "revenue_hours",
+        "shipment_leg_id"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "13200",
+    "top": "73.60",
+    "top_share": "25.13"
+  },
+  "exchange_id": "DEMO-AG-TRN-002-02",
+  "headline": "West leads on asset utilization at 73.60%, 25.13% of the total across 4 regions.",
+  "kpi_definitions": [
+    "KPI-ASSETUTIL-059"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ASSETUTIL-059 over 13,200 rows in DP-TRN-001.",
+  "question": "How does asset utilization compare across regions?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "region",
+    "KPI-ASSETUTIL-059",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,43 @@
+{
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "active_product_count",
+        "as_of_month",
+        "customer_id",
+        "primary_relationship",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "0.21",
+    "cohort_high": "3.67",
+    "cohort_high_observations": "193",
+    "cohort_low": "3.46",
+    "cohort_low_observations": "307",
+    "groups": "2",
+    "rows_scanned": "500"
+  },
+  "exchange_id": "DEMO-AG-BNK-003-04",
+  "headline": "Products per Customer is 3.67 where cohort is false against 3.46 where it is true, a gap of 0.21.",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "narrative": "Both cohorts are drawn from DP-BNK-001 over the same period: 193 observations against 307. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Do customers with a primary relationship hold more products?",
+  "rows_scanned": 500,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-PPC-017",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

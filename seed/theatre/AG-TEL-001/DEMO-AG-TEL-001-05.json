@@ -4,24 +4,29 @@
   "agent_version_id": "AGV-AG-TEL-001-1.0.0",
   "analysis_type": "cohort_comparison",
   "answer": {
-    "headline": "Save Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
-    "narrative": "Both cohorts are drawn from DP-TEL-001 over the same period: 95 observations against 11,245. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "headline": "consumer leads on save rate at 44.93%, 35.80% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-SAVE-003 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
-        "cohort",
+        "segment",
         "KPI-SAVE-003",
         "observations"
       ],
       "rows": [
         [
-          "false",
-          0.0,
-          11245
+          "consumer",
+          44.93,
+          4402
         ],
         [
-          "true",
-          100.0,
-          95
+          "enterprise",
+          41.67,
+          744
+        ],
+        [
+          "small_business",
+          38.89,
+          1364
         ]
       ]
     },
@@ -30,10 +35,10 @@
         "direction": "higher_is_better",
         "target": 34.0,
         "unit": "percent",
-        "x": "cohort",
+        "x": "segment",
         "y": "KPI-SAVE-003"
       },
-      "type": "comparison_bars"
+      "type": "bar"
     }
   },
   "citations": [
@@ -59,13 +64,13 @@
   ],
   "notes": [],
   "question": "Did the May retention campaign actually work?",
-  "recorded_at": "2026-09-04T08:34:03.951203+00:00",
+  "recorded_at": "2026-09-04T15:22:24.506508+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 49,
-    "rows_scanned": 11340,
+    "latency_ms": 41,
+    "rows_scanned": 6510,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -75,16 +80,16 @@
       {
         "arguments": {
           "grain": "quarter",
-          "group_by": "cohort",
+          "group_by": "segment",
           "limit": 24,
           "measure": "((count(distinct subscriber_id) filter (where save_offer_accepted))::numeric / NULLIF((count(distinct subscriber_id) filter (where save_offer_made))::numeric, 0) * 100)",
-          "period": "2026-04-01",
+          "period": "2026-08-01",
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 45,
-        "rows_returned": 2,
-        "rows_scanned": 11340,
+        "duration_ms": 38,
+        "rows_returned": 3,
+        "rows_scanned": 6510,
         "tool": "query_dp_tel_001"
       }
     ]

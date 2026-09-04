@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TRN-002-1.0.0",
+  "analysis_type": "gap_analysis",
+  "citations": [
+    {
+      "columns": [
+        "available_hours",
+        "carrier",
+        "delivered_within_window",
+        "departure_timestamp",
+        "equipment_type",
+        "region",
+        "revenue_hours",
+        "shipment_leg_id"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "13200",
+    "top": "73.34",
+    "top_share": "33.39"
+  },
+  "exchange_id": "DEMO-AG-TRN-002-05",
+  "headline": "carrier_bravo leads on asset utilization at 73.34%, 33.39% of the total across 3 carriers.",
+  "kpi_definitions": [
+    "KPI-ASSETUTIL-059"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ASSETUTIL-059 over 13,200 rows in DP-TRN-001.",
+  "question": "Which carriers have the widest utilisation gap to the best?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "carrier",
+    "KPI-ASSETUTIL-059",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

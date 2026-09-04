@@ -1,0 +1,44 @@
+{
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "bound",
+        "channel",
+        "coverage_line",
+        "policy_id",
+        "region",
+        "segment",
+        "written_premium"
+      ],
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "482727437.60",
+    "cohort_high": "622216893.76",
+    "cohort_high_observations": "14448",
+    "cohort_low": "139489456.16",
+    "cohort_low_observations": "2832",
+    "groups": "2",
+    "rows_scanned": "17280"
+  },
+  "exchange_id": "DEMO-AG-INS-003-05",
+  "headline": "Gross Written Premium is $622,216,893.76 where cohort is false against $139,489,456.16 where it is true, a gap of $482,727,437.60.",
+  "kpi_definitions": [
+    "KPI-WRITTENPREM-031"
+  ],
+  "narrative": "Both cohorts are drawn from DP-INS-002 over the same period: 14,448 observations against 2,832.",
+  "question": "How does written premium differ between bound and unbound quotes?",
+  "rows_scanned": 17280,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-WRITTENPREM-031",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

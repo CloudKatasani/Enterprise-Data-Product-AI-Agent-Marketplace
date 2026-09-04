@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "contribution_ranking",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "bound",
+        "channel",
+        "coverage_line",
+        "policy_id",
+        "region",
+        "segment",
+        "written_premium"
+      ],
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "17280",
+    "top": "297910317.60",
+    "top_share": "39.11"
+  },
+  "exchange_id": "DEMO-AG-INS-003-04",
+  "headline": "commercial_property leads on gross written premium at $297,910,317.60, 39.11% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-WRITTENPREM-031"
+  ],
+  "narrative": "Ranked by the certified definition KPI-WRITTENPREM-031 over 17,280 rows in DP-INS-002.",
+  "question": "Which segments contribute most gross written premium?",
+  "rows_scanned": 17280,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-WRITTENPREM-031",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

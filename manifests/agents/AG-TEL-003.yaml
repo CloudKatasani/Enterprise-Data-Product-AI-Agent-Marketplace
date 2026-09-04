@@ -1,0 +1,182 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TEL-003
+  name: "Subscriber Experience Analyst"
+  industry: telecommunications
+  domain: customer
+  owner:
+    party_id: PTY-0031
+    team: "Subscriber Experience"
+    on_call: "pagerduty://subscriber-experience-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about retention rate, average subscriber tenure and dropped call rate by
+    segment, region, plan type and technology.
+  business_value_block:
+    analyses: [performance_ranking, comparison, trend_segmented, cohort_comparison, driver_ranking]
+    replaces: >-
+      The monthly subscriber experience review and the tenure cut each base manager builds by hand.
+    personas: [base_management_lead, service_experience_manager, regional_commercial_lead]
+  out_of_scope:
+    - "Retention offer approval or discount authorisation"
+    - "Network configuration or cell retune requests"
+    - "Individual subscriber account enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TEL-003/system@v1
+  data_products:
+    - product_id: DP-TEL-001
+      columns: [subscriber_id, activity_date, segment, region, plan_type, tenure_days, tenure_band, channel, active_at_period_start, churn_flag, save_offer_accepted]
+      access: read
+    - product_id: DP-TEL-002
+      columns: [site_id, observed_hour, region, site_class, technology, established_calls, dropped_calls]
+      access: read
+  tool_bindings:
+    - tool: query_dp_tel_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-001"
+      scope: "dp:DP-TEL-001:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: query_dp_tel_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-002"
+      scope: "dp:DP-TEL-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-RETEN-002
+      source_product: DP-TEL-001
+      columns_used: [subscriber_id, activity_date, segment, region, plan_type, tenure_band, active_at_period_start, churn_flag, save_offer_accepted]
+      grains: [day, week, month, quarter]
+      slices: [segment, region, plan_type, tenure_band]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-TENURE-004
+      source_product: DP-TEL-001
+      columns_used: [subscriber_id, activity_date, segment, region, plan_type, tenure_days]
+      grains: [month, quarter, year]
+      slices: [segment, region, plan_type]
+      analysis_depth: compare
+    - kpi_id: KPI-DROP-007
+      source_product: DP-TEL-002
+      columns_used: [site_id, observed_hour, region, site_class, technology, established_calls, dropped_calls]
+      grains: [day, week, month]
+      slices: [region, site_class, technology]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 7000
+    cost_per_answer_usd: 0.08
+  demo_exchanges:
+    - id: DEMO-AG-TEL-003-01
+      ordinal: 1
+      question: "Which segments retain subscribers best?"
+      kpi_class: KPI-RETEN-002
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the segments holding on to most subscribers, and the gap to the weakest
+        visual: bar
+        table_columns: [segment, retention_rate_pct, subscribers]
+        must_cite: [DP-TEL-001, KPI-RETEN-002]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-TEL-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-003-02
+      ordinal: 2
+      question: "How has retention rate moved month by month?"
+      kpi_class: KPI-RETEN-002
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of retention over the observed months, and its size
+        visual: line
+        table_columns: [period, retention_rate_pct, subscribers]
+        must_cite: [DP-TEL-001, KPI-RETEN-002]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-TEL-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-003-03
+      ordinal: 3
+      question: "How does average subscriber tenure differ by plan type?"
+      kpi_class: KPI-TENURE-004
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the plan types holding subscribers longest, and the spread between them
+        visual: bar
+        table_columns: [plan_type, average_tenure_days, subscribers]
+        must_cite: [DP-TEL-001, KPI-TENURE-004]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-TEL-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-003-04
+      ordinal: 4
+      question: "Which technologies drive the dropped call rate?"
+      kpi_class: KPI-DROP-007
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the technologies dropping most calls, and the distance to the best
+        visual: bar
+        table_columns: [technology, dropped_call_rate_pct, established_calls]
+        must_cite: [DP-TEL-002, KPI-DROP-007]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-TEL-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-003-05
+      ordinal: 5
+      question: "How does the dropped call rate differ across site classes?"
+      kpi_class: KPI-DROP-007
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the site classes above and below the network dropped call rate
+        visual: bar
+        table_columns: [site_class, dropped_call_rate_pct, established_calls]
+        must_cite: [DP-TEL-002, KPI-DROP-007]
+      data_tier: demo
+      max_latency_ms: 7000
+      golden_answer_ref: seed/golden/AG-TEL-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TEL-003/
+  value_case:
+    benefit_model: "avoided_base_management_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per retention or experience question"
+        value: 55
+        unit: minutes
+        sample_size: 16
+        source: "base management time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0031

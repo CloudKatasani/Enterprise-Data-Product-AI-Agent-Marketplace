@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-UTL-002-1.0.0",
+  "analysis_type": "distribution",
+  "citations": [
+    {
+      "columns": [
+        "cause_class",
+        "feeder",
+        "major_event_day",
+        "observed_date",
+        "outage_id",
+        "region",
+        "restoration_minutes"
+      ],
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "claims": {
+    "groups": "7",
+    "median": "213.28",
+    "observations": "1054",
+    "rows_scanned": "7440",
+    "tail": "300.35"
+  },
+  "exchange_id": "DEMO-AG-UTL-002-05",
+  "headline": "Median average restoration time is 213.28 minutes for FDR-101, with p90 at 300.35 minutes.",
+  "kpi_definitions": [
+    "KPI-RESTORE-064"
+  ],
+  "narrative": "Across 1,054 observations in DP-UTL-001; the spread, not the mean, is what the question asked about. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "How is restoration time distributed across feeders?",
+  "rows_scanned": 7440,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "feeder",
+    "KPI-RESTORE-064",
+    "observations"
+  ],
+  "visual_type": "histogram"
+}

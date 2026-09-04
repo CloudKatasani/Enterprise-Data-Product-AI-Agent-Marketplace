@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TRN-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "available_hours",
+        "carrier",
+        "delivered_within_window",
+        "departure_timestamp",
+        "equipment_type",
+        "region",
+        "revenue_hours",
+        "shipment_leg_id"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "current": "73.45",
+    "delta": "0.04",
+    "groups": "9",
+    "rows_scanned": "13200"
+  },
+  "exchange_id": "DEMO-AG-TRN-002-03",
+  "headline": "Asset Utilization is 73.45% for the week ending 2026-08-31, up 0.04% on the prior week.",
+  "kpi_definitions": [
+    "KPI-ASSETUTIL-059"
+  ],
+  "narrative": "Computed from DP-TRN-001 under the certified definition KPI-ASSETUTIL-059, across 9 weeks and 13,200 rows.",
+  "question": "How has asset utilization moved week by week?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-ASSETUTIL-059",
+    "observations"
+  ],
+  "visual_type": "line"
+}

@@ -1,0 +1,154 @@
+{
+  "agent_id": "AG-TCH-002",
+  "agent_name": "Account Retention Analyst",
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "period_comparison",
+  "answer": {
+    "headline": "DAU to MAU Ratio is 0.94 for the week ending 2026-08-31, down 0.06 on the prior week.",
+    "narrative": "Computed from DP-TCH-001 under the certified definition KPI-DAUMAU-011, across 14 weeks and 50,400 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-DAUMAU-011",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-06-01",
+          0.46,
+          560
+        ],
+        [
+          "2026-06-08",
+          0.97,
+          3920
+        ],
+        [
+          "2026-06-15",
+          0.97,
+          3920
+        ],
+        [
+          "2026-06-22",
+          0.97,
+          3920
+        ],
+        [
+          "2026-06-29",
+          0.97,
+          3920
+        ],
+        [
+          "2026-07-06",
+          0.96,
+          3920
+        ],
+        [
+          "2026-07-13",
+          1.0,
+          3920
+        ],
+        [
+          "2026-07-20",
+          0.99,
+          3920
+        ],
+        [
+          "2026-07-27",
+          1.0,
+          3920
+        ],
+        [
+          "2026-08-03",
+          0.96,
+          3920
+        ],
+        [
+          "2026-08-10",
+          0.96,
+          3920
+        ],
+        [
+          "2026-08-17",
+          0.99,
+          3920
+        ],
+        [
+          "2026-08-24",
+          1.0,
+          3920
+        ],
+        [
+          "2026-08-31",
+          0.94,
+          2800
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 0.42,
+        "unit": "ratio",
+        "x": "period",
+        "y": "KPI-DAUMAU-011"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "activity_date",
+        "plan_tier",
+        "segment",
+        "region",
+        "daily_active_account",
+        "monthly_active_account",
+        "activated"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-002-02",
+  "kpi_definitions": [
+    "KPI-DAUMAU-011"
+  ],
+  "notes": [],
+  "question": "Has the DAU to MAU ratio held up week on week?",
+  "recorded_at": "2026-09-04T15:22:24.308543+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 40,
+    "rows_scanned": 50400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "week",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct daily_active_account))::numeric / NULLIF((count(distinct monthly_active_account))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 37,
+        "rows_returned": 14,
+        "rows_scanned": 50400,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "consumption_kwh",
+        "dwelling_type",
+        "interval_start",
+        "meter_id",
+        "rate_class",
+        "region"
+      ],
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "17100",
+    "top": "171.89",
+    "top_share": "33.73"
+  },
+  "exchange_id": "DEMO-AG-ENG-001-03",
+  "headline": "apartment leads on consumption per customer at 171.89, 33.73% of the total across 3 dwelling types.",
+  "kpi_definitions": [
+    "KPI-CONSPC-068"
+  ],
+  "narrative": "Ranked by the certified definition KPI-CONSPC-068 over 17,100 rows in DP-ENG-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "How does consumption per customer vary by dwelling type?",
+  "rows_scanned": 17100,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "dwelling_type",
+    "KPI-CONSPC-068",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

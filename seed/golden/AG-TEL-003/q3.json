@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "plan_type",
+        "region",
+        "segment",
+        "subscriber_id",
+        "tenure_days"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "25200",
+    "top": "1062.75",
+    "top_share": "34.19"
+  },
+  "exchange_id": "DEMO-AG-TEL-003-03",
+  "headline": "unlimited leads on average subscriber tenure at 1,062.75 days, 34.19% of the total across 3 plan types.",
+  "kpi_definitions": [
+    "KPI-TENURE-004"
+  ],
+  "narrative": "Ranked by the certified definition KPI-TENURE-004 over 25,200 rows in DP-TEL-001.",
+  "question": "How does average subscriber tenure differ by plan type?",
+  "rows_scanned": 25200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "plan_type",
+    "KPI-TENURE-004",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,100 @@
+{
+  "agent_id": "AG-TEL-003",
+  "agent_name": "Subscriber Experience Analyst",
+  "agent_version_id": "AGV-AG-TEL-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "enterprise leads on retention rate at 100.00%, 33.75% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-RETEN-002 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-RETEN-002",
+        "observations"
+      ],
+      "rows": [
+        [
+          "enterprise",
+          100.0,
+          744
+        ],
+        [
+          "consumer",
+          98.59,
+          4402
+        ],
+        [
+          "small_business",
+          97.73,
+          1364
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 98.6,
+        "unit": "percent",
+        "x": "segment",
+        "y": "KPI-RETEN-002"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "activity_date",
+        "segment",
+        "region",
+        "plan_type",
+        "tenure_band",
+        "active_at_period_start",
+        "churn_flag",
+        "save_offer_accepted"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-003-01",
+  "kpi_definitions": [
+    "KPI-RETEN-002"
+  ],
+  "notes": [],
+  "question": "Which segments retain subscribers best?",
+  "recorded_at": "2026-09-04T15:22:24.603907+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 49,
+    "rows_scanned": 6510,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((count(distinct subscriber_id) filter (where active_at_period_start) - count(distinct subscriber_id) filter (where churn_flag))::numeric / NULLIF((count(distinct subscriber_id) filter (where active_at_period_start))::numeric, 0) * 100)",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "medium",
+        "duration_ms": 45,
+        "rows_returned": 3,
+        "rows_scanned": 6510,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

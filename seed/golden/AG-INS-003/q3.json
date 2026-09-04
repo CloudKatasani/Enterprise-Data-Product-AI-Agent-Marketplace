@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-INS-003-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "channel",
+        "claim_id",
+        "coverage_line",
+        "earned_premium",
+        "incurred_losses",
+        "region",
+        "transition_timestamp"
+      ],
+      "product_id": "DP-INS-001"
+    }
+  ],
+  "claims": {
+    "current": "70.35",
+    "delta": "0.00",
+    "groups": "2",
+    "rows_scanned": "12600"
+  },
+  "exchange_id": "DEMO-AG-INS-003-03",
+  "headline": "Loss Ratio is 70.35% for the quarter ending 2026-07-01, flat on the prior quarter.",
+  "kpi_definitions": [
+    "KPI-LOSSRATIO-026"
+  ],
+  "narrative": "Computed from DP-INS-001 under the certified definition KPI-LOSSRATIO-026, across 2 quarters and 12,600 rows.",
+  "question": "How has loss ratio moved quarter by quarter?",
+  "rows_scanned": 12600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-LOSSRATIO-026",
+    "observations"
+  ],
+  "visual_type": "line"
+}

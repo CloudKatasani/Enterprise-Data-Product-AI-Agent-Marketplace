@@ -1,0 +1,118 @@
+{
+  "agent_id": "AG-UTL-002",
+  "agent_name": "Restoration Performance Analyst",
+  "agent_version_id": "AGV-AG-UTL-002-1.0.0",
+  "analysis_type": "distribution",
+  "answer": {
+    "headline": "Median average restoration time is 213.28 minutes for FDR-101, with p90 at 300.35 minutes.",
+    "narrative": "Across 1,054 observations in DP-UTL-001; the spread, not the mean, is what the question asked about. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "feeder",
+        "KPI-RESTORE-064",
+        "observations"
+      ],
+      "rows": [
+        [
+          "FDR-101",
+          213.28,
+          1054
+        ],
+        [
+          "FDR-102",
+          187.49,
+          1209
+        ],
+        [
+          "FDR-103",
+          189.1,
+          992
+        ],
+        [
+          "FDR-104",
+          197.55,
+          992
+        ],
+        [
+          "FDR-105",
+          187.4,
+          837
+        ],
+        [
+          "FDR-106",
+          156.69,
+          1240
+        ],
+        [
+          "FDR-107",
+          215.36,
+          1116
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 110.0,
+        "unit": "minutes",
+        "x": "feeder",
+        "y": "KPI-RESTORE-064"
+      },
+      "type": "histogram"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "outage_id",
+        "observed_date",
+        "feeder",
+        "region",
+        "cause_class",
+        "restoration_minutes",
+        "major_event_day"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-002-05",
+  "kpi_definitions": [
+    "KPI-RESTORE-064"
+  ],
+  "notes": [],
+  "question": "How is restoration time distributed across feeders?",
+  "recorded_at": "2026-09-04T15:22:24.981865+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 31,
+    "rows_scanned": 7440,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "feeder",
+          "limit": 24,
+          "measure": "((sum(restoration_minutes))::numeric / NULLIF((count(distinct outage_id))::numeric, 0))",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 27,
+        "rows_returned": 7,
+        "rows_scanned": 7440,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-RTL-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "1b3ad3e1ab5c22095c90a8917ae355aa4099042edb9696f7336fa015d9943f40",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-RTL-003",
+    "name": "Trading Margin Analyst",
+    "industry": "retail",
+    "domain": "finance",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0040",
+      "team": "Retail Finance",
+      "on_call": "pagerduty://retail-finance-agents"
+    }
+  },
+  "capability_statement": "Answers questions about gross margin rate by category, region and channel, and where the book trades thinnest.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "trend_segmented",
+      "like_for_like",
+      "comparison",
+      "contribution_ranking"
+    ],
+    "replaces": "The weekly trading margin review and the conversion pack the finance business partner builds.",
+    "personas": [
+      "trading_finance_partner",
+      "category_finance_manager",
+      "merchandise_director"
+    ]
+  },
+  "out_of_scope": [
+    "Retail price changes or markdown approval",
+    "Promotion planning or promotion approval",
+    "Individual transaction or basket enquiries"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-GMRATE-049",
+      "kpi_name": "Gross Margin Rate",
+      "unit": "percent",
+      "source_product": "DP-RTL-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "category",
+        "region",
+        "channel"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-RTL-001",
+      "columns": [
+        "transaction_id",
+        "business_date",
+        "category",
+        "sku",
+        "region",
+        "channel",
+        "store_format",
+        "comparable_store",
+        "net_sales",
+        "cost_of_goods_sold",
+        "units"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-RTL-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-RTL-003/ask",
+    "required_scope": "agent:AG-RTL-003:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which categories have the weakest gross margin rate?",
+      "How has gross margin rate moved month by month?",
+      "Do comparable stores trade at a different margin rate?",
+      "How does gross margin rate compare across regions?",
+      "Which channels contribute most to gross margin?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-RTL-003/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_rtl_001",
+        "scope": "dp:DP-RTL-001:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-RTL-001": "6.2.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "e84844565bf9b50547a2f26fc0a309b3c146baf5c5d365a45489e9bc7ca13d01"
+}

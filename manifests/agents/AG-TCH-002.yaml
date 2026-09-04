@@ -1,0 +1,168 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TCH-002
+  name: "Account Retention Analyst"
+  industry: technology
+  domain: customer
+  owner:
+    party_id: PTY-0033
+    team: "Customer Success Analytics"
+    on_call: "pagerduty://customer-success-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about daily to monthly active ratio and net revenue retention by plan tier,
+    segment and region.
+  business_value_block:
+    analyses: [trend_segmented, period_comparison, performance_ranking, comparison, contribution_ranking]
+    replaces: >-
+      The quarterly retention review and the engagement slide the customer success lead rebuilds.
+    personas: [customer_success_lead, revenue_operations_analyst, chief_customer_officer]
+  out_of_scope:
+    - "Renewal negotiation or discount approval"
+    - "Customer outreach or campaign execution"
+    - "Individual account health enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TCH-002/system@v1
+  data_products:
+    - product_id: DP-TCH-001
+      columns: [account_id, activity_date, plan_tier, segment, region, acquisition_channel, daily_active_account, monthly_active_account, activated, starting_recurring_revenue, ending_recurring_revenue, renewal_date]
+      access: read
+  tool_bindings:
+    - tool: query_dp_tch_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TCH-001"
+      scope: "dp:DP-TCH-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-DAUMAU-011
+      source_product: DP-TCH-001
+      columns_used: [account_id, activity_date, plan_tier, segment, region, daily_active_account, monthly_active_account, activated]
+      grains: [day, week, month]
+      slices: [plan_tier, segment, region]
+      analysis_depth: explain
+    - kpi_id: KPI-NRR-015
+      source_product: DP-TCH-001
+      columns_used: [account_id, activity_date, plan_tier, segment, region, starting_recurring_revenue, ending_recurring_revenue]
+      grains: [quarter, year]
+      slices: [plan_tier, segment, region]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 5000
+    cost_per_answer_usd: 0.05
+  demo_exchanges:
+    - id: DEMO-AG-TCH-002-01
+      ordinal: 1
+      question: "How has the DAU to MAU ratio moved month by month?"
+      kpi_class: KPI-DAUMAU-011
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of engagement over the observed months, and its size
+        visual: line
+        table_columns: [period, dau_mau_ratio, accounts]
+        must_cite: [DP-TCH-001, KPI-DAUMAU-011]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TCH-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-002-02
+      ordinal: 2
+      question: "Has the DAU to MAU ratio held up week on week?"
+      kpi_class: KPI-DAUMAU-011
+      analysis_type: period_comparison
+      expected_shape:
+        headline: >-
+          the latest week's engagement against the week before it
+        visual: line
+        table_columns: [period, dau_mau_ratio, accounts]
+        must_cite: [DP-TCH-001, KPI-DAUMAU-011]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TCH-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-002-03
+      ordinal: 3
+      question: "Which segments hold up net revenue retention best?"
+      kpi_class: KPI-NRR-015
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the segments retaining most recurring revenue, and the gap to the weakest
+        visual: bar
+        table_columns: [segment, net_revenue_retention_pct, accounts]
+        must_cite: [DP-TCH-001, KPI-NRR-015]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TCH-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-002-04
+      ordinal: 4
+      question: "How does net revenue retention differ by plan tier?"
+      kpi_class: KPI-NRR-015
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the plan tiers above and below the book retention rate
+        visual: bar
+        table_columns: [plan_tier, net_revenue_retention_pct, accounts]
+        must_cite: [DP-TCH-001, KPI-NRR-015]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TCH-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-002-05
+      ordinal: 5
+      question: "How has net revenue retention moved quarter by quarter?"
+      kpi_class: KPI-NRR-015
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of net revenue retention across the observed quarters
+        visual: line
+        table_columns: [period, net_revenue_retention_pct, accounts]
+        must_cite: [DP-TCH-001, KPI-NRR-015]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-TCH-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TCH-002/
+  value_case:
+    benefit_model: "avoided_retention_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per engagement or retention question"
+        value: 50
+        unit: minutes
+        sample_size: 13
+        source: "customer success time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0033

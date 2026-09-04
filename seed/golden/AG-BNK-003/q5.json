@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-BNK-003-1.0.0",
+  "analysis_type": "distribution",
+  "citations": [
+    {
+      "columns": [
+        "active_product_count",
+        "as_of_month",
+        "customer_id",
+        "primary_relationship",
+        "region",
+        "segment",
+        "tenure_band"
+      ],
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "median": "3.00",
+    "observations": "117",
+    "rows_scanned": "500",
+    "tail": "6.00"
+  },
+  "exchange_id": "DEMO-AG-BNK-003-05",
+  "headline": "Median products per customer is 3.00 for 0-2y, with p90 at 6.00.",
+  "kpi_definitions": [
+    "KPI-PPC-017"
+  ],
+  "narrative": "Across 117 observations in DP-BNK-001; the spread, not the mean, is what the question asked about. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "How is product density distributed across tenure bands?",
+  "rows_scanned": 500,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "tenure_band",
+    "KPI-PPC-017",
+    "observations"
+  ],
+  "visual_type": "histogram"
+}

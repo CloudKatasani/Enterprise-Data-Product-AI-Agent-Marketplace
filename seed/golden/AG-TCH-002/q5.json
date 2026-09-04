@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TCH-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "account_id",
+        "activity_date",
+        "ending_recurring_revenue",
+        "plan_tier",
+        "region",
+        "segment",
+        "starting_recurring_revenue"
+      ],
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "claims": {
+    "current": "105.93",
+    "delta": "0.11",
+    "groups": "2",
+    "rows_scanned": "50400"
+  },
+  "exchange_id": "DEMO-AG-TCH-002-05",
+  "headline": "Net Revenue Retention is 105.93% for the quarter ending 2026-07-01, up 0.11% on the prior quarter.",
+  "kpi_definitions": [
+    "KPI-NRR-015"
+  ],
+  "narrative": "Computed from DP-TCH-001 under the certified definition KPI-NRR-015, across 2 quarters and 50,400 rows.",
+  "question": "How has net revenue retention moved quarter by quarter?",
+  "rows_scanned": 50400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-NRR-015",
+    "observations"
+  ],
+  "visual_type": "line"
+}

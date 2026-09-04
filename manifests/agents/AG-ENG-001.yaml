@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-ENG-001
+  name: "Load & Demand Analyst"
+  industry: utilities_energy
+  domain: customer
+  owner:
+    party_id: PTY-0043
+    team: "Metering & Demand"
+    on_call: "pagerduty://metering-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about peak demand, load factor, consumption per customer, demand response
+    take-up and estimated read rate.
+  business_value_block:
+    analyses: [concentration, comparison, programme_eval, gap_analysis, ranking]
+    replaces: >-
+      The monthly load report and the spreadsheet that ranks feeders by contribution to peak.
+    personas: [demand_planner, rate_analyst, metering_operations_lead]
+  out_of_scope:
+    - "Rate setting or tariff design"
+    - "Individual customer billing disputes"
+    - "Load forecasting beyond the observed period"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-ENG-001/system@v1
+  data_products:
+    - product_id: DP-ENG-001
+      columns: [meter_id, interval_start, rate_class, region, feeder, dwelling_type, meter_type, programme, read_type, consumption_kwh, interval_demand_kw, period_hours, enrolled_and_called, curtailed_during_event, temperature_c]
+      access: read
+  tool_bindings:
+    - tool: query_dp_eng_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-ENG-001"
+      scope: "dp:DP-ENG-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-PEAKDEM-066
+      source_product: DP-ENG-001
+      columns_used: [meter_id, interval_start, interval_demand_kw, rate_class, region, feeder]
+      grains: [day, month, quarter]
+      slices: [rate_class, region, feeder]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-LOADFACT-067
+      source_product: DP-ENG-001
+      columns_used: [meter_id, interval_start, interval_demand_kw, rate_class, region]
+      grains: [month, quarter, year]
+      slices: [rate_class, region]
+      analysis_depth: explain
+    - kpi_id: KPI-CONSPC-068
+      source_product: DP-ENG-001
+      columns_used: [meter_id, interval_start, consumption_kwh, rate_class, region, dwelling_type]
+      grains: [month, quarter, year]
+      slices: [rate_class, region, dwelling_type]
+      analysis_depth: compare
+    - kpi_id: KPI-DRRESP-069
+      source_product: DP-ENG-001
+      columns_used: [meter_id, interval_start, programme, enrolled_and_called, curtailed_during_event, rate_class, region]
+      grains: [month, quarter, year]
+      slices: [programme, rate_class, region]
+      analysis_depth: report
+    - kpi_id: KPI-ESTREAD-070
+      source_product: DP-ENG-001
+      columns_used: [meter_id, interval_start, read_type, rate_class, region, meter_type]
+      grains: [month, quarter]
+      slices: [rate_class, region, meter_type]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-ENG-001-01
+      ordinal: 1
+      question: "Where is peak demand concentrated across our feeders?"
+      kpi_class: KPI-PEAKDEM-066
+      analysis_type: concentration
+      expected_shape:
+        headline: >-
+          the feeders carrying most of the system peak, and their share of it
+        visual: pareto
+        table_columns: [feeder, peak_demand_kw, share_pct]
+        must_cite: [DP-ENG-001, KPI-PEAKDEM-066]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-ENG-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-ENG-001-02
+      ordinal: 2
+      question: "How does load factor differ by rate class?"
+      kpi_class: KPI-LOADFACT-067
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          which rate classes use their connected capacity best, and the spread between them
+        visual: bar
+        table_columns: [rate_class, load_factor, observations]
+        must_cite: [DP-ENG-001, KPI-LOADFACT-067]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-ENG-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-ENG-001-03
+      ordinal: 3
+      question: "How does consumption per customer vary by dwelling type?"
+      kpi_class: KPI-CONSPC-068
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the dwelling types consuming most per customer, and how far apart they sit
+        visual: bar
+        table_columns: [dwelling_type, consumption_per_customer, observations]
+        must_cite: [DP-ENG-001, KPI-CONSPC-068]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-ENG-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-ENG-001-04
+      ordinal: 4
+      question: "Which demand response programmes are getting the best response?"
+      kpi_class: KPI-DRRESP-069
+      analysis_type: programme_eval
+      expected_shape:
+        headline: >-
+          the programmes whose called customers actually curtailed, and by how much they differ
+        visual: bar
+        table_columns: [programme, response_rate_pct, observations]
+        must_cite: [DP-ENG-001, KPI-DRRESP-069]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-ENG-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-ENG-001-05
+      ordinal: 5
+      question: "Which meter types drive our estimated read rate?"
+      kpi_class: KPI-ESTREAD-070
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the meter types producing most estimated reads, and the gap to the best performer
+        visual: bar
+        table_columns: [meter_type, estimated_read_rate_pct, observations]
+        must_cite: [DP-ENG-001, KPI-ESTREAD-070]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-ENG-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-ENG-001/
+  value_case:
+    benefit_model: "avoided_load_analysis_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per load or demand question"
+        value: 55
+        unit: minutes
+        sample_size: 14
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0043

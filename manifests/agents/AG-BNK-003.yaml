@@ -1,0 +1,162 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-BNK-003
+  name: "Cross-Hold Analyst"
+  industry: banking
+  domain: product
+  owner:
+    party_id: PTY-0034
+    team: "Retail Banking Product"
+    on_call: "pagerduty://banking-product-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about products per customer and how product density differs across
+    segments, regions and tenure bands.
+  business_value_block:
+    analyses: [concentration, comparison, trend_segmented, cohort_comparison, distribution]
+    replaces: >-
+      The quarterly cross-hold pack and the pivot table each product manager rebuilds from it.
+    personas: [product_manager, segment_lead, branch_network_analyst]
+  out_of_scope:
+    - "Opening or closing customer accounts"
+    - "Cross-sell offer approval or pricing"
+    - "Individual customer holdings enquiries"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-BNK-003/system@v1
+  data_products:
+    - product_id: DP-BNK-001
+      columns: [customer_id, household_id, as_of_month, segment, region, tenure_band, value_band, product_family, active_product_count, primary_relationship]
+      access: read
+  tool_bindings:
+    - tool: query_dp_bnk_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-BNK-001"
+      scope: "dp:DP-BNK-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-PPC-017
+      source_product: DP-BNK-001
+      columns_used: [customer_id, as_of_month, active_product_count, segment, region, tenure_band, primary_relationship]
+      grains: [month, quarter, year]
+      slices: [segment, region, tenure_band]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 5000
+    cost_per_answer_usd: 0.05
+  demo_exchanges:
+    - id: DEMO-AG-BNK-003-01
+      ordinal: 1
+      question: "Which segments hold the most products per customer?"
+      kpi_class: KPI-PPC-017
+      analysis_type: concentration
+      expected_shape:
+        headline: >-
+          the segments with the deepest product relationships, and the spread between them
+        visual: bar
+        table_columns: [segment, products_per_customer, customers]
+        must_cite: [DP-BNK-001, KPI-PPC-017]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-BNK-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-003-02
+      ordinal: 2
+      question: "How does product density compare across regions?"
+      kpi_class: KPI-PPC-017
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the regions above and below the book average, and the gap between the ends
+        visual: bar
+        table_columns: [region, products_per_customer, customers]
+        must_cite: [DP-BNK-001, KPI-PPC-017]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-BNK-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-003-03
+      ordinal: 3
+      question: "How has products per customer moved month by month?"
+      kpi_class: KPI-PPC-017
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of product density over the observed months, and its size
+        visual: line
+        table_columns: [period, products_per_customer, customers]
+        must_cite: [DP-BNK-001, KPI-PPC-017]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-BNK-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-003-04
+      ordinal: 4
+      question: "Do customers with a primary relationship hold more products?"
+      kpi_class: KPI-PPC-017
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          the difference in product density between primary and non-primary customers
+        visual: bar
+        table_columns: [cohort, products_per_customer, customers]
+        must_cite: [DP-BNK-001, KPI-PPC-017]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-BNK-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-BNK-003-05
+      ordinal: 5
+      question: "How is product density distributed across tenure bands?"
+      kpi_class: KPI-PPC-017
+      analysis_type: distribution
+      expected_shape:
+        headline: >-
+          how far apart the thinnest and deepest tenure bands sit on product density
+        visual: histogram
+        table_columns: [tenure_band, products_per_customer, customers]
+        must_cite: [DP-BNK-001, KPI-PPC-017]
+      data_tier: demo
+      max_latency_ms: 5000
+      golden_answer_ref: seed/golden/AG-BNK-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-BNK-003/
+  value_case:
+    benefit_model: "avoided_cross_hold_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per cross-hold question"
+        value: 40
+        unit: minutes
+        sample_size: 12
+        source: "product analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0034

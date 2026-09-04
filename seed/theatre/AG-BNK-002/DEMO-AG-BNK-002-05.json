@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Which investigators are carrying aged alerts above SLA?",
-  "recorded_at": "2026-09-04T08:34:02.627585+00:00",
+  "recorded_at": "2026-09-04T15:22:22.634285+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 13,
+    "latency_ms": 12,
     "rows_scanned": 14400,
     "runtime": "analytic",
     "tokens": {

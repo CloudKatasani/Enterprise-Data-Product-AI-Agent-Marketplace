@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-ENG-001",
+  "agent_name": "Load & Demand Analyst",
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "programme_eval",
+  "answer": {
+    "headline": "direct_load_control leads on demand response event response rate at 80.77%, 52.41% of the total across 3 programmes.",
+    "narrative": "Ranked by the certified definition KPI-DRRESP-069 over 17,100 rows in DP-ENG-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "programme",
+        "KPI-DRRESP-069",
+        "observations"
+      ],
+      "rows": [
+        [
+          "direct_load_control",
+          80.77,
+          2470
+        ],
+        [
+          "peak_time_rebate",
+          73.33,
+          2850
+        ],
+        [
+          "None",
+          null,
+          11780
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 72.0,
+        "unit": "percent",
+        "x": "programme",
+        "y": "KPI-DRRESP-069"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "programme",
+        "enrolled_and_called",
+        "curtailed_during_event",
+        "rate_class",
+        "region"
+      ],
+      "contract_version": "2.1.0",
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-ENG-001-04",
+  "kpi_definitions": [
+    "KPI-DRRESP-069"
+  ],
+  "notes": [],
+  "question": "Which demand response programmes are getting the best response?",
+  "recorded_at": "2026-09-04T15:22:22.901969+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 48,
+    "rows_scanned": 17100,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "programme",
+          "limit": 24,
+          "measure": "((count(distinct meter_id) filter (where curtailed_during_event))::numeric / NULLIF((count(distinct meter_id) filter (where enrolled_and_called))::numeric, 0) * 100)",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_eng_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 46,
+        "rows_returned": 3,
+        "rows_scanned": 17100,
+        "tool": "query_dp_eng_001"
+      }
+    ]
+  }
+}

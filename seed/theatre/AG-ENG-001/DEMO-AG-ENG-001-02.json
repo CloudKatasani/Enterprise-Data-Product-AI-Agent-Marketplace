@@ -1,0 +1,96 @@
+{
+  "agent_id": "AG-ENG-001",
+  "agent_name": "Load & Demand Analyst",
+  "agent_version_id": "AGV-AG-ENG-001-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "residential leads on load factor at 0.39, 33.91% of the total across 3 rate classs.",
+    "narrative": "Ranked by the certified definition KPI-LOADFACT-067 over 30,240 rows in DP-ENG-001.",
+    "table": {
+      "columns": [
+        "rate_class",
+        "KPI-LOADFACT-067",
+        "observations"
+      ],
+      "rows": [
+        [
+          "residential",
+          0.39,
+          19320
+        ],
+        [
+          "small_commercial",
+          0.38,
+          7896
+        ],
+        [
+          "large_commercial",
+          0.38,
+          3024
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 0.55,
+        "unit": "ratio",
+        "x": "rate_class",
+        "y": "KPI-LOADFACT-067"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "meter_id",
+        "interval_start",
+        "interval_demand_kw",
+        "rate_class",
+        "region"
+      ],
+      "contract_version": "2.1.0",
+      "product_id": "DP-ENG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-ENG-001-02",
+  "kpi_definitions": [
+    "KPI-LOADFACT-067"
+  ],
+  "notes": [],
+  "question": "How does load factor differ by rate class?",
+  "recorded_at": "2026-09-04T15:22:22.799164+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 10,
+    "rows_scanned": 30240,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "rate_class",
+          "limit": 24,
+          "measure": "((avg(interval_demand_kw))::numeric / NULLIF((max(interval_demand_kw))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_eng_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 7,
+        "rows_returned": 3,
+        "rows_scanned": 30240,
+        "tool": "query_dp_eng_001"
+      }
+    ]
+  }
+}
