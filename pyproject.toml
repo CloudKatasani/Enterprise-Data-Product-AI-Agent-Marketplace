@@ -47,6 +47,8 @@ ignore = ["B008", "E501"]
 "services/common/rubrics.py" = ["N818"]
 "scripts/seeders/rubrics.py" = ["N818"]
 "connectors/base.py" = ["N818"]
+"services/search/embedding.py" = ["N818"]
+"services/common/principal.py" = ["N818"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["services", "connectors", "scripts"]

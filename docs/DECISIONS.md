@@ -176,3 +176,51 @@ in source.
 pass takes the resolved rubric as an argument.
 **Consequence** The difference between "the platform's dependency graph says so" (1.0) and
 "queries touched both" (0.85) is reviewable without reading Python, which is what rule 4 is for.
+
+### D-018 — A deterministic hashing embedder is the default (M4, 2026-09-04)
+**Context** Hybrid search needs a semantic retriever. The marketplace ships no model, and a
+hosted one makes results irreproducible: a ranking that changed because a model was retrained
+cannot be debugged.
+**Decision** `services/search/embedding.py` defines an `Embedder` interface and one
+implementation that needs nothing — word unigrams, bigrams and character n-grams hashed into
+the vector space with signed collisions. Its hyperparameters live in the `semantic_search`
+rubric and its `model_id` is part of the embedding key, so a deployment can register its own
+model and the old vectors stay distinguishable.
+**Consequence** Search is reproducible and dependency-free. Absolute semantic quality is lower
+than a trained model's; on this corpus a related pair scores roughly four times an unrelated
+pair, which is enough for the retriever whose job is to feed RRF.
+
+### D-019 — The exact-name guarantee is applied twice (M4, 2026-09-04)
+**Context** M4's acceptance is that an exact name never loses to a semantic neighbour, and the
+seed catalog is full of near neighbours that share vocabulary (churn and retention, sales and
+inventory, outage and fault).
+**Decision** `fusion.exact_name_boost` is added at fusion *and* again after the weighted rank,
+because normalisation would otherwise dilute it back into the pack.
+**Consequence** Six adversarial cases are pinned as tests. The boost is a rubric value, so the
+guarantee can be tuned without touching the ranker.
+
+### D-020 — Facet counts exclude their own selection (M4, 2026-09-04)
+**Context** Counting a facet against the full filter set collapses it to the selected value, so
+a consumer cannot change their mind without clearing everything.
+**Decision** Each facet is counted with its own predicate removed and every other predicate
+applied.
+**Consequence** One extra query per facet on the listing page, in exchange for a rail a
+consumer can actually navigate.
+
+### D-021 — Display precision is a rubric value, applied server-side (M4, 2026-09-04)
+**Context** Search explanations expose signal values. Formatting them in the portal would put a
+numeric literal in portal source (I10), and how precisely a system reports a computed signal is
+a policy rather than a presentation detail.
+**Decision** `fusion.explanation_precision` lives in the ranking rubric and the API rounds
+before serialising. The portal prints the number it is given.
+**Consequence** One place decides how precise the system claims to be, next to the weights that
+produced the number.
+
+### D-022 — Generated Python constants are parsed, not imported (M4, 2026-09-04)
+**Context** The embedding dimension must equal the `vector(n)` column type, so it is generated
+from the canonical model. Importing it put `generated/types/` on `sys.path` and scattered
+`__pycache__` through a directory that must stay byte-identical.
+**Decision** The constant is read with a regex over the generated file, and `lint:generated`
+ignores build caches.
+**Consequence** No bytecode in `generated/`, and a missing or malformed constant fails loudly
+with "run npm run gen".

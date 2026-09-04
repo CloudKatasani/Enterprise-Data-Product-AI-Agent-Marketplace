@@ -1,0 +1,19 @@
+# Semantic search rubric.
+#
+# The marketplace ships no embedding model; it ships an interface and a
+# deterministic hashing embedder whose hyperparameters live here. Changing a
+# feature weight is a rubric change and a model_id change, so the vectors it
+# produced stay distinguishable from the ones the new configuration produces.
+rubric: semantic_search
+version: 1.0.0
+embedder:
+  model_id: hashing-v1
+  # A two-word phrase discriminates better than a single word, and character
+  # n-grams give partial credit for morphology so "churn" and "churned" are
+  # not strangers.
+  word_unigram_weight: 1.0
+  word_bigram_weight: 1.5
+  char_ngram_weight: 0.4
+  char_ngram_size: 4
+retrieval:
+  min_similarity: 0.0

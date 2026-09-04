@@ -63,13 +63,22 @@ def _first_difference(left: str, right: str) -> int:
     return 1
 
 
+def _generated_files(root: Path) -> list[Path]:
+    """Files a generator wrote. Build caches such as __pycache__ are not ours."""
+    return [
+        path
+        for path in root.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
+    ]
+
+
 def main() -> int:
     if not GENERATED.exists():
         print("lint:generated: nothing generated yet")
         return 0
 
     findings: list[Finding] = []
-    committed = sorted(p for p in GENERATED.rglob("*") if p.is_file())
+    committed = sorted(_generated_files(GENERATED))
 
     for path in committed:
         text = path.read_text(encoding="utf-8")

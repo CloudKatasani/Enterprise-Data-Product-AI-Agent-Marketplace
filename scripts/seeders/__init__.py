@@ -29,7 +29,19 @@ def _seeders() -> list[tuple[str, Seeder]]:
         ("kpis", kpis.seed),
         ("data products", products.seed),
         ("kpi source back-fill", kpis.backfill_source_of_record),
+        ("search index", _reindex),
     ]
+
+
+def _reindex(connection: psycopg.Connection[Any], tenant: str) -> int:
+    """Rebuild the hybrid search index. Runs last: it reads everything else."""
+    from services.common.rubrics import load_current
+    from services.search import embedding
+    from services.search.index import reindex
+
+    embedding.configure_from_rubric(load_current(connection, embedding.RUBRIC_CODE))
+    counts = reindex(connection, tenant)
+    return sum(counts.values())
 
 
 def run_all() -> int:

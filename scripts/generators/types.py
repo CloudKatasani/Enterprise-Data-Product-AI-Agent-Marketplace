@@ -94,6 +94,28 @@ def _enums() -> str:
     return "\n".join(lines)
 
 
+PY_CONSTANTS_TEMPLATE = """\
+\"\"\"Constants that are properties of the canonical model rather than configuration.
+
+A service that needs the embedding dimension must agree with the column type, so
+the value is emitted from the model rather than written twice.
+\"\"\"
+
+EMBEDDING_DIMENSIONS = {dimensions}
+"""
+
+VECTOR_COLUMN = re.compile(r"vector\((?P<dimensions>\d+)\)")
+
+
+def _embedding_dimensions() -> int:
+    for table in model.ALL_TABLES:
+        for column in table.all_columns():
+            match = VECTOR_COLUMN.match(column.type)
+            if match:
+                return int(match.group("dimensions"))
+    raise RuntimeError("the canonical model declares no vector column")
+
+
 def generate(output_root: Path) -> list[Path]:
     groups: dict[str, list[Table]] = {}
     for table in model.ALL_TABLES:
@@ -124,5 +146,15 @@ def generate(output_root: Path) -> list[Path]:
     index_path = output_root / "types" / "index.ts"
     write_generated(index_path, index, source=SOURCE, version=VERSION, digest=digest)
     written.append(index_path)
+
+    constants_path = output_root / "types" / "model_constants.py"
+    write_generated(
+        constants_path,
+        PY_CONSTANTS_TEMPLATE.format(dimensions=_embedding_dimensions()),
+        source=SOURCE,
+        version=VERSION,
+        digest=digest,
+    )
+    written.append(constants_path)
 
     return written

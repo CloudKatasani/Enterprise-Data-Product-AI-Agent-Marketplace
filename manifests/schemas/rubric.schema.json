@@ -19,7 +19,8 @@
         "value_model",
         "finops",
         "agent_evaluation",
-        "platform_harvest"
+        "platform_harvest",
+        "semantic_search"
       ]
     },
     "version": {
@@ -121,6 +122,18 @@
       },
       "then": {
         "$ref": "#/$defs/harvest"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "semantic_search"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/semanticSearch"
       }
     }
   ],
@@ -250,7 +263,8 @@
         "weights",
         "certification_multiplier",
         "featured_ranking",
-        "fusion"
+        "fusion",
+        "adoption_window_days"
       ],
       "additionalProperties": false,
       "properties": {
@@ -278,7 +292,8 @@
           "required": [
             "formula",
             "min_cards",
-            "max_cards"
+            "max_cards",
+            "min_quality_composite"
           ],
           "additionalProperties": false,
           "properties": {
@@ -292,6 +307,9 @@
             "max_cards": {
               "type": "integer",
               "minimum": 1
+            },
+            "min_quality_composite": {
+              "$ref": "urn:marketplace:common#/$defs/percent"
             }
           }
         },
@@ -299,7 +317,8 @@
           "type": "object",
           "required": [
             "method",
-            "k"
+            "k",
+            "explanation_precision"
           ],
           "additionalProperties": false,
           "properties": {
@@ -313,6 +332,11 @@
             "exact_name_boost": {
               "type": "number",
               "minimum": 0
+            },
+            "explanation_precision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9
             }
           }
         },
@@ -322,6 +346,10 @@
             "type": "integer",
             "minimum": 1
           }
+        },
+        "adoption_window_days": {
+          "type": "integer",
+          "minimum": 1
         }
       }
     },
@@ -708,6 +736,63 @@
         "denied_error_prefix": {
           "type": "string",
           "minLength": 1
+        }
+      }
+    },
+    "semanticSearch": {
+      "type": "object",
+      "required": [
+        "embedder",
+        "retrieval"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "embedder": {
+          "type": "object",
+          "required": [
+            "model_id",
+            "word_unigram_weight",
+            "word_bigram_weight",
+            "char_ngram_weight",
+            "char_ngram_size"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "model_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "word_unigram_weight": {
+              "type": "number",
+              "minimum": 0
+            },
+            "word_bigram_weight": {
+              "type": "number",
+              "minimum": 0
+            },
+            "char_ngram_weight": {
+              "type": "number",
+              "minimum": 0
+            },
+            "char_ngram_size": {
+              "type": "integer",
+              "minimum": 2
+            }
+          }
+        },
+        "retrieval": {
+          "type": "object",
+          "required": [
+            "min_similarity"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "min_similarity": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            }
+          }
         }
       }
     }

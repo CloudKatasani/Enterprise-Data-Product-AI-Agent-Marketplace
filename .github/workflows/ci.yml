@@ -29,6 +29,9 @@ env:
   OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4318
   FEATURE_FLAG_SOURCE: env
   WORKER_POLL_SECONDS: "5"
+  API_BASE_URL: http://localhost:8000/api/v1
+  PORTAL_BASE_URL: http://localhost:3000
+  PORTAL_DEV_SUBJECT: PTY-0061
 
 jobs:
   # Pipeline order from BUILD.md section 20:

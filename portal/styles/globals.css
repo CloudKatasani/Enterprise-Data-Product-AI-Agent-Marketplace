@@ -57,3 +57,86 @@
     transform: translateY(0);
   }
 }
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * Quality ring.
+   *
+   * The sweep is a conic gradient driven by --quality-value, which the
+   * component sets from the score. Only transform and opacity animate
+   * (13.1): the ring scales in, it does not redraw.
+   * ---------------------------------------------------------------- */
+  .quality-ring {
+    --quality-value: 0;
+    --quality-size: 44px;
+    --quality-thickness: 4px;
+    --quality-colour: var(--colour-ink-300);
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: var(--quality-size);
+    height: var(--quality-size);
+    border-radius: var(--radius-pill);
+    background: conic-gradient(
+      var(--quality-colour) calc(var(--quality-value) * 1%),
+      var(--border-subtle) 0
+    );
+    flex: none;
+  }
+
+  .quality-ring[data-size='sm'] {
+    --quality-size: 34px;
+    --quality-thickness: 3px;
+  }
+
+  .quality-ring::after {
+    content: '';
+    position: absolute;
+    inset: var(--quality-thickness);
+    border-radius: var(--radius-pill);
+    background: var(--surface-raised);
+  }
+
+  .quality-ring[data-band='exemplary'] { --quality-colour: var(--colour-band-exemplary); }
+  .quality-ring[data-band='healthy']   { --quality-colour: var(--colour-band-healthy); }
+  .quality-ring[data-band='watch']     { --quality-colour: var(--colour-band-watch); }
+  .quality-ring[data-band='at_risk']   { --quality-colour: var(--colour-band-at-risk); }
+  .quality-ring[data-band='unfit']     { --quality-colour: var(--colour-band-unfit); }
+
+  .quality-ring__value {
+    position: relative;
+    z-index: 1;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+  }
+
+  /* -------------------------------------------------------------------
+   * Product card. Fixed height so the grid — and the landing ribbon that
+   * reuses this card — reserve their boxes before paint and hold CLS at
+   * 0.00 (13.6).
+   * ---------------------------------------------------------------- */
+  .product-card {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: var(--space-sm);
+    min-height: var(--card-product-height);
+    padding: var(--space-md);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    transition:
+      transform var(--duration-base) var(--ease-standard),
+      opacity var(--duration-base) var(--ease-standard);
+  }
+
+  .product-card:hover,
+  .product-card:focus-within {
+    transform: translate3d(0, calc(var(--ribbon-card-lift-px) * -1px), 0);
+  }
+
+  .agent-card {
+    min-height: var(--card-agent-height);
+  }
+}

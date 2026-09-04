@@ -36,6 +36,8 @@ TS_EXEMPT_PREFIXES = (
     TS_ROOT / "node_modules",
 )
 TS_EXEMPT_FILENAMES = {"next.config.ts", "tailwind.config.ts", "postcss.config.mjs"}
+# The portal's single status-code module, for the same reason as the Python one.
+TS_EXEMPT_FILES = {TS_ROOT / "lib" / "http-status.ts"}
 
 
 class PythonNumberVisitor(ast.NodeVisitor):
@@ -99,7 +101,7 @@ def scan_typescript() -> list[Finding]:
     for path in walk(TS_ROOT, (".ts", ".tsx")):
         if any(str(path).startswith(str(prefix)) for prefix in TS_EXEMPT_PREFIXES):
             continue
-        if path.name in TS_EXEMPT_FILENAMES:
+        if path.name in TS_EXEMPT_FILENAMES or path in TS_EXEMPT_FILES:
             continue
         cleaned = _blank_strings_and_comments(path.read_text(encoding="utf-8"))
         cleaned = TS_INDEX.sub(lambda m: " " * len(m.group(0)), cleaned)

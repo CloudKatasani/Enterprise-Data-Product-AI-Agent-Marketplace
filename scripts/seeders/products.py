@@ -196,4 +196,84 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
                 )
                 written += 1
 
+            written += _seed_value_case(cursor, tenant, product_id, spec["value_case"])
+
+    return written
+
+
+def _seed_value_case(
+    cursor: psycopg.Cursor[Any], tenant: str, product_id: str, value_case: dict[str, Any]
+) -> int:
+    """The value case, its assumptions and the review clock.
+
+    The rubric version is recorded on the case so a benefit figure can be
+    replayed against the deflection model that was in force when it was written.
+    """
+    cursor.execute(
+        "SELECT rv.rubric_version_id FROM rubric_version rv "
+        "JOIN rubric r ON r.rubric_id = rv.rubric_id "
+        "WHERE r.code = 'value_model' AND r.tenant_id = %s AND rv.superseded_at IS NULL "
+        "ORDER BY rv.effective_from DESC LIMIT 1",
+        (tenant,),
+    )
+    row = cursor.fetchone()
+    if row is None:
+        raise RuntimeError(
+            "the value_model rubric must be seeded before value cases; check the seeder order"
+        )
+    rubric_version_id = dict(row)["rubric_version_id"]
+
+    cursor.execute(
+        "SELECT numeric_value FROM rubric_criterion "
+        "WHERE rubric_version_id = %s AND path = 'value_case_review_months'",
+        (rubric_version_id,),
+    )
+    months_row = cursor.fetchone()
+    review_months = int(dict(months_row)["numeric_value"]) if months_row else None
+    if review_months is None:
+        raise RuntimeError("the value_model rubric declares no value_case_review_months")
+
+    review = value_case["review"]
+    value_case_id = f"VC-data_product-{product_id}"
+    cursor.execute(
+        """
+        INSERT INTO value_case (
+          value_case_id, tenant_id, asset_type, asset_id, business_outcome, baseline_method,
+          baseline_captured, benefit_model, attribution_confidence, rubric_version_id,
+          last_reviewed, reviewer_party_id, review_due
+        ) VALUES (%s, %s, 'data_product', %s, %s, %s, to_date(%s, 'YYYY-MM'), %s, %s, %s, %s,
+                  %s, (to_date(%s, 'YYYY-MM-DD') + (%s || ' months')::interval)::date)
+        ON CONFLICT (asset_type, asset_id) DO UPDATE SET
+          business_outcome = EXCLUDED.business_outcome,
+          benefit_model = EXCLUDED.benefit_model,
+          attribution_confidence = EXCLUDED.attribution_confidence,
+          rubric_version_id = EXCLUDED.rubric_version_id,
+          last_reviewed = EXCLUDED.last_reviewed,
+          review_due = EXCLUDED.review_due
+        """,
+        (value_case_id, tenant, product_id, value_case["business_outcome"],
+         value_case["baseline"]["method"], value_case["baseline"]["captured"],
+         value_case["benefit_model"], value_case["attribution_confidence"],
+         rubric_version_id, review["last_reviewed"], review["reviewer"],
+         review["last_reviewed"], review_months),
+    )
+    written = 1
+
+    for index, assumption in enumerate(value_case["assumptions"]):
+        cursor.execute(
+            """
+            INSERT INTO value_assumption (
+              assumption_id, tenant_id, value_case_id, text, numeric_value, unit,
+              sample_size, source, dated
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, to_date(%s, 'YYYY-MM-DD'))
+            ON CONFLICT (assumption_id) DO UPDATE SET
+              numeric_value = EXCLUDED.numeric_value, sample_size = EXCLUDED.sample_size,
+              source = EXCLUDED.source, dated = EXCLUDED.dated
+            """,
+            (f"{value_case_id}-{index:02d}", tenant, value_case_id, assumption["text"],
+             assumption["value"], assumption.get("unit", "unit"),
+             assumption.get("sample_size"), assumption["source"], assumption["dated"]),
+        )
+        written += 1
+
     return written
