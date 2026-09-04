@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: 749cb34dd1230363b0f9b6dc1580c591486ab3ef16fd345aca42b6d10aafba5c  generated_at: 2026-09-04T06:38:41+00:00
+// generator_version: 1.0.0  manifest_hash: e1c5be2d541fb1a6afd03eed3d7c263665a2937f22746956d5eec5636e955c45  generated_at: 2026-09-04T07:06:14+00:00
 
 /* eslint-disable */
 /**
@@ -116,6 +116,11 @@ export class MarketplaceClient {
     return request(this.baseUrl, 'GET', `/api/v1/discover`, query, undefined, options);
   }
 
+  /** Answer pulses for the hero */
+  getEventsStream(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/events/stream`, undefined, undefined, options);
+  }
+
   /** Liveness probe */
   getHealth(options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/health`, undefined, undefined, options);
@@ -129,6 +134,36 @@ export class MarketplaceClient {
   /** Definition, versions and every consumer of a KPI */
   getKpisKpi_id(kpi_id: string, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/kpis/${kpi_id}`, undefined, undefined, options);
+  }
+
+  /** Trust strip and ticker */
+  getLandingCounters(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/landing/counters`, undefined, undefined, options);
+  }
+
+  /** The featured bands */
+  getLandingFeatured(query?: { industry?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/landing/featured`, query, undefined, options);
+  }
+
+  /** The settled constellation */
+  getLandingHero(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/landing/hero`, undefined, undefined, options);
+  }
+
+  /** The industry selector */
+  getLandingIndustries(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/landing/industries`, undefined, undefined, options);
+  }
+
+  /** The value-proof tiles */
+  getLandingProof(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/landing/proof`, undefined, undefined, options);
+  }
+
+  /** Recorded exchanges to replay */
+  getLandingTheatre(query?: { agent?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/landing/theatre`, query, undefined, options);
   }
 
   /** The agent mesh */

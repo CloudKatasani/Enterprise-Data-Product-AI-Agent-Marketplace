@@ -1,0 +1,87 @@
+{
+  "agent_id": "AG-TEL-002",
+  "agent_name": "Network Quality Advisor",
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Fault Mean Time to Restore is 322.5620 hours for the quarter ending 2026-07-01.",
+    "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 1 quarters and 15,120 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-FMTTR-009",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-07-01",
+          322.562,
+          15120
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 4.0,
+        "unit": "hours",
+        "x": "period",
+        "y": "KPI-FMTTR-009"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "site_id",
+        "restore_minutes",
+        "fault_closed",
+        "fault_class",
+        "region",
+        "observed_hour"
+      ],
+      "contract_version": "2.4.0",
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-002-05",
+  "kpi_definitions": [
+    "KPI-FMTTR-009"
+  ],
+  "notes": [],
+  "question": "What is our MTTR trend and where is it worst?",
+  "recorded_at": "2026-09-04T07:00:14.844646+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 7,
+    "rows_scanned": 15120,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(restore_minutes))::numeric / NULLIF((count(*) filter (where fault_closed))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 5,
+        "rows_returned": 1,
+        "rows_scanned": 15120,
+        "tool": "query_dp_tel_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "agent_id": "AG-INS-002",
+  "agent_name": "Underwriting Portfolio Copilot",
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Quote-to-Bind Rate is 10.83% for the quarter ending 2026-07-01, flat on the prior quarter.",
+    "narrative": "Computed from DP-INS-002 under the certified definition KPI-QTB-033, across 12 quarters and 17,280 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-QTB-033",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2023-10-01",
+          20.83,
+          1440
+        ],
+        [
+          "2024-01-01",
+          20.83,
+          1440
+        ],
+        [
+          "2024-04-01",
+          20.83,
+          1440
+        ],
+        [
+          "2024-07-01",
+          20.83,
+          1440
+        ],
+        [
+          "2024-10-01",
+          20.83,
+          1440
+        ],
+        [
+          "2025-01-01",
+          20.83,
+          1440
+        ],
+        [
+          "2025-04-01",
+          20.83,
+          1440
+        ],
+        [
+          "2025-07-01",
+          10.83,
+          1440
+        ],
+        [
+          "2025-10-01",
+          10.83,
+          1440
+        ],
+        [
+          "2026-01-01",
+          10.83,
+          1440
+        ],
+        [
+          "2026-04-01",
+          10.83,
+          1440
+        ],
+        [
+          "2026-07-01",
+          10.83,
+          1440
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 21.0,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-QTB-033"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "quote_id",
+        "bound",
+        "coverage_line",
+        "segment",
+        "channel",
+        "as_of_month"
+      ],
+      "contract_version": "2.6.0",
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-INS-002-03",
+  "kpi_definitions": [
+    "KPI-QTB-033"
+  ],
+  "notes": [],
+  "question": "How has quote-to-bind moved since the July rate change?",
+  "recorded_at": "2026-09-04T07:00:14.034004+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 17,
+    "rows_scanned": 17280,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct quote_id) filter (where bound))::numeric / NULLIF((count(distinct quote_id))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 15,
+        "rows_returned": 12,
+        "rows_scanned": 17280,
+        "tool": "query_dp_ins_002"
+      }
+    ]
+  }
+}

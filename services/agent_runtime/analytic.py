@@ -563,7 +563,11 @@ def _run(
     else:
         dimension = plan.slice_column or period
         label = plan.slice_column or "period"
-        order = "2 DESC NULLS LAST"
+        # The label breaks ties. Without it a measure that is flat across
+        # groups — a stockout rate of zero everywhere, say — names a different
+        # leader on every run, and an answer whose headline changes while its
+        # numbers do not is an answer nobody can check.
+        order = "2 DESC NULLS LAST, 1"
 
     # Grouping by period already isolates each one; the other shapes collapse
     # the time axis, and a non-additive measure cannot survive that.

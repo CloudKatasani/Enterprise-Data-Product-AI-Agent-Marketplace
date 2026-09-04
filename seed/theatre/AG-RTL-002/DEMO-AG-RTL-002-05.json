@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-RTL-002",
+  "agent_name": "Inventory Availability Agent",
+  "agent_version_id": "AGV-AG-RTL-002-1.0.0",
+  "analysis_type": "action_draft",
+  "answer": {
+    "headline": "electronics leads on in-stock rate at 92.58%, 20.04% of the total across 5 categorys.",
+    "narrative": "Ranked by the certified definition KPI-INSTOCK-051 over 45,000 rows in DP-RTL-002.",
+    "table": {
+      "columns": [
+        "category",
+        "KPI-INSTOCK-051",
+        "observations"
+      ],
+      "rows": [
+        [
+          "electronics",
+          92.58,
+          7200
+        ],
+        [
+          "grocery",
+          92.51,
+          11400
+        ],
+        [
+          "seasonal",
+          92.33,
+          6300
+        ],
+        [
+          "apparel",
+          92.32,
+          10800
+        ],
+        [
+          "home",
+          92.24,
+          9300
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 96.5,
+        "unit": "percent",
+        "x": "category",
+        "y": "KPI-INSTOCK-051"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "sku",
+        "location_id",
+        "on_hand_units",
+        "category",
+        "region",
+        "store_format",
+        "activity_date"
+      ],
+      "contract_version": "3.5.0",
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-RTL-002-05",
+  "kpi_definitions": [
+    "KPI-INSTOCK-051"
+  ],
+  "notes": [],
+  "question": "Draft transfer recommendations to fix the top 20 availability gaps.",
+  "recorded_at": "2026-09-04T07:00:14.314706+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 13,
+    "rows_scanned": 45000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "category",
+          "limit": 24,
+          "measure": "((count(*) filter (where on_hand_units > 0))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 10,
+        "rows_returned": 5,
+        "rows_scanned": 45000,
+        "tool": "query_dp_rtl_002"
+      }
+    ]
+  }
+}

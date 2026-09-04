@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-TCH-001",
+  "agent_name": "Product Adoption Analyst",
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "enterprise leads on activation rate at 93.33%, 35.81% of the total across 3 plan tiers.",
+    "narrative": "Ranked by the certified definition KPI-ACTIV-013 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "plan_tier",
+        "KPI-ACTIV-013",
+        "observations"
+      ],
+      "rows": [
+        [
+          "enterprise",
+          93.33,
+          3720
+        ],
+        [
+          "starter",
+          85.19,
+          6696
+        ],
+        [
+          "growth",
+          82.14,
+          6944
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 68.0,
+        "unit": "percent",
+        "x": "plan_tier",
+        "y": "KPI-ACTIV-013"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "onboarded",
+        "activated",
+        "plan_tier",
+        "segment",
+        "acquisition_channel",
+        "activity_date"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-001-01",
+  "kpi_definitions": [
+    "KPI-ACTIV-013"
+  ],
+  "notes": [],
+  "question": "Which features are driving activation this quarter?",
+  "recorded_at": "2026-09-04T07:00:14.391443+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 75,
+    "rows_scanned": 17360,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "plan_tier",
+          "limit": 24,
+          "measure": "((count(distinct account_id) filter (where activated))::numeric / NULLIF((count(distinct account_id) filter (where onboarded))::numeric, 0) * 100)",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 71,
+        "rows_returned": 3,
+        "rows_scanned": 17360,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

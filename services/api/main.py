@@ -20,6 +20,7 @@ from services.api.routers import (
     agents,
     discover,
     kpis,
+    landing,
     mesh,
     observability,
     products,
@@ -82,6 +83,7 @@ def create_app() -> FastAPI:
         products.router, agents.router, discover.router, kpis.router, quality.router,
         requests.router, requests.demand_router, mesh.router,
         observability.router, observability.value_router,
+        landing.router, landing.events_router,
     ):
         app.include_router(router, prefix=API_PREFIX)
 

@@ -20,6 +20,7 @@ persona asking through a broadly-scoped agent still gets the narrow answer.
 
 from __future__ import annotations
 
+import hashlib
 from typing import Any
 
 import psycopg
@@ -39,6 +40,26 @@ SENSITIVITY_RESTRICTED = "restricted"
 SENSITIVITY_INTERNAL = "internal"
 
 GRANT_MONTHS = "12 months"
+
+# A request that was submitted and closed in the same instant is not a request
+# anyone reviewed, and a demo estate whose median time-to-access is zero makes a
+# claim the workflow rails do not support. So each seeded request is placed in
+# the recent past and turned around inside its SLA, deterministically from the
+# grant id — the same md5 discipline the rest of the demo data uses, never
+# random(), so re-seeding reproduces the estate exactly.
+SUBMITTED_WITHIN_DAYS = 30
+TURNAROUND_MIN_HOURS = 2
+TURNAROUND_MAX_HOURS = 26
+
+
+def _timing(grant_id: str) -> tuple[int, int]:
+    """Hours ago the request was submitted, and hours it then took to close."""
+    digest = int(hashlib.md5(grant_id.encode("utf-8")).hexdigest(), 16)
+    submitted_hours_ago = digest % (SUBMITTED_WITHIN_DAYS * 24) + TURNAROUND_MAX_HOURS
+    turnaround = (
+        digest // (SUBMITTED_WITHIN_DAYS * 24)
+    ) % (TURNAROUND_MAX_HOURS - TURNAROUND_MIN_HOURS) + TURNAROUND_MIN_HOURS
+    return submitted_hours_ago, turnaround
 
 # (party_id, label, the sensitivity classes the persona may read)
 PERSONAS: list[tuple[str, str, frozenset[str]]] = [
@@ -107,11 +128,19 @@ def _write(
     columns: list[str],
 ) -> int:
     request_id = f"REQ-{grant_id}"
+    submitted_hours_ago, turnaround = _timing(grant_id)
     connection.execute(
         "INSERT INTO request (request_id, tenant_id, request_type, state, requester_party_id, "
         "  title, body, purpose_code, purpose_text, policy_path, submitted_at, closed_at) "
-        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now(), now()) "
-        "ON CONFLICT (request_id) DO NOTHING",
+        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
+        "        now() - %s::int * interval '1 hour', "
+        "        now() - %s::int * interval '1 hour') "
+        # Timings are derived from the grant id and anchored to now, so a
+        # re-seed keeps the demo estate recent rather than letting its request
+        # history drift into the past. Everything else about the request is
+        # left alone.
+        "ON CONFLICT (request_id) DO UPDATE SET "
+        "  submitted_at = EXCLUDED.submitted_at, closed_at = EXCLUDED.closed_at",
         (
             request_id,
             tenant,
@@ -123,6 +152,8 @@ def _write(
             PURPOSE,
             purpose_text,
             "owner",
+            submitted_hours_ago,
+            submitted_hours_ago - turnaround,
         ),
     )
     connection.execute(

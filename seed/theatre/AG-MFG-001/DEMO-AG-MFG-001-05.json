@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-MFG-001",
+  "agent_name": "Yield & Downtime Analyst",
+  "agent_version_id": "AGV-AG-MFG-001-1.0.0",
+  "analysis_type": "concentration",
+  "answer": {
+    "headline": "tooling_wear leads on scrap rate at 5.64%, 25.14% of the total across 4 root causes.",
+    "narrative": "Ranked by the certified definition KPI-SCRAP-074 over 12,600 rows in DP-MFG-001.",
+    "table": {
+      "columns": [
+        "root_cause",
+        "KPI-SCRAP-074",
+        "observations"
+      ],
+      "rows": [
+        [
+          "tooling_wear",
+          5.64,
+          3159
+        ],
+        [
+          "material_defect",
+          5.63,
+          3140
+        ],
+        [
+          "setup_error",
+          5.62,
+          3115
+        ],
+        [
+          "contamination",
+          5.54,
+          3186
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.5,
+        "unit": "percent",
+        "x": "root_cause",
+        "y": "KPI-SCRAP-074"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "run_id",
+        "line",
+        "plant",
+        "scrapped_units",
+        "started_units",
+        "product_family",
+        "root_cause",
+        "shift_date"
+      ],
+      "contract_version": "2.8.0",
+      "product_id": "DP-MFG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-001-05",
+  "kpi_definitions": [
+    "KPI-SCRAP-074"
+  ],
+  "notes": [],
+  "question": "Where is scrap concentrated by product and root cause?",
+  "recorded_at": "2026-09-04T07:00:14.130399+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 12600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "root_cause",
+          "limit": 24,
+          "measure": "((sum(scrapped_units))::numeric / NULLIF((sum(started_units))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 4,
+        "rows_scanned": 12600,
+        "tool": "query_dp_mfg_001"
+      }
+    ]
+  }
+}

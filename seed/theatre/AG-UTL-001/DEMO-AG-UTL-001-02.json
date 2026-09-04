@@ -1,0 +1,119 @@
+{
+  "agent_id": "AG-UTL-001",
+  "agent_name": "Outage Impact Analyst",
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "contribution_ranking",
+  "answer": {
+    "headline": "FDR-101 leads on saidi at 178,522.5212 minutes, 32.45% of the total across 7 feeders.",
+    "narrative": "Ranked by the certified definition KPI-SAIDI-061 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "feeder",
+        "KPI-SAIDI-061",
+        "observations"
+      ],
+      "rows": [
+        [
+          "FDR-101",
+          178522.5212,
+          1054
+        ],
+        [
+          "FDR-102",
+          158108.1946,
+          1209
+        ],
+        [
+          "FDR-104",
+          48436.4572,
+          992
+        ],
+        [
+          "FDR-103",
+          44731.38,
+          992
+        ],
+        [
+          "FDR-105",
+          41059.4452,
+          837
+        ],
+        [
+          "FDR-107",
+          40896.2497,
+          1116
+        ],
+        [
+          "FDR-106",
+          38360.0218,
+          1240
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 90.0,
+        "unit": "minutes",
+        "x": "feeder",
+        "y": "KPI-SAIDI-061"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "asset_id",
+        "customer_interruption_minutes",
+        "served_customer_id",
+        "feeder",
+        "region",
+        "cause_class",
+        "major_event_day",
+        "observed_date"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-001-02",
+  "kpi_definitions": [
+    "KPI-SAIDI-061"
+  ],
+  "notes": [],
+  "question": "Which feeders contribute most to interruption minutes?",
+  "recorded_at": "2026-09-04T07:00:14.940559+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 35,
+    "rows_scanned": 7440,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "feeder",
+          "limit": 24,
+          "measure": "((sum(customer_interruption_minutes))::numeric / NULLIF((count(distinct served_customer_id))::numeric, 0))",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 33,
+        "rows_returned": 7,
+        "rows_scanned": 7440,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

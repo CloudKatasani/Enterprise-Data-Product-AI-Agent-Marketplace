@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-TEL-001",
+  "agent_name": "Churn Sentinel",
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "small_business leads on churn rate at 2.27%, 61.68% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-CHURN-001 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-CHURN-001",
+        "observations"
+      ],
+      "rows": [
+        [
+          "small_business",
+          2.27,
+          1364
+        ],
+        [
+          "consumer",
+          1.41,
+          4402
+        ],
+        [
+          "enterprise",
+          0.0,
+          744
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.4,
+        "unit": "percent",
+        "x": "segment",
+        "y": "KPI-CHURN-001"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "churn_flag",
+        "segment",
+        "region",
+        "tenure_band",
+        "active_at_period_start",
+        "activity_date"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-001-02",
+  "kpi_definitions": [
+    "KPI-CHURN-001"
+  ],
+  "notes": [],
+  "question": "Which customer segments drove the churn increase last quarter?",
+  "recorded_at": "2026-09-04T07:00:14.728111+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 38,
+    "rows_scanned": 6510,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((count(distinct subscriber_id) filter (where churn_flag))::numeric / NULLIF((count(distinct subscriber_id) filter (where active_at_period_start))::numeric, 0) * 100)",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 36,
+        "rows_returned": 3,
+        "rows_scanned": 6510,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

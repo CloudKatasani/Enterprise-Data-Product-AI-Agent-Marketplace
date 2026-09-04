@@ -1,0 +1,111 @@
+{
+  "agent_id": "AG-HLT-001",
+  "agent_name": "Readmission Risk Navigator",
+  "agent_version_id": "AGV-AG-HLT-001-1.0.0",
+  "analysis_type": "contribution_ranking",
+  "answer": {
+    "headline": "heart_failure leads on thirty day readmission rate at 19.28%, 30.75% of the total across 5 conditions.",
+    "narrative": "Ranked by the certified definition KPI-READMIT-036 over 31,200 rows in DP-HLT-001.",
+    "table": {
+      "columns": [
+        "condition",
+        "KPI-READMIT-036",
+        "observations"
+      ],
+      "rows": [
+        [
+          "heart_failure",
+          19.28,
+          8910
+        ],
+        [
+          "copd",
+          18.57,
+          6748
+        ],
+        [
+          "sepsis",
+          8.81,
+          4441
+        ],
+        [
+          "pneumonia",
+          8.21,
+          6622
+        ],
+        [
+          "hip_replacement",
+          7.82,
+          4479
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 11.5,
+        "unit": "percent",
+        "x": "condition",
+        "y": "KPI-READMIT-036"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "encounter_id",
+        "index_encounter_id",
+        "eligible_index",
+        "readmitted_within_30d",
+        "condition",
+        "unit",
+        "payer",
+        "discharge_disposition",
+        "programme_enrolled",
+        "discharge_date"
+      ],
+      "contract_version": "4.3.0",
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-001-02",
+  "kpi_definitions": [
+    "KPI-READMIT-036"
+  ],
+  "notes": [],
+  "question": "Which conditions and units drive the most readmissions?",
+  "recorded_at": "2026-09-04T07:00:13.673011+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 67,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "condition",
+          "limit": 24,
+          "measure": "((count(distinct index_encounter_id) filter (where readmitted_within_30d))::numeric / NULLIF((count(distinct index_encounter_id) filter (where eligible_index))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 64,
+        "rows_returned": 5,
+        "rows_scanned": 31200,
+        "tool": "query_dp_hlt_001"
+      }
+    ]
+  }
+}

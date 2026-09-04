@@ -1,0 +1,82 @@
+# The front page (BUILD.md section 13, specification 6.2 — ten bands).
+#
+# Everything the landing page does at a chosen number lives here: which cards
+# are featured and why, how many, how often things refresh, and the rule that
+# stops the activity ticker becoming a side channel onto one team's work.
+#
+# The featured ranking is stated as weights rather than a query so a change of
+# emphasis — quality over velocity, say — is a version bump and not a deploy.
+rubric: landing
+version: 1.2.0
+
+featured:
+  # Adoption velocity x quality x recency, as a weighted sum of normalised
+  # factors. Recency is of the product's last quality snapshot: a card whose
+  # score was computed months ago is a stale claim however good the score is.
+  ranking:
+    adoption_velocity: 0.40
+    quality: 0.35
+    recency: 0.25
+  # Half-life in days for the recency factor. A product certified today and one
+  # certified a quarter ago should not present as equally current.
+  recency_half_life_days: 45
+  # The recent slice velocity is measured over. Compared against the product's
+  # own rate across the whole window, so a product is judged against its own
+  # past rather than against products of a different size.
+  velocity_window_days: 14
+  products_per_row_min: 12
+  products_per_row_max: 24
+  static_grid_cards: 6
+  agents_in_carousel: 6
+  refresh_seconds: 300
+  # Below this quality band a product is not promoted on a marketing surface at
+  # any ranking score. Featuring an at-risk asset is a governance failure, not a
+  # ranking one.
+  min_quality_composite: 60
+
+industries:
+  tiles: 12
+  # A tile with nothing behind it is a dead end. An industry is shown only when
+  # it has at least this many published products.
+  min_products: 1
+
+counters:
+  refresh_seconds: 30
+  # The window "questions answered this month" is measured over.
+  answers_window_days: 30
+
+ticker:
+  # Section 13.5: no ticker event derived from fewer than this many underlying
+  # occurrences, or the ticker becomes a side channel onto one team's activity.
+  min_occurrences: 5
+  max_sensitivity_rank: 2
+  max_events: 12
+  window_days: 30
+
+theatre:
+  # Section 13.4: a recorded trace older than this is not shown. The nightly
+  # validation job re-records, so a stale trace cannot survive a regression.
+  max_trace_age_days: 7
+  exchanges_offered: 5
+
+hero:
+  # Section 13.3: the constellation sits behind copy at this opacity, under a
+  # scrim. CI asserts the resulting contrast on the rendered hero.
+  constellation_opacity: 0.12
+  min_contrast_ratio: 4.5
+  # The pulse cap is the hero's, not the estate's. However many answers a busy
+  # minute produces, the constellation animates at most this many per second so
+  # the page cannot strobe. Answers past the cap are dropped rather than queued:
+  # a pulse two minutes after its answer would say something untrue about when
+  # it happened.
+  max_pulses_per_second: 6
+  stream_interval_seconds: 2
+
+presentation:
+  # A ranking score is a comparison, not a measurement. Three digits separate
+  # the cards without inviting anyone to read the fourth as meaningful.
+  precision: 3
+
+value_proof:
+  tiles: 3
+  window_days: 30

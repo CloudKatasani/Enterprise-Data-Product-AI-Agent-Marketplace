@@ -1,0 +1,90 @@
+{
+  "agent_id": "AG-UTL-001",
+  "agent_name": "Outage Impact Analyst",
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "event_analysis",
+  "answer": {
+    "headline": "SAIFI is 2,164.9775 for the year ending 2026-01-01.",
+    "narrative": "Computed from DP-UTL-001 under the certified definition KPI-SAIFI-062, across 1 years and 21,600 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-SAIFI-062",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-01-01",
+          2164.9775,
+          21600
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.1,
+        "unit": "count",
+        "x": "period",
+        "y": "KPI-SAIFI-062"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "asset_id",
+        "customer_interruptions",
+        "served_customer_id",
+        "feeder",
+        "region",
+        "cause_class",
+        "outage_id",
+        "load_impact_mw",
+        "observed_date"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-001-04",
+  "kpi_definitions": [
+    "KPI-SAIFI-062"
+  ],
+  "notes": [],
+  "question": "What was the customer and load impact of last week's storm?",
+  "recorded_at": "2026-09-04T07:00:14.968557+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 17,
+    "rows_scanned": 21600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(customer_interruptions))::numeric / NULLIF((count(distinct served_customer_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 15,
+        "rows_returned": 1,
+        "rows_scanned": 21600,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

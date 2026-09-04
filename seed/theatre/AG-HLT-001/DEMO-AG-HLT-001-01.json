@@ -1,0 +1,91 @@
+{
+  "agent_id": "AG-HLT-001",
+  "agent_name": "Readmission Risk Navigator",
+  "agent_version_id": "AGV-AG-HLT-001-1.0.0",
+  "analysis_type": "trend_comparison",
+  "answer": {
+    "headline": "Thirty Day Readmission Rate is 13.64% for the year ending 2026-01-01.",
+    "narrative": "Computed from DP-HLT-001 under the certified definition KPI-READMIT-036, across 1 years and 31,200 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-READMIT-036",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-01-01",
+          13.64,
+          31200
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 11.5,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-READMIT-036"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "encounter_id",
+        "index_encounter_id",
+        "eligible_index",
+        "readmitted_within_30d",
+        "condition",
+        "unit",
+        "payer",
+        "discharge_disposition",
+        "programme_enrolled",
+        "discharge_date"
+      ],
+      "contract_version": "4.3.0",
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-001-01",
+  "kpi_definitions": [
+    "KPI-READMIT-036"
+  ],
+  "notes": [],
+  "question": "What is our 30-day readmission rate and how does it compare to last year?",
+  "recorded_at": "2026-09-04T07:00:13.603629+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 40,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct index_encounter_id) filter (where readmitted_within_30d))::numeric / NULLIF((count(distinct index_encounter_id) filter (where eligible_index))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 35,
+        "rows_returned": 1,
+        "rows_scanned": 31200,
+        "tool": "query_dp_hlt_001"
+      }
+    ]
+  }
+}

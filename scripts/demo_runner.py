@@ -128,6 +128,45 @@ def golden_document(answer: Answer, exchange: dict[str, Any], rubric_version_id:
     }
 
 
+# ---------------------------------------------------------------------------
+# Recorded traces for the front-page theatre (13.4)
+# ---------------------------------------------------------------------------
+
+TRACE_DIR = REPO_ROOT / "seed" / "theatre"
+
+
+def trace_path(exchange: dict[str, Any]) -> Path:
+    return TRACE_DIR / exchange["agent_id"] / f"{exchange['exchange_id']}.json"
+
+
+def write_trace(exchange: dict[str, Any], answer: Answer, rubric_version_id: str) -> Path:
+    """Record what actually happened, so the front page can replay it.
+
+    This is the whole execution — the tokens, the tool calls, the latency and
+    the cost — stamped with the moment it ran. The theatre replays it and says
+    so. Nothing on the front page is composed for the front page: an answer a
+    visitor sees is an answer this system produced, or there is no answer.
+    """
+    document = answer.document()
+    document.update(
+        {
+            "exchange_id": exchange["exchange_id"],
+            "agent_id": exchange["agent_id"],
+            "agent_name": exchange["agent_name"],
+            "agent_version_id": exchange["agent_version_id"],
+            "question": exchange["question"],
+            "analysis_type": exchange["analysis_type"],
+            "rubric_version_id": rubric_version_id,
+            "recorded_at": datetime.now(UTC).isoformat(),
+        }
+    )
+    path = trace_path(exchange)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(document, indent=2, sort_keys=True, default=str) + "\n",
+                    encoding="utf-8")
+    return path
+
+
 def compare(golden: dict[str, Any], current: dict[str, Any], tolerance_pct: Decimal) -> list[str]:
     """Differences that matter, in the order a reviewer would want them."""
     failures: list[str] = []
@@ -290,6 +329,14 @@ def run_one(
     current = golden_document(answer, exchange, rubric_version_id)
     path = REPO_ROOT / exchange["golden_answer_ref"]
 
+    # The trace is written on every passing run, not only on capture. Section
+    # 13.4 requires the front page to replay a *recent* recorded execution, and
+    # the nightly job is what keeps it recent: a trace that stopped being
+    # rewritten is a trace whose exchange stopped passing, and the theatre's own
+    # age check will then drop it.
+    if result.state == STATE_PASSING:
+        write_trace(exchange, answer, rubric_version_id)
+
     if capture:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(current, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -394,8 +441,9 @@ def main(argv: list[str] | None = None) -> int:
 
         exchanges = fetch_all(
             connection,
-            "SELECT e.*, v.agent_id FROM demo_exchange e "
+            "SELECT e.*, v.agent_id, a.name AS agent_name FROM demo_exchange e "
             "JOIN agent_version v ON v.agent_version_id = e.agent_version_id "
+            "JOIN agent a ON a.agent_id = v.agent_id "
             f"{where} ORDER BY v.agent_id, e.ordinal",
             tuple(parameters),
         )

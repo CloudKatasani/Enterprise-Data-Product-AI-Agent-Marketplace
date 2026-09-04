@@ -1,0 +1,97 @@
+{
+  "agent_id": "AG-TCH-001",
+  "agent_name": "Product Adoption Analyst",
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "distribution",
+  "answer": {
+    "headline": "Median time to first value is 12.0000 days for enterprise, with p90 at 37.0000 days.",
+    "narrative": "Across 10,800 observations in DP-TCH-001; the spread, not the mean, is what the question asked about.",
+    "table": {
+      "columns": [
+        "plan_tier",
+        "KPI-TTV-014",
+        "observations"
+      ],
+      "rows": [
+        [
+          "enterprise",
+          12.0,
+          10800
+        ],
+        [
+          "growth",
+          12.5,
+          20160
+        ],
+        [
+          "starter",
+          14.0,
+          19440
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 14.0,
+        "unit": "days",
+        "x": "plan_tier",
+        "y": "KPI-TTV-014"
+      },
+      "type": "histogram"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "days_to_first_value",
+        "plan_tier",
+        "segment",
+        "acquisition_channel",
+        "activity_date"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-001-03",
+  "kpi_definitions": [
+    "KPI-TTV-014"
+  ],
+  "notes": [],
+  "question": "How long does a new account take to reach first value?",
+  "recorded_at": "2026-09-04T07:00:14.501661+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 21,
+    "rows_scanned": 50400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "plan_tier",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by days_to_first_value))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 18,
+        "rows_returned": 3,
+        "rows_scanned": 50400,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

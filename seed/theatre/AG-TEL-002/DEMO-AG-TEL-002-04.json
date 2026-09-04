@@ -1,0 +1,102 @@
+{
+  "agent_id": "AG-TEL-002",
+  "agent_name": "Network Quality Advisor",
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "pattern_detection",
+  "answer": {
+    "headline": "West leads on fault mean time to restore at 331.3195 hours, 25.56% of the total across 4 regions.",
+    "narrative": "Ranked by the certified definition KPI-FMTTR-009 over 15,120 rows in DP-TEL-002.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-FMTTR-009",
+        "observations"
+      ],
+      "rows": [
+        [
+          "West",
+          331.3195,
+          3360
+        ],
+        [
+          "Denver",
+          324.7042,
+          2352
+        ],
+        [
+          "Midwest",
+          324.23,
+          4872
+        ],
+        [
+          "Northeast",
+          315.7407,
+          4536
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 4.0,
+        "unit": "hours",
+        "x": "region",
+        "y": "KPI-FMTTR-009"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "site_id",
+        "restore_minutes",
+        "fault_closed",
+        "fault_class",
+        "region",
+        "observed_hour"
+      ],
+      "contract_version": "2.4.0",
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-002-04",
+  "kpi_definitions": [
+    "KPI-FMTTR-009"
+  ],
+  "notes": [],
+  "question": "Which faults are recurring on the same assets?",
+  "recorded_at": "2026-09-04T07:00:14.836159+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 15120,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "((sum(restore_minutes))::numeric / NULLIF((count(*) filter (where fault_closed))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 4,
+        "rows_scanned": 15120,
+        "tool": "query_dp_tel_002"
+      }
+    ]
+  }
+}

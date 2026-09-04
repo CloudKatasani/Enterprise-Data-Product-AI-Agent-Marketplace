@@ -1,0 +1,102 @@
+{
+  "agent_id": "AG-INS-002",
+  "agent_name": "Underwriting Portfolio Copilot",
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "variance_to_plan",
+  "answer": {
+    "headline": "commercial_auto leads on policy retention at 100.00%, 33.33% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 480 rows in DP-INS-002. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-POLRETEN-032",
+        "observations"
+      ],
+      "rows": [
+        [
+          "commercial_auto",
+          100.0,
+          132
+        ],
+        [
+          "commercial_property",
+          100.0,
+          176
+        ],
+        [
+          "small_commercial",
+          100.0,
+          172
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 86.0,
+        "unit": "percent",
+        "x": "segment",
+        "y": "KPI-POLRETEN-032"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "policy_id",
+        "up_for_renewal",
+        "renewed",
+        "rate_change_pct",
+        "coverage_line",
+        "segment",
+        "region",
+        "channel",
+        "as_of_month"
+      ],
+      "contract_version": "2.6.0",
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-002-04",
+  "kpi_definitions": [
+    "KPI-POLRETEN-032"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "Which segments are we retaining below plan?",
+  "recorded_at": "2026-09-04T07:00:14.059643+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 24,
+    "rows_scanned": 480,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "((count(distinct policy_id) filter (where renewed))::numeric / NULLIF((count(distinct policy_id) filter (where up_for_renewal))::numeric, 0) * 100)",
+          "period": "2026-09-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 21,
+        "rows_returned": 3,
+        "rows_scanned": 480,
+        "tool": "query_dp_ins_002"
+      }
+    ]
+  }
+}

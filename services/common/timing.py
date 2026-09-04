@@ -30,3 +30,11 @@ def hours_in(days: int) -> int:
     rather than restating 24 in application source.
     """
     return int(timedelta(days=days) / HOUR)
+
+
+DAY = timedelta(days=1)
+
+
+def seconds_in(days: float) -> float:
+    """Seconds in a number of days, asked of `timedelta` for the same reason."""
+    return timedelta(days=days).total_seconds()

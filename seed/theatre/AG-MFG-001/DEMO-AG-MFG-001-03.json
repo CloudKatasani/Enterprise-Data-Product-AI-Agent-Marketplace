@@ -1,0 +1,93 @@
+{
+  "agent_id": "AG-MFG-001",
+  "agent_name": "Yield & Downtime Analyst",
+  "agent_version_id": "AGV-AG-MFG-001-1.0.0",
+  "analysis_type": "shift_comparison",
+  "answer": {
+    "headline": "First Pass Yield is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+    "narrative": "Both cohorts are drawn from DP-MFG-001 over the same period: 12,072 observations against 528.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-FPY-072",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          0.0,
+          528
+        ],
+        [
+          "true",
+          100.0,
+          12072
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 96.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-FPY-072"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "run_id",
+        "line",
+        "plant",
+        "shift",
+        "passed_without_rework",
+        "product_family",
+        "shift_date"
+      ],
+      "contract_version": "2.8.0",
+      "product_id": "DP-MFG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-001-03",
+  "kpi_definitions": [
+    "KPI-FPY-072"
+  ],
+  "notes": [],
+  "question": "Which shifts show the biggest first-pass-yield gap?",
+  "recorded_at": "2026-09-04T07:00:14.111997+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 12600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((count(*) filter (where passed_without_rework))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 2,
+        "rows_scanned": 12600,
+        "tool": "query_dp_mfg_001"
+      }
+    ]
+  }
+}

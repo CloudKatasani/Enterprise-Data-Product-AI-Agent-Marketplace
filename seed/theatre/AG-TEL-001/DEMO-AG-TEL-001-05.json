@@ -1,0 +1,92 @@
+{
+  "agent_id": "AG-TEL-001",
+  "agent_name": "Churn Sentinel",
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Save Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+    "narrative": "Both cohorts are drawn from DP-TEL-001 over the same period: 95 observations against 11,245. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-SAVE-003",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          0.0,
+          11245
+        ],
+        [
+          "true",
+          100.0,
+          95
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 34.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-SAVE-003"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "save_offer_made",
+        "save_offer_accepted",
+        "segment",
+        "region",
+        "activity_date"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-001-05",
+  "kpi_definitions": [
+    "KPI-SAVE-003"
+  ],
+  "notes": [],
+  "question": "Did the May retention campaign actually work?",
+  "recorded_at": "2026-09-04T07:00:14.801409+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 43,
+    "rows_scanned": 11340,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((count(distinct subscriber_id) filter (where save_offer_accepted))::numeric / NULLIF((count(distinct subscriber_id) filter (where save_offer_made))::numeric, 0) * 100)",
+          "period": "2026-04-01",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 39,
+        "rows_returned": 2,
+        "rows_scanned": 11340,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

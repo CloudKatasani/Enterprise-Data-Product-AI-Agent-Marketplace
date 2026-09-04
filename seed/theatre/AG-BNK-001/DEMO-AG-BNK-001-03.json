@@ -1,0 +1,102 @@
+{
+  "agent_id": "AG-BNK-001",
+  "agent_name": "Relationship Value Advisor",
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "trend_segmented",
+  "answer": {
+    "headline": "Primary Bank Share is 61.40% for the year ending 2026-01-01, flat on the prior year.",
+    "narrative": "Computed from DP-BNK-001 under the certified definition KPI-PBSHARE-016, across 4 years and 18,000 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-PBSHARE-016",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2023-01-01",
+          61.4,
+          1500
+        ],
+        [
+          "2024-01-01",
+          61.4,
+          6000
+        ],
+        [
+          "2025-01-01",
+          61.4,
+          6000
+        ],
+        [
+          "2026-01-01",
+          61.4,
+          4500
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 61.0,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-PBSHARE-016"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "primary_relationship",
+        "segment",
+        "region",
+        "tenure_band",
+        "as_of_month"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-001-03",
+  "kpi_definitions": [
+    "KPI-PBSHARE-016"
+  ],
+  "notes": [],
+  "question": "What is our primary bank share trend by segment?",
+  "recorded_at": "2026-09-04T07:00:13.449850+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 21,
+    "rows_scanned": 18000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct customer_id) filter (where primary_relationship))::numeric / NULLIF((count(distinct customer_id))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 16,
+        "rows_returned": 4,
+        "rows_scanned": 18000,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

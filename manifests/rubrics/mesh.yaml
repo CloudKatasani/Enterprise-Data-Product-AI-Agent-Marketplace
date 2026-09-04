@@ -1,7 +1,7 @@
 # Mesh edge rubric. Both meshes compute strength from these weights and hold
 # any edge below the confidence floor for review rather than rendering it (I6).
 rubric: mesh_edges
-version: 1.5.0
+version: 1.6.0
 data_mesh_weights:
   source_overlap_jaccard: 0.30
   entity_overlap: 0.25
@@ -65,6 +65,22 @@ layout:
   charge_strength: -220
   collide_radius: 18
   featured_node_cap: 60
+  # Integration parameters for the server-side pre-warm. They are here rather
+  # than in the code because they are the difference between a graph that reads
+  # as clustered and one that reads as a cloud, and that is a judgement about
+  # presentation, not an implementation detail.
+  #
+  # pair_share is the fraction of a pairwise force each end of a pair receives.
+  # It is a half because a pair has two ends, and it is written down so no
+  # reader has to work out whether the code forgot one of them.
+  simulation:
+    velocity_decay: 0.6
+    alpha_min: 0.001
+    centre_strength: 0.05
+    link_strength: 0.7
+    collide_iterations: 2
+    pair_share: 0.5
+    orbit_radius: 34
   # The server-rendered diagram's geometry. Here rather than in the component
   # for the same reason the force parameters are: the layout is the server's
   # answer, and a client that computes its own would draw a different picture

@@ -1,0 +1,114 @@
+{
+  "agent_id": "AG-TRN-001",
+  "agent_name": "Delivery SLA Sentinel",
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "risk_forecast",
+  "answer": {
+    "headline": "MW-01 leads on exception rate at 3.36%, 18.59% of the total across 6 lanes.",
+    "narrative": "Ranked by the certified definition KPI-EXCRATE-060 over 13,200 rows in DP-TRN-001.",
+    "table": {
+      "columns": [
+        "lane",
+        "KPI-EXCRATE-060",
+        "observations"
+      ],
+      "rows": [
+        [
+          "MW-01",
+          3.36,
+          2171
+        ],
+        [
+          "MW-02",
+          3.2,
+          2311
+        ],
+        [
+          "NE-01",
+          3.11,
+          2217
+        ],
+        [
+          "W-01",
+          2.97,
+          2119
+        ],
+        [
+          "NE-02",
+          2.79,
+          2222
+        ],
+        [
+          "SE-01",
+          2.64,
+          2160
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 3.0,
+        "unit": "percent",
+        "x": "lane",
+        "y": "KPI-EXCRATE-060"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "shipment_leg_id",
+        "exception_logged",
+        "exception_type",
+        "lane",
+        "carrier",
+        "customer",
+        "sla_penalty_risk",
+        "departure_timestamp"
+      ],
+      "contract_version": "2.2.0",
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-001-05",
+  "kpi_definitions": [
+    "KPI-EXCRATE-060"
+  ],
+  "notes": [],
+  "question": "Which customers are at risk of SLA penalty this month?",
+  "recorded_at": "2026-09-04T07:00:14.884687+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 13200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "lane",
+          "limit": 24,
+          "measure": "((count(*) filter (where exception_logged))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 6,
+        "rows_scanned": 13200,
+        "tool": "query_dp_trn_001"
+      }
+    ]
+  }
+}

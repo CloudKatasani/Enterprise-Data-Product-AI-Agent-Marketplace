@@ -57,7 +57,7 @@
       "by": "scripts/gen.py",
       "from": "services/api/main.py",
       "generator_version": "1.0.0",
-      "manifest_hash": "749cb34dd1230363b0f9b6dc1580c591486ab3ef16fd345aca42b6d10aafba5c",
+      "manifest_hash": "e1c5be2d541fb1a6afd03eed3d7c263665a2937f22746956d5eec5636e955c45",
       "warning": "DO NOT EDIT"
     }
   },
@@ -1174,6 +1174,26 @@
         ]
       }
     },
+    "/api/v1/events/stream": {
+      "get": {
+        "description": "One pulse per grounded answer, capped at the motion layer's rate.\n\nThe cap is the hero's, not the estate's: however many answers a busy minute\nproduces, the constellation animates at most this many pulses a second, so\nthe page cannot strobe. Answers beyond the cap are not queued for later \u2014\na pulse two minutes after its answer would be telling the visitor something\nuntrue about when it happened.\n\nOn the demo tier this is a replay of the recorded interaction stream, which\nis what section 13.3 asks for. It is the same query either way: the demo\nestate's answers are real answers, produced by the same runtime, and there\nis no branch here that would let a synthetic pulse in.",
+        "operationId": "stream_api_v1_events_stream_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Answer pulses for the hero",
+        "tags": [
+          "landing"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "health_api_v1_health_get",
@@ -1343,6 +1363,196 @@
         "summary": "Definition, versions and every consumer of a KPI",
         "tags": [
           "kpis"
+        ]
+      }
+    },
+    "/api/v1/landing/counters": {
+      "get": {
+        "operationId": "counters_api_v1_landing_counters_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Counters Api V1 Landing Counters Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Trust strip and ticker",
+        "tags": [
+          "landing"
+        ]
+      }
+    },
+    "/api/v1/landing/featured": {
+      "get": {
+        "description": "Bands 4 and 5, optionally narrowed to one vertical (M11.6).\n\nThe industry selector filters this same ranking rather than applying a\nsecond one: a walkthrough tailored in one click should show the client the\njudgement the estate makes anyway, not a different one arranged for them.",
+        "operationId": "featured_band_api_v1_landing_featured_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "industry",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Industry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Featured Band Api V1 Landing Featured Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The featured bands",
+        "tags": [
+          "landing"
+        ]
+      }
+    },
+    "/api/v1/landing/hero": {
+      "get": {
+        "description": "Real identifiers, real edges, and coordinates that have already settled.\n\nThe client paints this frame immediately and drifts from it. It never runs\nthe layout itself: a client-side simulation would produce a different\npicture from the one the API described, and the hero and the mesh explorer\nwould then disagree about the shape of the same estate.",
+        "operationId": "hero_api_v1_landing_hero_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Hero Api V1 Landing Hero Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "The settled constellation",
+        "tags": [
+          "landing"
+        ]
+      }
+    },
+    "/api/v1/landing/industries": {
+      "get": {
+        "operationId": "industry_tiles_api_v1_landing_industries_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Industry Tiles Api V1 Landing Industries Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "The industry selector",
+        "tags": [
+          "landing"
+        ]
+      }
+    },
+    "/api/v1/landing/proof": {
+      "get": {
+        "operationId": "value_proof_api_v1_landing_proof_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Value Proof Api V1 Landing Proof Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "The value-proof tiles",
+        "tags": [
+          "landing"
+        ]
+      }
+    },
+    "/api/v1/landing/theatre": {
+      "get": {
+        "operationId": "theatre_traces_api_v1_landing_theatre_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Theatre Traces Api V1 Landing Theatre Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Recorded exchanges to replay",
+        "tags": [
+          "landing"
         ]
       }
     },

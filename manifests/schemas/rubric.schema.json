@@ -23,7 +23,8 @@
         "semantic_search",
         "agent_runtime",
         "governance",
-        "observability"
+        "observability",
+        "landing"
       ]
     },
     "version": {
@@ -173,6 +174,18 @@
       },
       "then": {
         "$ref": "#/$defs/observability"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "landing"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/landing"
       }
     }
   ],
@@ -523,6 +536,42 @@
                   "type": "number"
                 },
                 "start_angle_turns": {
+                  "type": "number"
+                }
+              }
+            },
+            "simulation": {
+              "type": "object",
+              "required": [
+                "velocity_decay",
+                "alpha_min",
+                "centre_strength",
+                "link_strength",
+                "collide_iterations",
+                "pair_share",
+                "orbit_radius"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "velocity_decay": {
+                  "type": "number"
+                },
+                "alpha_min": {
+                  "type": "number"
+                },
+                "centre_strength": {
+                  "type": "number"
+                },
+                "link_strength": {
+                  "type": "number"
+                },
+                "collide_iterations": {
+                  "type": "number"
+                },
+                "pair_share": {
+                  "type": "number"
+                },
+                "orbit_radius": {
                   "type": "number"
                 }
               }
@@ -1277,6 +1326,231 @@
             },
             "banner_while_open": {
               "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "landing": {
+      "type": "object",
+      "required": [
+        "featured",
+        "industries",
+        "counters",
+        "ticker",
+        "theatre",
+        "hero",
+        "value_proof",
+        "presentation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "featured": {
+          "type": "object",
+          "required": [
+            "ranking",
+            "recency_half_life_days",
+            "products_per_row_min",
+            "products_per_row_max",
+            "static_grid_cards",
+            "agents_in_carousel",
+            "refresh_seconds",
+            "min_quality_composite",
+            "velocity_window_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "ranking": {
+              "type": "object",
+              "required": [
+                "adoption_velocity",
+                "quality",
+                "recency"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "adoption_velocity": {
+                  "type": "number"
+                },
+                "quality": {
+                  "type": "number"
+                },
+                "recency": {
+                  "type": "number"
+                }
+              }
+            },
+            "recency_half_life_days": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "products_per_row_min": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "products_per_row_max": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "static_grid_cards": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "agents_in_carousel": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "refresh_seconds": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "min_quality_composite": {
+              "type": "number"
+            },
+            "velocity_window_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "industries": {
+          "type": "object",
+          "required": [
+            "tiles",
+            "min_products"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "tiles": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "min_products": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "counters": {
+          "type": "object",
+          "required": [
+            "refresh_seconds",
+            "answers_window_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "refresh_seconds": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "answers_window_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "ticker": {
+          "type": "object",
+          "required": [
+            "min_occurrences",
+            "max_sensitivity_rank",
+            "max_events",
+            "window_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "min_occurrences": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_sensitivity_rank": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max_events": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "window_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "theatre": {
+          "type": "object",
+          "required": [
+            "max_trace_age_days",
+            "exchanges_offered"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "max_trace_age_days": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "exchanges_offered": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "hero": {
+          "type": "object",
+          "required": [
+            "constellation_opacity",
+            "min_contrast_ratio",
+            "max_pulses_per_second",
+            "stream_interval_seconds"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "constellation_opacity": {
+              "type": "number"
+            },
+            "min_contrast_ratio": {
+              "type": "number"
+            },
+            "max_pulses_per_second": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "stream_interval_seconds": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "value_proof": {
+          "type": "object",
+          "required": [
+            "tiles",
+            "window_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "tiles": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "window_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "presentation": {
+          "type": "object",
+          "required": [
+            "precision"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "precision": {
+              "type": "integer",
+              "minimum": 0
             }
           }
         }

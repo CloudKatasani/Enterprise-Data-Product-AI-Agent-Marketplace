@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-INS-002",
+  "agent_name": "Underwriting Portfolio Copilot",
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "adequacy_ranking",
+  "answer": {
+    "headline": "auto leads on rate adequacy at 1.0494, 34.79% of the total across 3 coverage lines.",
+    "narrative": "Ranked by the certified definition KPI-RATEADQ-034 over 17,280 rows in DP-INS-002.",
+    "table": {
+      "columns": [
+        "coverage_line",
+        "KPI-RATEADQ-034",
+        "observations"
+      ],
+      "rows": [
+        [
+          "auto",
+          1.0494,
+          6192
+        ],
+        [
+          "casualty",
+          1.0393,
+          4752
+        ],
+        [
+          "property",
+          0.9278,
+          6336
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 1.05,
+        "unit": "ratio",
+        "x": "coverage_line",
+        "y": "KPI-RATEADQ-034"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "policy_id",
+        "charged_premium",
+        "technical_premium",
+        "coverage_line",
+        "segment",
+        "region",
+        "as_of_month"
+      ],
+      "contract_version": "2.6.0",
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-INS-002-01",
+  "kpi_definitions": [
+    "KPI-RATEADQ-034"
+  ],
+  "notes": [],
+  "question": "Where is rate adequacy weakest in the commercial property book?",
+  "recorded_at": "2026-09-04T07:00:14.006097+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 8,
+    "rows_scanned": 17280,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "coverage_line",
+          "limit": 24,
+          "measure": "((sum(charged_premium))::numeric / NULLIF((sum(technical_premium))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 5,
+        "rows_returned": 3,
+        "rows_scanned": 17280,
+        "tool": "query_dp_ins_002"
+      }
+    ]
+  }
+}

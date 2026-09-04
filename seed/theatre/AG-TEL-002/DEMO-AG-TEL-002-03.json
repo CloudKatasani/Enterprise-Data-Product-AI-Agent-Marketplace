@@ -1,0 +1,102 @@
+{
+  "agent_id": "AG-TEL-002",
+  "agent_name": "Network Quality Advisor",
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "Midwest leads on network availability at 99.28%, 25.01% of the total across 4 regions.",
+    "narrative": "Ranked by the certified definition KPI-NETAVAIL-006 over 15,120 rows in DP-TEL-002.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-NETAVAIL-006",
+        "observations"
+      ],
+      "rows": [
+        [
+          "Midwest",
+          99.28,
+          4872
+        ],
+        [
+          "Northeast",
+          99.27,
+          4536
+        ],
+        [
+          "West",
+          99.26,
+          3360
+        ],
+        [
+          "Denver",
+          99.23,
+          2352
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 99.95,
+        "unit": "percent",
+        "x": "region",
+        "y": "KPI-NETAVAIL-006"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "site_id",
+        "available_minutes",
+        "scheduled_minutes",
+        "region",
+        "site_class",
+        "observed_hour"
+      ],
+      "contract_version": "2.4.0",
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-002-03",
+  "kpi_definitions": [
+    "KPI-NETAVAIL-006"
+  ],
+  "notes": [],
+  "question": "How does availability compare across regions this month?",
+  "recorded_at": "2026-09-04T07:00:14.828552+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 15120,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "((sum(available_minutes))::numeric / NULLIF((sum(scheduled_minutes))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 4,
+        "rows_scanned": 15120,
+        "tool": "query_dp_tel_002"
+      }
+    ]
+  }
+}

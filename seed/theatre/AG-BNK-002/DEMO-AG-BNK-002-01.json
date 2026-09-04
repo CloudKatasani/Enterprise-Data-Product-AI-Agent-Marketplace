@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-BNK-002",
+  "agent_name": "Financial Crime Triage",
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "backlog_profile",
+  "answer": {
+    "headline": "sanctions_proximity leads on alert backlog age at 65.6320 days, 20.30% of the total across 5 typologys.",
+    "narrative": "Ranked by the certified definition KPI-BACKLOG-025 over 14,400 rows in DP-BNK-002.",
+    "table": {
+      "columns": [
+        "typology",
+        "KPI-BACKLOG-025",
+        "observations"
+      ],
+      "rows": [
+        [
+          "sanctions_proximity",
+          65.632,
+          900
+        ],
+        [
+          "trade_based",
+          65.142,
+          1350
+        ],
+        [
+          "mule_network",
+          65.02,
+          3060
+        ],
+        [
+          "structuring",
+          63.782,
+          5760
+        ],
+        [
+          "rapid_movement",
+          63.779,
+          3330
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 30.0,
+        "unit": "days",
+        "x": "typology",
+        "y": "KPI-BACKLOG-025"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "alert_id",
+        "age_days",
+        "disposition",
+        "typology",
+        "business_line",
+        "investigator_team",
+        "event_timestamp"
+      ],
+      "contract_version": "2.9.0",
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-002-01",
+  "kpi_definitions": [
+    "KPI-BACKLOG-025"
+  ],
+  "notes": [],
+  "question": "What is the alert backlog and its age profile?",
+  "recorded_at": "2026-09-04T07:00:13.494171+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 14,
+    "rows_scanned": 14400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "typology",
+          "limit": 24,
+          "measure": "(percentile_cont(0.9) within group (order by age_days) filter (where disposition is null))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 5,
+        "rows_scanned": 14400,
+        "tool": "query_dp_bnk_002"
+      }
+    ]
+  }
+}

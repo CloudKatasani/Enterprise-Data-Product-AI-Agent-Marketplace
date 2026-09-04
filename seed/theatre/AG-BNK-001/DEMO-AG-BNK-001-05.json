@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-BNK-001",
+  "agent_name": "Relationship Value Advisor",
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "event_impact",
+  "answer": {
+    "headline": "Deposit Balance Growth is 5.16% for the year ending 2026-01-01, up 1.24% on the prior year.",
+    "narrative": "Computed from DP-BNK-001 under the certified definition KPI-DEPGRW-020, across 4 years and 18,000 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-DEPGRW-020",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2023-01-01",
+          0.21,
+          1500
+        ],
+        [
+          "2024-01-01",
+          0.2,
+          6000
+        ],
+        [
+          "2025-01-01",
+          3.92,
+          6000
+        ],
+        [
+          "2026-01-01",
+          5.16,
+          4500
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 3.0,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-DEPGRW-020"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "starting_deposit_balance",
+        "ending_deposit_balance",
+        "segment",
+        "region",
+        "product_family",
+        "active_product_count",
+        "as_of_month"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-001-05",
+  "kpi_definitions": [
+    "KPI-DEPGRW-020"
+  ],
+  "notes": [],
+  "question": "How did deposit balances shift after the April rate change?",
+  "recorded_at": "2026-09-04T07:00:13.478603+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 12,
+    "rows_scanned": 18000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((sum(ending_deposit_balance) - sum(starting_deposit_balance))::numeric / NULLIF((sum(starting_deposit_balance))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 4,
+        "rows_scanned": 18000,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

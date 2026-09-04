@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-RTL-001",
+  "agent_name": "Merchandising Performance Agent",
+  "agent_version_id": "AGV-AG-RTL-001-1.0.0",
+  "analysis_type": "opportunity_matrix",
+  "answer": {
+    "headline": "seasonal leads on sell-through rate at 9.39%, 29.58% of the total across 5 categorys.",
+    "narrative": "Ranked by the certified definition KPI-SELLTHRU-053 over 45,000 rows in DP-RTL-002.",
+    "table": {
+      "columns": [
+        "category",
+        "KPI-SELLTHRU-053",
+        "observations"
+      ],
+      "rows": [
+        [
+          "seasonal",
+          9.39,
+          6300
+        ],
+        [
+          "electronics",
+          5.78,
+          7200
+        ],
+        [
+          "home",
+          5.63,
+          9300
+        ],
+        [
+          "apparel",
+          5.48,
+          10800
+        ],
+        [
+          "grocery",
+          5.46,
+          11400
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 70.0,
+        "unit": "percent",
+        "x": "category",
+        "y": "KPI-SELLTHRU-053"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "sku",
+        "units_sold",
+        "units_received",
+        "on_hand_units",
+        "category",
+        "region",
+        "activity_date"
+      ],
+      "contract_version": "3.5.0",
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-RTL-001-04",
+  "kpi_definitions": [
+    "KPI-SELLTHRU-053"
+  ],
+  "notes": [],
+  "question": "Which SKUs have high sell-through but poor in-stock?",
+  "recorded_at": "2026-09-04T07:00:14.179139+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 14,
+    "rows_scanned": 45000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "category",
+          "limit": 24,
+          "measure": "((sum(units_sold))::numeric / NULLIF((sum(units_received))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 11,
+        "rows_returned": 5,
+        "rows_scanned": 45000,
+        "tool": "query_dp_rtl_002"
+      }
+    ]
+  }
+}
