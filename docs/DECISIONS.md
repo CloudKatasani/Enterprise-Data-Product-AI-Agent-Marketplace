@@ -137,3 +137,42 @@ committed set. A file nothing generates, and a generated file that was not commi
 reported.
 **Consequence** Adding, editing or deleting a file under `generated/` all fail the build, which
 is what rule 3 asks for.
+
+### D-014 — A stand-in platform, not a stand-in connector (M3, 2026-09-04)
+**Context** M3 requires a real harvest and a kill test, but no Snowflake account is available to
+this build. Mocking the connector would test the mock.
+**Decision** `scripts/seeders/platform_sandbox.py` materialises the ACCOUNT_USAGE and
+INFORMATION_SCHEMA *shapes* the connector reads, in a physically separate Postgres schema, and
+fills them from the product manifests. `SandboxSession` rewrites only the namespaces; the
+statements, the read-only guard, the result shapes and the harvest code are the ones that run
+against a real account. Nothing in `connectors/` knows the sandbox exists.
+**Consequence** A change to a harvest query is exercised rather than silently diverging, and the
+kill test has a real platform to attack. `open_session()` picks the real account whenever
+`SNOWFLAKE_PRIVATE_KEY` is configured.
+
+### D-015 — The kill test proves two independent layers (M3, 2026-09-04)
+**Context** A kill test that only checks an in-process guard is checking that we wrote an `if`.
+**Decision** Every write attempt is asserted twice: refused by `assert_read_only` before it
+reaches a driver, and refused by the platform when submitted straight to the driver through
+`unguarded_execute`. The stand-in platform enforces read-only the way `MKT_READONLY` does.
+**Consequence** I8 holds even against an account whose grants were misconfigured, and the claim
+is worth making. `npm run test:kill` runs on every commit against the stand-in and on a
+schedule against a real sandbox account.
+
+### D-016 — Manifest and platform both write columns; disagreement is a finding (M3, 2026-09-04)
+**Context** The product manifest declares columns and the harvest observes them. Both write
+`data_product_column`.
+**Decision** The manifest seeds what the product promises; the harvest upserts what the platform
+holds. Sensitivity is written by neither — the I5 trigger derives it from whatever the columns
+say, so a classification tag appearing on the platform raises the product's tier by itself.
+**Consequence** The derived tier tracks reality rather than the document, which is the point of
+deriving it. Recording explicit drift rows is M10 work, alongside entitlement reconciliation.
+
+### D-017 — Harvest windows, confidences and the credit rate are a rubric (M3, 2026-09-04)
+**Context** Lookback windows, the confidence attached to a declared versus an inferred lineage
+edge, and the dollars-per-credit used to apportion cost are all numbers, and I10 forbids them
+in source.
+**Decision** `manifests/rubrics/harvest.yaml` (`platform_harvest`) holds them, and every harvest
+pass takes the resolved rubric as an argument.
+**Consequence** The difference between "the platform's dependency graph says so" (1.0) and
+"queries touched both" (0.85) is reviewable without reading Python, which is what rule 4 is for.

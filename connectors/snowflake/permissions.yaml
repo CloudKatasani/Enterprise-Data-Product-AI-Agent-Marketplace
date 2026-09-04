@@ -1,0 +1,71 @@
+# Published permission manifest for the Snowflake harvest connector.
+#
+# Section 19: connector service principals are read-only with a published
+# permission manifest. Every privilege below is asserted by tests/kill; a
+# connector that starts needing a privilege not listed here fails the build.
+connector: snowflake
+principal: SVC_MARKETPLACE_HARVEST
+role: MKT_READONLY
+privileges:
+  - privilege: USAGE
+    object: "WAREHOUSE MKT_HARVEST_WH"
+    reason: "Run the harvest queries on a dedicated, resource-monitored warehouse."
+    write: false
+  - privilege: USAGE
+    object: "DATABASE <customer databases in scope>"
+    reason: "Traverse to the schemas holding data products in scope."
+    write: false
+  - privilege: USAGE
+    object: "SCHEMA <schemas in scope>"
+    reason: "Traverse to the tables and views a data product is published from."
+    write: false
+  - privilege: REFERENCES
+    object: "TABLE <tables in scope>"
+    reason: "Read column names, types, comments and tag references without reading rows."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY"
+    reason: "Harvest usage and adoption into usage_event. Metadata only, no customer rows."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.ACCOUNT_USAGE.ACCESS_HISTORY"
+    reason: "Harvest column-level lineage into lineage_edge."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.ACCOUNT_USAGE.OBJECT_DEPENDENCIES"
+    reason: "Harvest declared object dependencies into lineage_edge."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY"
+    reason: "Harvest compute cost into cost_allocation."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"
+    reason: "Discover which quality rules are attached to which objects."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_RESULTS"
+    reason: "Harvest data metric function results into quality_result."
+    write: false
+  - privilege: SELECT
+    object: "SNOWFLAKE.ACCOUNT_USAGE.TAG_REFERENCES"
+    reason: "Harvest classification tags so sensitivity can be derived from columns (I5)."
+    write: false
+
+# Privileges this connector must never hold. tests/kill asserts each is absent
+# from the manifest and refused by the session guard.
+refuses:
+  - INSERT
+  - UPDATE
+  - DELETE
+  - MERGE
+  - TRUNCATE
+  - CREATE
+  - DROP
+  - ALTER
+  - OWNERSHIP
+  - GRANT
+  - MODIFY
+  - MONITOR EXECUTION
+  - APPLY MASKING POLICY
+  - APPLY ROW ACCESS POLICY

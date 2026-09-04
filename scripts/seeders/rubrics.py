@@ -184,9 +184,11 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
             )
             clash = cursor.fetchone()
             if clash is not None:
+                existing = dict(clash)
                 raise RubricVersionConflict(
                     f"{Path(path).name}: content changed but 'version: {semver}' did not. "
-                    f"Existing version {clash[0]} was built from {clash[1][:12]}, this file "
+                    f"Existing version {existing['rubric_version_id']} was built from "
+                    f"{existing['source_hash'][:12]}, this file "
                     f"hashes to {digest[:12]}. Bump 'version' to publish a new rubric version; "
                     "prior scores keep pointing at the version they were computed under."
                 )

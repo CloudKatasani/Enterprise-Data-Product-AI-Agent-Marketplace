@@ -39,8 +39,11 @@ def database_url() -> str:
 def db(database_url: str) -> Iterator[object]:
     """A transaction that is always rolled back, so tests cannot leak into each other."""
     import psycopg
+    from psycopg.rows import dict_row
 
-    connection = psycopg.connect(database_url)
+    # dict rows, exactly as services.common.db.connect opens them, so a test and
+    # the code it exercises see the same shape.
+    connection = psycopg.connect(database_url, row_factory=dict_row)
     try:
         connection.autocommit = False
         with connection.cursor() as cursor:

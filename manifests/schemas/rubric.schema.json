@@ -4,7 +4,10 @@
   "title": "Rubric manifest",
   "description": "Versioned configuration. Changing a weight here must never require a code change.",
   "type": "object",
-  "required": ["rubric", "version"],
+  "required": [
+    "rubric",
+    "version"
+  ],
   "properties": {
     "rubric": {
       "type": "string",
@@ -15,51 +18,132 @@
         "demand_scoring",
         "value_model",
         "finops",
-        "agent_evaluation"
+        "agent_evaluation",
+        "platform_harvest"
       ]
     },
-    "version": { "$ref": "urn:marketplace:common#/$defs/semver" }
+    "version": {
+      "$ref": "urn:marketplace:common#/$defs/semver"
+    }
   },
   "allOf": [
     {
-      "if": { "properties": { "rubric": { "const": "data_product_quality" } } },
-      "then": { "$ref": "#/$defs/quality" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "data_product_quality"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/quality"
+      }
     },
     {
-      "if": { "properties": { "rubric": { "const": "catalog_ranking" } } },
-      "then": { "$ref": "#/$defs/ranking" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "catalog_ranking"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/ranking"
+      }
     },
     {
-      "if": { "properties": { "rubric": { "const": "mesh_edges" } } },
-      "then": { "$ref": "#/$defs/mesh" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "mesh_edges"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/mesh"
+      }
     },
     {
-      "if": { "properties": { "rubric": { "const": "demand_scoring" } } },
-      "then": { "$ref": "#/$defs/demand" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "demand_scoring"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/demand"
+      }
     },
     {
-      "if": { "properties": { "rubric": { "const": "value_model" } } },
-      "then": { "$ref": "#/$defs/value" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "value_model"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/value"
+      }
     },
     {
-      "if": { "properties": { "rubric": { "const": "finops" } } },
-      "then": { "$ref": "#/$defs/finops" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "finops"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/finops"
+      }
     },
     {
-      "if": { "properties": { "rubric": { "const": "agent_evaluation" } } },
-      "then": { "$ref": "#/$defs/agentEval" }
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "agent_evaluation"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/agentEval"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "platform_harvest"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/harvest"
+      }
     }
   ],
   "$defs": {
-    "weight": { "type": "number", "minimum": -1, "maximum": 1 },
+    "weight": {
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1
+    },
     "dimensionWeights": {
       "type": "object",
       "minProperties": 1,
-      "additionalProperties": { "$ref": "#/$defs/weight" }
+      "additionalProperties": {
+        "$ref": "#/$defs/weight"
+      }
     },
     "quality": {
       "type": "object",
-      "required": ["dimensions", "bands", "hard_blockers"],
+      "required": [
+        "dimensions",
+        "bands",
+        "hard_blockers"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
@@ -69,38 +153,64 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["code", "weight"],
+            "required": [
+              "code",
+              "weight"
+            ],
             "additionalProperties": false,
             "properties": {
               "code": {
                 "type": "string",
-                "enum": ["completeness", "accuracy", "freshness", "consistency", "validity",
-                         "uniqueness"]
+                "enum": [
+                  "completeness",
+                  "accuracy",
+                  "freshness",
+                  "consistency",
+                  "validity",
+                  "uniqueness"
+                ]
               },
-              "weight": { "$ref": "#/$defs/weight" }
+              "weight": {
+                "$ref": "#/$defs/weight"
+              }
             }
           }
         },
         "archetype_overrides": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/$defs/dimensionWeights" }
+          "additionalProperties": {
+            "$ref": "#/$defs/dimensionWeights"
+          }
         },
         "tier_weights": {
           "type": "object",
           "description": "Estate scoring: Tier-1 assets dominate the denominator (15.1).",
-          "additionalProperties": { "type": "number", "minimum": 0 }
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
         },
         "bands": {
           "type": "array",
           "minItems": 2,
           "items": {
             "type": "object",
-            "required": ["min", "code", "label"],
+            "required": [
+              "min",
+              "code",
+              "label"
+            ],
             "additionalProperties": false,
             "properties": {
-              "min": { "$ref": "urn:marketplace:common#/$defs/percent" },
-              "code": { "type": "string" },
-              "label": { "type": "string" }
+              "min": {
+                "$ref": "urn:marketplace:common#/$defs/percent"
+              },
+              "code": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
             }
           }
         },
@@ -108,11 +218,18 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["when", "caps_composite_at"],
+            "required": [
+              "when",
+              "caps_composite_at"
+            ],
             "additionalProperties": false,
             "properties": {
-              "when": { "type": "string" },
-              "caps_composite_at": { "$ref": "urn:marketplace:common#/$defs/percent" }
+              "when": {
+                "type": "string"
+              },
+              "caps_composite_at": {
+                "$ref": "urn:marketplace:common#/$defs/percent"
+              }
             }
           }
         },
@@ -120,85 +237,160 @@
           "type": "object",
           "additionalProperties": {
             "type": "object",
-            "additionalProperties": { "type": "boolean" }
+            "additionalProperties": {
+              "type": "boolean"
+            }
           }
         }
       }
     },
     "ranking": {
       "type": "object",
-      "required": ["weights", "certification_multiplier", "featured_ranking", "fusion"],
+      "required": [
+        "weights",
+        "certification_multiplier",
+        "featured_ranking",
+        "fusion"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
         "version": true,
-        "weights": { "$ref": "#/$defs/dimensionWeights" },
+        "weights": {
+          "$ref": "#/$defs/dimensionWeights"
+        },
         "certification_multiplier": {
           "type": "object",
-          "required": ["certified", "published", "beta", "deprecated"],
-          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+          "required": [
+            "certified",
+            "published",
+            "beta",
+            "deprecated"
+          ],
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
         },
         "featured_ranking": {
           "type": "object",
-          "required": ["formula", "min_cards", "max_cards"],
+          "required": [
+            "formula",
+            "min_cards",
+            "max_cards"
+          ],
           "additionalProperties": false,
           "properties": {
-            "formula": { "type": "string" },
-            "min_cards": { "type": "integer", "minimum": 1 },
-            "max_cards": { "type": "integer", "minimum": 1 }
+            "formula": {
+              "type": "string"
+            },
+            "min_cards": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_cards": {
+              "type": "integer",
+              "minimum": 1
+            }
           }
         },
         "fusion": {
           "type": "object",
-          "required": ["method", "k"],
+          "required": [
+            "method",
+            "k"
+          ],
           "additionalProperties": false,
           "properties": {
-            "method": { "const": "rrf" },
-            "k": { "type": "integer", "minimum": 1 },
-            "exact_name_boost": { "type": "number", "minimum": 0 }
+            "method": {
+              "const": "rrf"
+            },
+            "k": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "exact_name_boost": {
+              "type": "number",
+              "minimum": 0
+            }
           }
         },
         "page_size": {
           "type": "object",
-          "additionalProperties": { "type": "integer", "minimum": 1 }
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1
+          }
         }
       }
     },
     "mesh": {
       "type": "object",
-      "required": ["data_mesh_weights", "render_threshold", "duplication_alert",
-                   "review_required_below_confidence", "agent_mesh_weights",
-                   "consolidation_candidate", "co_consumption_session_minutes"],
+      "required": [
+        "data_mesh_weights",
+        "render_threshold",
+        "duplication_alert",
+        "review_required_below_confidence",
+        "agent_mesh_weights",
+        "consolidation_candidate",
+        "co_consumption_session_minutes"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
         "version": true,
-        "data_mesh_weights": { "$ref": "#/$defs/dimensionWeights" },
-        "render_threshold": { "$ref": "urn:marketplace:common#/$defs/unitInterval" },
+        "data_mesh_weights": {
+          "$ref": "#/$defs/dimensionWeights"
+        },
+        "render_threshold": {
+          "$ref": "urn:marketplace:common#/$defs/unitInterval"
+        },
         "duplication_alert": {
           "type": "object",
-          "required": ["source_overlap_min", "semantic_similarity_min"],
-          "additionalProperties": { "$ref": "urn:marketplace:common#/$defs/unitInterval" }
+          "required": [
+            "source_overlap_min",
+            "semantic_similarity_min"
+          ],
+          "additionalProperties": {
+            "$ref": "urn:marketplace:common#/$defs/unitInterval"
+          }
         },
         "review_required_below_confidence": {
           "$ref": "urn:marketplace:common#/$defs/unitInterval"
         },
-        "agent_mesh_weights": { "$ref": "#/$defs/dimensionWeights" },
+        "agent_mesh_weights": {
+          "$ref": "#/$defs/dimensionWeights"
+        },
         "consolidation_candidate": {
           "type": "object",
-          "required": ["coverage_overlap_min", "shared_product_min"],
-          "additionalProperties": { "$ref": "urn:marketplace:common#/$defs/unitInterval" }
+          "required": [
+            "coverage_overlap_min",
+            "shared_product_min"
+          ],
+          "additionalProperties": {
+            "$ref": "urn:marketplace:common#/$defs/unitInterval"
+          }
         },
-        "co_consumption_session_minutes": { "type": "integer", "minimum": 1 },
+        "co_consumption_session_minutes": {
+          "type": "integer",
+          "minimum": 1
+        },
         "layout": {
           "type": "object",
-          "additionalProperties": { "type": "number" }
+          "additionalProperties": {
+            "type": "number"
+          }
         }
       }
     },
     "demand": {
       "type": "object",
-      "required": ["criteria", "duplicate_detection", "theme_escalation"],
+      "required": [
+        "criteria",
+        "duplicate_detection",
+        "theme_escalation"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
@@ -208,23 +400,40 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["code", "weight"],
+            "required": [
+              "code",
+              "weight"
+            ],
             "additionalProperties": false,
             "properties": {
-              "code": { "type": "string" },
-              "weight": { "$ref": "#/$defs/weight" }
+              "code": {
+                "type": "string"
+              },
+              "weight": {
+                "$ref": "#/$defs/weight"
+              }
             }
           }
         },
         "duplicate_detection": {
           "type": "object",
-          "required": ["weights", "blocking_threshold", "advisory_threshold",
-                       "architect_review_below_confidence"],
+          "required": [
+            "weights",
+            "blocking_threshold",
+            "advisory_threshold",
+            "architect_review_below_confidence"
+          ],
           "additionalProperties": false,
           "properties": {
-            "weights": { "$ref": "#/$defs/dimensionWeights" },
-            "blocking_threshold": { "$ref": "urn:marketplace:common#/$defs/unitInterval" },
-            "advisory_threshold": { "$ref": "urn:marketplace:common#/$defs/unitInterval" },
+            "weights": {
+              "$ref": "#/$defs/dimensionWeights"
+            },
+            "blocking_threshold": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "advisory_threshold": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
             "architect_review_below_confidence": {
               "$ref": "urn:marketplace:common#/$defs/unitInterval"
             }
@@ -232,81 +441,161 @@
         },
         "theme_escalation": {
           "type": "object",
-          "required": ["distinct_teams_min"],
+          "required": [
+            "distinct_teams_min"
+          ],
           "additionalProperties": false,
-          "properties": { "distinct_teams_min": { "type": "integer", "minimum": 1 } }
+          "properties": {
+            "distinct_teams_min": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
         },
-        "sla_hours": { "type": "object", "additionalProperties": { "type": "integer" } }
+        "sla_hours": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
       }
     },
     "value": {
       "type": "object",
-      "required": ["deflection", "attribution_confidence", "value_case_review_months"],
+      "required": [
+        "deflection",
+        "attribution_confidence",
+        "value_case_review_months"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
         "version": true,
         "deflection": {
           "type": "object",
-          "required": ["formula", "avg_manual_minutes_by_question_class",
-                       "loaded_analyst_rate_usd_hour"],
+          "required": [
+            "formula",
+            "avg_manual_minutes_by_question_class",
+            "loaded_analyst_rate_usd_hour"
+          ],
           "additionalProperties": false,
           "properties": {
-            "formula": { "type": "string" },
+            "formula": {
+              "type": "string"
+            },
             "avg_manual_minutes_by_question_class": {
               "type": "object",
               "minProperties": 1,
               "additionalProperties": {
                 "type": "object",
-                "required": ["minutes", "sample_size", "dated"],
+                "required": [
+                  "minutes",
+                  "sample_size",
+                  "dated"
+                ],
                 "additionalProperties": false,
                 "properties": {
-                  "minutes": { "type": "number", "minimum": 0 },
-                  "sample_size": { "type": "integer", "minimum": 1 },
-                  "dated": { "$ref": "urn:marketplace:common#/$defs/isoDate" }
+                  "minutes": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "sample_size": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "dated": {
+                    "$ref": "urn:marketplace:common#/$defs/isoDate"
+                  }
                 }
               }
             },
-            "loaded_analyst_rate_usd_hour": { "type": "number", "minimum": 0 }
+            "loaded_analyst_rate_usd_hour": {
+              "type": "number",
+              "minimum": 0
+            }
           }
         },
         "attribution_confidence": {
           "type": "array",
-          "items": { "type": "string", "enum": ["high", "medium", "low"] }
+          "items": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          }
         },
-        "value_case_review_months": { "type": "integer", "minimum": 1 }
+        "value_case_review_months": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "finops": {
       "type": "object",
-      "required": ["targets", "budgets", "cost_classes", "dormant_grant_days",
-                   "retirement_candidate"],
+      "required": [
+        "targets",
+        "budgets",
+        "cost_classes",
+        "dormant_grant_days",
+        "retirement_candidate"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
         "version": true,
-        "targets": { "type": "object", "additionalProperties": { "type": "number" } },
+        "targets": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
         "budgets": {
           "type": "object",
-          "required": ["soft_threshold_pct", "hard_threshold_pct"],
-          "additionalProperties": { "$ref": "urn:marketplace:common#/$defs/percent" }
+          "required": [
+            "soft_threshold_pct",
+            "hard_threshold_pct"
+          ],
+          "additionalProperties": {
+            "$ref": "urn:marketplace:common#/$defs/percent"
+          }
         },
         "cost_classes": {
           "type": "object",
-          "required": ["trivial", "small", "medium", "large"],
-          "additionalProperties": { "type": "number", "minimum": 0 }
+          "required": [
+            "trivial",
+            "small",
+            "medium",
+            "large"
+          ],
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
         },
-        "dormant_grant_days": { "type": "integer", "minimum": 1 },
+        "dormant_grant_days": {
+          "type": "integer",
+          "minimum": 1
+        },
         "retirement_candidate": {
           "type": "object",
-          "required": ["no_queries_days"],
-          "additionalProperties": { "type": "number" }
+          "required": [
+            "no_queries_days"
+          ],
+          "additionalProperties": {
+            "type": "number"
+          }
         }
       }
     },
     "agentEval": {
       "type": "object",
-      "required": ["suites", "publish_gate", "canary"],
+      "required": [
+        "suites",
+        "publish_gate",
+        "canary"
+      ],
       "additionalProperties": false,
       "properties": {
         "rubric": true,
@@ -316,23 +605,109 @@
           "minProperties": 1,
           "additionalProperties": {
             "type": "object",
-            "required": ["blocking", "pass_threshold_pct"],
+            "required": [
+              "blocking",
+              "pass_threshold_pct"
+            ],
             "additionalProperties": false,
             "properties": {
-              "blocking": { "type": "boolean" },
-              "pass_threshold_pct": { "$ref": "urn:marketplace:common#/$defs/percent" },
-              "personas_min": { "type": "integer", "minimum": 1 }
+              "blocking": {
+                "type": "boolean"
+              },
+              "pass_threshold_pct": {
+                "$ref": "urn:marketplace:common#/$defs/percent"
+              },
+              "personas_min": {
+                "type": "integer",
+                "minimum": 1
+              }
             }
           }
         },
         "publish_gate": {
           "type": "object",
-          "additionalProperties": { "type": ["number", "integer", "boolean"] }
+          "additionalProperties": {
+            "type": [
+              "number",
+              "integer",
+              "boolean"
+            ]
+          }
         },
         "canary": {
           "type": "object",
-          "required": ["traffic_pct", "min_answers", "min_hours"],
-          "additionalProperties": { "type": "number" }
+          "required": [
+            "traffic_pct",
+            "min_answers",
+            "min_hours"
+          ],
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "harvest": {
+      "type": "object",
+      "required": [
+        "lookback_days",
+        "confidence",
+        "cost",
+        "denied_error_prefix"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "lookback_days": {
+          "type": "object",
+          "required": [
+            "metadata",
+            "lineage",
+            "usage",
+            "cost",
+            "quality"
+          ],
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "confidence": {
+          "type": "object",
+          "required": [
+            "declared_dependency",
+            "access_history_inference"
+          ],
+          "additionalProperties": {
+            "$ref": "urn:marketplace:common#/$defs/unitInterval"
+          }
+        },
+        "cost": {
+          "type": "object",
+          "required": [
+            "credit_rate_usd",
+            "apportionment"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "credit_rate_usd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "apportionment": {
+              "type": "string",
+              "enum": [
+                "bytes_scanned",
+                "query_count",
+                "equal"
+              ]
+            }
+          }
+        },
+        "denied_error_prefix": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }

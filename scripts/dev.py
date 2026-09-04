@@ -84,6 +84,10 @@ def main() -> int:
     _run([sys.executable, "scripts/migrate.py"])
     _run([sys.executable, "scripts/seed.py"])
 
+    print("dev: platform and harvest")
+    _run([sys.executable, "scripts/seed_platform.py"])
+    _run([sys.executable, "scripts/harvest.py"])
+
     print("dev: api, worker, portal")
     processes = [
         subprocess.Popen(

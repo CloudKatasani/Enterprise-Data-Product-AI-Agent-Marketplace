@@ -243,8 +243,10 @@ def test_the_kpi_register_seeds_every_manifest(db, manifests: Path) -> None:
     manifest_count = len(list((manifests / "kpis").glob("*.yaml")))
     assert count == manifest_count
     with db.cursor() as cursor:
-        cursor.execute("SELECT count(*) FROM kpi_definition WHERE tenant_id = %s", (TENANT,))
-        assert cursor.fetchone()[0] == manifest_count
+        cursor.execute(
+            "SELECT count(*) AS n FROM kpi_definition WHERE tenant_id = %s", (TENANT,)
+        )
+        assert cursor.fetchone()["n"] == manifest_count
 
 
 def test_i1_rejects_a_second_active_definition_of_a_seeded_name(db, manifests: Path) -> None:

@@ -95,11 +95,11 @@ def test_i1_allows_a_second_definition_once_the_first_is_superseded(db) -> None:
         )
         _insert_kpi(cursor, "KPI-TST-002", "Churn Rate", status="certified")
         cursor.execute(
-            "SELECT count(*) FROM kpi_definition "
+            "SELECT count(*) AS active FROM kpi_definition "
             "WHERE tenant_id = %s AND status IN ('draft','certified')",
             (TENANT,),
         )
-        assert cursor.fetchone()[0] == 1
+        assert cursor.fetchone()["active"] == 1
 
 
 def test_i2_quality_snapshot_without_a_rubric_version_is_rejected(db) -> None:
@@ -164,7 +164,7 @@ def test_i5_sensitivity_is_derived_from_columns_and_ignores_what_a_writer_suppli
         cursor.execute(
             "SELECT sensitivity_tier FROM data_product WHERE product_id = %s", (product_id,)
         )
-        assert cursor.fetchone()[0] == "public"
+        assert cursor.fetchone()["sensitivity_tier"] == "public"
 
         cursor.execute(
             "INSERT INTO data_product_column (column_id, tenant_id, product_id, name, "
@@ -176,7 +176,7 @@ def test_i5_sensitivity_is_derived_from_columns_and_ignores_what_a_writer_suppli
         cursor.execute(
             "SELECT sensitivity_tier FROM data_product WHERE product_id = %s", (product_id,)
         )
-        assert cursor.fetchone()[0] == "confidential"
+        assert cursor.fetchone()["sensitivity_tier"] == "confidential"
 
         # A direct write is discarded, not honoured.
         cursor.execute(
@@ -186,14 +186,14 @@ def test_i5_sensitivity_is_derived_from_columns_and_ignores_what_a_writer_suppli
         cursor.execute(
             "SELECT sensitivity_tier FROM data_product WHERE product_id = %s", (product_id,)
         )
-        assert cursor.fetchone()[0] == "confidential"
+        assert cursor.fetchone()["sensitivity_tier"] == "confidential"
 
         # Removing the classified column lowers it again.
         cursor.execute("DELETE FROM data_product_column WHERE column_id = 'COL-1'")
         cursor.execute(
             "SELECT sensitivity_tier FROM data_product WHERE product_id = %s", (product_id,)
         )
-        assert cursor.fetchone()[0] == "public"
+        assert cursor.fetchone()["sensitivity_tier"] == "public"
 
 
 def test_i6_a_mesh_edge_without_a_rationale_is_rejected(db) -> None:

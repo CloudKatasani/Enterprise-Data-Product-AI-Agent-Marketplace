@@ -88,6 +88,11 @@ jobs:
       - name: seed
         run: npm run seed
 
+      # The stand-in platform lets the harvest path — the real statements, the
+      # real read-only guard, the real mapping — run without a Snowflake account.
+      - name: seed platform and harvest
+        run: npm run seed:platform && npm run harvest
+
       - name: unit
         run: npm run test:unit
 
@@ -102,6 +107,11 @@ jobs:
 
       - name: security
         run: npm run test:security
+
+      # I8 against the stand-in platform runs on every commit; the job below
+      # repeats it against a real sandbox account on a schedule.
+      - name: kill
+        run: npm run test:kill
 
       - name: a11y
         run: npm run test:a11y
@@ -126,5 +136,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
-      - name: connector write-attempt kill test
+      - name: connector write-attempt kill test against a real sandbox account
         run: npm run test:kill

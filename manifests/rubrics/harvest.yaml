@@ -1,0 +1,21 @@
+# Platform harvest rubric.
+#
+# Every window, confidence and rate the connectors use. Confidence in
+# particular is an inference threshold and belongs here rather than in code: a
+# declared dependency is certain, an edge inferred from access history is not,
+# and the difference must be reviewable without reading Python.
+rubric: platform_harvest
+version: 1.0.0
+lookback_days:
+  metadata: 1
+  lineage: 30
+  usage: 30
+  cost: 30
+  quality: 7
+confidence:
+  declared_dependency: 1.0
+  access_history_inference: 0.85
+cost:
+  credit_rate_usd: 3.0
+  apportionment: bytes_scanned
+denied_error_prefix: "0030"

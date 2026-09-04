@@ -39,7 +39,9 @@
     "gen:diff": "python3 scripts/gen.py && git diff --exit-code generated/",
     "build": "npm run --workspace portal build",
     "validate:manifests": "python3 scripts/manifests/validate.py",
-    "lint:generated": "python3 scripts/lint/generated.py"
+    "lint:generated": "python3 scripts/lint/generated.py",
+    "harvest": "python3 scripts/harvest.py",
+    "seed:platform": "python3 scripts/seed_platform.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"

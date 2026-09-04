@@ -27,7 +27,7 @@ def seed(connection: psycopg.Connection[Any], tenant: str) -> int:
 
     with connection.cursor() as cursor:
         cursor.execute("SELECT product_id FROM data_product WHERE tenant_id = %s", (tenant,))
-        known_products = {row[0] for row in cursor.fetchall()}
+        known_products = {row["product_id"] for row in cursor.fetchall()}
 
         for document in documents:
             metadata = document["metadata"]
