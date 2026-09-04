@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-RTL-001",
+  "agent_name": "Merchandising Performance Agent",
+  "agent_version_id": "AGV-AG-RTL-001-1.0.0",
+  "analysis_type": "promotion_eval",
+  "answer": {
+    "headline": "spring_event leads on promotion lift at 14.32%, 33.66% of the total across 4 promotions.",
+    "narrative": "Ranked by the certified definition KPI-PROMOLIFT-050 over 23,400 rows in DP-RTL-001.",
+    "table": {
+      "columns": [
+        "promotion",
+        "KPI-PROMOLIFT-050",
+        "observations"
+      ],
+      "rows": [
+        [
+          "spring_event",
+          14.32,
+          1230
+        ],
+        [
+          "clearance",
+          14.12,
+          1285
+        ],
+        [
+          "back_to_school",
+          14.1,
+          1260
+        ],
+        [
+          "None",
+          null,
+          19625
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 8.0,
+        "unit": "percent",
+        "x": "promotion",
+        "y": "KPI-PROMOLIFT-050"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "promotion",
+        "promoted_sales",
+        "baseline_sales",
+        "category",
+        "region",
+        "cost_of_goods_sold",
+        "net_sales",
+        "business_date"
+      ],
+      "contract_version": "6.2.0",
+      "product_id": "DP-RTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-RTL-001-03",
+  "kpi_definitions": [
+    "KPI-PROMOLIFT-050"
+  ],
+  "notes": [],
+  "question": "Did the back-to-school promotion deliver incremental margin?",
+  "recorded_at": "2026-09-04T08:34:03.261558+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 8,
+    "rows_scanned": 23400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "promotion",
+          "limit": 24,
+          "measure": "((sum(promoted_sales) - sum(baseline_sales))::numeric / NULLIF((sum(baseline_sales))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 6,
+        "rows_returned": 4,
+        "rows_scanned": 23400,
+        "tool": "query_dp_rtl_001"
+      }
+    ]
+  }
+}

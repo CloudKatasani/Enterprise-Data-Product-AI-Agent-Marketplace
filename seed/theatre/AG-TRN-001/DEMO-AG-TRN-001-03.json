@@ -1,0 +1,109 @@
+{
+  "agent_id": "AG-TRN-001",
+  "agent_name": "Delivery SLA Sentinel",
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "utilization_impact",
+  "answer": {
+    "headline": "DC-ALBANY leads on dwell time at 6.36 hours, 37.08% of the total across 5 facilitys.",
+    "narrative": "Ranked by the certified definition KPI-DWELL-058 over 13,200 rows in DP-TRN-001.",
+    "table": {
+      "columns": [
+        "facility",
+        "KPI-DWELL-058",
+        "observations"
+      ],
+      "rows": [
+        [
+          "DC-ALBANY",
+          6.36,
+          2602
+        ],
+        [
+          "DC-NEWARK",
+          6.31,
+          2656
+        ],
+        [
+          "DC-RENO",
+          1.5,
+          2645
+        ],
+        [
+          "DC-ATLANTA",
+          1.49,
+          2644
+        ],
+        [
+          "DC-CHICAGO",
+          1.49,
+          2653
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 2.0,
+        "unit": "hours",
+        "x": "facility",
+        "y": "KPI-DWELL-058"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "shipment_leg_id",
+        "dwell_hours",
+        "facility",
+        "carrier",
+        "equipment_type",
+        "revenue_hours",
+        "available_hours",
+        "departure_timestamp"
+      ],
+      "contract_version": "2.2.0",
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-001-03",
+  "kpi_definitions": [
+    "KPI-DWELL-058"
+  ],
+  "notes": [],
+  "question": "Where is dwell time eroding asset utilization?",
+  "recorded_at": "2026-09-04T08:34:04.033258+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 10,
+    "rows_scanned": 13200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "facility",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by dwell_hours))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 7,
+        "rows_returned": 5,
+        "rows_scanned": 13200,
+        "tool": "query_dp_trn_001"
+      }
+    ]
+  }
+}

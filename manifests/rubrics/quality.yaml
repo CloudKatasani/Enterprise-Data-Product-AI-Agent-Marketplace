@@ -1,0 +1,63 @@
+# Data product quality rubric.
+#
+# Every weight, band and blocker in the quality engine is read from here at
+# runtime by rubric_version_id. Changing a weight and re-seeding re-scores the
+# estate with no code change (M1 acceptance).
+rubric: data_product_quality
+version: 1.3.0
+# The scale every score in this rubric is expressed on. Bands, blocker caps and
+# criterion normalisation all read it, so a deployment that prefers 0..1 changes
+# this and nothing else.
+scale:
+  minimum: 0
+  maximum: 100
+dimensions:
+  - { code: completeness, weight: 0.20 }
+  - { code: accuracy,     weight: 0.20 }
+  - { code: freshness,    weight: 0.20 }
+  - { code: consistency,  weight: 0.15 }
+  - { code: validity,     weight: 0.15 }
+  - { code: uniqueness,   weight: 0.10 }
+# A dimension is scored from its rules, and a rule's weight within its dimension
+# is its severity. A critical completeness rule and a low-severity one are not
+# the same evidence, and averaging them as though they were is how a composite
+# stops meaning anything.
+severity_weights:
+  critical: 3.0
+  high: 2.0
+  medium: 1.0
+  low: 0.5
+# A product that declares no rule for a dimension has that dimension's weight
+# redistributed across the dimensions it does declare, rather than scoring zero
+# for evidence nobody asked it to produce.
+redistribute_unmeasured_dimensions: true
+archetype_overrides:
+  document_corpus:
+    completeness: 0.30
+    accuracy: 0.25
+    freshness: 0.25
+    consistency: 0.00
+    validity: 0.15
+    uniqueness: 0.05
+# Estate scoring: a thousand hygienic sandbox tables must not mask ungoverned
+# crown jewels, so Tier-1 assets dominate the denominator (15.1).
+tier_weights:
+  tier1: 5.0
+  tier2: 2.0
+  tier3: 1.0
+bands:
+  - { min: 90, code: exemplary,  label: "Exemplary" }
+  - { min: 75, code: healthy,    label: "Healthy" }
+  - { min: 60, code: watch,      label: "Watch" }
+  - { min: 40, code: at_risk,    label: "At Risk" }
+  - { min: 0,  code: unfit,      label: "Not Fit for Consumption" }
+hard_blockers:
+  - { when: "critical_rule_failed", caps_composite_at: 39 }
+  - { when: "classified_column_unprotected", caps_composite_at: 49 }
+below_band_actions:
+  unfit:
+    flag_in_catalog: true
+    banner_on_attached_agents: true
+  at_risk:
+    flag_in_catalog: true
+    banner_on_attached_agents: false

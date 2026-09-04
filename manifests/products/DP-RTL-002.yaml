@@ -1,0 +1,269 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-RTL-002
+  name: "Inventory Position & Replenishment Signal"
+  industry: retail
+  domain: supply_chain
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0041
+    team: "Supply Chain Planning"
+    escalation: "#dp-inventory"
+  certification: certified
+spec:
+  purpose: >-
+    SKU and location level stock position, cover, sell-through, forecast accuracy and lost sales
+    estimate for availability and replenishment decisions.
+  grain: "one row per sku per location per day"
+  history_months: 24
+  known_limitations: >-
+    In-transit stock is visible at shipment rather than unit level until receipt. Lost sales are
+    modelled from unmet demand and are an estimate, not a measurement.
+  upstream_sources: [SRC-WMS, SRC-POS, SRC-FORECAST-ENGINE, SRC-ERP-SUPPLY]
+  entities: [sku, location, shipment, forecast]
+  certified_kpis: [KPI-INSTOCK-051, KPI-WOS-052, KPI-SELLTHRU-053, KPI-MAPE-054, KPI-LOSTSALES-055]
+  columns:
+    - name: sku
+      type: string
+      business_name: "SKU"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Stock keeping unit.
+    - name: location_id
+      type: string
+      business_name: "Location ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Store or distribution centre holding the stock.
+    - name: activity_date
+      type: date
+      business_name: "Activity Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Calendar date the position describes.
+    - name: category
+      type: string
+      business_name: "Category"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Merchandise category.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the location.
+    - name: store_format
+      type: string
+      business_name: "Store Format"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Format of the selling store.
+    - name: season
+      type: string
+      business_name: "Season"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Season the buy belongs to.
+    - name: horizon
+      type: string
+      business_name: "Forecast Horizon"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Horizon the forecast was made at.
+    - name: on_hand_units
+      type: number
+      business_name: "On Hand Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Sellable units on hand at start of trade.
+    - name: units_received
+      type: number
+      business_name: "Units Received"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units received to date for the season or buy.
+    - name: units_sold
+      type: number
+      business_name: "Units Sold"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units sold on the date.
+    - name: average_weekly_demand_units
+      type: number
+      business_name: "Average Weekly Demand"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Trailing average weekly demand used for cover.
+    - name: forecast_units
+      type: number
+      business_name: "Forecast Units"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Forecast demand for the date at the stated horizon.
+    - name: actual_units
+      type: number
+      business_name: "Actual Units"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Realised demand for the date.
+    - name: unmet_demand_units
+      type: number
+      business_name: "Unmet Demand Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Modelled demand that could not be served from stock.
+    - name: average_selling_price
+      type: number
+      business_name: "Average Selling Price"
+      nullable: false
+      classification: [financial]
+      sensitivity: internal
+      description: >-
+        Average realised selling price for the item.
+    - name: in_transit_units
+      type: number
+      business_name: "In Transit Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units shipped and not yet received.
+  contract:
+    version: 3.5.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "every 2 hours"
+        p95_minutes: 18
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "warehouse_system_of_record"
+    deprecation_policy:
+      notice_days: 60
+      minimum_parallel_run_days: 30
+    support:
+      hours: "24x7"
+      p1_response_minutes: 20
+      on_call: "pagerduty://inventory-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US, EU]
+    consumer_obligations:
+      - "No transfer or purchase order may be executed without planner approval"
+      - "Lost sales figures are modelled and must be labelled as estimates"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 20 minutes of detection.
+  quality_rules:
+    - id: QR-RTL-002-01
+      dimension: completeness
+      column: sku
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-RTL-002-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "2h"
+      tolerance_minutes: 18
+      severity: critical
+    - id: QR-RTL-002-03
+      dimension: validity
+      column: category
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-RTL-002-04
+      dimension: uniqueness
+      columns: [sku, location_id, activity_date]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-RTL-002-05
+      dimension: consistency
+      column: on_hand_units
+      rule: non_negative
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, mcp, stream]
+  demo_tier:
+    synthetic: true
+    rows_target: 900000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 89
+    planted_patterns:
+      - id: instock-store-tail
+        description: >-
+            A tail of stores carries a materially worse in-stock rate, concentrated in one format.
+      - id: excess-cover
+        description: >-
+            Excess weeks of supply concentrates in a small number of categories after a season
+            transition.
+      - id: sellthru-instock-quadrant
+        description: >-
+            A quadrant of SKUs shows high sell-through with poor in-stock, which is the opportunity
+            finding.
+  value_case:
+    business_outcome: >-
+      Planners fix the availability gaps that actually cost sales instead of working the whole
+      exception list.
+    baseline:
+      method: "daily exception report worked top to bottom"
+      analyst_hours_month: 150
+      captured: "2026-02"
+    benefit_model: "recovered_lost_sales * gross_margin_rate - transfer_cost"
+    assumptions:
+      - text: "share of modelled lost sales recoverable by transfer"
+        value: 42.0
+        unit: percent
+        sample_size: 310
+        source: "transfer pilot"
+        dated: 2026-04-20
+      - text: "average cost of an inter-store transfer"
+        value: 22.5
+        unit: usd
+        source: "logistics FY26 budget"
+        dated: 2026-02-01
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-22
+      reviewer: PTY-0041

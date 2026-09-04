@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-EDUTIL-038
+  name: "Emergency Department Utilization Rate"
+  domain: clinical
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Emergency department visits per thousand attributed members in the period.
+  numerator_expr: "count(distinct ed_encounter_id) * 1000"
+  denominator_expr: "count(distinct attributed_member_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [condition, payer, region]
+  unit: rate
+  direction: lower_is_better
+  source_of_record: DP-HLT-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["ED visits per 1000"]

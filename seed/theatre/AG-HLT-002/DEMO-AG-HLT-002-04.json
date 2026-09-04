@@ -1,0 +1,109 @@
+{
+  "agent_id": "AG-HLT-002",
+  "agent_name": "Pharmacy Utilization Agent",
+  "agent_version_id": "AGV-AG-HLT-002-1.0.0",
+  "analysis_type": "waste_analysis",
+  "answer": {
+    "headline": "analgesia leads on pharmacy waste rate at 8.58%, 24.73% of the total across 5 therapeutic classs.",
+    "narrative": "Ranked by the certified definition KPI-WASTE-044 over 30,600 rows in DP-HLT-002.",
+    "table": {
+      "columns": [
+        "therapeutic_class",
+        "KPI-WASTE-044",
+        "observations"
+      ],
+      "rows": [
+        [
+          "analgesia",
+          8.58,
+          6120
+        ],
+        [
+          "anti_infective",
+          7.27,
+          9360
+        ],
+        [
+          "cardiovascular",
+          7.04,
+          6480
+        ],
+        [
+          "oncology",
+          6.06,
+          4320
+        ],
+        [
+          "immunology",
+          5.74,
+          4320
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.8,
+        "unit": "percent",
+        "x": "therapeutic_class",
+        "y": "KPI-WASTE-044"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "item_id",
+        "facility",
+        "wasted_cost",
+        "dispensed_cost",
+        "item_class",
+        "days_to_expiry",
+        "therapeutic_class",
+        "activity_date"
+      ],
+      "contract_version": "1.8.0",
+      "product_id": "DP-HLT-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-002-04",
+  "kpi_definitions": [
+    "KPI-WASTE-044"
+  ],
+  "notes": [],
+  "question": "How much waste came from short-dated stock last quarter?",
+  "recorded_at": "2026-09-04T08:34:02.969700+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 11,
+    "rows_scanned": 30600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "therapeutic_class",
+          "limit": 24,
+          "measure": "((sum(wasted_cost))::numeric / NULLIF((sum(dispensed_cost))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 5,
+        "rows_scanned": 30600,
+        "tool": "query_dp_hlt_002"
+      }
+    ]
+  }
+}

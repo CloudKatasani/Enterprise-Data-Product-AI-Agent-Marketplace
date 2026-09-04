@@ -1,0 +1,105 @@
+{
+  "agent_id": "AG-MFG-001",
+  "agent_name": "Yield & Downtime Analyst",
+  "agent_version_id": "AGV-AG-MFG-001-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "LINE-4 leads on overall equipment effectiveness at 0.80%, 25.00% of the total across 4 lines.",
+    "narrative": "Ranked by the certified definition KPI-OEE-071 over 12,600 rows in DP-MFG-001.",
+    "table": {
+      "columns": [
+        "line",
+        "KPI-OEE-071",
+        "observations"
+      ],
+      "rows": [
+        [
+          "LINE-4",
+          0.8,
+          3510
+        ],
+        [
+          "LINE-3",
+          0.8,
+          3330
+        ],
+        [
+          "LINE-2",
+          0.8,
+          2970
+        ],
+        [
+          "LINE-1",
+          0.8,
+          2790
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 78.0,
+        "unit": "percent",
+        "x": "line",
+        "y": "KPI-OEE-071"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "run_id",
+        "line",
+        "plant",
+        "shift",
+        "availability_rate",
+        "performance_rate",
+        "quality_rate",
+        "product_family",
+        "shift_date"
+      ],
+      "contract_version": "2.8.0",
+      "product_id": "DP-MFG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-001-01",
+  "kpi_definitions": [
+    "KPI-OEE-071"
+  ],
+  "notes": [],
+  "question": "What is OEE by line this week and where did we lose the most?",
+  "recorded_at": "2026-09-04T08:34:03.189638+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 10,
+    "rows_scanned": 12600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "line",
+          "limit": 24,
+          "measure": "(avg(availability_rate * performance_rate * quality_rate))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 6,
+        "rows_returned": 4,
+        "rows_scanned": 12600,
+        "tool": "query_dp_mfg_001"
+      }
+    ]
+  }
+}

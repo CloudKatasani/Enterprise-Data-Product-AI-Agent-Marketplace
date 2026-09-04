@@ -1,0 +1,43 @@
+{
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "account_id",
+        "acquisition_channel",
+        "activated",
+        "activity_date",
+        "onboarded",
+        "plan_tier",
+        "segment"
+      ],
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "100.00",
+    "cohort_high": "100.00",
+    "cohort_high_observations": "5136",
+    "cohort_low": "0.00",
+    "cohort_low_observations": "8304",
+    "groups": "2",
+    "rows_scanned": "13440"
+  },
+  "exchange_id": "DEMO-AG-TCH-001-04",
+  "headline": "Activation Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "kpi_definitions": [
+    "KPI-ACTIV-013"
+  ],
+  "narrative": "Both cohorts are drawn from DP-TCH-001 over the same period: 5,136 observations against 8,304. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Did the March onboarding change improve activation?",
+  "rows_scanned": 13440,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-ACTIV-013",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "prioritization",
+  "citations": [
+    {
+      "columns": [
+        "alert_id",
+        "alert_score",
+        "business_line",
+        "customer_risk_rating",
+        "event_timestamp",
+        "region",
+        "typology"
+      ],
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "14400",
+    "top": "5760.00",
+    "top_share": "40.00"
+  },
+  "exchange_id": "DEMO-AG-BNK-002-03",
+  "headline": "structuring leads on alert volume at 5,760.00, 40.00% of the total across 5 typologys.",
+  "kpi_definitions": [
+    "KPI-ALERTVOL-021"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ALERTVOL-021 over 14,400 rows in DP-BNK-002.",
+  "question": "Which alerts should be worked first today?",
+  "rows_scanned": 14400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "typology",
+    "KPI-ALERTVOL-021",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

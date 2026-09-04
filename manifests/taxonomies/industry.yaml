@@ -1,0 +1,40 @@
+apiVersion: marketplace/v1
+kind: Taxonomy
+taxonomy: industry
+entries:
+  - code: telecommunications
+    label: Telecommunications
+    description: Fixed and mobile network operators, subscriber and network domains.
+    rank_order: 1
+  - code: technology
+    label: Technology
+    description: Software and platform businesses with product usage and adoption domains.
+    rank_order: 2
+  - code: banking
+    label: Banking
+    description: Retail and commercial banking, including risk and financial crime.
+    rank_order: 3
+  - code: insurance
+    label: Insurance
+    description: Property, casualty and specialty carriers across underwriting and claims.
+    rank_order: 4
+  - code: healthcare
+    label: Healthcare
+    description: Providers and payers covering clinical, operational and supply domains.
+    rank_order: 5
+  - code: retail
+    label: Retail
+    description: Omnichannel merchants across selling, merchandising and supply chain.
+    rank_order: 6
+  - code: transportation
+    label: Transportation
+    description: Freight, fleet and logistics operators with movement and delivery domains.
+    rank_order: 7
+  - code: utilities_energy
+    label: Utilities & Energy
+    description: Network operators and retailers covering grid assets and consumption.
+    rank_order: 8
+  - code: manufacturing
+    label: Manufacturing
+    description: Discrete and process manufacturers across yield, quality and equipment.
+    rank_order: 9

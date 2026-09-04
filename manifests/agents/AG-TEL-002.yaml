@@ -1,0 +1,181 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TEL-002
+  name: "Network Quality Advisor"
+  industry: telecommunications
+  domain: network_asset
+  owner:
+    party_id: PTY-0032
+    team: "Telecom Network Domain"
+    on_call: "pagerduty://network-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about network availability, quality and fault impact by site and region,
+    and explains what is driving degradation.
+  business_value_block:
+    analyses: [impact_ranking, root_cause, comparison, pattern_detection, trend_segmented]
+    replaces: >-
+      Weekly consolidation of alarm, usage and work-order extracts across three tools by the
+      network analytics team.
+    personas: [network_operations_manager, field_operations_lead, care_operations]
+  out_of_scope:
+    - "Radio parameter changes"
+    - "Work-order creation"
+    - "Capital planning approval"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TEL-002/system@v1
+  data_products:
+    - product_id: DP-TEL-002
+      columns: [site_id, observed_hour, region, site_class, technology, available_minutes, scheduled_minutes, established_calls, dropped_calls, throughput_mbps, fault_class, fault_closed, restore_minutes, impacted_subscribers, outage_hours, impacted_subscriber_hours]
+      access: read
+  tool_bindings:
+    - tool: query_dp_tel_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-002"
+      scope: "dp:DP-TEL-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-IMPHRS-010
+      source_product: DP-TEL-002
+      columns_used: [site_id, impacted_subscribers, outage_hours, impacted_subscriber_hours, region, observed_hour]
+      grains: [day, week, month]
+      slices: [region, site_class]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-THRPUT-008
+      source_product: DP-TEL-002
+      columns_used: [site_id, throughput_mbps, region, site_class, technology, observed_hour]
+      grains: [day, week, month]
+      slices: [region, site_class, technology]
+      analysis_depth: explain
+    - kpi_id: KPI-NETAVAIL-006
+      source_product: DP-TEL-002
+      columns_used: [site_id, available_minutes, scheduled_minutes, region, site_class, observed_hour]
+      grains: [day, week, month]
+      slices: [region, site_class, technology]
+      analysis_depth: compare
+    - kpi_id: KPI-FMTTR-009
+      source_product: DP-TEL-002
+      columns_used: [site_id, restore_minutes, fault_closed, fault_class, region, observed_hour]
+      grains: [week, month, quarter]
+      slices: [region, site_class]
+      analysis_depth: rank_drivers
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-TEL-002-01
+      ordinal: 1
+      question: "Which sites had the worst customer impact yesterday?"
+      kpi_class: KPI-IMPHRS-010
+      analysis_type: impact_ranking
+      expected_shape:
+        headline: >-
+          the sites carrying the most impacted subscriber hours, and their share
+        visual: bar_plus_map
+        table_columns: [site_id, region, impacted_subscriber_hours, share_pct]
+        must_cite: [DP-TEL-002, KPI-IMPHRS-010]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-002-02
+      ordinal: 2
+      question: "What is driving the throughput drop in the Denver cluster?"
+      kpi_class: KPI-THRPUT-008
+      analysis_type: root_cause
+      expected_shape:
+        headline: >-
+          which sites and site classes account for the drop, and when it began
+        visual: timeseries_overlay
+        table_columns: [site_id, site_class, throughput_mbps, delta_pct]
+        must_cite: [DP-TEL-002, KPI-THRPUT-008]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-002-03
+      ordinal: 3
+      question: "How does availability compare across regions this month?"
+      kpi_class: KPI-NETAVAIL-006
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the spread between the best and worst region, and who is below target
+        visual: small_multiples
+        table_columns: [region, availability_pct, delta_vs_target_pp]
+        must_cite: [DP-TEL-002, KPI-NETAVAIL-006]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-002-04
+      ordinal: 4
+      question: "Which faults are recurring on the same assets?"
+      kpi_class: KPI-FMTTR-009
+      analysis_type: pattern_detection
+      expected_shape:
+        headline: >-
+          the assets carrying repeat faults of the same class, and how often
+        visual: table
+        table_columns: [site_id, fault_class, occurrences, mean_restore_minutes]
+        must_cite: [DP-TEL-002, KPI-FMTTR-009]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TEL-002-05
+      ordinal: 5
+      question: "What is our MTTR trend and where is it worst?"
+      kpi_class: KPI-FMTTR-009
+      analysis_type: trend_segmented
+      expected_shape:
+        headline: >-
+          the direction of mean time to restore and the region carrying the tail
+        visual: line_plus_box
+        table_columns: [period, region, mttr_hours, delta_hours]
+        must_cite: [DP-TEL-002, KPI-FMTTR-009]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TEL-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TEL-002/
+  value_case:
+    benefit_model: "avoided_truck_rolls * cost_per_dispatch + avoided_care_contacts * cost"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per network impact question"
+        value: 40
+        unit: minutes
+        sample_size: 29
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0032

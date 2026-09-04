@@ -1,0 +1,114 @@
+{
+  "agent_id": "AG-TRN-001",
+  "agent_name": "Delivery SLA Sentinel",
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "like_for_like",
+  "answer": {
+    "headline": "W-01 leads on cost per mile at $1.88, 16.74% of the total across 6 lanes.",
+    "narrative": "Ranked by the certified definition KPI-CPM-057 over 13,200 rows in DP-TRN-001.",
+    "table": {
+      "columns": [
+        "lane",
+        "KPI-CPM-057",
+        "observations"
+      ],
+      "rows": [
+        [
+          "W-01",
+          1.88,
+          2119
+        ],
+        [
+          "MW-02",
+          1.87,
+          2311
+        ],
+        [
+          "SE-01",
+          1.87,
+          2160
+        ],
+        [
+          "MW-01",
+          1.87,
+          2171
+        ],
+        [
+          "NE-01",
+          1.87,
+          2217
+        ],
+        [
+          "NE-02",
+          1.87,
+          2222
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "currency",
+        "x": "lane",
+        "y": "KPI-CPM-057"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "shipment_leg_id",
+        "linehaul_cost",
+        "accessorial_cost",
+        "loaded_miles",
+        "lane",
+        "carrier",
+        "equipment_type",
+        "departure_timestamp"
+      ],
+      "contract_version": "2.2.0",
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-001-04",
+  "kpi_definitions": [
+    "KPI-CPM-057"
+  ],
+  "notes": [],
+  "question": "How does cost per mile compare across carriers on the same lanes?",
+  "recorded_at": "2026-09-04T08:34:04.042658+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 8,
+    "rows_scanned": 13200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "lane",
+          "limit": 24,
+          "measure": "((sum(linehaul_cost) + sum(accessorial_cost))::numeric / NULLIF((sum(loaded_miles))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 6,
+        "rows_scanned": 13200,
+        "tool": "query_dp_trn_001"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-RESTORE-064
+  name: "Average Restoration Time"
+  domain: network_asset
+  steward: PTY-0043
+  status: certified
+spec:
+  business_definition: >-
+    Mean minutes from outage start to full restoration across outages restored in the period.
+  numerator_expr: "sum(restoration_minutes)"
+  denominator_expr: "count(distinct outage_id)"
+  grains_supported: [month, quarter]
+  slices_supported: [feeder, region, cause_class]
+  unit: minutes
+  direction: lower_is_better
+  target: 110.0
+  source_of_record: DP-UTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["CAIDI", "restoration time"]

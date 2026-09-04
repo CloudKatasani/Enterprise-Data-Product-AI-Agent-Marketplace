@@ -1,0 +1,100 @@
+# Mesh edge rubric. Both meshes compute strength from these weights and hold
+# any edge below the confidence floor for review rather than rendering it (I6).
+rubric: mesh_edges
+version: 1.6.0
+data_mesh_weights:
+  source_overlap_jaccard: 0.30
+  entity_overlap: 0.25
+  kpi_overlap: 0.20
+  semantic_similarity: 0.15
+  co_consumption_lift: 0.10
+# Calibrated for this estate, and lower than it looks.
+#
+# kpi_overlap carries a fifth of the formula's weight, and in this estate it is
+# structurally zero: the KPI register assigns every certified KPI exactly one
+# source of record, so no two products can share one. That is a real property of
+# a well-governed register — one definition, one owner — and it compresses the
+# strength scale by 0.20 for every pair.
+#
+# 0.10 sits in the natural gap this estate's distribution actually has, between
+# the eight pairs that share sources or a domain (0.100-0.188) and the long tail
+# of pairs alike only in wording (0.087 and below). An estate whose products
+# share KPIs would want the specification's 0.25; the threshold is a rubric
+# value precisely so that this is a configuration decision and not a code one.
+render_threshold: 0.10
+duplication_alert:
+  source_overlap_min: 0.80
+  semantic_similarity_min: 0.80
+review_required_below_confidence: 0.80
+agent_mesh_weights:
+  shared_data_product: 0.35
+  kpi_coverage_overlap: 0.30
+  semantic_similarity: 0.15
+  same_domain: 0.10
+  co_usage_lift: 0.10
+consolidation_candidate:
+  coverage_overlap_min: 0.70
+  shared_product_min: 0.70
+co_consumption_session_minutes: 60
+divergence:
+  # Ratio to percentage points, for the difference two agents' answers on a
+  # shared KPI are reported in.
+  percent_scale: 100
+  # Where neither agent declared a tolerance for a KPI there is nothing to read,
+  # and a generous default would hide real divergence. One percent is tight on
+  # purpose: it produces a finding a steward can dismiss, rather than silence
+  # they cannot question.
+  default_tolerance_pct: 1.0
+
+presentation:
+  # Decimal places on a strength and a confidence. Must match the scale of
+  # mesh_edge_data.strength — NUMERIC(4,3) — or the database silently rounds
+  # what is written and a stored edge stops matching the one that was computed.
+  precision: 3
+
+rationale:
+  # How many shared items a rationale names before it says "and N more". Three
+  # is enough for a reader to recognise the overlap; a full list turns the
+  # explanation back into the data it was meant to summarise.
+  listed_items: 3
+
+layout:
+  # Server-side pre-warm so the client paints a settled layout immediately (13.3).
+  prewarm_ticks: 300
+  link_distance: 90
+  charge_strength: -220
+  collide_radius: 18
+  featured_node_cap: 60
+  # Integration parameters for the server-side pre-warm. They are here rather
+  # than in the code because they are the difference between a graph that reads
+  # as clustered and one that reads as a cloud, and that is a judgement about
+  # presentation, not an implementation detail.
+  #
+  # pair_share is the fraction of a pairwise force each end of a pair receives.
+  # It is a half because a pair has two ends, and it is written down so no
+  # reader has to work out whether the code forgot one of them.
+  simulation:
+    velocity_decay: 0.6
+    alpha_min: 0.001
+    centre_strength: 0.05
+    link_strength: 0.7
+    collide_iterations: 2
+    pair_share: 0.5
+    orbit_radius: 34
+  # The server-rendered diagram's geometry. Here rather than in the component
+  # for the same reason the force parameters are: the layout is the server's
+  # answer, and a client that computes its own would draw a different picture
+  # from the one the API described.
+  svg:
+    viewbox: 1000
+    centre: 500
+    radius: 380
+    node_radius: 7
+    label_offset: 14
+    # Below this, a weak edge would be invisible rather than faint, and an
+    # invisible edge reads as no edge at all.
+    min_edge_opacity: 0.2
+    max_edge_width: 3
+    # Where the first node sits, in turns. A quarter turn back puts it at the
+    # top, which is where a reader starts.
+    start_angle_turns: -0.25

@@ -1,0 +1,93 @@
+{
+  "agent_id": "AG-TCH-001",
+  "agent_name": "Product Adoption Analyst",
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Activation Rate is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+    "narrative": "Both cohorts are drawn from DP-TCH-001 over the same period: 5,136 observations against 8,304. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-ACTIV-013",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          0.0,
+          8304
+        ],
+        [
+          "true",
+          100.0,
+          5136
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 68.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-ACTIV-013"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "onboarded",
+        "activated",
+        "plan_tier",
+        "segment",
+        "acquisition_channel",
+        "activity_date"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-001-04",
+  "kpi_definitions": [
+    "KPI-ACTIV-013"
+  ],
+  "notes": [],
+  "question": "Did the March onboarding change improve activation?",
+  "recorded_at": "2026-09-04T08:34:03.705526+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 83,
+    "rows_scanned": 13440,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((count(distinct account_id) filter (where activated))::numeric / NULLIF((count(distinct account_id) filter (where onboarded))::numeric, 0) * 100)",
+          "period": "2026-04-01",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 80,
+        "rows_returned": 2,
+        "rows_scanned": 13440,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

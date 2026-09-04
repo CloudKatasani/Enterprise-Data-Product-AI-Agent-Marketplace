@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-BASKET-047
+  name: "Average Basket Value"
+  domain: customer
+  steward: PTY-0040
+  status: certified
+spec:
+  business_definition: >-
+    Net sales divided by transaction count, the mean value of a completed basket.
+  numerator_expr: "sum(net_sales)"
+  denominator_expr: "count(distinct transaction_id)"
+  grains_supported: [day, week, month, quarter]
+  slices_supported: [category, region, channel, store_format]
+  unit: currency
+  direction: higher_is_better
+  source_of_record: DP-RTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["ATV", "average transaction value"]

@@ -1,0 +1,93 @@
+{
+  "agent_id": "AG-BNK-002",
+  "agent_name": "Financial Crime Triage",
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "before_after",
+  "answer": {
+    "headline": "SAR Conversion Rate is 2.43% for the quarter ending 2026-07-01, up 0.70% on the prior quarter.",
+    "narrative": "Computed from DP-BNK-002 under the certified definition KPI-SARCONV-023, across 2 quarters and 14,400 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-SARCONV-023",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-04-01",
+          1.73,
+          3840
+        ],
+        [
+          "2026-07-01",
+          2.43,
+          10560
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 1.8,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-SARCONV-023"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "alert_id",
+        "sar_filed",
+        "disposition",
+        "rule_id",
+        "typology",
+        "business_line",
+        "event_timestamp"
+      ],
+      "contract_version": "2.9.0",
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-002-04",
+  "kpi_definitions": [
+    "KPI-SARCONV-023"
+  ],
+  "notes": [],
+  "question": "Has SAR conversion changed since the June rule tuning?",
+  "recorded_at": "2026-09-04T08:34:02.613325+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 9,
+    "rows_scanned": 14400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(*) filter (where sar_filed))::numeric / NULLIF((count(*) filter (where disposition is not null))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 6,
+        "rows_returned": 2,
+        "rows_scanned": 14400,
+        "tool": "query_dp_bnk_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "agent_id": "AG-BNK-002",
+  "agent_name": "Financial Crime Triage",
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "efficiency_ranking",
+  "answer": {
+    "headline": "structuring leads on false positive rate at 96.86%, 21.59% of the total across 5 typologys.",
+    "narrative": "Ranked by the certified definition KPI-FPRATE-022 over 14,400 rows in DP-BNK-002.",
+    "table": {
+      "columns": [
+        "typology",
+        "KPI-FPRATE-022",
+        "observations"
+      ],
+      "rows": [
+        [
+          "structuring",
+          96.86,
+          5760
+        ],
+        [
+          "sanctions_proximity",
+          88.75,
+          900
+        ],
+        [
+          "trade_based",
+          88.1,
+          1350
+        ],
+        [
+          "mule_network",
+          87.58,
+          3060
+        ],
+        [
+          "rapid_movement",
+          87.37,
+          3330
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 92.0,
+        "unit": "percent",
+        "x": "typology",
+        "y": "KPI-FPRATE-022"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "alert_id",
+        "disposition",
+        "typology",
+        "rule_id",
+        "business_line",
+        "event_timestamp"
+      ],
+      "contract_version": "2.9.0",
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-002-02",
+  "kpi_definitions": [
+    "KPI-FPRATE-022"
+  ],
+  "notes": [],
+  "question": "Which typologies have the highest false positive rate?",
+  "recorded_at": "2026-09-04T08:34:02.568867+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 10,
+    "rows_scanned": 14400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "typology",
+          "limit": 24,
+          "measure": "((count(*) filter (where disposition = 'no_further_action'))::numeric / NULLIF((count(*) filter (where disposition is not null))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 5,
+        "rows_returned": 5,
+        "rows_scanned": 14400,
+        "tool": "query_dp_bnk_002"
+      }
+    ]
+  }
+}

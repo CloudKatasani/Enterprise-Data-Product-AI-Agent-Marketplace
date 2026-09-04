@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-RTL-002-1.0.0",
+  "analysis_type": "accuracy_ranking",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "actual_units",
+        "category",
+        "forecast_units",
+        "horizon",
+        "region",
+        "sku"
+      ],
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "45000",
+    "top": "21.53",
+    "top_share": "25.57"
+  },
+  "exchange_id": "DEMO-AG-RTL-002-02",
+  "headline": "apparel leads on forecast accuracy mape at 21.53%, 25.57% of the total across 5 categorys.",
+  "kpi_definitions": [
+    "KPI-MAPE-054"
+  ],
+  "narrative": "Ranked by the certified definition KPI-MAPE-054 over 45,000 rows in DP-RTL-002.",
+  "question": "What is our forecast accuracy by category?",
+  "rows_scanned": 45000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "category",
+    "KPI-MAPE-054",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

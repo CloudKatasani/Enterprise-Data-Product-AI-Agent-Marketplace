@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-LOADFACT-067
+  name: "Load Factor"
+  domain: customer
+  steward: PTY-0045
+  status: certified
+spec:
+  business_definition: >-
+    Average demand divided by peak demand over the period, the measure of how evenly load is
+    spread.
+  numerator_expr: "sum(consumption_kwh)"
+  denominator_expr: "max(interval_demand_kw) * period_hours"
+  grains_supported: [month, quarter, year]
+  slices_supported: [rate_class, region]
+  unit: ratio
+  direction: higher_is_better
+  target: 0.55
+  source_of_record: DP-ENG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["load factor"]

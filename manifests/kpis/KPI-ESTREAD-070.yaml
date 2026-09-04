@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ESTREAD-070
+  name: "Estimated Read Rate"
+  domain: customer
+  steward: PTY-0045
+  status: certified
+spec:
+  business_definition: >-
+    Share of billing determinants derived from an estimated rather than an actual meter read.
+  numerator_expr: "count(*) filter (where read_type = 'estimated')"
+  denominator_expr: "count(*)"
+  grains_supported: [month, quarter]
+  slices_supported: [rate_class, region, meter_type]
+  unit: percent
+  direction: lower_is_better
+  target: 1.5
+  source_of_record: DP-ENG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["estimation rate", "unread meters"]

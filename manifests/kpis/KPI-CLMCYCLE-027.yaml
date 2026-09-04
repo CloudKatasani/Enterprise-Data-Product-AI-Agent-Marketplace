@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CLMCYCLE-027
+  name: "Claims Cycle Time"
+  domain: risk
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Median elapsed days from first notice of loss to final claim closure for claims closed
+    within the period.
+  expression: "percentile_cont(0.5) within group (order by cycle_days)"
+  grains_supported: [month, quarter]
+  slices_supported: [coverage_line, complexity_band, region]
+  unit: days
+  direction: lower_is_better
+  target: 18.0
+  source_of_record: DP-INS-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["settlement time"]

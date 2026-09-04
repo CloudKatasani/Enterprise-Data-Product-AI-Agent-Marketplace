@@ -1,0 +1,121 @@
+apiVersion: marketplace/v1
+kind: LearningPath
+spec:
+  path_id: LP-AGENTS
+  title: Working with agents
+  persona: consumer
+  audience: Everyone
+  certification_code: CERT-AGENT-USER
+  summary: >-
+    What an agent here can and cannot do, how to ask something it can answer,
+    and how to read the evidence it gives you back.
+  modules:
+    - module_id: MOD-AGENTS-01
+      title: What agents can and cannot do
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        The coverage map is the contract, and the out-of-scope list is the part
+        that matters.
+      body: |
+        An agent here is catalogued like any other asset: an owner, a coverage
+        map, an entitlement scope, an evaluation suite and a value case. The
+        coverage map is its functional contract — which certified KPIs, at which
+        grains, over which slices, to what depth of analysis.
+
+        Read the **out of scope** line first. An agent that cannot say what it
+        does not do has not been described, and the publish gate refuses to let
+        one through without it. "Will not make individual clinical
+        recommendations" is more informative than any capability sentence.
+
+        Autonomy is banded. L0 answers. L1 answers and recommends. L2 drafts an
+        action for someone to approve. L3 executes a scoped action and writes an
+        audit record. The band is on the card; nothing on this platform quietly
+        moves up one.
+
+        An agent is only as trustworthy as its inputs. If an upstream product
+        falls below the Watch band, a banner appears on the agent's page and on
+        its catalog card, whether or not its own evaluation still passes.
+    - module_id: MOD-AGENTS-02
+      title: Asking answerable questions
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Why a refusal is usually a better outcome than an answer.
+      body: |
+        The runtime plans a question against the coverage map intersected with
+        *your* entitlement. If the plan cannot be built, you get a refusal
+        naming what is missing rather than a plausible answer built from
+        something adjacent.
+
+        This is worth wanting. An agent that answers everything is an agent
+        whose answers you cannot use, because you never learn where its
+        knowledge stops.
+
+        A question lands better when it names a measure, a period and a slice:
+        "churn by segment last quarter" rather than "how are we doing". The
+        agent will tell you which KPIs it covers if you ask for something it
+        does not.
+
+        There are two kinds of refusal and they are worded differently. *Out of
+        scope* means the agent does not do this. *Entitlement shortfall* means
+        it does, and you may not see the data — with a link to request it.
+        Telling you the first when the truth is the second would be a lie about
+        the product, so the runtime never does.
+    - module_id: MOD-AGENTS-03
+      title: Reading citations and as-of stamps
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        Every number in an answer is traceable to the rows it came from.
+      body: |
+        Every numeric claim in an answer is checked against its citations before
+        the answer is returned. If a number in the prose cannot be traced to
+        data the agent actually read, the answer is withheld and you get an
+        error instead. That check runs on every answer, not a sample.
+
+        The citation names the product, the contract version and the exact
+        columns read. The as-of stamp is the latest data the query saw, which is
+        frequently older than "now" and is the number you should quote alongside
+        any figure you take away.
+
+        The trace rail shows every tool call: what it queried, how many rows it
+        scanned against how many it returned, how long it took and what it cost.
+        Read the rows-scanned figure. An answer built on eighty rows is a
+        different kind of claim from one built on eighty thousand, and the
+        confidence score reflects it.
+    - module_id: MOD-AGENTS-04
+      title: When to escalate to a human
+      estimated_minutes: 8
+      sandbox_tier: demo
+      summary: >-
+        The cases where a correct answer is still the wrong thing to act on.
+      body: |
+        Escalate when the decision is about a person, when the answer will be
+        used outside the purpose your grant declares, or when the agent's own
+        confidence is thin — it says so, and it says why.
+
+        Thin evidence is usually a coverage problem rather than a data problem.
+        The right response is an enhancement request against the product, not a
+        differently-worded question.
+
+        Every agent names an on-call owner and an escalation path. They are on
+        the agent page because an agent without a human behind it is not
+        something to build on.
+    - module_id: MOD-AGENTS-05
+      title: Giving useful feedback
+      estimated_minutes: 6
+      sandbox_tier: demo
+      summary: >-
+        Acceptance is a measured number here, and it changes what gets built.
+      body: |
+        Rating an answer is not a courtesy. Acceptance rate is what turns cost
+        per answer into cost per *accepted* answer, which is the number that
+        decides whether an agent is worth running.
+
+        Reject with a reason. "Wrong" tells the owner nothing; "counted
+        cancellations as churn" is a coverage-map defect they can fix.
+
+        A rejection rate above the rubric's threshold raises an incident against
+        the agent automatically. Your rejections are the signal — silence reads
+        as satisfaction and is the reason bad agents survive.

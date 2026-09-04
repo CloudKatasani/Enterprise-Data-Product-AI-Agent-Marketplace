@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-FORMADH-041
+  name: "Formulary Adherence"
+  domain: supply_chain
+  steward: PTY-0039
+  status: certified
+spec:
+  business_definition: >-
+    Share of dispensed lines that used a formulary-listed item where one was clinically
+    available.
+  numerator_expr: "count(*) filter (where on_formulary)"
+  denominator_expr: "count(*)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [therapeutic_class, facility, service_line]
+  unit: percent
+  direction: higher_is_better
+  target: 94.0
+  source_of_record: DP-HLT-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["formulary compliance"]

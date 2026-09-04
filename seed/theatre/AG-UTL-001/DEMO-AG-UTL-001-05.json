@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-UTL-001",
+  "agent_name": "Outage Impact Analyst",
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "risk_ranking",
+  "answer": {
+    "headline": "switch leads on preventive maintenance compliance at 98.78%, 25.37% of the total across 4 asset classs.",
+    "narrative": "Ranked by the certified definition KPI-PMCOMP-065 over 21,600 rows in DP-UTL-001.",
+    "table": {
+      "columns": [
+        "asset_class",
+        "KPI-PMCOMP-065",
+        "observations"
+      ],
+      "rows": [
+        [
+          "switch",
+          98.78,
+          4050
+        ],
+        [
+          "recloser",
+          97.15,
+          4950
+        ],
+        [
+          "transformer",
+          96.89,
+          8370
+        ],
+        [
+          "pole",
+          96.6,
+          4230
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 97.0,
+        "unit": "percent",
+        "x": "asset_class",
+        "y": "KPI-PMCOMP-065"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "asset_id",
+        "scheduled",
+        "completed_within_window",
+        "deferral_count",
+        "asset_class",
+        "region",
+        "crew",
+        "observed_date"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-001-05",
+  "kpi_definitions": [
+    "KPI-PMCOMP-065"
+  ],
+  "notes": [],
+  "question": "Which maintenance deferrals carry the highest customer-minute risk?",
+  "recorded_at": "2026-09-04T08:34:04.156908+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 8,
+    "rows_scanned": 21600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "asset_class",
+          "limit": 24,
+          "measure": "((count(*) filter (where completed_within_window))::numeric / NULLIF((count(*) filter (where scheduled))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 5,
+        "rows_returned": 4,
+        "rows_scanned": 21600,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

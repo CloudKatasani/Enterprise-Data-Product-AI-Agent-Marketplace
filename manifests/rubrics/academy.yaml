@@ -1,0 +1,59 @@
+# The academy (BUILD.md M12.1; specification section 20).
+#
+# The academy earns its budget by turning learning into a concrete access
+# benefit: a certification pre-approves an access tier for that asset class, so
+# the fastest route to a grant is to have shown you understand what you are
+# asking for. Every number that governs that — what counts as a pass, how long a
+# certification is good for, which path unlocks which tier — is here, because a
+# pass mark buried in code is a governance decision nobody can find.
+rubric: academy
+version: 1.0.0
+
+assessment:
+  # A module is passed at this score. Set once for every module: a per-module
+  # pass mark is a per-module argument, and the modules are not that different.
+  pass_score_pct: 80
+  # How many attempts before the module is re-read rather than re-taken. Not a
+  # punishment — a learner failing three times has not been taught, and the
+  # module is the thing to fix.
+  attempts_before_review: 3
+  questions_per_module: 5
+
+certification:
+  # A certification states what someone understood about an estate that changes.
+  # A year later it is a claim about a system that has moved on.
+  valid_days: 365
+  # Renewal opens this far ahead, so a lapse is never a surprise.
+  renewal_notice_days: 30
+  # A path is certified when this fraction of its modules are passed. Not all of
+  # them: an executive briefing that fails on one optional module has still
+  # briefed the executive.
+  completion_fraction: 1.0
+
+# What a certification pre-approves. The policy engine reads this: a request
+# from a certified consumer for a product at or below the tier takes the
+# automatic path, which is the whole benefit and the reason anyone finishes.
+pre_approved_access:
+  CERT-CONSUMER:
+    max_sensitivity_rank: 2
+    access_level: read_data
+  CERT-AGENT-USER:
+    max_sensitivity_rank: 2
+    access_level: agent_invoke
+  CERT-PRODUCT-OWNER:
+    max_sensitivity_rank: 3
+    access_level: read_data
+  CERT-AGENT-OWNER:
+    max_sensitivity_rank: 3
+    access_level: agent_invoke
+  CERT-STEWARD:
+    max_sensitivity_rank: 3
+    access_level: read_data
+  CERT-EXEC-BRIEFED:
+    max_sensitivity_rank: 1
+    access_level: read_data
+
+progress:
+  # Reported alongside adoption so the correlation between certification and
+  # use is visible rather than asserted.
+  reporting_window_days: 90

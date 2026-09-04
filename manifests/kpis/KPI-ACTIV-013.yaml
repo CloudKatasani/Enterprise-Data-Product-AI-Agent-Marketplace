@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ACTIV-013
+  name: "Activation Rate"
+  domain: product
+  steward: PTY-0033
+  status: certified
+spec:
+  business_definition: >-
+    Share of newly onboarded accounts that completed the defined activation milestone within the
+    activation window.
+  numerator_expr: "count(distinct account_id) filter (where activated)"
+  denominator_expr: "count(distinct account_id) filter (where onboarded)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [plan_tier, segment, acquisition_channel]
+  unit: percent
+  direction: higher_is_better
+  target: 68.0
+  source_of_record: DP-TCH-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["onboarding conversion"]

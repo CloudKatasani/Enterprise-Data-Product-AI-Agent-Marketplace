@@ -1,0 +1,46 @@
+{
+  "agent_version_id": "AGV-AG-HLT-001-1.0.0",
+  "analysis_type": "association",
+  "citations": [
+    {
+      "columns": [
+        "condition",
+        "discharge_date",
+        "discharge_disposition",
+        "eligible_index",
+        "encounter_id",
+        "index_encounter_id",
+        "payer",
+        "programme_enrolled",
+        "readmitted_within_30d",
+        "unit"
+      ],
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "5.31",
+    "cohort_high": "14.62",
+    "cohort_high_observations": "25474",
+    "cohort_low": "9.31",
+    "cohort_low_observations": "5726",
+    "groups": "2",
+    "rows_scanned": "31200"
+  },
+  "exchange_id": "DEMO-AG-HLT-001-03",
+  "headline": "Thirty Day Readmission Rate is 14.62% where cohort is false against 9.31% where it is true, a gap of 5.31%.",
+  "kpi_definitions": [
+    "KPI-READMIT-036"
+  ],
+  "narrative": "Both cohorts are drawn from DP-HLT-001 over the same period: 25,474 observations against 5,726.",
+  "question": "Which discharge patterns are associated with higher readmission?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-READMIT-036",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

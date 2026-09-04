@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CLV-018
+  name: "Customer Lifetime Value"
+  domain: customer
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Discounted expected contribution margin over the modelled remaining relationship life of a
+    customer.
+  expression: "sum(discounted_contribution_margin)"
+  grains_supported: [quarter, year]
+  slices_supported: [segment, region]
+  unit: currency
+  direction: higher_is_better
+  source_of_record: DP-BNK-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["CLV", "lifetime value"]

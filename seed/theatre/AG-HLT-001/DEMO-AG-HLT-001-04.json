@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-HLT-001",
+  "agent_name": "Readmission Risk Navigator",
+  "agent_version_id": "AGV-AG-HLT-001-1.0.0",
+  "analysis_type": "compliance",
+  "answer": {
+    "headline": "hip_replacement leads on discharge to follow-up interval at 7.71 days, 20.24% of the total across 5 conditions.",
+    "narrative": "Ranked by the certified definition KPI-FOLLOWUP-040 over 31,200 rows in DP-HLT-001.",
+    "table": {
+      "columns": [
+        "condition",
+        "KPI-FOLLOWUP-040",
+        "observations"
+      ],
+      "rows": [
+        [
+          "hip_replacement",
+          7.71,
+          4479
+        ],
+        [
+          "pneumonia",
+          7.65,
+          6622
+        ],
+        [
+          "sepsis",
+          7.65,
+          4441
+        ],
+        [
+          "heart_failure",
+          7.61,
+          8910
+        ],
+        [
+          "copd",
+          7.48,
+          6748
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 7.0,
+        "unit": "days",
+        "x": "condition",
+        "y": "KPI-FOLLOWUP-040"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "encounter_id",
+        "days_to_followup",
+        "condition",
+        "unit",
+        "payer",
+        "clinic",
+        "discharge_date"
+      ],
+      "contract_version": "4.3.0",
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-001-04",
+  "kpi_definitions": [
+    "KPI-FOLLOWUP-040"
+  ],
+  "notes": [],
+  "question": "Are follow-up appointments being scheduled within the target window?",
+  "recorded_at": "2026-09-04T08:34:02.844164+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 23,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "condition",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by days_to_followup))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 19,
+        "rows_returned": 5,
+        "rows_scanned": 31200,
+        "tool": "query_dp_hlt_001"
+      }
+    ]
+  }
+}

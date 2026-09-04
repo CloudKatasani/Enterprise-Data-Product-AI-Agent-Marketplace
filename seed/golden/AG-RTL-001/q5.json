@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-RTL-001-1.0.0",
+  "analysis_type": "basket_composition",
+  "citations": [
+    {
+      "columns": [
+        "basket_item_count",
+        "business_date",
+        "category",
+        "channel",
+        "net_sales",
+        "region",
+        "transaction_id"
+      ],
+      "product_id": "DP-RTL-001"
+    }
+  ],
+  "claims": {
+    "groups": "6",
+    "rows_scanned": "23400",
+    "top": "66.54",
+    "top_share": "16.83"
+  },
+  "exchange_id": "DEMO-AG-RTL-001-05",
+  "headline": "grocery leads on average basket value at $66.54, 16.83% of the total across 6 categorys.",
+  "kpi_definitions": [
+    "KPI-BASKET-047"
+  ],
+  "narrative": "Ranked by the certified definition KPI-BASKET-047 over 23,400 rows in DP-RTL-001.",
+  "question": "Where is basket size declining and what is leaving the basket?",
+  "rows_scanned": 23400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "category",
+    "KPI-BASKET-047",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

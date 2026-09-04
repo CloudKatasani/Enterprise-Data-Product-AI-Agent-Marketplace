@@ -1,0 +1,94 @@
+{
+  "agent_id": "AG-MFG-001",
+  "agent_name": "Yield & Downtime Analyst",
+  "agent_version_id": "AGV-AG-MFG-001-1.0.0",
+  "analysis_type": "programme_eval",
+  "answer": {
+    "headline": "Changeover Time is 56.38 minutes where cohort is false against 33.01 minutes where it is true, a gap of 23.37 minutes.",
+    "narrative": "Both cohorts are drawn from DP-MFG-001 over the same period: 6,300 observations against 6,300.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-CHANGEOVER-075",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          56.38,
+          6300
+        ],
+        [
+          "true",
+          33.01,
+          6300
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 35.0,
+        "unit": "minutes",
+        "x": "cohort",
+        "y": "KPI-CHANGEOVER-075"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "run_id",
+        "line",
+        "plant",
+        "shift",
+        "changeover_minutes",
+        "standardised_changeover",
+        "product_family",
+        "shift_date"
+      ],
+      "contract_version": "2.8.0",
+      "product_id": "DP-MFG-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-001-04",
+  "kpi_definitions": [
+    "KPI-CHANGEOVER-075"
+  ],
+  "notes": [],
+  "question": "Did changeover standardization reduce changeover time?",
+  "recorded_at": "2026-09-04T08:34:03.218620+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 9,
+    "rows_scanned": 12600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by changeover_minutes))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 7,
+        "rows_returned": 2,
+        "rows_scanned": 12600,
+        "tool": "query_dp_mfg_001"
+      }
+    ]
+  }
+}

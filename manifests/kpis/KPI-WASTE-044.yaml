@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-WASTE-044
+  name: "Pharmacy Waste Rate"
+  domain: supply_chain
+  steward: PTY-0039
+  status: certified
+spec:
+  business_definition: >-
+    Value of expired, damaged or returned stock as a share of dispensed value.
+  numerator_expr: "sum(wasted_cost)"
+  denominator_expr: "sum(dispensed_cost)"
+  grains_supported: [month, quarter]
+  slices_supported: [therapeutic_class, facility, item_class]
+  unit: percent
+  direction: lower_is_better
+  target: 1.8
+  source_of_record: DP-HLT-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["wastage rate", "shrink"]

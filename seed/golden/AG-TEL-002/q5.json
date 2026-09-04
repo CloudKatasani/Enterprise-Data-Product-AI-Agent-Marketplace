@@ -1,0 +1,38 @@
+{
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "fault_class",
+        "fault_closed",
+        "observed_hour",
+        "region",
+        "restore_minutes",
+        "site_id"
+      ],
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "claims": {
+    "current": "322.56",
+    "groups": "1",
+    "rows_scanned": "15120"
+  },
+  "exchange_id": "DEMO-AG-TEL-002-05",
+  "headline": "Fault Mean Time to Restore is 322.56 hours for the quarter ending 2026-07-01.",
+  "kpi_definitions": [
+    "KPI-FMTTR-009"
+  ],
+  "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 1 quarters and 15,120 rows.",
+  "question": "What is our MTTR trend and where is it worst?",
+  "rows_scanned": 15120,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-FMTTR-009",
+    "observations"
+  ],
+  "visual_type": "line"
+}

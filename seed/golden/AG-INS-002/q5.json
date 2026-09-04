@@ -1,0 +1,45 @@
+{
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "scenario_framing",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "channel",
+        "coverage_line",
+        "policy_id",
+        "rate_change_pct",
+        "region",
+        "renewed",
+        "segment",
+        "up_for_renewal"
+      ],
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "100.00",
+    "cohort_high": "100.00",
+    "cohort_high_observations": "280",
+    "cohort_low": "0.00",
+    "cohort_low_observations": "4040",
+    "groups": "2",
+    "rows_scanned": "4320"
+  },
+  "exchange_id": "DEMO-AG-INS-002-05",
+  "headline": "Policy Retention is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+  "kpi_definitions": [
+    "KPI-POLRETEN-032"
+  ],
+  "narrative": "Both cohorts are drawn from DP-INS-002 over the same period: 280 observations against 4,040. Computed within the year beginning 2026-01-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "What would a 5% increase on the worst-performing segment do to retention?",
+  "rows_scanned": 4320,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-POLRETEN-032",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

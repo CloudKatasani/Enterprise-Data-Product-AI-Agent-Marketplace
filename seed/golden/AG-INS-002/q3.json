@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "trend_segmented",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "bound",
+        "channel",
+        "coverage_line",
+        "quote_id",
+        "segment"
+      ],
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "claims": {
+    "current": "10.83",
+    "delta": "0.00",
+    "groups": "12",
+    "rows_scanned": "17280"
+  },
+  "exchange_id": "DEMO-AG-INS-002-03",
+  "headline": "Quote-to-Bind Rate is 10.83% for the quarter ending 2026-07-01, flat on the prior quarter.",
+  "kpi_definitions": [
+    "KPI-QTB-033"
+  ],
+  "narrative": "Computed from DP-INS-002 under the certified definition KPI-QTB-033, across 12 quarters and 17,280 rows.",
+  "question": "How has quote-to-bind moved since the July rate change?",
+  "rows_scanned": 17280,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-QTB-033",
+    "observations"
+  ],
+  "visual_type": "line"
+}

@@ -1,0 +1,180 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-RTL-002
+  name: "Inventory Availability Agent"
+  industry: retail
+  domain: supply_chain
+  owner:
+    party_id: PTY-0041
+    team: "Supply Chain Planning"
+    on_call: "pagerduty://inventory-agents"
+  autonomy_level: L2
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about availability, cover, forecast accuracy and lost sales, and drafts
+    transfer recommendations for planner approval.
+  business_value_block:
+    analyses: [ranking, accuracy_ranking, excess_analysis, lost_sales, action_draft]
+    replaces: >-
+      The daily exception report worked top to bottom by the planning team.
+    personas: [supply_planner, store_operations_lead, category_manager]
+  out_of_scope:
+    - "Executing transfers or purchase orders without planner approval"
+    - "Changing a forecast"
+    - "Committing to a vendor"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-RTL-002/system@v1
+  data_products:
+    - product_id: DP-RTL-002
+      columns: [sku, location_id, activity_date, category, region, store_format, season, horizon, on_hand_units, units_received, units_sold, average_weekly_demand_units, forecast_units, actual_units, unmet_demand_units, average_selling_price, in_transit_units]
+      access: read
+  tool_bindings:
+    - tool: query_dp_rtl_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-RTL-002"
+      scope: "dp:DP-RTL-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-INSTOCK-051
+      source_product: DP-RTL-002
+      columns_used: [sku, location_id, on_hand_units, category, region, store_format, activity_date]
+      grains: [day, week, month]
+      slices: [category, region, store_format]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-MAPE-054
+      source_product: DP-RTL-002
+      columns_used: [sku, forecast_units, actual_units, category, region, horizon, activity_date]
+      grains: [week, month, quarter]
+      slices: [category, region, horizon]
+      analysis_depth: compare
+    - kpi_id: KPI-WOS-052
+      source_product: DP-RTL-002
+      columns_used: [sku, on_hand_units, average_weekly_demand_units, category, region, store_format, activity_date]
+      grains: [week, month]
+      slices: [category, region, store_format]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-LOSTSALES-055
+      source_product: DP-RTL-002
+      columns_used: [sku, unmet_demand_units, average_selling_price, category, region, store_format, activity_date]
+      grains: [week, month, quarter]
+      slices: [category, region, store_format]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-RTL-002-01
+      ordinal: 1
+      question: "Which stores have the worst in-stock rate this week?"
+      kpi_class: KPI-INSTOCK-051
+      analysis_type: ranking
+      expected_shape:
+        headline: >-
+          the locations with the weakest availability and the gap to the estate
+        visual: table_plus_map
+        table_columns: [location_id, region, in_stock_rate, delta_pp]
+        must_cite: [DP-RTL-002, KPI-INSTOCK-051]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-002-02
+      ordinal: 2
+      question: "What is our forecast accuracy by category?"
+      kpi_class: KPI-MAPE-054
+      analysis_type: accuracy_ranking
+      expected_shape:
+        headline: >-
+          which categories forecast worst, and by how much
+        visual: bar
+        table_columns: [category, mape_pct, forecast_units, actual_units]
+        must_cite: [DP-RTL-002, KPI-MAPE-054]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-002-03
+      ordinal: 3
+      question: "Where do we have excess weeks of supply?"
+      kpi_class: KPI-WOS-052
+      analysis_type: excess_analysis
+      expected_shape:
+        headline: >-
+          where cover is furthest above target and what it ties up
+        visual: pareto
+        table_columns: [category, weeks_of_supply, on_hand_units, share_pct]
+        must_cite: [DP-RTL-002, KPI-WOS-052]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-002-04
+      ordinal: 4
+      question: "What did stockouts cost us last month?"
+      kpi_class: KPI-LOSTSALES-055
+      analysis_type: lost_sales
+      expected_shape:
+        headline: >-
+          the modelled value of demand that could not be served, labelled as an estimate
+        visual: quantified_estimate
+        table_columns: [category, lost_sales_value, unmet_demand_units, share_pct]
+        must_cite: [DP-RTL-002, KPI-LOSTSALES-055]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-RTL-002-05
+      ordinal: 5
+      question: "Draft transfer recommendations to fix the top 20 availability gaps."
+      kpi_class: KPI-INSTOCK-051
+      analysis_type: action_draft
+      expected_shape:
+        headline: >-
+          a proposed transfer per gap with its basis, for a planner to approve or reject
+        visual: approval_card
+        table_columns: [sku, from_location, to_location, units]
+        must_cite: [DP-RTL-002, KPI-INSTOCK-051]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-RTL-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-RTL-002/
+  value_case:
+    benefit_model: "recovered_lost_sales * gross_margin_rate - transfer_cost"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per availability question"
+        value: 45
+        unit: minutes
+        sample_size: 37
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0041

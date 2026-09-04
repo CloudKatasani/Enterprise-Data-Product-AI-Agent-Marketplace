@@ -1,0 +1,209 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TCH-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TCH-001",
+    "name": "Product Adoption Analyst",
+    "industry": "technology",
+    "domain": "product",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0047",
+      "team": "Product Analytics",
+      "on_call": "pagerduty://product-agents"
+    }
+  },
+  "capability_statement": "Answers questions about feature adoption, activation, time to value and renewal risk across accounts, and explains what moved them.",
+  "business_value": {
+    "analyses": [
+      "driver_ranking",
+      "risk_cohort",
+      "distribution",
+      "cohort_comparison",
+      "gap_analysis"
+    ],
+    "replaces": "Quarterly manual cohort pulls by the product analytics team, roughly a week per adoption review.",
+    "personas": [
+      "product_manager",
+      "customer_success_lead",
+      "revenue_operations"
+    ]
+  },
+  "out_of_scope": [
+    "Contract or pricing commitments",
+    "Individual user behaviour without a recorded consent basis",
+    "Any change to entitlement state"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-ACTIV-013",
+      "kpi_name": "Activation Rate",
+      "unit": "percent",
+      "source_product": "DP-TCH-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "plan_tier",
+        "segment",
+        "acquisition_channel"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-FEATADP-012",
+      "kpi_name": "Feature Adoption Rate",
+      "unit": "percent",
+      "source_product": "DP-TCH-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "feature",
+        "plan_tier",
+        "segment"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-TTV-014",
+      "kpi_name": "Time to First Value",
+      "unit": "days",
+      "source_product": "DP-TCH-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "plan_tier",
+        "segment",
+        "acquisition_channel"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TCH-001",
+      "columns": [
+        "account_id",
+        "feature",
+        "activity_date",
+        "plan_tier",
+        "segment",
+        "region",
+        "acquisition_channel",
+        "feature_entitled",
+        "feature_used",
+        "daily_active_account",
+        "monthly_active_account",
+        "onboarded",
+        "activated",
+        "days_to_first_value",
+        "renewal_date"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TCH-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TCH-001/ask",
+    "required_scope": "agent:AG-TCH-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which features are driving activation this quarter?",
+      "Which accounts show adoption decline ahead of renewal?",
+      "How long does a new account take to reach first value?",
+      "Did the March onboarding change improve activation?",
+      "Which features have high usage but low entitlement coverage?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TCH-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_tch_001",
+        "scope": "dp:DP-TCH-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TCH-001": "4.1.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "7345ade048346232ab3102f019c6669faa69821e9dce8cf7292011a81d21604a"
+}

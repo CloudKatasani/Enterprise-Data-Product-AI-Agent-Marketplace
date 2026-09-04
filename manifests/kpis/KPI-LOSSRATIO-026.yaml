@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-LOSSRATIO-026
+  name: "Loss Ratio"
+  domain: risk
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Incurred losses including allocated loss adjustment expense divided by earned premium for
+    the period.
+  numerator_expr: "sum(incurred_losses)"
+  denominator_expr: "sum(earned_premium)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [coverage_line, region, channel]
+  unit: percent
+  direction: lower_is_better
+  target: 62.0
+  source_of_record: DP-INS-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["incurred loss ratio"]

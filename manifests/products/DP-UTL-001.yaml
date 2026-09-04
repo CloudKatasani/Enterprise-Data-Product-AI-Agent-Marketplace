@@ -1,0 +1,286 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-UTL-001
+  name: "Grid Asset Health & Outage"
+  industry: utilities_energy
+  domain: network_asset
+  archetype: aggregate
+  tier: tier1
+  owner:
+    party_id: PTY-0043
+    team: "Grid Operations"
+    escalation: "#dp-grid"
+  certification: certified
+spec:
+  purpose: >-
+    Asset and outage level view of grid reliability, asset condition, restoration and
+    maintenance compliance for regulatory reporting and investment prioritisation.
+  grain: "one row per asset per day and per outage event"
+  history_months: 84
+  known_limitations: >-
+    Customer counts on a feeder are the connectivity model's view as at the outage, so a mid-
+    outage switching change is reflected at the next model publication. Major event days are
+    flagged but not removed, so the regulatory exclusion must be applied by the consumer.
+  upstream_sources: [SRC-SCADA, SRC-OMS, SRC-ASSET-EAM, SRC-FIELD-WORK]
+  entities: [asset, feeder, outage, crew]
+  certified_kpis: [KPI-SAIDI-061, KPI-SAIFI-062, KPI-AHI-063, KPI-RESTORE-064, KPI-PMCOMP-065]
+  columns:
+    - name: asset_id
+      type: string
+      business_name: "Asset ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Grid asset identifier.
+    - name: outage_id
+      type: string
+      business_name: "Outage ID"
+      nullable: true
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Outage event the row relates to.
+    - name: observed_date
+      type: date
+      business_name: "Observed Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Date the observation describes.
+    - name: feeder
+      type: string
+      business_name: "Feeder"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Distribution feeder the asset serves.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Operating region.
+    - name: asset_class
+      type: string
+      business_name: "Asset Class"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Class of the asset such as transformer, recloser or pole.
+    - name: vintage_band
+      type: string
+      business_name: "Vintage Band"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Installation vintage band.
+    - name: cause_class
+      type: string
+      business_name: "Cause Class"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Cause classification of the interruption.
+    - name: crew
+      type: string
+      business_name: "Crew"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Crew assigned to the restoration or maintenance task.
+    - name: served_customer_id
+      type: string
+      business_name: "Served Customer ID"
+      nullable: true
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Pseudonymous identifier of a customer served by the asset.
+    - name: customer_interruptions
+      type: number
+      business_name: "Customer Interruptions"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Sustained customer interruptions attributed to the event.
+    - name: customer_interruption_minutes
+      type: number
+      business_name: "Customer Interruption Minutes"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Customer minutes lost attributed to the event.
+    - name: restoration_minutes
+      type: number
+      business_name: "Restoration Minutes"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes from outage start to full restoration.
+    - name: asset_health_score
+      type: number
+      business_name: "Asset Health Score"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Composite condition score on a zero to one hundred scale.
+    - name: scheduled
+      type: boolean
+      business_name: "Maintenance Scheduled"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when preventive maintenance was scheduled in the window.
+    - name: completed_within_window
+      type: boolean
+      business_name: "Completed Within Window"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when scheduled maintenance completed inside its compliance window.
+    - name: deferral_count
+      type: integer
+      business_name: "Deferral Count"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Number of times planned maintenance on the asset has been deferred.
+    - name: major_event_day
+      type: boolean
+      business_name: "Major Event Day"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the day meets the regulatory major event threshold.
+    - name: load_impact_mw
+      type: number
+      business_name: "Load Impact MW"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Load interrupted by the event in megawatts.
+  contract:
+    version: 3.7.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "every 15 minutes"
+        p95_minutes: 7
+        measured: per_partition
+      availability:
+        target_pct: 99.9
+        window: monthly
+      completeness:
+        required_fields_pct: 99.9
+      accuracy:
+        reconciliation_variance_pct: 0.2
+        against: "outage_management_system_of_record"
+    deprecation_policy:
+      notice_days: 120
+      minimum_parallel_run_days: 60
+    support:
+      hours: "24x7"
+      p1_response_minutes: 15
+      on_call: "pagerduty://grid-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US]
+    consumer_obligations:
+      - "No switching order or crew dispatch may be executed from this product"
+      - "Regulatory submissions must apply the major event day exclusion explicitly"
+    breach_process: >-
+      Auto-incident raised, regulatory reporting lead notified and consumers notified within 15
+      minutes.
+  quality_rules:
+    - id: QR-UTL-001-01
+      dimension: completeness
+      column: asset_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-UTL-001-02
+      dimension: freshness
+      rule: stream_lag_under
+      target: "15m"
+      tolerance_minutes: 7
+      severity: critical
+    - id: QR-UTL-001-03
+      dimension: validity
+      column: asset_class
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: critical
+    - id: QR-UTL-001-04
+      dimension: uniqueness
+      columns: [asset_id, observed_date, outage_id]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-UTL-001-05
+      dimension: accuracy
+      column: customer_interruption_minutes
+      rule: reconcile_to_oms
+      threshold_pct: 99.8
+      severity: critical
+  endpoints: [sql, mcp, stream]
+  demo_tier:
+    synthetic: true
+    rows_target: 420000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 91
+    planted_patterns:
+      - id: feeder-pareto
+        description: >-
+            A small number of feeders contributes most interruption minutes, which is the Pareto
+            finding.
+      - id: poor-health-high-customer
+        description: >-
+            A set of poor-health assets serves disproportionately many customers, which is the
+            prioritisation matrix finding.
+      - id: storm-impact
+        description: >-
+            One week carries a storm with a distinct customer and load impact profile.
+  value_case:
+    business_outcome: >-
+      Investment goes to the assets whose failure would cost the most customer minutes, not to the
+      oldest assets.
+    baseline:
+      method: "annual reliability review with manual feeder ranking"
+      analyst_hours_month: 120
+      captured: "2026-01"
+    benefit_model: "avoided_customer_minutes * regulatory_value_per_customer_minute"
+    assumptions:
+      - text: "regulatory and reputational value of a customer minute avoided"
+        value: 0.42
+        unit: usd
+        source: "regulatory affairs FY26 model"
+        dated: 2026-01-20
+      - text: "customer minutes avoidable through targeted replacement"
+        value: 6.0
+        unit: percent
+        source: "reliability engineering study"
+        dated: 2026-04-01
+    attribution_confidence: low
+    review:
+      last_reviewed: 2026-07-03
+      reviewer: PTY-0043

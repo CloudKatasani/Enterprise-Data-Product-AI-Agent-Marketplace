@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-DEPGRW-020
+  name: "Deposit Balance Growth"
+  domain: customer
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Period-over-period change in total deposit balances for the customer population held
+    constant at period start.
+  numerator_expr: "sum(ending_deposit_balance) - sum(starting_deposit_balance)"
+  denominator_expr: "sum(starting_deposit_balance)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, product_family]
+  unit: percent
+  direction: higher_is_better
+  target: 3.0
+  source_of_record: DP-BNK-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["balance growth", "deposit momentum"]

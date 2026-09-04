@@ -1,0 +1,97 @@
+{
+  "agent_id": "AG-INS-002",
+  "agent_name": "Underwriting Portfolio Copilot",
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "scenario_framing",
+  "answer": {
+    "headline": "Policy Retention is 100.00% where cohort is true against 0.00% where it is false, a gap of 100.00%.",
+    "narrative": "Both cohorts are drawn from DP-INS-002 over the same period: 280 observations against 4,040. Computed within the year beginning 2026-01-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-POLRETEN-032",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          0.0,
+          4040
+        ],
+        [
+          "true",
+          100.0,
+          280
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 86.0,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-POLRETEN-032"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "policy_id",
+        "up_for_renewal",
+        "renewed",
+        "rate_change_pct",
+        "coverage_line",
+        "segment",
+        "region",
+        "channel",
+        "as_of_month"
+      ],
+      "contract_version": "2.6.0",
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "confidence": 0.68,
+  "confidence_display": "0.68",
+  "exchange_id": "DEMO-AG-INS-002-05",
+  "kpi_definitions": [
+    "KPI-POLRETEN-032"
+  ],
+  "notes": [
+    "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
+  ],
+  "question": "What would a 5% increase on the worst-performing segment do to retention?",
+  "recorded_at": "2026-09-04T08:34:03.178056+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 31,
+    "rows_scanned": 4320,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((count(distinct policy_id) filter (where renewed))::numeric / NULLIF((count(distinct policy_id) filter (where up_for_renewal))::numeric, 0) * 100)",
+          "period": "2026-01-01",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 28,
+        "rows_returned": 2,
+        "rows_scanned": 4320,
+        "tool": "query_dp_ins_002"
+      }
+    ]
+  }
+}

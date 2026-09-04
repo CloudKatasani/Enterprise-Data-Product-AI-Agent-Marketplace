@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "regulatory_tracking",
+  "citations": [
+    {
+      "columns": [
+        "asset_id",
+        "cause_class",
+        "customer_interruption_minutes",
+        "feeder",
+        "major_event_day",
+        "observed_date",
+        "region",
+        "served_customer_id"
+      ],
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "claims": {
+    "current": "264443.65",
+    "groups": "1",
+    "rows_scanned": "21600"
+  },
+  "exchange_id": "DEMO-AG-UTL-001-01",
+  "headline": "SAIDI is 264,443.65 minutes for the year ending 2026-01-01.",
+  "kpi_definitions": [
+    "KPI-SAIDI-061"
+  ],
+  "narrative": "Computed from DP-UTL-001 under the certified definition KPI-SAIDI-061, across 1 years and 21,600 rows.",
+  "question": "What is our SAIDI year to date against the regulatory target?",
+  "rows_scanned": 21600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-SAIDI-061",
+    "observations"
+  ],
+  "visual_type": "line"
+}

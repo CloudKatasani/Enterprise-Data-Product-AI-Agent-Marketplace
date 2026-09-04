@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-LEAKAGE-029
+  name: "Claims Leakage Rate"
+  domain: risk
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Share of incurred losses assessed by file review as avoidable given correct handling under
+    the policy terms.
+  numerator_expr: "sum(assessed_leakage_amount)"
+  denominator_expr: "sum(incurred_losses)"
+  grains_supported: [quarter, year]
+  slices_supported: [coverage_line, adjuster_team, region]
+  unit: percent
+  direction: lower_is_better
+  target: 3.5
+  source_of_record: DP-INS-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["leakage"]

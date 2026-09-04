@@ -1,0 +1,405 @@
+{
+  "archetype": "consumer_aligned",
+  "expected": {
+    "band": "unfit",
+    "blocker_applied": "critical_rule_failed",
+    "composite": "39.00",
+    "dimensions": {
+      "completeness": "97.50",
+      "consistency": "78.29",
+      "freshness": "100.00",
+      "uniqueness": "99.99",
+      "validity": "86.09"
+    }
+  },
+  "product_id": "DP-HLT-002",
+  "product_name": "Pharmacy & Clinical Supply Utilization",
+  "results": [
+    {
+      "dimension": "completeness",
+      "observed_pct": "97.5000",
+      "observed_value": null,
+      "passed": false,
+      "result_id": "QRES-QR-HLT-002-01-2026-09-04",
+      "rule_id": "QR-HLT-002-01",
+      "severity": "critical",
+      "threshold_pct": "100.000",
+      "tolerance": null
+    },
+    {
+      "dimension": "freshness",
+      "observed_pct": null,
+      "observed_value": "10.0000",
+      "passed": true,
+      "result_id": "QRES-QR-HLT-002-02-2026-09-04",
+      "rule_id": "QR-HLT-002-02",
+      "severity": "high",
+      "threshold_pct": null,
+      "tolerance": "30"
+    },
+    {
+      "dimension": "validity",
+      "observed_pct": "86.0900",
+      "observed_value": null,
+      "passed": false,
+      "result_id": "QRES-QR-HLT-002-03-2026-09-04",
+      "rule_id": "QR-HLT-002-03",
+      "severity": "high",
+      "threshold_pct": "99.500",
+      "tolerance": null
+    },
+    {
+      "dimension": "uniqueness",
+      "observed_pct": "99.9900",
+      "observed_value": null,
+      "passed": true,
+      "result_id": "QRES-QR-HLT-002-04-2026-09-04",
+      "rule_id": "QR-HLT-002-04",
+      "severity": "critical",
+      "threshold_pct": "99.990",
+      "tolerance": null
+    },
+    {
+      "dimension": "consistency",
+      "observed_pct": "78.2900",
+      "observed_value": null,
+      "passed": false,
+      "result_id": "QRES-QR-HLT-002-05-2026-09-04",
+      "rule_id": "QR-HLT-002-05",
+      "severity": "high",
+      "threshold_pct": "100.000",
+      "tolerance": null
+    }
+  ],
+  "rubric": {
+    "code": "data_product_quality",
+    "criteria": [
+      {
+        "kind": "band",
+        "numeric_value": null,
+        "path": "bands.at_risk.label",
+        "scope": null,
+        "text_value": "At Risk"
+      },
+      {
+        "kind": "band",
+        "numeric_value": "40.000000",
+        "path": "bands.at_risk.min",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "band",
+        "numeric_value": null,
+        "path": "bands.exemplary.label",
+        "scope": null,
+        "text_value": "Exemplary"
+      },
+      {
+        "kind": "band",
+        "numeric_value": "90.000000",
+        "path": "bands.exemplary.min",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "band",
+        "numeric_value": null,
+        "path": "bands.healthy.label",
+        "scope": null,
+        "text_value": "Healthy"
+      },
+      {
+        "kind": "band",
+        "numeric_value": "75.000000",
+        "path": "bands.healthy.min",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "band",
+        "numeric_value": null,
+        "path": "bands.unfit.label",
+        "scope": null,
+        "text_value": "Not Fit for Consumption"
+      },
+      {
+        "kind": "band",
+        "numeric_value": "0.000000",
+        "path": "bands.unfit.min",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "band",
+        "numeric_value": null,
+        "path": "bands.watch.label",
+        "scope": null,
+        "text_value": "Watch"
+      },
+      {
+        "kind": "band",
+        "numeric_value": "60.000000",
+        "path": "bands.watch.min",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "flag",
+        "numeric_value": null,
+        "path": "below_band_actions.at_risk.banner_on_attached_agents",
+        "scope": null,
+        "text_value": "false"
+      },
+      {
+        "kind": "flag",
+        "numeric_value": null,
+        "path": "below_band_actions.at_risk.flag_in_catalog",
+        "scope": null,
+        "text_value": "true"
+      },
+      {
+        "kind": "flag",
+        "numeric_value": null,
+        "path": "below_band_actions.unfit.banner_on_attached_agents",
+        "scope": null,
+        "text_value": "true"
+      },
+      {
+        "kind": "flag",
+        "numeric_value": null,
+        "path": "below_band_actions.unfit.flag_in_catalog",
+        "scope": null,
+        "text_value": "true"
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.200000",
+        "path": "dimensions.accuracy",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.250000",
+        "path": "dimensions.accuracy",
+        "scope": "document_corpus",
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.200000",
+        "path": "dimensions.accuracy.weight",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.200000",
+        "path": "dimensions.completeness",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.300000",
+        "path": "dimensions.completeness",
+        "scope": "document_corpus",
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.200000",
+        "path": "dimensions.completeness.weight",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.150000",
+        "path": "dimensions.consistency",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.000000",
+        "path": "dimensions.consistency",
+        "scope": "document_corpus",
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.150000",
+        "path": "dimensions.consistency.weight",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.200000",
+        "path": "dimensions.freshness",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.250000",
+        "path": "dimensions.freshness",
+        "scope": "document_corpus",
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.200000",
+        "path": "dimensions.freshness.weight",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.100000",
+        "path": "dimensions.uniqueness",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.050000",
+        "path": "dimensions.uniqueness",
+        "scope": "document_corpus",
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.100000",
+        "path": "dimensions.uniqueness.weight",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.150000",
+        "path": "dimensions.validity",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.150000",
+        "path": "dimensions.validity",
+        "scope": "document_corpus",
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "0.150000",
+        "path": "dimensions.validity.weight",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "49.000000",
+        "path": "hard_blockers.classified_column_unprotected",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "49.000000",
+        "path": "hard_blockers.classified_column_unprotected.caps_composite_at",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "39.000000",
+        "path": "hard_blockers.critical_rule_failed",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "39.000000",
+        "path": "hard_blockers.critical_rule_failed.caps_composite_at",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "flag",
+        "numeric_value": null,
+        "path": "redistribute_unmeasured_dimensions",
+        "scope": null,
+        "text_value": "true"
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "100.000000",
+        "path": "scale.maximum",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "0.000000",
+        "path": "scale.minimum",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "3.000000",
+        "path": "severity_weights.critical",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "2.000000",
+        "path": "severity_weights.high",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "0.500000",
+        "path": "severity_weights.low",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "threshold",
+        "numeric_value": "1.000000",
+        "path": "severity_weights.medium",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "5.000000",
+        "path": "tier_weights.tier1",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "2.000000",
+        "path": "tier_weights.tier2",
+        "scope": null,
+        "text_value": null
+      },
+      {
+        "kind": "weight",
+        "numeric_value": "1.000000",
+        "path": "tier_weights.tier3",
+        "scope": null,
+        "text_value": null
+      }
+    ],
+    "rubric_version_id": "RV-TEN-DEMO-data_product_quality-0a8b247ba169",
+    "semver": "1.3.0",
+    "source_hash": "0a8b247ba169e703804d88364c09e3c4325b77ed601e750bcb17e4d45e375b71"
+  },
+  "unprotected_columns": []
+}

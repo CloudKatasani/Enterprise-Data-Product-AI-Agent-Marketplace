@@ -1,0 +1,97 @@
+{
+  "agent_id": "AG-BNK-001",
+  "agent_name": "Relationship Value Advisor",
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "risk_cohort",
+  "answer": {
+    "headline": "affluent leads on attrition risk score at 46.77, 34.40% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-ATTRISK-019 over 18,000 rows in DP-BNK-001.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-ATTRISK-019",
+        "observations"
+      ],
+      "rows": [
+        [
+          "affluent",
+          46.77,
+          5112
+        ],
+        [
+          "mass",
+          45.11,
+          11088
+        ],
+        [
+          "private",
+          44.08,
+          1800
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "score",
+        "x": "segment",
+        "y": "KPI-ATTRISK-019"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "attrition_model_score",
+        "value_band",
+        "segment",
+        "region",
+        "as_of_month"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-001-02",
+  "kpi_definitions": [
+    "KPI-ATTRISK-019"
+  ],
+  "notes": [],
+  "question": "Which high-value customers show attrition risk this month?",
+  "recorded_at": "2026-09-04T08:34:02.483781+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 11,
+    "rows_scanned": 18000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "(avg(attrition_model_score))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 6,
+        "rows_returned": 3,
+        "rows_scanned": 18000,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

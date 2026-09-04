@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "ranking",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "customer_id",
+        "discounted_contribution_margin",
+        "household_id",
+        "region",
+        "relationship_value",
+        "segment"
+      ],
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "18000",
+    "top": "58557319.92",
+    "top_share": "64.14"
+  },
+  "exchange_id": "DEMO-AG-BNK-001-01",
+  "headline": "mass leads on customer lifetime value at $58,557,319.92, 64.14% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-CLV-018"
+  ],
+  "narrative": "Ranked by the certified definition KPI-CLV-018 over 18,000 rows in DP-BNK-001.",
+  "question": "Who are my top 20 households by relationship value in the Southeast?",
+  "rows_scanned": 18000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-CLV-018",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-MFG-001-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "availability_rate",
+        "line",
+        "performance_rate",
+        "plant",
+        "product_family",
+        "quality_rate",
+        "run_id",
+        "shift",
+        "shift_date"
+      ],
+      "product_id": "DP-MFG-001"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "12600",
+    "top": "0.80",
+    "top_share": "25.00"
+  },
+  "exchange_id": "DEMO-AG-MFG-001-01",
+  "headline": "LINE-4 leads on overall equipment effectiveness at 0.80%, 25.00% of the total across 4 lines.",
+  "kpi_definitions": [
+    "KPI-OEE-071"
+  ],
+  "narrative": "Ranked by the certified definition KPI-OEE-071 over 12,600 rows in DP-MFG-001.",
+  "question": "What is OEE by line this week and where did we lose the most?",
+  "rows_scanned": 12600,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "line",
+    "KPI-OEE-071",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

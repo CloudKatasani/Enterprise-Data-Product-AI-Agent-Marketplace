@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-HLT-002",
+  "agent_name": "Pharmacy Utilization Agent",
+  "agent_version_id": "AGV-AG-HLT-002-1.0.0",
+  "analysis_type": "decomposition",
+  "answer": {
+    "headline": "oncology leads on pharmacy cost per patient day at $8.11, 68.96% of the total across 5 therapeutic classs.",
+    "narrative": "Ranked by the certified definition KPI-COSTPPD-043 over 30,600 rows in DP-HLT-002.",
+    "table": {
+      "columns": [
+        "therapeutic_class",
+        "KPI-COSTPPD-043",
+        "observations"
+      ],
+      "rows": [
+        [
+          "oncology",
+          8.11,
+          4320
+        ],
+        [
+          "analgesia",
+          0.93,
+          6120
+        ],
+        [
+          "cardiovascular",
+          0.92,
+          6480
+        ],
+        [
+          "anti_infective",
+          0.9,
+          9360
+        ],
+        [
+          "immunology",
+          0.9,
+          4320
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "currency",
+        "x": "therapeutic_class",
+        "y": "KPI-COSTPPD-043"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "item_id",
+        "facility",
+        "dispensed_cost",
+        "patient_days",
+        "therapeutic_class",
+        "service_line",
+        "activity_date"
+      ],
+      "contract_version": "1.8.0",
+      "product_id": "DP-HLT-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-002-03",
+  "kpi_definitions": [
+    "KPI-COSTPPD-043"
+  ],
+  "notes": [],
+  "question": "What is driving the increase in pharmacy cost per patient day?",
+  "recorded_at": "2026-09-04T08:34:02.957050+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 12,
+    "rows_scanned": 30600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "therapeutic_class",
+          "limit": 24,
+          "measure": "((sum(dispensed_cost))::numeric / NULLIF((sum(patient_days))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 9,
+        "rows_returned": 5,
+        "rows_scanned": 30600,
+        "tool": "query_dp_hlt_002"
+      }
+    ]
+  }
+}

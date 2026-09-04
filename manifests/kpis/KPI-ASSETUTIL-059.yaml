@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-ASSETUTIL-059
+  name: "Asset Utilization"
+  domain: operations
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Revenue-earning hours as a share of hours the asset was available for dispatch.
+  numerator_expr: "sum(revenue_hours)"
+  denominator_expr: "sum(available_hours)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [equipment_type, region, carrier]
+  unit: percent
+  direction: higher_is_better
+  target: 78.0
+  source_of_record: DP-TRN-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["utilisation", "fleet utilization"]

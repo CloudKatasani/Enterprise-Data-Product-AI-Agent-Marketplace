@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CAREGAP-039
+  name: "Care Gap Closure"
+  domain: clinical
+  steward: PTY-0038
+  status: certified
+spec:
+  business_definition: >-
+    Share of care gaps open at period start that were closed within the period.
+  numerator_expr: "count(*) filter (where gap_closed)"
+  denominator_expr: "count(*) filter (where gap_open_at_period_start)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [measure, payer, clinic]
+  unit: percent
+  direction: higher_is_better
+  target: 78.0
+  source_of_record: DP-HLT-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["gap closure rate"]

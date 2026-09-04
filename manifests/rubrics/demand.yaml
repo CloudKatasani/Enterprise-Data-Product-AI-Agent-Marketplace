@@ -1,0 +1,42 @@
+# Demand scoring and duplicate-supply detection.
+rubric: demand_scoring
+version: 1.2.0
+criteria:
+  - { code: business_value,      weight: 0.30 }
+  - { code: consumer_breadth,    weight: 0.20 }
+  - { code: strategic_alignment, weight: 0.15 }
+  - { code: feasibility,         weight: 0.15 }
+  - { code: reuse_leverage,      weight: 0.10 }
+  - { code: risk_urgency,        weight: 0.10 }
+duplicate_detection:
+  weights:
+    embedding_match: 0.40
+    entity_overlap: 0.25
+    source_overlap: 0.20
+    kpi_overlap: 0.15
+  blocking_threshold: 0.75
+  advisory_threshold: 0.50
+  architect_review_below_confidence: 0.80
+theme_escalation:
+  distinct_teams_min: 5
+clustering:
+  # How many shared terms make a theme label. Two is too coarse — everything
+  # clusters together; four is too fine — nothing does.
+  label_words: 3
+presentation:
+  # Decimal places on a similarity, a confidence and a score. A duplicate call
+  # shown to four places invites argument about the fourth; shown to one, it
+  # hides real differences between candidates.
+  precision: 4
+sla_hours:
+  enhancement_triage: 40
+  demand_triage: 40
+  # A fraction rather than a percentage, so nothing downstream carries a scale
+  # constant to divide by. Escalation happens before the clock runs out: an
+  # escalation at breach is a notification that the SLA has already been missed.
+  escalation_at_fraction_of_sla: 0.8
+  # Delivered work nobody verified auto-closes after this, with a note saying so
+  # (section 14.2). The note is the point: an item closed unverified is a weaker
+  # claim than one verified, and a backlog that conflates them overstates what
+  # was landed.
+  auto_close_unverified_days: 14

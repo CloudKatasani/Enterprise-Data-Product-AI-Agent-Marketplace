@@ -1,0 +1,123 @@
+{
+  "agent_id": "AG-TCH-001",
+  "agent_name": "Product Adoption Analyst",
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "gap_analysis",
+  "answer": {
+    "headline": "advanced_reporting leads on feature adoption rate at 466.67%, 30.43% of the total across 8 features.",
+    "narrative": "Ranked by the certified definition KPI-FEATADP-012 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "table": {
+      "columns": [
+        "feature",
+        "KPI-FEATADP-012",
+        "observations"
+      ],
+      "rows": [
+        [
+          "advanced_reporting",
+          466.67,
+          2170
+        ],
+        [
+          "sso",
+          466.67,
+          2170
+        ],
+        [
+          "api_access",
+          100.0,
+          2170
+        ],
+        [
+          "audit_log",
+          100.0,
+          2170
+        ],
+        [
+          "automations",
+          100.0,
+          2170
+        ],
+        [
+          "guided_onboarding",
+          100.0,
+          2170
+        ],
+        [
+          "mobile_offline",
+          100.0,
+          2170
+        ],
+        [
+          "shared_workspaces",
+          100.0,
+          2170
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 55.0,
+        "unit": "percent",
+        "x": "feature",
+        "y": "KPI-FEATADP-012"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "account_id",
+        "feature",
+        "feature_entitled",
+        "feature_used",
+        "plan_tier",
+        "segment",
+        "activity_date"
+      ],
+      "contract_version": "4.1.0",
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TCH-001-05",
+  "kpi_definitions": [
+    "KPI-FEATADP-012"
+  ],
+  "notes": [],
+  "question": "Which features have high usage but low entitlement coverage?",
+  "recorded_at": "2026-09-04T08:34:03.793234+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 86,
+    "rows_scanned": 17360,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "feature",
+          "limit": 24,
+          "measure": "((count(distinct account_id) filter (where feature_used))::numeric / NULLIF((count(distinct account_id) filter (where feature_entitled))::numeric, 0) * 100)",
+          "period": "2026-08-01",
+          "table": "MARKETPLACE_DEMO.t_dp_tch_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 82,
+        "rows_returned": 8,
+        "rows_scanned": 17360,
+        "tool": "query_dp_tch_001"
+      }
+    ]
+  }
+}

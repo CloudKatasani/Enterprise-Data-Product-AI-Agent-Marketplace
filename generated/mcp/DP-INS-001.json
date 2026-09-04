@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-INS-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-INS-001",
+  "product": {
+    "id": "DP-INS-001",
+    "name": "Claims Lifecycle & Loss Performance",
+    "version": "3.0.0",
+    "sensitivity": "confidential",
+    "contains_pii": true,
+    "grain": "one row per claim per status transition"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-INS-001:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_claim_risk",
+      "description": "Return certified measures for Claims Lifecycle & Loss Performance by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[month,quarter,year]",
+        "slices": "array[enum[coverage_line,channel,complexity_band,adjuster_team,claim_status,triage_rule_version]]",
+        "kpi_ids": "array[enum[KPI-LOSSRATIO-026,KPI-CLMCYCLE-027,KPI-AVGSEV-028,KPI-LEAKAGE-029,KPI-RECOVERY-030]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 8800,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": true,
+    "max_rows_per_call": 8800,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-INS-001",
+    "contract_version": "3.0.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "No coverage determination may be made from this product",
+    "Adjuster-level aggregates may not be used for individual performance ratings"
+  ]
+}

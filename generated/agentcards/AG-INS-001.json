@@ -1,0 +1,246 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-INS-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-INS-001",
+    "name": "Claims Leakage Investigator",
+    "industry": "insurance",
+    "domain": "risk",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0049",
+      "team": "Claims Analytics",
+      "on_call": "pagerduty://claims-agents"
+    }
+  },
+  "capability_statement": "Answers questions about claims leakage, severity, cycle time and recovery, and explains which handling stage is costing money.",
+  "business_value": {
+    "analyses": [
+      "ranking",
+      "variance",
+      "decomposition",
+      "gap_quantification",
+      "programme_eval"
+    ],
+    "replaces": "Quarterly file-review sampling extrapolated by hand by the claims analytics team.",
+    "personas": [
+      "claims_operations_lead",
+      "claims_analytics",
+      "finance_business_partner"
+    ]
+  },
+  "out_of_scope": [
+    "Coverage determination",
+    "Settlement authority",
+    "Adjuster performance ratings"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-LEAKAGE-029",
+      "kpi_name": "Claims Leakage Rate",
+      "unit": "percent",
+      "source_product": "DP-INS-001",
+      "grains": [
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "coverage_line",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-AVGSEV-028",
+      "kpi_name": "Average Claim Severity",
+      "unit": "currency",
+      "source_product": "DP-INS-001",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "coverage_line",
+        "complexity_band",
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-CLMCYCLE-027",
+      "kpi_name": "Claims Cycle Time",
+      "unit": "days",
+      "source_product": "DP-INS-001",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "coverage_line",
+        "complexity_band",
+        "region"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-RECOVERY-030",
+      "kpi_name": "Recovery Rate",
+      "unit": "percent",
+      "source_product": "DP-INS-001",
+      "grains": [
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "coverage_line",
+        "region"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-INS-001",
+      "columns": [
+        "claim_id",
+        "policy_id",
+        "transition_timestamp",
+        "coverage_line",
+        "region",
+        "channel",
+        "complexity_band",
+        "adjuster_team",
+        "claim_status",
+        "incurred_losses",
+        "earned_premium",
+        "cycle_days",
+        "assessed_leakage_amount",
+        "subrogation_recovered",
+        "salvage_recovered",
+        "settlement_amount",
+        "triage_rule_version"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-INS-001:read"
+    },
+    {
+      "product_id": "DP-INS-002",
+      "columns": [
+        "policy_id",
+        "as_of_month",
+        "coverage_line",
+        "segment",
+        "region",
+        "written_premium"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-INS-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-INS-001/ask",
+    "required_scope": "agent:AG-INS-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Where is leakage highest by coverage line?",
+      "Which settlement patterns diverge most from peers on like claims?",
+      "What is driving cycle time increase in auto physical damage?",
+      "How much subrogation recovery are we leaving on the table?",
+      "Did the new triage rule reduce severity on low-complexity claims?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-INS-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_ins_001",
+        "scope": "dp:DP-INS-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "query_dp_ins_002",
+        "scope": "dp:DP-INS-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-INS-001": "3.0.0",
+      "DP-INS-002": "2.6.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "053d853f2ef372f66ae665743b1c39d265d0f975b0ccf48370ae42445b4a3e62"
+}

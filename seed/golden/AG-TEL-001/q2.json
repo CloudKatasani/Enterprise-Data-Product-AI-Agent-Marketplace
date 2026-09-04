@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "active_at_period_start",
+        "activity_date",
+        "churn_flag",
+        "region",
+        "segment",
+        "subscriber_id",
+        "tenure_band"
+      ],
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "6510",
+    "top": "2.27",
+    "top_share": "61.68"
+  },
+  "exchange_id": "DEMO-AG-TEL-001-02",
+  "headline": "small_business leads on churn rate at 2.27%, 61.68% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-CHURN-001"
+  ],
+  "narrative": "Ranked by the certified definition KPI-CHURN-001 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which customer segments drove the churn increase last quarter?",
+  "rows_scanned": 6510,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-CHURN-001",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -1,0 +1,944 @@
+/**
+ * Shapes the API returns, mirrored for the portal.
+ *
+ * Row shapes come from `generated/types` (emitted from the canonical model).
+ * The types here are the *response* shapes the API assembles on top of those
+ * rows — cards, tabs and pages — which belong to the API contract rather than
+ * to the model.
+ */
+
+export type TabState = 'populated' | 'partial' | 'partial_permission' | 'empty';
+
+export interface Tab<T> {
+  state: TabState;
+  data: T | null;
+  why?: string;
+  required_scope?: string;
+  request_access_url?: string;
+}
+
+export interface QualitySummary {
+  composite: number | null;
+  band: string | null;
+  rubric_version_id: string | null;
+  computed_at: string | null;
+}
+
+export interface ProductCard {
+  product_id: string;
+  name: string;
+  purpose: string;
+  industry: string;
+  domain: string;
+  archetype: string;
+  certification: 'certified' | 'published' | 'beta' | 'deprecated';
+  sensitivity: string;
+  tier: string;
+  grain: string;
+  current_version: string;
+  quality: QualitySummary;
+  freshness: { target: string | null; p95_minutes: number | null };
+  owner: { party_id: string; name: string };
+  adoption: { active_consumers: number; distinct_teams: number };
+  attached_agents: string[];
+  certified_kpis: string[];
+  endpoints: string[];
+  access: { granted: boolean; required_scope: string; request_access_url: string };
+  incident: { incident_id: string; severity: string } | null;
+}
+
+export interface FacetValue {
+  value: string;
+  count: number;
+  selected: boolean;
+}
+
+export interface Facet {
+  code: string;
+  label: string;
+  values: FacetValue[];
+}
+
+export interface CatalogPage {
+  items: ProductCard[];
+  next_cursor: string | null;
+  total: number | null;
+  facets: Facet[];
+  sort: string;
+  rubric_version_id: string;
+}
+
+export interface SearchExplanation {
+  lexical_rank: number | null;
+  semantic_rank: number | null;
+  exact_name_match: boolean;
+  fused_relevance: number;
+  signals: Record<string, number>;
+  score: number;
+}
+
+export interface SearchResult {
+  asset_type: string;
+  asset_id: string;
+  name: string;
+  score: number;
+  explanation: SearchExplanation;
+}
+
+export interface DiscoverResponse {
+  query: string;
+  rubric_version_id: string;
+  results: SearchResult[];
+  empty_state?: {
+    message: string;
+    nearest: SearchResult[];
+    related_demand: { demand_id: string; title: string; state: string; votes: number }[];
+    file_supply_request_url: string;
+  };
+}
+
+export interface OverviewData {
+  product_id: string;
+  name: string;
+  purpose: string;
+  grain: string;
+  history_months: number;
+  known_limitations: string;
+  certification: string;
+  sensitivity: string;
+  tier: string;
+  current_version: string;
+  industry: string;
+  domain: string;
+  archetype: string;
+  owner: { party_id: string; name: string; email: string | null; team: string | null };
+  certified_kpis: string[];
+  upstream_sources: string[];
+  updated_at: string | null;
+}
+
+export interface QualityRule {
+  rule_id: string;
+  dimension: string;
+  rule_type: string;
+  target_columns: string[];
+  threshold_pct: number | null;
+  severity: string;
+  enabled: boolean;
+}
+
+export interface QualityResultRow {
+  result_id: string;
+  rule_id: string;
+  dimension: string;
+  rule_type: string;
+  severity: string;
+  threshold_pct: number | null;
+  observed_pct: number | null;
+  passed: boolean;
+  source: string;
+  evaluated_at: string | null;
+}
+
+export interface QualitySnapshot {
+  snapshot_id: string;
+  composite: number | null;
+  band: string | null;
+  rubric_version_id: string;
+  blocker_applied: string | null;
+  dimensions: Record<string, number | null>;
+  evidence_ref: unknown;
+  computed_at: string | null;
+}
+
+export interface QualityData {
+  current?: QualitySnapshot;
+  history?: Omit<QualitySnapshot, 'dimensions' | 'evidence_ref'>[];
+  rules: QualityRule[];
+  contributing_results: QualityResultRow[];
+}
+
+export interface ContractGuarantee {
+  dimension: string;
+  target_text: string;
+  target_numeric: number | null;
+  unit: string;
+  measurement_window: string;
+  measured_at_grain: string;
+  reference_system: string | null;
+}
+
+export interface ContractData {
+  active: {
+    contract_version_id: string;
+    semver: string;
+    schema_stability: string;
+    deprecation: { notice_days: number; minimum_parallel_run_days: number };
+    support: { hours: string; p1_response_minutes: number; on_call: string };
+    classification: { max_sensitivity: string; contains_pii: boolean; residency: string[] };
+    consumer_obligations: string[];
+    breach_process: string;
+    effective_from: string | null;
+  };
+  guarantees: ContractGuarantee[];
+  conformance: { dimension: string; met: number; evaluated: number }[];
+  versions: { contract_version_id: string; semver: string; status: string; effective_from: string | null }[];
+}
+
+export interface LineageEdgeRow {
+  type?: string;
+  id?: string;
+  neighbour?: string;
+  relationship?: string;
+  edge_type?: string;
+  strength?: number | null;
+  confidence: number | null;
+  rationale: string;
+  harvested_from?: string;
+  reviewed_by?: string | null;
+}
+
+export interface LineageMeshData {
+  upstream: LineageEdgeRow[];
+  downstream: LineageEdgeRow[];
+  mesh: LineageEdgeRow[];
+  held_for_review: number;
+}
+
+export interface ConsumptionDay {
+  activity_date: string;
+  active_consumers: number;
+  distinct_teams: number;
+  query_count: number;
+  denied_count: number;
+  rows_scanned: number;
+}
+
+export interface ConsumptionData {
+  scope: 'estate' | 'caller';
+  daily: ConsumptionDay[];
+  top_consumers?: { principal_id: string; queries: number }[];
+}
+
+export interface ValueAssumptionRow {
+  text: string;
+  value: number | null;
+  unit: string;
+  sample_size: number | null;
+  source: string;
+  dated: string;
+}
+
+export interface ValueMeasurementRow {
+  period_start: string;
+  period_end: string;
+  answered_questions: number;
+  acceptance_rate: number | null;
+  deflected_hours: number | null;
+  deflected_value_usd: number | null;
+  total_cost_usd: number | null;
+  net_value_usd: number | null;
+  value_ratio: number | null;
+  rubric_version_id: string;
+  snapshot_ref: string;
+  computed_at: string | null;
+}
+
+export interface ValueData {
+  case: {
+    value_case_id: string;
+    business_outcome: string;
+    baseline_method: string;
+    baseline_captured: string;
+    benefit_model: string;
+    attribution_confidence: string;
+    rubric_version_id: string;
+    last_reviewed: string;
+    review_due: string;
+  };
+  assumptions: ValueAssumptionRow[];
+  measurements: ValueMeasurementRow[];
+}
+
+export interface ProductDetail {
+  card: ProductCard;
+  tabs: {
+    overview: Tab<OverviewData>;
+    schema: Tab<{ columns: SchemaColumn[]; column_count: number }>;
+    quality: Tab<QualityData>;
+    contract: Tab<ContractData>;
+    endpoints: Tab<{ endpoints: EndpointRow[] }>;
+    lineage_mesh: Tab<LineageMeshData>;
+    consumption: Tab<ConsumptionData>;
+    value: Tab<ValueData>;
+  };
+}
+
+export interface SchemaColumn {
+  name: string;
+  business_name: string;
+  data_type: string;
+  nullable: boolean;
+  classification: string[];
+  sensitivity: string;
+  description: string;
+  masked_for_caller: boolean;
+  masking_policy: string | null;
+}
+
+export interface EndpointRow {
+  surface: string;
+  uri: string;
+  auth_mode: string;
+  required_scope: string;
+  row_limit: number | null;
+  documentation_ref: string;
+  granted: boolean;
+}
+
+export interface AgentCard {
+  agent_id: string;
+  name: string;
+  capability_statement: string;
+  industry: string;
+  domain: string;
+  autonomy_level: string;
+  certification: string;
+  status: string;
+  version: string;
+  out_of_scope: string[];
+  personas: string[];
+  owner: { party_id: string; name: string | null; on_call: string | null };
+  coverage: { kpis: number; data_products: number };
+  demo: { validated_exchanges: number };
+  evaluation: {
+    pass_rate_pct: number | null;
+    groundedness_pct: number | null;
+    threshold_pct: number;
+    passed: boolean | null;
+  };
+  budgets: { p95_latency_ms: number; cost_per_answer_usd: number };
+  adoption: { answers_30d: number };
+  access: { granted: boolean; required_scope: string; request_access_url: string };
+}
+
+export interface CoverageRow {
+  kpi_id: string;
+  kpi_name: string;
+  source_product_id: string;
+  columns_used: string[];
+  supported_grains: string[];
+  supported_slices: string[];
+  analysis_depth: string;
+  eval_accuracy: number | null;
+  eval_sample_size: number | null;
+}
+
+export interface DemoExchange {
+  exchange_id: string;
+  ordinal: number;
+  question: string;
+  kpi_class: string;
+  analysis_type: string;
+  expected_shape: Record<string, unknown>;
+  last_validated: string | null;
+}
+
+export interface Citation {
+  product_id: string;
+  contract_version: string;
+  columns: string[];
+  as_of: string | null;
+}
+
+export interface ToolCallTrace {
+  tool: string;
+  arguments: Record<string, unknown>;
+  rows_returned: number;
+  rows_scanned: number;
+  duration_ms: number;
+  cost_class: string;
+}
+
+export interface AnswerBody {
+  headline: string;
+  narrative: string;
+  visual: { type: string; spec: Record<string, unknown> };
+  table: { columns: string[]; rows: (string | number | null)[][] };
+}
+
+export interface AgentAnswer {
+  answer: AnswerBody;
+  citations: Citation[];
+  kpi_definitions: string[];
+  trace: {
+    runtime: string;
+    tool_calls: ToolCallTrace[];
+    rows_scanned: number;
+    latency_ms: number;
+    tokens: { in: number; out: number };
+    cost_usd: number;
+    cost_display: string;
+  };
+  confidence: number;
+  confidence_display: string;
+  notes: string[];
+  interaction_id: string;
+  grounded: boolean;
+  tier: 'demo' | 'live';
+  scope: {
+    agent_identity: string | null;
+    on_behalf_of: string | null;
+    effective_scope: 'intersection' | 'direct';
+  };
+}
+
+export interface PolicyEvaluation {
+  path: 'auto' | 'owner' | 'owner_steward' | 'owner_privacy_security' | 'blocked';
+  label: string;
+  approvers: string[];
+  sla_days: number;
+  due_at: string | null;
+  policy_version_id: string;
+  blocked: boolean;
+  automatic: boolean;
+  reasons: string[];
+  alternatives: { product_id: string; name: string; sensitivity: string; why: string }[];
+  facts: {
+    asset_type: string;
+    asset_id: string;
+    sensitivity: string;
+    contains_pii: boolean;
+    residency: string[];
+    has_classified_columns: boolean;
+    purpose_code: string;
+  };
+}
+
+export interface DuplicateMatch {
+  candidate_id: string;
+  candidate_name: string;
+  similarity: number;
+  contributing_factors: Record<string, number>;
+  confidence: number;
+  rationale: string;
+}
+
+export interface DuplicateCheck {
+  verdict: 'blocking' | 'advisory' | 'clear' | 'architect_review';
+  blocking: boolean;
+  matches: DuplicateMatch[];
+  rubric_version_id: string;
+}
+
+export interface Grant {
+  grant_id: string;
+  principal_id: string;
+  display_name: string | null;
+  asset_type: string;
+  asset_id: string;
+  access_level: string;
+  purpose_code: string;
+  purpose_text: string;
+  platform_role: string;
+  oauth_scopes: string[];
+  granted_at: string;
+  expires_at: string;
+  revoked_at: string | null;
+  last_used_at: string | null;
+  columns: string[];
+  live: boolean;
+}
+
+export interface BacklogItem {
+  request_id: string;
+  title: string;
+  body: string;
+  state: string;
+  requester_party_id: string;
+  submitted_at: string;
+  sla_due_at: string | null;
+  closed_at: string | null;
+  asset_type: string | null;
+  asset_id: string | null;
+  votes: number;
+  decline: { reason_code: string; reason_text: string } | null;
+}
+
+export interface DemandItem {
+  demand_id: string;
+  state: string;
+  score: number | null;
+  score_breakdown: Record<string, { weight: number; assessment: number; contribution: number }> | null;
+  theme_id: string | null;
+  decline_reason_public: string | null;
+  title: string;
+  body: string;
+  requester_party_id: string;
+  submitted_at: string;
+  votes: number;
+  teams: number;
+}
+
+export interface DemandTheme {
+  theme_id: string;
+  label: string;
+  summary: string;
+  distinct_team_count: number;
+  escalated_at: string | null;
+  confidence: number;
+  rationale: string;
+}
+
+export interface MeshNode {
+  id: string;
+  name: string;
+  domain: string;
+  industry: string;
+  sensitivity?: string;
+  certification: string;
+  tier?: string;
+  quality?: number | null;
+  band?: string | null;
+  autonomy_level?: string;
+  status?: string;
+}
+
+export interface MeshEdge {
+  edge_id: string;
+  source: string;
+  target: string;
+  edge_type: string;
+  strength: number;
+  confidence: number;
+  factors: Record<string, { value: number; evidence: number; detail: string }>;
+  rationale: string;
+  reviewed_by: string | null;
+}
+
+export interface MeshTableRow {
+  source: string;
+  source_name: string;
+  target: string;
+  target_name: string;
+  edge_type: string;
+  strength: number;
+  confidence: number;
+  rationale: string;
+}
+
+export interface MeshGraph {
+  mode: string;
+  nodes: MeshNode[];
+  edges: MeshEdge[];
+  layout: Record<string, number>;
+  rubric_version_id: string;
+  table: MeshTableRow[];
+  modes: string[];
+}
+
+export interface BlastRadius {
+  source_id: string;
+  products: { product_id: string; name: string; domain_code: string;
+              sensitivity_tier: string; tier: string }[];
+  agents: { agent_id: string; name: string; product_id: string }[];
+  consumers: { asset_id: string; consumers: number }[];
+  consumer_count: number;
+}
+
+export interface SignalFinding {
+  asset_type: string;
+  asset_id: string;
+  signal: string;
+  detail: string;
+  observed: number;
+  threshold: number;
+  unit: string;
+  guarantee_breached: string | null;
+}
+
+export interface OpenIncident {
+  incident_id: string;
+  asset_type: string;
+  asset_id: string;
+  signal: string;
+  severity: string;
+  severity_inputs: Record<string, unknown>;
+  status: string;
+  guarantee_breached: string | null;
+  detected_at: string;
+  notified_at: string | null;
+  owner_context: string | null;
+  impacted: number;
+}
+
+export interface Banner {
+  incident_id: string;
+  origin_type: string;
+  origin_id: string;
+  signal: string;
+  severity: string;
+  guarantee_breached: string | null;
+  detected_at: string;
+  owner_context: string | null;
+  status: string;
+}
+
+export interface HealthPlane {
+  findings: SignalFinding[];
+  incidents: OpenIncident[];
+  overdue_notifications: { incident_id: string; asset_id: string }[];
+  signals: { product: string[]; agent: string[] };
+  rubric_version_id: string;
+}
+
+export interface DeflectionEvidence {
+  question_class: string;
+  avg_manual_minutes: number;
+  sample_size: number;
+  dated: string;
+  answers: number;
+}
+
+export interface Deflection {
+  asset_type: string;
+  asset_id: string;
+  answered: number;
+  rated: number;
+  accepted: number;
+  acceptance_rate: number;
+  deflected_hours: number;
+  deflected_value_usd: number;
+  total_cost_usd: number;
+  net_value_usd: number;
+  value_ratio: number | null;
+  evidence: DeflectionEvidence[];
+  rubric_version_id: string;
+}
+
+export interface UnitEconomics {
+  agent_id: string;
+  answered: number;
+  rated: number;
+  accepted: number;
+  acceptance_rate: number;
+  total_cost_usd: number;
+  marginal_cost_usd: number;
+  marginal_cost_per_answer_usd: number | null;
+  cost_per_answer_usd: number | null;
+  cost_per_accepted_answer_usd: number | null;
+  budget_per_answer_usd: number;
+  within_budget: boolean;
+}
+
+export interface ValuePlane {
+  since: string;
+  portfolio: Deflection[];
+  unit_economics: UnitEconomics[];
+  budgets: { agent_id: string; marginal_cost_per_answer_usd: number;
+             loaded_cost_per_answer_usd: number; budget_per_answer_usd: number;
+             consumed_fraction: number; state: string }[];
+  retirement_candidates: { asset_type: string; asset_id: string;
+                           annual_cost_usd: number; why: string }[];
+  demo_tier_share: { demo_usd: number; total_usd: number; share: number;
+                     cap: number; share_pct: number; cap_pct: number;
+                     within_cap: boolean };
+  rubric_version_id: string;
+}
+
+// ---------------------------------------------------------------------------
+// The landing page (M11). Everything here is served to an unauthenticated
+// visitor, so nothing in these shapes carries an identity or a permission that
+// depends on one.
+// ---------------------------------------------------------------------------
+
+/** A catalog card, plus the single reason it was promoted to the front page. */
+export interface FeaturedProduct extends ProductCard {
+  why: string;
+  featured_score: number;
+}
+
+export interface FeaturedAgent {
+  agent_id: string;
+  name: string;
+  domain: string;
+  industry: string;
+  certification: string;
+  autonomy_level: string;
+  capability_statement: string;
+  out_of_scope: string | null;
+  products: string[];
+}
+
+export interface FeaturedBand {
+  industry: string | null;
+  products: FeaturedProduct[];
+  agents: FeaturedAgent[];
+  limits: {
+    per_row_max: number;
+    per_row_min: number;
+    static_grid_cards: number;
+    refresh_seconds: number;
+  };
+  rubric_version_id: string;
+}
+
+export interface IndustryTile {
+  code: string;
+  label: string;
+  products: number;
+  agents: number;
+}
+
+export interface LandingCounter {
+  code: string;
+  label: string;
+  value: number;
+  href: string;
+}
+
+export interface TickerEvent {
+  code: string;
+  text: string;
+  occurrences: number;
+}
+
+export interface CountersBand {
+  counters: LandingCounter[];
+  ticker: TickerEvent[];
+  refresh_seconds: number;
+  ticker_min_occurrences: number;
+  rubric_version_id: string;
+}
+
+export interface HeroNode {
+  id: string;
+  name: string;
+  domain: string;
+  industry: string;
+  certification: string;
+  quality: number | null;
+  band: string | null;
+  consumers: number;
+  incident: boolean;
+}
+
+export interface HeroEdge {
+  source: string;
+  target: string;
+  strength: number;
+  edge_type: string;
+}
+
+export interface HeroPlacement {
+  id: string;
+  x: number;
+  y: number;
+}
+
+export interface HeroOrbit {
+  id: string;
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+  rotation_turns: number;
+  phase_turns: number;
+  /** Where this satellite sits in the motion layer's speed range, in [0, 1). */
+  speed_seed: number;
+  products: string[];
+}
+
+export interface HeroBand {
+  nodes: HeroNode[];
+  edges: HeroEdge[];
+  placements: HeroPlacement[];
+  orbits: HeroOrbit[];
+  bounds: { x: number; y: number; width: number; height: number };
+  viewbox: number;
+  opacity: number;
+  rubric_version_id: string;
+}
+
+/** One recorded execution, replayed on the front page exactly as it ran. */
+export interface TheatreTrace {
+  exchange_id: string;
+  agent_id: string;
+  agent_name: string;
+  question: string;
+  analysis_type: string;
+  mode: string;
+  recorded_at: string;
+  answer: {
+    headline: string;
+    narrative: string;
+    visual: { type?: string; [key: string]: unknown };
+    table: { columns?: string[]; rows?: (string | number | null)[][] };
+  };
+  citations: { product_id: string; contract_version: string | null; columns: string[];
+               as_of: string | null }[];
+  kpi_definitions: string[];
+  trace: {
+    runtime: string;
+    tool_calls: {
+      tool: string;
+      arguments: Record<string, unknown>;
+      rows_returned: number;
+      rows_scanned: number;
+      duration_ms: number;
+      cost_class: string;
+    }[];
+    rows_scanned: number;
+    latency_ms: number;
+    tokens: { in: number; out: number };
+    cost_usd: number;
+    cost_display: string;
+  };
+  confidence: number;
+  confidence_display: string;
+  notes: string[];
+}
+
+export interface TheatreBand {
+  traces: TheatreTrace[];
+  mode: string;
+  rubric_version_id: string;
+}
+
+export interface ProofTile {
+  code: string;
+  label: string;
+  value: number;
+  unit: string;
+  detail: string;
+}
+
+export interface ProofBand {
+  tiles: ProofTile[];
+  rubric_version_id: string;
+}
+
+/** One grounded answer, streamed to the hero as a pulse along its edges. */
+export interface AnswerPulse {
+  agent_id: string;
+  products: string[];
+  question_class: string;
+  at: string;
+}
+
+// ---------------------------------------------------------------------------
+// The academy and the admin console (M12).
+// ---------------------------------------------------------------------------
+
+export interface AcademyModule {
+  module_id: string;
+  title: string;
+  summary: string;
+  estimated_minutes: number;
+  sandbox_tier: string | null;
+  asset_type: string | null;
+  asset_id: string | null;
+  body?: string;
+  path_id?: string;
+}
+
+export interface LearningPath {
+  path_id: string;
+  title: string;
+  persona: string;
+  summary: string;
+  certification_code: string;
+  modules: AcademyModule[];
+  estimated_minutes: number;
+}
+
+export interface AcademyIndex {
+  paths: LearningPath[];
+  pass_score_pct: number;
+  certification_valid_days: number;
+  rubric_version_id: string;
+}
+
+export interface PathProgress {
+  path_id: string;
+  party_id: string;
+  enrolled: boolean;
+  state: string | null;
+  completed_module_ids: string[];
+  completed: number;
+  total: number;
+  certification_code: string;
+}
+
+export interface HeldCertification {
+  code: string;
+  path_id: string;
+  issued_at: string;
+  expires_at: string;
+}
+
+export interface AcademyMe {
+  party_id: string;
+  certifications: HeldCertification[];
+  progress: PathProgress[];
+}
+
+export interface RubricSummary {
+  code: string;
+  description: string;
+  rubric_version_id: string | null;
+  semver: string | null;
+  effective_from: string | null;
+  created_by: string | null;
+  criteria: number;
+  versions: number;
+}
+
+export interface RubricVersionRow {
+  rubric_version_id: string;
+  semver: string;
+  source_hash: string;
+  effective_from: string;
+  created_by: string;
+  superseded_at: string | null;
+  in_force: boolean;
+  quality_snapshots: number;
+}
+
+export interface TaxonomyPanel {
+  taxonomy: string;
+  table: string;
+  entries: { code: string; label: string; uses: number }[];
+}
+
+export interface ConnectorRow {
+  source_id: string;
+  name: string;
+  platform: string;
+  owner_team: string;
+  criticality: string;
+  products: number;
+  last_harvest: string | null;
+}
+
+export interface FeatureFlagRow {
+  code: string;
+  flag_type: string;
+  enabled: boolean;
+  description: string;
+  owner_party_id: string | null;
+  created_at: string;
+  expires_at: string | null;
+  expired: boolean;
+  age_days: number;
+}
+
+export interface TenancyPanel {
+  tenant: Record<string, unknown> | null;
+  org_units: { org_unit_id: string; name: string; region: string | null }[];
+  tables: number;
+  tenanted_tables: number;
+  shared_reference_tables: string[];
+  row_level_security: number;
+  unprotected_tables: string[];
+}

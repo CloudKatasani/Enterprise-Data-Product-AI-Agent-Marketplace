@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:marketplace:common",
+  "title": "Shared manifest definitions",
+  "$defs": {
+    "productId": {
+      "type": "string",
+      "pattern": "^DP-[A-Z]{3}-[0-9]{3}$",
+      "description": "DP-<IND>-<NNN>, e.g. DP-TEL-001"
+    },
+    "agentId": {
+      "type": "string",
+      "pattern": "^AG-[A-Z]{3}-[0-9]{3}$",
+      "description": "AG-<IND>-<NNN>, e.g. AG-TEL-001"
+    },
+    "kpiId": {
+      "type": "string",
+      "pattern": "^KPI-[A-Z]+-[0-9]{3}$",
+      "description": "KPI-<DOMAIN>-<NNN>, e.g. KPI-CHURN-001"
+    },
+    "partyId": { "type": "string", "pattern": "^PTY-[0-9]{4}$" },
+    "sourceId": { "type": "string", "pattern": "^SRC-[A-Z0-9-]+$" },
+    "semver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "isoDate": { "type": "string", "format": "date" },
+    "percent": { "type": "number", "minimum": 0, "maximum": 100 },
+    "unitInterval": { "type": "number", "minimum": 0, "maximum": 1 },
+    "certification": {
+      "type": "string",
+      "enum": ["certified", "published", "beta", "deprecated"]
+    },
+    "sensitivity": {
+      "type": "string",
+      "enum": ["public", "internal", "confidential", "restricted"]
+    },
+    "nonEmptyText": { "type": "string", "minLength": 1 },
+    "meaningfulText": {
+      "type": "string",
+      "minLength": 11,
+      "not": {
+        "pattern": "^\\s*(?i:none|n/a|na|tbd|tba|unknown|todo)\\s*$"
+      },
+      "description": "I7: a section that says 'none' is not a section."
+    },
+    "owner": {
+      "type": "object",
+      "required": ["party_id", "team"],
+      "additionalProperties": false,
+      "properties": {
+        "party_id": { "$ref": "urn:marketplace:common#/$defs/partyId" },
+        "team": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "escalation": { "type": "string" },
+        "on_call": { "type": "string" }
+      }
+    },
+    "valueAssumption": {
+      "type": "object",
+      "required": ["text", "value", "source", "dated"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "value": { "type": "number" },
+        "unit": { "type": "string" },
+        "sample_size": { "type": "integer", "minimum": 1 },
+        "source": { "$ref": "urn:marketplace:common#/$defs/nonEmptyText" },
+        "dated": { "$ref": "urn:marketplace:common#/$defs/isoDate" }
+      }
+    }
+  }
+}

@@ -1,0 +1,142 @@
+apiVersion: marketplace/v1
+kind: LearningPath
+spec:
+  path_id: LP-AGENT-OWNER
+  title: Building an agent
+  persona: agent_owner
+  audience: Agent owners and engineers
+  certification_code: CERT-AGENT-OWNER
+  summary: >-
+    Scope an agent so it refuses the right questions, ground it so every number
+    is traceable, and get it through a gate that has no override.
+  modules:
+    - module_id: MOD-BUILD-01
+      title: Coverage-map design
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Declare less than you can do, and refuse the rest out loud.
+      body: |
+        The coverage map is the agent's functional contract: certified KPIs,
+        supported grains, supported slices, analysis depth. The runtime plans
+        only inside it, so the map is not documentation — it is the boundary.
+
+        Declare less than the agent could technically answer. Every KPI you add
+        is a promise to keep it right through every future change to the
+        underlying product, and an agent that covers five measures well is worth
+        more than one that covers twenty adequately.
+
+        Write the out-of-scope list before the capability statement. It is
+        required by the gate, and it is the sentence a careful consumer reads
+        first.
+
+        A slice you did not declare is refused rather than approximated. That
+        is the behaviour to design for: a refusal is a coverage signal you can
+        act on, and an approximation is a defect you will hear about from a
+        consumer.
+    - module_id: MOD-BUILD-02
+      title: Tool scoping and least privilege
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        The intersection rule, and why an agent can never widen a grant.
+      body: |
+        An agent holds its own machine identity with its own grants. Effective
+        access on a delegated call is the *intersection* of the agent's scope
+        and the caller's entitlement — never the union. An agent can therefore
+        never widen a user's access, and that is enforced in the runtime rather
+        than left to a reviewer.
+
+        Bind columns, not tables. A binding that names the columns the agent may
+        read is a binding a reviewer can check; one that names a table is a
+        promise about the future shape of that table.
+
+        Every connector service principal is read-only, with a published
+        permission manifest. CI attempts a write on every supported platform on
+        every build and requires it to fail.
+
+        A tool call decided solely by retrieved content is blocked and logged as
+        a security event. Retrieved text is data with provenance, never an
+        instruction — design your prompts so that stays true.
+    - module_id: MOD-BUILD-03
+      title: Grounding and citation discipline
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Every number in the prose traceable to rows, or no answer at all.
+      body: |
+        The grounding check runs on every answer. It extracts the numbers from
+        the headline and narrative and requires each one to match a claim the
+        agent recorded, and requires those claims to have citations. Anything
+        uncited withholds the answer.
+
+        This means the claim must be the number the reader sees. A claim held to
+        six decimal places behind a sentence showing two is a check against a
+        number nobody was shown, so display precision is applied *before* the
+        claim is recorded.
+
+        Compose prose from claims rather than writing prose and hoping the
+        numbers agree. If a sentence needs a figure the agent did not compute,
+        the sentence is wrong, not the check.
+
+        Groundedness is a blocking suite at 100%. Not 99%: one ungrounded answer
+        in a hundred is one fabricated number a week for a busy agent.
+    - module_id: MOD-BUILD-04
+      title: Curating demo exchanges
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Five questions that show what it does, validated nightly.
+      body: |
+        Curated exchanges are what the demo console and the front-page theatre
+        play. Choose questions that show the agent doing the thing it is for,
+        including at least one it should refuse — a demo where everything
+        succeeds teaches a consumer nothing about the boundary.
+
+        Each exchange is captured as a golden answer and compared on every run
+        within its tolerance. Drift marks it stale and it stops being shown.
+        That is why the theatre can claim a recorded answer is still true.
+
+        The expected shape can require a citation. Use it: an exchange that must
+        cite a specific product will fail loudly the day a binding changes
+        underneath it.
+    - module_id: MOD-BUILD-05
+      title: Building the evaluation set
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Eight suites, six of them blocking, and none of them optional.
+      body: |
+        The suites are golden accuracy, groundedness, boundary refusal,
+        adversarial, entitlement, compositional exposure, consistency and
+        cost/latency. All but consistency block publication.
+
+        The entitlement suite needs at least three personas of different
+        breadth, because partial permission is the common case rather than the
+        exception. An agent that behaves correctly only for the broadest
+        persona has not been tested.
+
+        Compositional exposure is the one people forget: two answers that are
+        each within scope can combine to reveal something neither was allowed to
+        show. Write the pair, not just the parts.
+
+        Consistency is advisory and reports variance from repeated asks. It does
+        not block, because an agent that is stable and wrong is not better than
+        one that is variable and right — but you should know the number.
+    - module_id: MOD-BUILD-06
+      title: Publishing safely
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Canary, evidence, and a rollback you have actually rehearsed.
+      body: |
+        A new version goes out as a canary at the rubric's traffic share and
+        stays there for a minimum number of answers and hours. Promotion needs
+        evidence from real traffic, not a passing suite alone.
+
+        Rollback restores the previous bundle — prompt, model, coverage map,
+        bindings and rubric versions together — in one action. A rollback that
+        restores only the prompt has restored a version that never existed.
+
+        Rehearse it. The drill is part of the release checklist, and a rollback
+        first attempted during an incident is a rollback nobody has tested.

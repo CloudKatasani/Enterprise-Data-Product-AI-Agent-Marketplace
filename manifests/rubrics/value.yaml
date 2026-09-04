@@ -1,0 +1,32 @@
+# Value model. avg_manual_minutes is reference data with a sample size and a
+# date, resampled quarterly, and the sample size is displayed next to any figure
+# derived from it (15.7). It is never a hardcoded constant.
+rubric: value_model
+version: 1.1.0
+deflection:
+  formula: "answered_questions * acceptance_rate * avg_manual_minutes / 60 * loaded_rate"
+  avg_manual_minutes_by_question_class:
+    period_comparison:     { minutes: 25,  sample_size: 41, dated: 2026-06-01 }
+    trend_comparison:      { minutes: 25,  sample_size: 41, dated: 2026-06-01 }
+    driver_ranking:        { minutes: 55,  sample_size: 34, dated: 2026-06-01 }
+    ranking:               { minutes: 40,  sample_size: 37, dated: 2026-06-01 }
+    cohort_comparison:     { minutes: 90,  sample_size: 22, dated: 2026-06-01 }
+    risk_cohort_targeting: { minutes: 75,  sample_size: 28, dated: 2026-06-01 }
+    root_cause:            { minutes: 110, sample_size: 19, dated: 2026-06-01 }
+    correlation:           { minutes: 95,  sample_size: 18, dated: 2026-06-01 }
+    variance_decomposition: { minutes: 85, sample_size: 24, dated: 2026-06-01 }
+    concentration:         { minutes: 60,  sample_size: 26, dated: 2026-06-01 }
+    programme_eval:        { minutes: 120, sample_size: 16, dated: 2026-06-01 }
+    action_draft:          { minutes: 70,  sample_size: 21, dated: 2026-06-01 }
+    compliance:            { minutes: 45,  sample_size: 30, dated: 2026-06-01 }
+    distribution:          { minutes: 50,  sample_size: 27, dated: 2026-06-01 }
+    gap_analysis:          { minutes: 80,  sample_size: 20, dated: 2026-06-01 }
+    default:               { minutes: 55,  sample_size: 34, dated: 2026-06-01 }
+  loaded_analyst_rate_usd_hour: 96
+reporting:
+  # The window the value plane defaults to. A month is short enough that a
+  # change in behaviour shows and long enough that a quiet week does not.
+  default_window_days: 30
+
+attribution_confidence: [high, medium, low]
+value_case_review_months: 6

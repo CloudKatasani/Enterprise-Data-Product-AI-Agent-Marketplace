@@ -1,0 +1,21 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-TENURE-004
+  name: "Average Subscriber Tenure"
+  domain: customer
+  steward: PTY-0031
+  status: certified
+spec:
+  business_definition: >-
+    Mean number of days since activation across subscribers active at the end of the period.
+  expression: "avg(tenure_days)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, plan_type]
+  unit: days
+  direction: higher_is_better
+  source_of_record: DP-TEL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["mean tenure"]

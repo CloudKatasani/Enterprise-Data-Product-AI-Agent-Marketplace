@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-UTL-001",
+  "agent_name": "Outage Impact Analyst",
+  "agent_version_id": "AGV-AG-UTL-001-1.0.0",
+  "analysis_type": "risk_prioritization",
+  "answer": {
+    "headline": "switch leads on asset health index at 67.58, 26.00% of the total across 4 asset classs.",
+    "narrative": "Ranked by the certified definition KPI-AHI-063 over 21,600 rows in DP-UTL-001.",
+    "table": {
+      "columns": [
+        "asset_class",
+        "KPI-AHI-063",
+        "observations"
+      ],
+      "rows": [
+        [
+          "switch",
+          67.58,
+          4050
+        ],
+        [
+          "transformer",
+          66.22,
+          8370
+        ],
+        [
+          "recloser",
+          63.45,
+          4950
+        ],
+        [
+          "pole",
+          62.68,
+          4230
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 75.0,
+        "unit": "score",
+        "x": "asset_class",
+        "y": "KPI-AHI-063"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "asset_id",
+        "asset_health_score",
+        "asset_class",
+        "vintage_band",
+        "region",
+        "served_customer_id",
+        "deferral_count",
+        "observed_date"
+      ],
+      "contract_version": "3.7.0",
+      "product_id": "DP-UTL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-UTL-001-03",
+  "kpi_definitions": [
+    "KPI-AHI-063"
+  ],
+  "notes": [],
+  "question": "Which poor-health assets serve the most customers?",
+  "recorded_at": "2026-09-04T08:34:04.126315+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 9,
+    "rows_scanned": 21600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "asset_class",
+          "limit": 24,
+          "measure": "(avg(asset_health_score))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_utl_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 6,
+        "rows_returned": 4,
+        "rows_scanned": 21600,
+        "tool": "query_dp_utl_001"
+      }
+    ]
+  }
+}

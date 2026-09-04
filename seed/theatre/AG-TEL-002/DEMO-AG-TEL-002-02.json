@@ -1,0 +1,102 @@
+{
+  "agent_id": "AG-TEL-002",
+  "agent_name": "Network Quality Advisor",
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "root_cause",
+  "answer": {
+    "headline": "West leads on throughput percentile at 85.36, 26.54% of the total across 4 regions.",
+    "narrative": "Ranked by the certified definition KPI-THRPUT-008 over 15,120 rows in DP-TEL-002.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-THRPUT-008",
+        "observations"
+      ],
+      "rows": [
+        [
+          "West",
+          85.36,
+          3360
+        ],
+        [
+          "Midwest",
+          84.96,
+          4872
+        ],
+        [
+          "Northeast",
+          84.32,
+          4536
+        ],
+        [
+          "Denver",
+          66.95,
+          2352
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": null,
+        "unit": "rate",
+        "x": "region",
+        "y": "KPI-THRPUT-008"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "site_id",
+        "throughput_mbps",
+        "region",
+        "site_class",
+        "technology",
+        "observed_hour"
+      ],
+      "contract_version": "2.4.0",
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-002-02",
+  "kpi_definitions": [
+    "KPI-THRPUT-008"
+  ],
+  "notes": [],
+  "question": "What is driving the throughput drop in the Denver cluster?",
+  "recorded_at": "2026-09-04T08:34:03.973943+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 11,
+    "rows_scanned": 15120,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by throughput_mbps))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 4,
+        "rows_scanned": 15120,
+        "tool": "query_dp_tel_002"
+      }
+    ]
+  }
+}

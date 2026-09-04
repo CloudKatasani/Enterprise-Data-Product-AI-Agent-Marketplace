@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-POLRETEN-032
+  name: "Policy Retention"
+  domain: product
+  steward: PTY-0037
+  status: certified
+spec:
+  business_definition: >-
+    Share of policies up for renewal in the period that renewed, counted on policy rather than
+    premium.
+  numerator_expr: "count(distinct policy_id) filter (where renewed)"
+  denominator_expr: "count(distinct policy_id) filter (where up_for_renewal)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [coverage_line, segment, region, channel]
+  unit: percent
+  direction: higher_is_better
+  target: 86.0
+  source_of_record: DP-INS-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["renewal rate"]

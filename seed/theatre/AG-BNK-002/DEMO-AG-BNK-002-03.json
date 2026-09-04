@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-BNK-002",
+  "agent_name": "Financial Crime Triage",
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "prioritization",
+  "answer": {
+    "headline": "structuring leads on alert volume at 5,760.00, 40.00% of the total across 5 typologys.",
+    "narrative": "Ranked by the certified definition KPI-ALERTVOL-021 over 14,400 rows in DP-BNK-002.",
+    "table": {
+      "columns": [
+        "typology",
+        "KPI-ALERTVOL-021",
+        "observations"
+      ],
+      "rows": [
+        [
+          "structuring",
+          5760.0,
+          5760
+        ],
+        [
+          "rapid_movement",
+          3330.0,
+          3330
+        ],
+        [
+          "mule_network",
+          3060.0,
+          3060
+        ],
+        [
+          "trade_based",
+          1350.0,
+          1350
+        ],
+        [
+          "sanctions_proximity",
+          900.0,
+          900
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "count",
+        "x": "typology",
+        "y": "KPI-ALERTVOL-021"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "alert_id",
+        "alert_score",
+        "customer_risk_rating",
+        "typology",
+        "business_line",
+        "region",
+        "event_timestamp"
+      ],
+      "contract_version": "2.9.0",
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-002-03",
+  "kpi_definitions": [
+    "KPI-ALERTVOL-021"
+  ],
+  "notes": [],
+  "question": "Which alerts should be worked first today?",
+  "recorded_at": "2026-09-04T08:34:02.601835+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 31,
+    "rows_scanned": 14400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "typology",
+          "limit": 24,
+          "measure": "(count(distinct alert_id))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 27,
+        "rows_returned": 5,
+        "rows_scanned": 14400,
+        "tool": "query_dp_bnk_002"
+      }
+    ]
+  }
+}

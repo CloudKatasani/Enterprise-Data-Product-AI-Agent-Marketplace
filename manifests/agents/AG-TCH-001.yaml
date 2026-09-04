@@ -1,0 +1,175 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-TCH-001
+  name: "Product Adoption Analyst"
+  industry: technology
+  domain: product
+  owner:
+    party_id: PTY-0047
+    team: "Product Analytics"
+    on_call: "pagerduty://product-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about feature adoption, activation, time to value and renewal risk across
+    accounts, and explains what moved them.
+  business_value_block:
+    analyses: [driver_ranking, risk_cohort, distribution, cohort_comparison, gap_analysis]
+    replaces: >-
+      Quarterly manual cohort pulls by the product analytics team, roughly a week per adoption
+      review.
+    personas: [product_manager, customer_success_lead, revenue_operations]
+  out_of_scope:
+    - "Contract or pricing commitments"
+    - "Individual user behaviour without a recorded consent basis"
+    - "Any change to entitlement state"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-TCH-001/system@v1
+  data_products:
+    - product_id: DP-TCH-001
+      columns: [account_id, feature, activity_date, plan_tier, segment, region, acquisition_channel, feature_entitled, feature_used, daily_active_account, monthly_active_account, onboarded, activated, days_to_first_value, renewal_date]
+      access: read
+  tool_bindings:
+    - tool: query_dp_tch_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-TCH-001"
+      scope: "dp:DP-TCH-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-ACTIV-013
+      source_product: DP-TCH-001
+      columns_used: [account_id, onboarded, activated, plan_tier, segment, acquisition_channel, activity_date]
+      grains: [week, month, quarter]
+      slices: [plan_tier, segment, acquisition_channel]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-FEATADP-012
+      source_product: DP-TCH-001
+      columns_used: [account_id, feature, feature_entitled, feature_used, plan_tier, segment, activity_date]
+      grains: [week, month, quarter]
+      slices: [feature, plan_tier, segment]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-TTV-014
+      source_product: DP-TCH-001
+      columns_used: [account_id, days_to_first_value, plan_tier, segment, acquisition_channel, activity_date]
+      grains: [month, quarter]
+      slices: [plan_tier, segment, acquisition_channel]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-TCH-001-01
+      ordinal: 1
+      question: "Which features are driving activation this quarter?"
+      kpi_class: KPI-ACTIV-013
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the features most associated with activation, and their share of the lift
+        visual: bar_plus_funnel
+        table_columns: [feature, activation_rate, delta_pp, contribution_pct]
+        must_cite: [DP-TCH-001, KPI-ACTIV-013]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-001-02
+      ordinal: 2
+      question: "Which accounts show adoption decline ahead of renewal?"
+      kpi_class: KPI-FEATADP-012
+      analysis_type: risk_cohort
+      expected_shape:
+        headline: >-
+          how many accounts are declining before renewal and what they are worth
+        visual: ranked_table
+        table_columns: [account_id, plan_tier, adoption_rate, renewal_date]
+        must_cite: [DP-TCH-001, KPI-FEATADP-012]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-001-03
+      ordinal: 3
+      question: "How long does a new account take to reach first value?"
+      kpi_class: KPI-TTV-014
+      analysis_type: distribution
+      expected_shape:
+        headline: >-
+          the median time to first value and how it differs by channel
+        visual: histogram_segmented
+        table_columns: [acquisition_channel, median_days, p90_days, accounts]
+        must_cite: [DP-TCH-001, KPI-TTV-014]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-001-04
+      ordinal: 4
+      question: "Did the March onboarding change improve activation?"
+      kpi_class: KPI-ACTIV-013
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          whether activation moved for accounts onboarded after the change
+        visual: cohort_curve
+        table_columns: [cohort, activation_rate, delta_pp, accounts]
+        must_cite: [DP-TCH-001, KPI-ACTIV-013]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-TCH-001-05
+      ordinal: 5
+      question: "Which features have high usage but low entitlement coverage?"
+      kpi_class: KPI-FEATADP-012
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the features being used by accounts whose plan does not entitle them
+        visual: matrix
+        table_columns: [feature, used_accounts, entitled_accounts, gap_pct]
+        must_cite: [DP-TCH-001, KPI-FEATADP-012]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-TCH-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-TCH-001/
+  value_case:
+    benefit_model: "renewal_risk_identified_early * average_contract_value * success_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per adoption question"
+        value: 50
+        unit: minutes
+        sample_size: 27
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0047

@@ -1,0 +1,95 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-TEL-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-001",
+  "product": {
+    "id": "DP-TEL-001",
+    "name": "Subscriber Churn & Retention 360",
+    "version": "3.2.0",
+    "sensitivity": "confidential",
+    "contains_pii": true,
+    "grain": "one row per subscriber per day"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-TEL-001:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_subscriber_customer",
+      "description": "Return certified measures for Subscriber Churn & Retention 360 by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,week,month,quarter,year]",
+        "slices": "array[enum[segment,plan_type,tenure_band,channel,churn_reason_code]]",
+        "kpi_ids": "array[enum[KPI-CHURN-001,KPI-RETEN-002,KPI-SAVE-003,KPI-TENURE-004,KPI-PROP-005]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 10000,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": true,
+    "max_rows_per_call": 10000,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-TEL-001",
+    "contract_version": "3.2.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "No redistribution outside the granted purpose",
+    "Re-derived KPIs must cite the certified definition ID",
+    "Propensity scores may not be used for individual credit decisions"
+  ]
+}

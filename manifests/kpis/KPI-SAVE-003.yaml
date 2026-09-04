@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-SAVE-003
+  name: "Save Rate"
+  domain: customer
+  steward: PTY-0031
+  status: certified
+spec:
+  business_definition: >-
+    Share of subscribers who accepted a retention offer out of those who were made one during
+    the period.
+  numerator_expr: "count(distinct subscriber_id) filter (where save_offer_accepted)"
+  denominator_expr: "count(distinct subscriber_id) filter (where save_offer_made)"
+  grains_supported: [day, week, month, quarter]
+  slices_supported: [segment, region, offer_type, channel]
+  unit: percent
+  direction: higher_is_better
+  target: 34.0
+  source_of_record: DP-TEL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["retention offer acceptance"]

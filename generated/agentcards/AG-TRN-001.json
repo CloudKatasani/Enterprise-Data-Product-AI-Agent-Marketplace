@@ -1,0 +1,237 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TRN-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TRN-001",
+    "name": "Delivery SLA Sentinel",
+    "industry": "transportation",
+    "domain": "operations",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0052",
+      "team": "Fleet Operations",
+      "on_call": "pagerduty://fleet-agents"
+    }
+  },
+  "capability_statement": "Answers questions about on-time delivery, dwell, cost per mile and exception rates, and explains which lane or facility is eroding service.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "root_cause",
+      "utilization_impact",
+      "like_for_like",
+      "risk_forecast"
+    ],
+    "replaces": "The daily carrier scorecard assembled manually by the operations analytics team.",
+    "personas": [
+      "operations_manager",
+      "carrier_manager",
+      "customer_service_lead"
+    ]
+  },
+  "out_of_scope": [
+    "Dispatch changes",
+    "Carrier contracting",
+    "Driver performance actions"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-OTD-056",
+      "kpi_name": "On-Time Delivery Rate",
+      "unit": "percent",
+      "source_product": "DP-TRN-001",
+      "grains": [
+        "day",
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "customer",
+        "service_level"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-DWELL-058",
+      "kpi_name": "Dwell Time",
+      "unit": "hours",
+      "source_product": "DP-TRN-001",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "facility",
+        "carrier",
+        "equipment_type"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-CPM-057",
+      "kpi_name": "Cost per Mile",
+      "unit": "currency",
+      "source_product": "DP-TRN-001",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "equipment_type"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-EXCRATE-060",
+      "kpi_name": "Exception Rate",
+      "unit": "percent",
+      "source_product": "DP-TRN-001",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "lane",
+        "carrier",
+        "exception_type"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TRN-001",
+      "columns": [
+        "shipment_leg_id",
+        "shipment_id",
+        "departure_timestamp",
+        "lane",
+        "carrier",
+        "customer",
+        "service_level",
+        "facility",
+        "equipment_type",
+        "region",
+        "exception_type",
+        "delivery_attempted",
+        "delivered_within_window",
+        "exception_logged",
+        "loaded_miles",
+        "linehaul_cost",
+        "accessorial_cost",
+        "dwell_hours",
+        "revenue_hours",
+        "available_hours",
+        "sla_penalty_risk"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TRN-001:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TRN-001/ask",
+    "required_scope": "agent:AG-TRN-001:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "What is on-time delivery this week and where is it worst?",
+      "What is driving late deliveries on the Northeast lanes?",
+      "Where is dwell time eroding asset utilization?",
+      "How does cost per mile compare across carriers on the same lanes?",
+      "Which customers are at risk of SLA penalty this month?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TRN-001/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_trn_001",
+        "scope": "dp:DP-TRN-001:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TRN-001": "2.2.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "f7cbd7189211025815ccc49696f80e7eb6f29879dbfb7e7589e4fee591d55b46"
+}

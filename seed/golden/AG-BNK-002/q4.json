@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "before_after",
+  "citations": [
+    {
+      "columns": [
+        "alert_id",
+        "business_line",
+        "disposition",
+        "event_timestamp",
+        "rule_id",
+        "sar_filed",
+        "typology"
+      ],
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "claims": {
+    "current": "2.43",
+    "delta": "0.70",
+    "groups": "2",
+    "rows_scanned": "14400"
+  },
+  "exchange_id": "DEMO-AG-BNK-002-04",
+  "headline": "SAR Conversion Rate is 2.43% for the quarter ending 2026-07-01, up 0.70% on the prior quarter.",
+  "kpi_definitions": [
+    "KPI-SARCONV-023"
+  ],
+  "narrative": "Computed from DP-BNK-002 under the certified definition KPI-SARCONV-023, across 2 quarters and 14,400 rows.",
+  "question": "Has SAR conversion changed since the June rule tuning?",
+  "rows_scanned": 14400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "period",
+    "KPI-SARCONV-023",
+    "observations"
+  ],
+  "visual_type": "line"
+}

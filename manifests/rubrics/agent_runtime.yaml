@@ -1,0 +1,54 @@
+# Agent runtime rubric.
+#
+# Everything a composed answer depends on that is not the data itself. An answer
+# records the rubric_version_id it was produced under, so replaying it against
+# the same demo tier reproduces it exactly — including its confidence, its cost
+# and the share percentages in its prose. That is why constants which look
+# immutable (the percent scale) live here rather than in the runtime: the rule
+# is that a number an output depends on is resolvable by rubric_version_id, and
+# "this one will never change" is not an exception the replay path can honour.
+rubric: agent_runtime
+version: 1.3.0
+
+# How many grouped rows an answer may carry. Wide enough for a two-year monthly
+# series, narrow enough that the table stays readable without paging.
+answer_row_limit: 24
+
+# The finops rubric prices tool calls in relative units (trivial 1 … large
+# 1000). This turns a relative unit into money. Repricing the platform is one
+# edit here, and every historical answer keeps the price it was quoted at.
+cost_per_relative_unit_usd: 0.0002
+
+answer_confidence:
+  # Not 1.0, and deliberately so: a computed number is exact, but the placement
+  # of a free-form question against a coverage map is not, and confidence is
+  # about the answer, not the arithmetic.
+  complete: 0.93
+  thin_evidence: 0.68
+  # Below this many rows scanned, the answer says so in its notes and carries
+  # the lower confidence. An honest caveat costs less than a wrong decision.
+  thin_evidence_rows: 5000
+
+distribution:
+  # A distribution question is answered with a midpoint and a tail. Which tail is
+  # a judgement about what "bad case" means for the business, so it is set here
+  # rather than assumed to be the ninetieth percentile forever.
+  median_fraction: 0.5
+  tail_fraction: 0.9
+
+presentation:
+  # Ratio to percentage points. See the header: it is here so that a share
+  # quoted in an answer's prose replays from the answer's own rubric version.
+  percent_scale: 100
+  # How many decimal places a cost and a confidence are shown to. Server-side,
+  # because the portal carries no numeric literals: a display precision chosen
+  # in a component is a number nobody can find later.
+  cost_precision: 4
+  confidence_precision: 2
+  # A KPI value's precision, by the unit it is measured in. These are the
+  # numbers an answer *asserts*, so they are also what the claim records: a
+  # claim held to six decimal places while the sentence shows two would mean
+  # the agent is checked against a number no reader was ever shown.
+  currency_precision: 2
+  percent_precision: 2
+  measure_precision: 2

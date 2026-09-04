@@ -1,0 +1,68 @@
+apiVersion: marketplace/v1
+kind: LearningPath
+spec:
+  path_id: LP-EXEC
+  title: Executive briefing
+  persona: sponsor
+  audience: Sponsors and leadership
+  certification_code: CERT-EXEC-BRIEFED
+  summary: >-
+    How to read the portfolio, what a value case is worth, and the four
+    questions worth asking at a portfolio review.
+  modules:
+    - module_id: MOD-EXEC-01
+      title: Reading the portfolio view
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        Value against cost, per asset, with nothing bucketed by judgement.
+      body: |
+        The quadrant places each asset by its own two numbers: realised value
+        and total cost of ownership. Nothing is bucketed by opinion, so an asset
+        in the awkward corner is there because of its arithmetic.
+
+        Cost per *accepted* answer is the comparable figure. An agent answering
+        cheaply and being rejected half the time is not cheap; it is expensive
+        with a flattering denominator.
+
+        Retirement candidates are quantified. "Nobody uses this" is an
+        observation. "Nobody has queried this in ninety days and it costs $2,400
+        a year" is a decision somebody can take.
+    - module_id: MOD-EXEC-02
+      title: Interpreting value cases and their confidence
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        Sample size next to every figure, and a confidence you can discount.
+      body: |
+        Every deflection figure carries the sample size behind it. A number
+        derived from sixteen answers and one derived from six hundred are
+        different kinds of claim, and the pack shows which is which.
+
+        The board pack reads a stored snapshot rather than recomputing. If it
+        recomputed, the pack and the dashboard would be two opinions with equal
+        authority, and the meeting where they disagree is the meeting that ends
+        trust in both.
+
+        Attribution confidence is stated per case. Discount accordingly — that
+        is what it is for.
+    - module_id: MOD-EXEC-03
+      title: What to ask at portfolio review
+      estimated_minutes: 8
+      sandbox_tier: demo
+      summary: >-
+        Four questions that get past a green dashboard.
+      body: |
+        *Which assets are below their quality band and who is on call for them?*
+        A green portfolio with an unowned at-risk asset is a portfolio with a
+        gap in it.
+
+        *What is the median time to access, and how many requests breached SLA?*
+        Adoption dies in the request queue long before it dies in the product.
+
+        *Which agents have a rising cost per accepted answer?* Rising cost per
+        accepted answer means either the data got worse or the questions got
+        harder, and both are worth knowing early.
+
+        *What did we refuse to answer, and why?* The refusal log is the most
+        specific demand signal this estate produces, and nobody reads it.

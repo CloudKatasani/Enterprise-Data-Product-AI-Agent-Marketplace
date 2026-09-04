@@ -1,0 +1,228 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-HLT-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-HLT-002",
+    "name": "Pharmacy Utilization Agent",
+    "industry": "healthcare",
+    "domain": "supply_chain",
+    "autonomy_level": "L2",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0039",
+      "team": "Pharmacy Operations",
+      "on_call": "pagerduty://pharmacy-agents"
+    }
+  },
+  "capability_statement": "Answers questions about pharmacy stock risk, formulary adherence, cost and waste, and drafts replenishment adjustments for approval.",
+  "business_value": {
+    "analyses": [
+      "risk_list",
+      "compliance_ranking",
+      "decomposition",
+      "waste_analysis",
+      "action_draft"
+    ],
+    "replaces": "Weekly manual extracts per facility and the reorder review that follows them.",
+    "personas": [
+      "pharmacy_operations_manager",
+      "supply_chain_planner",
+      "formulary_committee"
+    ]
+  },
+  "out_of_scope": [
+    "Clinical substitution decisions",
+    "Ordering without pharmacist approval",
+    "Any change to a patient's medication"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-STOCKOUT-042",
+      "kpi_name": "Pharmacy Stockout Rate",
+      "unit": "percent",
+      "source_product": "DP-HLT-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "therapeutic_class",
+        "facility",
+        "item_class"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-FORMADH-041",
+      "kpi_name": "Formulary Adherence",
+      "unit": "percent",
+      "source_product": "DP-HLT-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "therapeutic_class",
+        "facility",
+        "service_line"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-COSTPPD-043",
+      "kpi_name": "Pharmacy Cost per Patient Day",
+      "unit": "currency",
+      "source_product": "DP-HLT-002",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "therapeutic_class",
+        "facility",
+        "service_line"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-WASTE-044",
+      "kpi_name": "Pharmacy Waste Rate",
+      "unit": "percent",
+      "source_product": "DP-HLT-002",
+      "grains": [
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "therapeutic_class",
+        "facility",
+        "item_class"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-HLT-002",
+      "columns": [
+        "item_id",
+        "facility",
+        "activity_date",
+        "therapeutic_class",
+        "item_class",
+        "service_line",
+        "on_formulary",
+        "substitution_eligible",
+        "substituted",
+        "on_hand_units",
+        "demand_units",
+        "dispensed_cost",
+        "wasted_cost",
+        "patient_days",
+        "days_to_expiry",
+        "reorder_point"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-HLT-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-HLT-002/ask",
+    "required_scope": "agent:AG-HLT-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which items are at risk of stockout this week?",
+      "Where is formulary adherence lowest?",
+      "What is driving the increase in pharmacy cost per patient day?",
+      "How much waste came from short-dated stock last quarter?",
+      "Draft a replenishment adjustment for the top 10 at-risk items."
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-HLT-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_hlt_002",
+        "scope": "dp:DP-HLT-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-HLT-002": "1.8.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "c8859b5cc629bacba474098fe6492ecf6086cbf172d05962e4e3c65619231f92"
+}

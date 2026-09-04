@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-CONSPC-068
+  name: "Consumption per Customer"
+  domain: customer
+  steward: PTY-0045
+  status: certified
+spec:
+  business_definition: >-
+    Metered kilowatt hours divided by active meters for the period, weather-unadjusted.
+  numerator_expr: "sum(consumption_kwh)"
+  denominator_expr: "count(distinct meter_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [rate_class, region, dwelling_type]
+  unit: count
+  direction: lower_is_better
+  source_of_record: DP-ENG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["kWh per customer", "average consumption"]

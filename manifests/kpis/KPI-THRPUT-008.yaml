@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-THRPUT-008
+  name: "Throughput Percentile"
+  domain: network_asset
+  steward: PTY-0032
+  status: certified
+spec:
+  business_definition: >-
+    Median and 95th percentile user-plane throughput in megabits per second observed at a site
+    during the period.
+  expression: "percentile_cont(0.5) within group (order by throughput_mbps)"
+  grains_supported: [day, week, month]
+  slices_supported: [region, site_class, technology]
+  unit: rate
+  direction: higher_is_better
+  source_of_record: DP-TEL-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["user throughput", "data rate"]

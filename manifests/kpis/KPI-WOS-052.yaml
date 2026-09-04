@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-WOS-052
+  name: "Weeks of Supply"
+  domain: supply_chain
+  steward: PTY-0041
+  status: certified
+spec:
+  business_definition: >-
+    On-hand units divided by average weekly demand, the number of weeks current stock would
+    cover.
+  numerator_expr: "sum(on_hand_units)"
+  denominator_expr: "sum(average_weekly_demand_units)"
+  grains_supported: [week, month]
+  slices_supported: [category, region, store_format]
+  unit: weeks
+  direction: lower_is_better
+  target: 6.0
+  source_of_record: DP-RTL-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["WOS", "cover"]

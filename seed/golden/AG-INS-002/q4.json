@@ -1,0 +1,42 @@
+{
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "variance_to_plan",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "channel",
+        "coverage_line",
+        "policy_id",
+        "rate_change_pct",
+        "region",
+        "renewed",
+        "segment",
+        "up_for_renewal"
+      ],
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "480",
+    "top": "100.00",
+    "top_share": "33.33"
+  },
+  "exchange_id": "DEMO-AG-INS-002-04",
+  "headline": "commercial_auto leads on policy retention at 100.00%, 33.33% of the total across 3 segments.",
+  "kpi_definitions": [
+    "KPI-POLRETEN-032"
+  ],
+  "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 480 rows in DP-INS-002. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which segments are we retaining below plan?",
+  "rows_scanned": 480,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "segment",
+    "KPI-POLRETEN-032",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

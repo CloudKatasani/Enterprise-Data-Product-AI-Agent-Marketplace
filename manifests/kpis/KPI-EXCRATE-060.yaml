@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-EXCRATE-060
+  name: "Exception Rate"
+  domain: operations
+  steward: PTY-0042
+  status: certified
+spec:
+  business_definition: >-
+    Share of shipment legs with a logged exception such as damage, refusal, misroute or missed
+    appointment.
+  numerator_expr: "count(*) filter (where exception_logged)"
+  denominator_expr: "count(*)"
+  grains_supported: [day, week, month]
+  slices_supported: [lane, carrier, exception_type]
+  unit: percent
+  direction: lower_is_better
+  target: 3.0
+  source_of_record: DP-TRN-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["exception frequency"]

@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-RTL-002",
+  "agent_name": "Inventory Availability Agent",
+  "agent_version_id": "AGV-AG-RTL-002-1.0.0",
+  "analysis_type": "accuracy_ranking",
+  "answer": {
+    "headline": "apparel leads on forecast accuracy mape at 21.53%, 25.57% of the total across 5 categorys.",
+    "narrative": "Ranked by the certified definition KPI-MAPE-054 over 45,000 rows in DP-RTL-002.",
+    "table": {
+      "columns": [
+        "category",
+        "KPI-MAPE-054",
+        "observations"
+      ],
+      "rows": [
+        [
+          "apparel",
+          21.53,
+          10800
+        ],
+        [
+          "seasonal",
+          21.43,
+          6300
+        ],
+        [
+          "grocery",
+          13.75,
+          11400
+        ],
+        [
+          "electronics",
+          13.74,
+          7200
+        ],
+        [
+          "home",
+          13.74,
+          9300
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 22.0,
+        "unit": "percent",
+        "x": "category",
+        "y": "KPI-MAPE-054"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "sku",
+        "forecast_units",
+        "actual_units",
+        "category",
+        "region",
+        "horizon",
+        "activity_date"
+      ],
+      "contract_version": "3.5.0",
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-RTL-002-02",
+  "kpi_definitions": [
+    "KPI-MAPE-054"
+  ],
+  "notes": [],
+  "question": "What is our forecast accuracy by category?",
+  "recorded_at": "2026-09-04T08:34:03.367471+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 17,
+    "rows_scanned": 45000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "category",
+          "limit": 24,
+          "measure": "((sum(abs(forecast_units - actual_units)))::numeric / NULLIF((sum(actual_units))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 14,
+        "rows_returned": 5,
+        "rows_scanned": 45000,
+        "tool": "query_dp_rtl_002"
+      }
+    ]
+  }
+}

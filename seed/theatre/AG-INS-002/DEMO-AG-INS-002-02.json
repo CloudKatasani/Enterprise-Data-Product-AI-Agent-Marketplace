@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-INS-002",
+  "agent_name": "Underwriting Portfolio Copilot",
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "concentration",
+  "answer": {
+    "headline": "wind leads on exposure concentration at 75.34%, 100.00% of the total across 4 perils.",
+    "narrative": "Ranked by the certified definition KPI-EXPCONC-035 over 17,280 rows in DP-INS-002.",
+    "table": {
+      "columns": [
+        "peril",
+        "KPI-EXPCONC-035",
+        "observations"
+      ],
+      "rows": [
+        [
+          "wind",
+          75.34,
+          4320
+        ],
+        [
+          "fire",
+          null,
+          4320
+        ],
+        [
+          "flood",
+          null,
+          4320
+        ],
+        [
+          "hail",
+          null,
+          4320
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 12.0,
+        "unit": "percent",
+        "x": "peril",
+        "y": "KPI-EXPCONC-035"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "policy_id",
+        "total_insured_value",
+        "in_top_accumulation_zone",
+        "peril",
+        "county",
+        "region",
+        "coverage_line",
+        "as_of_month"
+      ],
+      "contract_version": "2.6.0",
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-INS-002-02",
+  "kpi_definitions": [
+    "KPI-EXPCONC-035"
+  ],
+  "notes": [],
+  "question": "What is our exposure concentration by county for wind peril?",
+  "recorded_at": "2026-09-04T08:34:03.096080+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 9,
+    "rows_scanned": 17280,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "peril",
+          "limit": 24,
+          "measure": "((sum(total_insured_value) filter (where in_top_accumulation_zone))::numeric / NULLIF((sum(total_insured_value))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_ins_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 6,
+        "rows_returned": 4,
+        "rows_scanned": 17280,
+        "tool": "query_dp_ins_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-RATEADQ-034
+  name: "Rate Adequacy"
+  domain: product
+  steward: PTY-0037
+  status: certified
+spec:
+  business_definition: >-
+    Charged premium divided by the technical premium indicated by the pricing model, above one
+    meaning rate is adequate.
+  numerator_expr: "sum(charged_premium)"
+  denominator_expr: "sum(technical_premium)"
+  grains_supported: [quarter, year]
+  slices_supported: [coverage_line, segment, region]
+  unit: ratio
+  direction: higher_is_better
+  target: 1.05
+  source_of_record: DP-INS-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["rate adequacy ratio", "price to technical"]

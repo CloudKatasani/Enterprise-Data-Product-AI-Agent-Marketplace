@@ -1,0 +1,252 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-BNK-002
+  name: "Transaction Surveillance & Financial Crime Signal"
+  industry: banking
+  domain: risk_compliance
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0035
+    team: "Financial Crime Operations"
+    escalation: "#dp-fincrime"
+  certification: certified
+spec:
+  purpose: >-
+    Alert level view of surveillance scenario output, investigator workflow, disposition and
+    regulatory filing outcome for tuning and capacity management.
+  grain: "one row per alert per disposition event"
+  history_months: 84
+  known_limitations: >-
+    Sanctions screening alerts are handled by a separate control and are out of scope. Alerts
+    suppressed by the scenario tuning layer are counted but carry no investigator workflow.
+    Customer identity is pseudonymised and cannot be re-identified from this product.
+  upstream_sources: [SRC-SURVEILLANCE, SRC-CARD-TXN, SRC-CORE-BANKING, SRC-KYC]
+  entities: [alert, case, typology, investigator]
+  certified_kpis: [KPI-ALERTVOL-021, KPI-FPRATE-022, KPI-SARCONV-023, KPI-INVCYCLE-024, KPI-BACKLOG-025]
+  columns:
+    - name: alert_id
+      type: string
+      business_name: "Alert ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: restricted
+      description: >-
+        Surveillance alert identifier.
+    - name: event_timestamp
+      type: timestamp
+      business_name: "Event Timestamp"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Timestamp of the workflow event the row describes.
+    - name: typology
+      type: string
+      business_name: "Typology"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Financial crime typology the scenario targets.
+    - name: rule_id
+      type: string
+      business_name: "Rule ID"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Surveillance scenario that generated the alert.
+    - name: business_line
+      type: string
+      business_name: "Business Line"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Business line the alerted activity sits in.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: restricted
+      description: >-
+        Booking region of the alerted activity.
+    - name: investigator_team
+      type: string
+      business_name: "Investigator Team"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Team holding the alert in the queue.
+    - name: disposition
+      type: string
+      business_name: "Disposition"
+      nullable: true
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Final investigator disposition, null while the alert is open.
+    - name: sar_filed
+      type: boolean
+      business_name: "SAR Filed"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        True when the alert resulted in a suspicious activity report.
+    - name: investigation_days
+      type: number
+      business_name: "Investigation Days"
+      nullable: true
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Elapsed days from alert creation to disposition.
+    - name: age_days
+      type: number
+      business_name: "Age in Days"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Days the alert has been open at the observation point.
+    - name: alert_score
+      type: number
+      business_name: "Alert Score"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Scenario risk score at generation.
+    - name: customer_risk_rating
+      type: string
+      business_name: "Customer Risk Rating"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Due diligence risk rating in force at alert time.
+    - name: transaction_count
+      type: integer
+      business_name: "Transaction Count"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Transactions contributing to the alert.
+    - name: transaction_value
+      type: number
+      business_name: "Transaction Value"
+      nullable: false
+      classification: [financial]
+      sensitivity: restricted
+      description: >-
+        Aggregate value of the contributing transactions.
+  contract:
+    version: 2.9.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "every 15 minutes"
+        p95_minutes: 6
+        measured: per_partition
+      availability:
+        target_pct: 99.9
+        window: monthly
+      completeness:
+        required_fields_pct: 100.0
+      accuracy:
+        reconciliation_variance_pct: 0.0
+        against: "surveillance_engine_of_record"
+    deprecation_policy:
+      notice_days: 180
+      minimum_parallel_run_days: 90
+    support:
+      hours: "24x7"
+      p1_response_minutes: 15
+      on_call: "pagerduty://fincrime-dp"
+    classification:
+      max_sensitivity: restricted
+      contains_pii: false
+      residency: [US]
+    consumer_obligations:
+      - "No output may name a customer as suspicious"
+      - "Tuning analysis must retain the rule version in force at alert time"
+      - "Access is logged to the financial crime audit trail without exception"
+    breach_process: >-
+      Auto-incident raised, compliance officer notified immediately, regulator notification
+      assessed within one hour.
+  quality_rules:
+    - id: QR-BNK-002-01
+      dimension: completeness
+      column: alert_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-002-02
+      dimension: freshness
+      rule: stream_lag_under
+      target: "15m"
+      tolerance_minutes: 6
+      severity: critical
+    - id: QR-BNK-002-03
+      dimension: validity
+      column: typology
+      rule: in_reference_set
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-002-04
+      dimension: uniqueness
+      columns: [alert_id, event_timestamp]
+      rule: unique_at_grain
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-002-05
+      dimension: consistency
+      column: sar_filed
+      rule: implies_disposition_escalated
+      threshold_pct: 100
+      severity: critical
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 180000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 93
+    planted_patterns:
+      - id: typology-false-positive-spread
+        description: >-
+            False positive rates differ sharply by typology, with one structuring scenario far above the
+            rest.
+      - id: june-tuning-effect
+        description: >-
+            SAR conversion moves after the June rule tuning, and the movement is only visible when
+            alerts are split by rule version.
+  value_case:
+    business_outcome: >-
+      Tuning decisions are made on measured scenario efficiency rather than on alert volume alone.
+    baseline:
+      method: "monthly manual extract and pivot by the tuning team"
+      analyst_hours_month: 140
+      captured: "2026-02"
+    benefit_model: "avoided_investigator_hours * loaded_rate + avoided_backlog_penalty"
+    assumptions:
+      - text: "loaded investigator hourly cost"
+        value: 78.0
+        unit: usd
+        source: "operations FY26 budget"
+        dated: 2026-02-01
+      - text: "investigator hours per false positive alert"
+        value: 0.7
+        unit: hours
+        sample_size: 520
+        source: "time and motion study"
+        dated: 2026-03-10
+    attribution_confidence: high
+    review:
+      last_reviewed: 2026-08-01
+      reviewer: PTY-0035

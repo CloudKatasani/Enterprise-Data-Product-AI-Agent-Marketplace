@@ -1,0 +1,71 @@
+[project]
+name = "marketplace"
+version = "0.1.0"
+description = "Enterprise Data Product and AI Agent Marketplace — services, connectors and generators"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.6",
+  "uvicorn==0.34.0",
+  "pydantic==2.10.4",
+  "pydantic-settings==2.7.0",
+  "psycopg[binary]==3.2.3",
+  "PyYAML==6.0.2",
+  "jsonschema==4.23.0",
+  "redis==5.2.1",
+  "httpx==0.28.1",
+  "python-jose==3.3.0",
+  "opentelemetry-api==1.29.0",
+  "opentelemetry-sdk==1.29.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==8.3.4",
+  "ruff==0.8.4",
+  "mypy==1.14.0",
+  "types-PyYAML==6.0.12.20241230",
+]
+
+[tool.setuptools.packages.find]
+include = ["services*", "connectors*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["generated", "node_modules", "portal", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "C4", "SIM"]
+ignore = ["B008", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# ast.NodeVisitor dispatches on visit_<NodeType>; the casing is the library's.
+"scripts/lint/no_magic_numbers.py" = ["N802"]
+# NotFound / NotConfigured read better at a call site than NotFoundError, and
+# these are raised, caught and named in error responses constantly.
+"services/common/db.py" = ["N818"]
+"services/common/rubrics.py" = ["N818"]
+"scripts/seeders/rubrics.py" = ["N818"]
+"connectors/base.py" = ["N818"]
+"services/search/embedding.py" = ["N818"]
+"services/common/principal.py" = ["N818"]
+"services/agent_runtime/base.py" = ["N818"]
+"services/academy/paths.py" = ["N818"]
+"services/admin/rubrics.py" = ["N818"]
+"services/common/rubric_source.py" = ["N818"]
+"services/agents/release.py" = ["N818"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["services", "connectors", "scripts"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+warn_unused_ignores = false
+exclude = ["generated/", "portal/", "node_modules/"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]

@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-TEL-001",
+  "agent_name": "Churn Sentinel",
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "cohort_targeting",
+  "answer": {
+    "headline": "consumer leads on churn propensity decile at 5.52, 33.58% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-PROP-005 over 25,200 rows in DP-TEL-001.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-PROP-005",
+        "observations"
+      ],
+      "rows": [
+        [
+          "consumer",
+          5.52,
+          17040
+        ],
+        [
+          "enterprise",
+          5.46,
+          2880
+        ],
+        [
+          "small_business",
+          5.46,
+          5280
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "index",
+        "x": "segment",
+        "y": "KPI-PROP-005"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "churn_propensity_score",
+        "propensity_decile",
+        "segment",
+        "region",
+        "tenure_band",
+        "activity_date"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-001-04",
+  "kpi_definitions": [
+    "KPI-PROP-005"
+  ],
+  "notes": [],
+  "question": "Which subscribers should we prioritise for a save offer this week?",
+  "recorded_at": "2026-09-04T08:34:03.900329+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 20,
+    "rows_scanned": 25200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "(ntile(10) over (order by churn_propensity_score desc))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 17,
+        "rows_returned": 3,
+        "rows_scanned": 25200,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

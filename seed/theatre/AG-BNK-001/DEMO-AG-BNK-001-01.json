@@ -1,0 +1,98 @@
+{
+  "agent_id": "AG-BNK-001",
+  "agent_name": "Relationship Value Advisor",
+  "agent_version_id": "AGV-AG-BNK-001-1.0.0",
+  "analysis_type": "ranking",
+  "answer": {
+    "headline": "mass leads on customer lifetime value at $58,557,319.92, 64.14% of the total across 3 segments.",
+    "narrative": "Ranked by the certified definition KPI-CLV-018 over 18,000 rows in DP-BNK-001.",
+    "table": {
+      "columns": [
+        "segment",
+        "KPI-CLV-018",
+        "observations"
+      ],
+      "rows": [
+        [
+          "mass",
+          58557319.92,
+          11088
+        ],
+        [
+          "affluent",
+          24093874.08,
+          5112
+        ],
+        [
+          "private",
+          8640034.56,
+          1800
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": null,
+        "unit": "currency",
+        "x": "segment",
+        "y": "KPI-CLV-018"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-01",
+      "columns": [
+        "customer_id",
+        "household_id",
+        "discounted_contribution_margin",
+        "relationship_value",
+        "segment",
+        "region",
+        "as_of_month"
+      ],
+      "contract_version": "5.0.0",
+      "product_id": "DP-BNK-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-001-01",
+  "kpi_definitions": [
+    "KPI-CLV-018"
+  ],
+  "notes": [],
+  "question": "Who are my top 20 households by relationship value in the Southeast?",
+  "recorded_at": "2026-09-04T08:34:02.470599+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 16,
+    "rows_scanned": 18000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "segment",
+          "limit": 24,
+          "measure": "(sum(discounted_contribution_margin))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 7,
+        "rows_returned": 3,
+        "rows_scanned": 18000,
+        "tool": "query_dp_bnk_001"
+      }
+    ]
+  }
+}

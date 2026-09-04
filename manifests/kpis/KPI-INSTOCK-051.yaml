@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-INSTOCK-051
+  name: "In-Stock Rate"
+  domain: supply_chain
+  steward: PTY-0041
+  status: certified
+spec:
+  business_definition: >-
+    Share of active SKU-location-days with positive sellable stock on hand at the start of
+    trade.
+  numerator_expr: "count(*) filter (where on_hand_units > 0)"
+  denominator_expr: "count(*)"
+  grains_supported: [day, week, month]
+  slices_supported: [category, region, store_format]
+  unit: percent
+  direction: higher_is_better
+  target: 96.5
+  source_of_record: DP-RTL-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["availability", "on-shelf availability"]

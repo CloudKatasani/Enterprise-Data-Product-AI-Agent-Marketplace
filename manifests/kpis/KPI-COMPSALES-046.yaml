@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-COMPSALES-046
+  name: "Comparable Sales Growth"
+  domain: customer
+  steward: PTY-0040
+  status: certified
+spec:
+  business_definition: >-
+    Year-over-year change in net sales for stores and channels trading in both periods,
+    excluding openings and closures.
+  numerator_expr: "sum(net_sales) - sum(prior_year_net_sales)"
+  denominator_expr: "sum(prior_year_net_sales)"
+  grains_supported: [week, month, quarter, year]
+  slices_supported: [category, region, channel, store_format]
+  unit: percent
+  direction: higher_is_better
+  target: 2.5
+  source_of_record: DP-RTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["like for like", "comp sales", "LFL"]

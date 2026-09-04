@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-RECOVERY-030
+  name: "Recovery Rate"
+  domain: risk
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Subrogation and salvage recovered as a share of incurred losses for the period.
+  numerator_expr: "sum(subrogation_recovered) + sum(salvage_recovered)"
+  denominator_expr: "sum(incurred_losses)"
+  grains_supported: [quarter, year]
+  slices_supported: [coverage_line, region]
+  unit: percent
+  direction: higher_is_better
+  target: 6.5
+  source_of_record: DP-INS-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["subrogation rate", "salvage recovery"]

@@ -1,0 +1,237 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PRODUCT_NAME: "Marketplace CI"
+  TENANT_ID: TEN-CI
+  # Owns the schema. Migrations only.
+  DATABASE_URL: postgresql://marketplace:marketplace@localhost:5432/marketplace
+  # What the application connects as: a member of app_role, not a superuser.
+  # Row-level security does not apply to a superuser, so a build that ran the
+  # application as its schema owner would have isolation switched off and the
+  # security suite would say so.
+  APP_DATABASE_URL: postgresql://marketplace_app:marketplace_app@localhost:5432/marketplace
+  REDIS_URL: redis://localhost:6379/0
+  OIDC_ISSUER: https://oidc.ci.invalid/realms/marketplace
+  OIDC_CLIENT_ID: marketplace-portal
+  OIDC_CLIENT_SECRET: ci-secret
+  SNOWFLAKE_ACCOUNT: ci-account
+  SNOWFLAKE_USER: SVC_CI
+  SNOWFLAKE_ROLE: MKT_READONLY
+  SNOWFLAKE_PRIVATE_KEY: ""
+  AGENT_RUNTIME: mock
+  MODEL_PROVIDER: anthropic
+  MODEL_ID: ci-model
+  MODEL_MAX_TOKENS: "2000"
+  DEMO_TIER_SCHEMA: MARKETPLACE_DEMO
+  DEMO_TIER_SCALE: "0.05"
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4318
+  FEATURE_FLAG_SOURCE: env
+  WORKER_POLL_SECONDS: "5"
+  API_BASE_URL: http://localhost:8000/api/v1
+  PORTAL_BASE_URL: http://localhost:3000
+  PORTAL_DEV_SUBJECT: PTY-0061
+  # Direction follows from the locale. Every style in the portal is written in
+  # logical properties, so serving it right-to-left is this variable and
+  # nothing else (lint:logical-properties keeps that true).
+  PORTAL_LOCALE: en
+
+jobs:
+  # Pipeline order from BUILD.md section 20:
+  # lint -> typecheck -> gen-diff -> unit -> contract -> golden -> publish_gate
+  #      -> security -> a11y -> build -> e2e -> perf
+  pipeline:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: marketplace
+          POSTGRES_PASSWORD: marketplace
+          POSTGRES_DB: marketplace
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U marketplace -d marketplace"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && pip install -e ".[dev]"
+
+      - name: Install Node dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: lint
+        run: npm run lint
+
+      - name: typecheck
+        run: npm run typecheck
+
+      # Rule 3 from both directions: the generators reproduce what is committed,
+      # and nothing under generated/ was written by hand.
+      - name: gen-diff
+        run: npm run gen:diff
+
+      - name: migrate
+        run: npm run migrate
+
+      - name: seed
+        run: npm run seed
+
+      # The stand-in platform lets the harvest path — the real statements, the
+      # real read-only guard, the real mapping — run without a Snowflake account.
+      - name: seed platform, harvest and score
+        run: npm run seed:platform && npm run harvest && npm run score
+
+      # The demo tier is what the agents actually answer from, so it is built
+      # before anything that asks one a question.
+      - name: demo tier
+        run: npm run seed:demo-tier
+        env:
+          DEMO_TIER_SCALE: "0.05"
+
+      # The curated questions run against the real runtime and are compared to
+      # their golden answers. A drifted answer fails the build here rather than
+      # being discovered on the front page.
+      - name: demo runner
+        run: npm run demo:verify
+
+      # All eight evaluation suites, all fourteen agents. Exit code is the
+      # answer to "would these publish?".
+      - name: evaluate agents
+        run: npm run evaluate
+
+      # Publishing is a separate act from passing, and there is no override:
+      # a version that does not clear the gate stays a draft and CI fails.
+      - name: publish agents that clear the gate
+        run: npm run publish:agents
+
+      # Both meshes, plus divergence detection. Non-zero exit on divergence:
+      # two agents giving different numbers for the same certified KPI is the
+      # failure the whole registry exists to prevent.
+      - name: mesh and divergence
+        run: npm run mesh
+
+      # Signals, incidents, cost attribution and the value snapshot. The
+      # snapshot is what the board pack reads; computing it here means the
+      # pack is never assembled from numbers nobody has seen.
+      - name: observe, attribute and snapshot
+        run: npm run observe
+
+      # M12.3: a rollback first attempted during an incident is a rollback
+      # nobody has tested. The drill releases a candidate through the real gate
+      # and rolls it back, asserting every field of the previous bundle came
+      # with it, and leaves the estate exactly as it found it.
+      - name: rollback drill
+        run: npm run rollback:drill
+
+      - name: unit
+        run: npm run test:unit
+
+      - name: contract
+        run: npm run test:contract
+
+      - name: golden
+        run: npm run test:golden
+
+      - name: publish_gate
+        run: npm run test:publish-gate
+
+      - name: security
+        run: npm run test:security
+
+      # I8 against the stand-in platform runs on every commit; the job below
+      # repeats it against a real sandbox account on a schedule.
+      - name: kill
+        run: npm run test:kill
+
+      - name: a11y
+        run: npm run test:a11y
+
+      - name: build
+        run: npm run build
+
+      - name: e2e
+        run: npm run test:e2e
+
+      - name: perf
+        run: npm run test:perf
+
+  # Section 20 puts load and chaos on a quarterly cadence, not on every pull
+  # request: the load gate needs an estate of 50,000 assets and the chaos gate
+  # needs a real platform to take away. They run on a schedule and on demand,
+  # and both report what they actually measured rather than a green tick — a
+  # load run against a fifteen-product estate says the code path works and
+  # nothing about the scale the budget was written for, and it says so.
+  quarterly-gates:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: marketplace
+          POSTGRES_PASSWORD: marketplace
+          POSTGRES_DB: marketplace
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U marketplace -d marketplace"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: pip install -e ".[dev]" && npm ci --no-audit --no-fund
+      - run: npm run migrate && npm run seed && npm run seed:platform && npm run harvest
+      - name: load
+        run: npm run test:load -- --report load-report.json
+      - name: chaos
+        run: npm run test:chaos
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quarterly-gates
+          path: load-report.json
+
+  # The kill test needs a real sandbox account, so it runs on a schedule and on
+  # demand rather than on every pull request. It is blocking for a release.
+  kill-test:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - name: connector write-attempt kill test against a real sandbox account
+        run: npm run test:kill

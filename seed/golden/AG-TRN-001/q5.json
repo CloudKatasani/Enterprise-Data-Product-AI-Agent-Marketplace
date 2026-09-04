@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "risk_forecast",
+  "citations": [
+    {
+      "columns": [
+        "carrier",
+        "customer",
+        "departure_timestamp",
+        "exception_logged",
+        "exception_type",
+        "lane",
+        "shipment_leg_id",
+        "sla_penalty_risk"
+      ],
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "claims": {
+    "groups": "6",
+    "rows_scanned": "13200",
+    "top": "3.36",
+    "top_share": "18.59"
+  },
+  "exchange_id": "DEMO-AG-TRN-001-05",
+  "headline": "MW-01 leads on exception rate at 3.36%, 18.59% of the total across 6 lanes.",
+  "kpi_definitions": [
+    "KPI-EXCRATE-060"
+  ],
+  "narrative": "Ranked by the certified definition KPI-EXCRATE-060 over 13,200 rows in DP-TRN-001.",
+  "question": "Which customers are at risk of SLA penalty this month?",
+  "rows_scanned": 13200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "lane",
+    "KPI-EXCRATE-060",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

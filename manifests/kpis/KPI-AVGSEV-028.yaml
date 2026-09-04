@@ -1,0 +1,22 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-AVGSEV-028
+  name: "Average Claim Severity"
+  domain: risk
+  steward: PTY-0036
+  status: certified
+spec:
+  business_definition: >-
+    Mean incurred cost per closed claim, used with frequency to decompose loss ratio movement.
+  numerator_expr: "sum(incurred_losses)"
+  denominator_expr: "count(distinct claim_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [coverage_line, complexity_band, region]
+  unit: currency
+  direction: lower_is_better
+  source_of_record: DP-INS-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["severity", "average cost per claim"]

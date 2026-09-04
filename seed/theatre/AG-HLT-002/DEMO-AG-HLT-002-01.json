@@ -1,0 +1,109 @@
+{
+  "agent_id": "AG-HLT-002",
+  "agent_name": "Pharmacy Utilization Agent",
+  "agent_version_id": "AGV-AG-HLT-002-1.0.0",
+  "analysis_type": "risk_list",
+  "answer": {
+    "headline": "analgesia leads on pharmacy stockout rate at 0.00% across 5 groups.",
+    "narrative": "Ranked by the certified definition KPI-STOCKOUT-042 over 30,600 rows in DP-HLT-002.",
+    "table": {
+      "columns": [
+        "therapeutic_class",
+        "KPI-STOCKOUT-042",
+        "observations"
+      ],
+      "rows": [
+        [
+          "analgesia",
+          0.0,
+          6120
+        ],
+        [
+          "anti_infective",
+          0.0,
+          9360
+        ],
+        [
+          "cardiovascular",
+          0.0,
+          6480
+        ],
+        [
+          "immunology",
+          0.0,
+          4320
+        ],
+        [
+          "oncology",
+          0.0,
+          4320
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.2,
+        "unit": "percent",
+        "x": "therapeutic_class",
+        "y": "KPI-STOCKOUT-042"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "item_id",
+        "facility",
+        "on_hand_units",
+        "demand_units",
+        "reorder_point",
+        "therapeutic_class",
+        "item_class",
+        "activity_date"
+      ],
+      "contract_version": "1.8.0",
+      "product_id": "DP-HLT-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-002-01",
+  "kpi_definitions": [
+    "KPI-STOCKOUT-042"
+  ],
+  "notes": [],
+  "question": "Which items are at risk of stockout this week?",
+  "recorded_at": "2026-09-04T08:34:02.931069+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 14,
+    "rows_scanned": 30600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "therapeutic_class",
+          "limit": 24,
+          "measure": "((count(*) filter (where on_hand_units = 0 and demand_units > 0))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 10,
+        "rows_returned": 5,
+        "rows_scanned": 30600,
+        "tool": "query_dp_hlt_002"
+      }
+    ]
+  }
+}

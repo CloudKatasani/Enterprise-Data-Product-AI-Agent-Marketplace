@@ -1,0 +1,188 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-INS-001
+  name: "Claims Leakage Investigator"
+  industry: insurance
+  domain: risk
+  owner:
+    party_id: PTY-0049
+    team: "Claims Analytics"
+    on_call: "pagerduty://claims-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about claims leakage, severity, cycle time and recovery, and explains
+    which handling stage is costing money.
+  business_value_block:
+    analyses: [ranking, variance, decomposition, gap_quantification, programme_eval]
+    replaces: >-
+      Quarterly file-review sampling extrapolated by hand by the claims analytics team.
+    personas: [claims_operations_lead, claims_analytics, finance_business_partner]
+  out_of_scope:
+    - "Coverage determination"
+    - "Settlement authority"
+    - "Adjuster performance ratings"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-INS-001/system@v1
+  data_products:
+    - product_id: DP-INS-001
+      columns: [claim_id, policy_id, transition_timestamp, coverage_line, region, channel, complexity_band, adjuster_team, claim_status, incurred_losses, earned_premium, cycle_days, assessed_leakage_amount, subrogation_recovered, salvage_recovered, settlement_amount, triage_rule_version]
+      access: read
+    - product_id: DP-INS-002
+      columns: [policy_id, as_of_month, coverage_line, segment, region, written_premium]
+      access: read
+  tool_bindings:
+    - tool: query_dp_ins_001
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-INS-001"
+      scope: "dp:DP-INS-001:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: query_dp_ins_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-INS-002"
+      scope: "dp:DP-INS-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-LEAKAGE-029
+      source_product: DP-INS-001
+      columns_used: [claim_id, assessed_leakage_amount, incurred_losses, coverage_line, adjuster_team, region, transition_timestamp]
+      grains: [quarter, year]
+      slices: [coverage_line, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-AVGSEV-028
+      source_product: DP-INS-001
+      columns_used: [claim_id, incurred_losses, coverage_line, complexity_band, region, settlement_amount, triage_rule_version, transition_timestamp]
+      grains: [month, quarter, year]
+      slices: [coverage_line, complexity_band, region]
+      analysis_depth: explain
+    - kpi_id: KPI-CLMCYCLE-027
+      source_product: DP-INS-001
+      columns_used: [claim_id, cycle_days, coverage_line, complexity_band, claim_status, region, transition_timestamp]
+      grains: [month, quarter]
+      slices: [coverage_line, complexity_band, region]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-RECOVERY-030
+      source_product: DP-INS-001
+      columns_used: [claim_id, subrogation_recovered, salvage_recovered, incurred_losses, coverage_line, region, transition_timestamp]
+      grains: [quarter, year]
+      slices: [coverage_line, region]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-INS-001-01
+      ordinal: 1
+      question: "Where is leakage highest by coverage line?"
+      kpi_class: KPI-LEAKAGE-029
+      analysis_type: ranking
+      expected_shape:
+        headline: >-
+          the coverage lines carrying the most assessed leakage, in money
+        visual: bar_with_value
+        table_columns: [coverage_line, leakage_rate, leakage_amount, incurred_losses]
+        must_cite: [DP-INS-001, KPI-LEAKAGE-029]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-001/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-001-02
+      ordinal: 2
+      question: "Which settlement patterns diverge most from peers on like claims?"
+      kpi_class: KPI-AVGSEV-028
+      analysis_type: variance
+      expected_shape:
+        headline: >-
+          where settlement on comparable claims differs most, and by how much
+        visual: box_plot
+        table_columns: [complexity_band, coverage_line, mean_severity, variance_pct]
+        must_cite: [DP-INS-001, KPI-AVGSEV-028]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-001/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-001-03
+      ordinal: 3
+      question: "What is driving cycle time increase in auto physical damage?"
+      kpi_class: KPI-CLMCYCLE-027
+      analysis_type: decomposition
+      expected_shape:
+        headline: >-
+          which handling stage the additional days accumulated in
+        visual: waterfall_by_stage
+        table_columns: [claim_status, mean_cycle_days, delta_days, contribution_pct]
+        must_cite: [DP-INS-001, KPI-CLMCYCLE-027]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-001/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-001-04
+      ordinal: 4
+      question: "How much subrogation recovery are we leaving on the table?"
+      kpi_class: KPI-RECOVERY-030
+      analysis_type: gap_quantification
+      expected_shape:
+        headline: >-
+          the value of eligible recovery that was never pursued
+        visual: funnel
+        table_columns: [coverage_line, recovery_rate, recovered, incurred_losses]
+        must_cite: [DP-INS-001, KPI-RECOVERY-030]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-001/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-INS-001-05
+      ordinal: 5
+      question: "Did the new triage rule reduce severity on low-complexity claims?"
+      kpi_class: KPI-AVGSEV-028
+      analysis_type: programme_eval
+      expected_shape:
+        headline: >-
+          whether severity moved for claims triaged under the new rule
+        visual: before_after
+        table_columns: [triage_rule_version, mean_severity, claims, delta_pct]
+        must_cite: [DP-INS-001, KPI-AVGSEV-028]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-INS-001/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-INS-001/
+  value_case:
+    benefit_model: "identified_leakage * remediation_capture_rate + subrogation_uplift"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per leakage question"
+        value: 75
+        unit: minutes
+        sample_size: 21
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0049

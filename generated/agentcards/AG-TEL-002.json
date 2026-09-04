@@ -1,0 +1,228 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-TEL-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "08df7818aab2d25543362aae2f7f8c7a58680957aa4e4efe1769cbbb02903c0a",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-TEL-002",
+    "name": "Network Quality Advisor",
+    "industry": "telecommunications",
+    "domain": "network_asset",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0032",
+      "team": "Telecom Network Domain",
+      "on_call": "pagerduty://network-agents"
+    }
+  },
+  "capability_statement": "Answers questions about network availability, quality and fault impact by site and region, and explains what is driving degradation.",
+  "business_value": {
+    "analyses": [
+      "impact_ranking",
+      "root_cause",
+      "comparison",
+      "pattern_detection",
+      "trend_segmented"
+    ],
+    "replaces": "Weekly consolidation of alarm, usage and work-order extracts across three tools by the network analytics team.",
+    "personas": [
+      "network_operations_manager",
+      "field_operations_lead",
+      "care_operations"
+    ]
+  },
+  "out_of_scope": [
+    "Radio parameter changes",
+    "Work-order creation",
+    "Capital planning approval"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-IMPHRS-010",
+      "kpi_name": "Impacted Subscriber Hours",
+      "unit": "count",
+      "source_product": "DP-TEL-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "site_class"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-THRPUT-008",
+      "kpi_name": "Throughput Percentile",
+      "unit": "rate",
+      "source_product": "DP-TEL-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "site_class",
+        "technology"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-NETAVAIL-006",
+      "kpi_name": "Network Availability",
+      "unit": "percent",
+      "source_product": "DP-TEL-002",
+      "grains": [
+        "day",
+        "week",
+        "month"
+      ],
+      "slices": [
+        "region",
+        "site_class",
+        "technology"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-FMTTR-009",
+      "kpi_name": "Fault Mean Time to Restore",
+      "unit": "hours",
+      "source_product": "DP-TEL-002",
+      "grains": [
+        "week",
+        "month",
+        "quarter"
+      ],
+      "slices": [
+        "region",
+        "site_class"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-TEL-002",
+      "columns": [
+        "site_id",
+        "observed_hour",
+        "region",
+        "site_class",
+        "technology",
+        "available_minutes",
+        "scheduled_minutes",
+        "established_calls",
+        "dropped_calls",
+        "throughput_mbps",
+        "fault_class",
+        "fault_closed",
+        "restore_minutes",
+        "impacted_subscribers",
+        "outage_hours",
+        "impacted_subscriber_hours"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-TEL-002:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-TEL-002/ask",
+    "required_scope": "agent:AG-TEL-002:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which sites had the worst customer impact yesterday?",
+      "What is driving the throughput drop in the Denver cluster?",
+      "How does availability compare across regions this month?",
+      "Which faults are recurring on the same assets?",
+      "What is our MTTR trend and where is it worst?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-TEL-002/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_tel_002",
+        "scope": "dp:DP-TEL-002:read",
+        "cost_class": "small",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-TEL-002": "2.4.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "cc2576751d30f0562bd44e9cc72f620b6399f2d8b232c7e24a3ecdbf1687198a"
+}

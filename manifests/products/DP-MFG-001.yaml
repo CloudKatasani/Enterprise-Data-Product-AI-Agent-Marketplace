@@ -1,0 +1,277 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-MFG-001
+  name: "Manufacturing Yield & Equipment Effectiveness"
+  industry: manufacturing
+  domain: operations
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0046
+    team: "Manufacturing Excellence"
+    escalation: "#dp-manufacturing"
+  certification: certified
+spec:
+  purpose: >-
+    Run, line and shift level view of equipment effectiveness, yield, downtime and scrap for
+    manufacturing performance improvement.
+  grain: "one row per production run per line per shift"
+  history_months: 36
+  known_limitations: >-
+    Downtime under two minutes is aggregated into a micro-stop bucket and carries no reason
+    code. Contract manufacturing sites report at shift level only, so run-level genealogy is
+    unavailable for those plants.
+  upstream_sources: [SRC-MES, SRC-SCADA, SRC-ERP-QUALITY]
+  entities: [run, line, shift, product]
+  certified_kpis: [KPI-OEE-071, KPI-FPY-072, KPI-DOWNTIME-073, KPI-SCRAP-074, KPI-CHANGEOVER-075]
+  columns:
+    - name: run_id
+      type: string
+      business_name: "Run ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Production run identifier.
+    - name: line
+      type: string
+      business_name: "Line"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Production line.
+    - name: plant
+      type: string
+      business_name: "Plant"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Manufacturing plant.
+    - name: shift
+      type: string
+      business_name: "Shift"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Shift the run was executed on.
+    - name: shift_date
+      type: date
+      business_name: "Shift Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Date of the shift.
+    - name: product_family
+      type: string
+      business_name: "Product Family"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Product family produced on the run.
+    - name: reason_code
+      type: string
+      business_name: "Downtime Reason Code"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Reason code for the dominant downtime event.
+    - name: downtime_type
+      type: string
+      business_name: "Downtime Type"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Planned or unplanned downtime classification.
+    - name: root_cause
+      type: string
+      business_name: "Scrap Root Cause"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Assigned root cause for scrapped units.
+    - name: availability_rate
+      type: number
+      business_name: "Availability Rate"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Share of planned production time the line was running.
+    - name: performance_rate
+      type: number
+      business_name: "Performance Rate"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Actual output against ideal cycle rate.
+    - name: quality_rate
+      type: number
+      business_name: "Quality Rate"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Good units as a share of total units produced.
+    - name: started_units
+      type: number
+      business_name: "Started Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units started on the run.
+    - name: scrapped_units
+      type: number
+      business_name: "Scrapped Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units scrapped on the run.
+    - name: passed_without_rework
+      type: boolean
+      business_name: "Passed Without Rework"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the unit passed all checks first time.
+    - name: downtime_hours
+      type: number
+      business_name: "Downtime Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours the line was down during the run.
+    - name: changeover_minutes
+      type: number
+      business_name: "Changeover Minutes"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes from last good unit to first good unit of the next product.
+    - name: standardised_changeover
+      type: boolean
+      business_name: "Standardised Changeover"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the standardised changeover procedure was in force.
+  contract:
+    version: 2.8.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "at shift close"
+        p95_minutes: 20
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "mes_system_of_record"
+    deprecation_policy:
+      notice_days: 60
+      minimum_parallel_run_days: 30
+    support:
+      hours: "24x7"
+      p1_response_minutes: 20
+      on_call: "pagerduty://manufacturing-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US, EU]
+    consumer_obligations:
+      - "No equipment parameter change may be executed from this product"
+      - "Micro-stop aggregates may not be presented as reason-coded downtime"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 20 minutes of detection.
+  quality_rules:
+    - id: QR-MFG-001-01
+      dimension: completeness
+      column: run_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-MFG-001-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "shift_close"
+      tolerance_minutes: 20
+      severity: high
+    - id: QR-MFG-001-03
+      dimension: validity
+      column: reason_code
+      rule: in_reference_set
+      threshold_pct: 99.0
+      severity: high
+    - id: QR-MFG-001-04
+      dimension: uniqueness
+      columns: [run_id, line, shift_date]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-MFG-001-05
+      dimension: consistency
+      column: scrapped_units
+      rule: not_greater_than_started
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, rest, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 240000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 90
+    planted_patterns:
+      - id: line3-downtime-pareto
+        description: >-
+            Downtime on Line 3 concentrates in two reason codes, which is the Pareto finding.
+      - id: shift-fpy-gap
+        description: >-
+            One shift carries a materially lower first pass yield on the same products and lines.
+      - id: changeover-standardisation
+        description: >-
+            Changeover time distribution shifts after standardisation, visible as a distribution change
+            rather than a mean change.
+  value_case:
+    business_outcome: >-
+      Plant teams work the two reasons that cost the most hours instead of the whole downtime
+      list.
+    baseline:
+      method: "daily production meeting with manual downtime tally"
+      analyst_hours_month: 105
+      captured: "2026-02"
+    benefit_model: "recovered_production_hours * contribution_margin_per_hour - improvement_cost"
+    assumptions:
+      - text: "contribution margin per recovered production hour"
+        value: 1420.0
+        unit: usd
+        source: "plant finance FY26"
+        dated: 2026-02-01
+      - text: "share of unplanned downtime addressable through reason-code action"
+        value: 23.0
+        unit: percent
+        sample_size: 160
+        source: "continuous improvement review"
+        dated: 2026-05-05
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-12
+      reviewer: PTY-0046

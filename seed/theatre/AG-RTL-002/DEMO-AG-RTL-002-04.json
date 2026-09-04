@@ -1,0 +1,108 @@
+{
+  "agent_id": "AG-RTL-002",
+  "agent_name": "Inventory Availability Agent",
+  "agent_version_id": "AGV-AG-RTL-002-1.0.0",
+  "analysis_type": "lost_sales",
+  "answer": {
+    "headline": "apparel leads on lost sales estimate at $213,892.40, 25.35% of the total across 5 categorys.",
+    "narrative": "Ranked by the certified definition KPI-LOSTSALES-055 over 45,000 rows in DP-RTL-002.",
+    "table": {
+      "columns": [
+        "category",
+        "KPI-LOSTSALES-055",
+        "observations"
+      ],
+      "rows": [
+        [
+          "apparel",
+          213892.4,
+          10800
+        ],
+        [
+          "grocery",
+          197386.54,
+          11400
+        ],
+        [
+          "home",
+          190583.84,
+          9300
+        ],
+        [
+          "electronics",
+          143267.31,
+          7200
+        ],
+        [
+          "seasonal",
+          98630.07,
+          6300
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "currency",
+        "x": "category",
+        "y": "KPI-LOSTSALES-055"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "sku",
+        "unmet_demand_units",
+        "average_selling_price",
+        "category",
+        "region",
+        "store_format",
+        "activity_date"
+      ],
+      "contract_version": "3.5.0",
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-RTL-002-04",
+  "kpi_definitions": [
+    "KPI-LOSTSALES-055"
+  ],
+  "notes": [],
+  "question": "What did stockouts cost us last month?",
+  "recorded_at": "2026-09-04T08:34:03.401088+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 14,
+    "rows_scanned": 45000,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "category",
+          "limit": 24,
+          "measure": "(sum(unmet_demand_units * average_selling_price))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 12,
+        "rows_returned": 5,
+        "rows_scanned": 45000,
+        "tool": "query_dp_rtl_002"
+      }
+    ]
+  }
+}

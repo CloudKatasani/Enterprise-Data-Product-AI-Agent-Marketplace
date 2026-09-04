@@ -1,0 +1,93 @@
+{
+  "agent_id": "AG-TEL-001",
+  "agent_name": "Churn Sentinel",
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "period_comparison",
+  "answer": {
+    "headline": "Churn Rate is 2.86% for the quarter ending 2026-07-01, up 0.96% on the prior quarter.",
+    "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 2 quarters and 25,200 rows.",
+    "table": {
+      "columns": [
+        "period",
+        "KPI-CHURN-001",
+        "observations"
+      ],
+      "rows": [
+        [
+          "2026-04-01",
+          1.9,
+          11340
+        ],
+        [
+          "2026-07-01",
+          2.86,
+          13860
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 1.4,
+        "unit": "percent",
+        "x": "period",
+        "y": "KPI-CHURN-001"
+      },
+      "type": "line"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "subscriber_id",
+        "churn_flag",
+        "segment",
+        "region",
+        "tenure_band",
+        "active_at_period_start",
+        "activity_date"
+      ],
+      "contract_version": "3.2.0",
+      "product_id": "DP-TEL-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-001-01",
+  "kpi_definitions": [
+    "KPI-CHURN-001"
+  ],
+  "notes": [],
+  "question": "What is our churn rate this quarter and how does it compare to last?",
+  "recorded_at": "2026-09-04T08:34:03.819114+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 24,
+    "rows_scanned": 25200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "quarter",
+          "group_by": "period",
+          "limit": 24,
+          "measure": "((count(distinct subscriber_id) filter (where churn_flag))::numeric / NULLIF((count(distinct subscriber_id) filter (where active_at_period_start))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 21,
+        "rows_returned": 2,
+        "rows_scanned": 25200,
+        "tool": "query_dp_tel_001"
+      }
+    ]
+  }
+}

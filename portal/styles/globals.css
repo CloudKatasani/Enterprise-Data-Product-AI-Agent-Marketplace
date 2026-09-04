@@ -1,0 +1,1567 @@
+@import './tokens/colour.css';
+@import './tokens/motion.css';
+@import './tokens/space.css';
+@import './tokens/typography.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: var(--border-width-emphasis) solid var(--focus-ring);
+    outline-offset: var(--space-3xs);
+  }
+
+  /* Reserve exact boxes for the motion surfaces before they paint so the
+   * landing page holds CLS at 0.00 (13.6). */
+  .reserve-ribbon {
+    min-height: var(--ribbon-band-height);
+  }
+
+  .reserve-constellation {
+    min-height: var(--constellation-height);
+  }
+
+  .reserve-theatre {
+    min-height: var(--theatre-height);
+  }
+}
+
+@layer utilities {
+  .skip-link {
+    position: absolute;
+    transform: translateY(-200%);
+    z-index: 100;
+    background: var(--surface-raised);
+    color: var(--text-primary);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    transition: transform var(--duration-micro) var(--ease-standard);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * Quality ring.
+   *
+   * The sweep is a conic gradient driven by --quality-value, which the
+   * component sets from the score. Only transform and opacity animate
+   * (13.1): the ring scales in, it does not redraw.
+   * ---------------------------------------------------------------- */
+  .quality-ring {
+    --quality-value: 0;
+    --quality-size: 44px;
+    --quality-thickness: 4px;
+    --quality-colour: var(--colour-ink-300);
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: var(--quality-size);
+    height: var(--quality-size);
+    border-radius: var(--radius-pill);
+    background: conic-gradient(
+      var(--quality-colour) calc(var(--quality-value) * 1%),
+      var(--border-subtle) 0
+    );
+    flex: none;
+  }
+
+  .quality-ring[data-size='sm'] {
+    --quality-size: 34px;
+    --quality-thickness: 3px;
+  }
+
+  .quality-ring::after {
+    content: '';
+    position: absolute;
+    inset: var(--quality-thickness);
+    border-radius: var(--radius-pill);
+    background: var(--surface-raised);
+  }
+
+  .quality-ring[data-band='exemplary'] { --quality-colour: var(--colour-band-exemplary); }
+  .quality-ring[data-band='healthy']   { --quality-colour: var(--colour-band-healthy); }
+  .quality-ring[data-band='watch']     { --quality-colour: var(--colour-band-watch); }
+  .quality-ring[data-band='at_risk']   { --quality-colour: var(--colour-band-at-risk); }
+  .quality-ring[data-band='unfit']     { --quality-colour: var(--colour-band-unfit); }
+
+  .quality-ring__value {
+    position: relative;
+    z-index: 1;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+  }
+
+  /* -------------------------------------------------------------------
+   * Product card. Fixed height so the grid — and the landing ribbon that
+   * reuses this card — reserve their boxes before paint and hold CLS at
+   * 0.00 (13.6).
+   * ---------------------------------------------------------------- */
+  .product-card {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: var(--space-sm);
+    min-height: var(--card-product-height);
+    padding: var(--space-md);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    transition:
+      transform var(--duration-base) var(--ease-standard),
+      opacity var(--duration-base) var(--ease-standard);
+  }
+
+  .product-card:hover,
+  .product-card:focus-within {
+    transform: translate3d(0, calc(var(--ribbon-card-lift-px) * -1px), 0);
+  }
+
+  .agent-card {
+    min-height: var(--card-agent-height);
+  }
+
+  /* -------------------------------------------------------------------
+   * The demo console (M7.1, M7.2).
+   *
+   * Two columns above the medium breakpoint, answer first in source order so
+   * the reading order is the reading order. The trace rail is not collapsible:
+   * it stacks under the answer on narrow screens rather than disappearing,
+   * because "what did this read and what did it cost" is not a detail.
+   * ---------------------------------------------------------------- */
+  .demo-console {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .demo-console-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .demo-console-body {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .demo-console-body {
+      grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    }
+  }
+
+  .demo-question-picker {
+    padding-block: var(--space-sm);
+    border-block: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .demo-question-chip {
+    display: inline-flex;
+    max-width: var(--measure-chip);
+    align-items: baseline;
+    gap: var(--space-3xs);
+    overflow: hidden;
+    padding: var(--space-3xs) var(--space-sm);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity var(--duration-micro) var(--ease-standard);
+  }
+
+  .demo-question-chip[aria-current] {
+    border-color: var(--border-accent);
+    color: var(--text-accent);
+  }
+
+  /* -------------------------------------------------------------------
+   * The answer.
+   * ---------------------------------------------------------------- */
+  .answer-panel {
+    padding: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+  }
+
+  .answer-visual {
+    margin-top: var(--space-lg);
+  }
+
+  .answer-bars {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .answer-bar-row {
+    display: grid;
+    grid-template-columns: var(--bar-label-width) minmax(0, 1fr) var(--bar-value-width);
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+  }
+
+  .answer-bar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .answer-bar-track {
+    height: var(--bar-height);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+  }
+
+  /* The bar grows by transform alone. Animating width would lay out and paint
+   * every frame; scaleX composites (rule 4, 13.6). */
+  .answer-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(--colour-accent);
+    transform-origin: inline-start center;
+    transition: transform var(--duration-slow) var(--ease-entrance);
+  }
+
+  .answer-bar-value {
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+    color: var(--text-primary);
+  }
+
+  .answer-table-wrap {
+    margin-top: var(--space-lg);
+    overflow-x: auto;
+  }
+
+  .answer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-2xs);
+  }
+
+  .answer-table th {
+    padding: var(--space-2xs) var(--space-sm);
+    border-bottom: var(--border-width-hairline) solid var(--border-strong);
+    color: var(--text-muted);
+    font-weight: var(--weight-medium);
+    text-align: start;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .answer-table td {
+    padding: var(--space-2xs) var(--space-sm);
+    border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  .answer-citations {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  /* -------------------------------------------------------------------
+   * The trace rail. Visible by default; never behind a toggle (M7.2).
+   * ---------------------------------------------------------------- */
+  .trace-rail {
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+  }
+
+  .trace-figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .trace-section {
+    padding-top: var(--space-sm);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .trace-subhead {
+    margin-bottom: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .trace-list {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .trace-call {
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+  }
+
+  .trace-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3xs);
+  }
+
+  .trace-chip {
+    display: inline-flex;
+    padding: var(--space-3xs) var(--space-2xs);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+  }
+
+  /* -------------------------------------------------------------------
+   * Refusals. Designed surfaces, not error text (M7.4).
+   * ---------------------------------------------------------------- */
+  .refusal-panel {
+    padding: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-inline-start: var(--border-width-accent) solid var(--colour-band-watch);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+  }
+
+  .refusal-panel[data-kind='ungrounded'] {
+    border-inline-start-color: var(--colour-band-unfit);
+  }
+
+  .refusal-title {
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .refusal-body {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .refusal-section {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .refusal-subhead {
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .refusal-scope {
+    display: inline-block;
+    margin-top: var(--space-2xs);
+    padding: var(--space-3xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    font-size: var(--text-2xs);
+    color: var(--text-primary);
+  }
+
+  .refusal-action {
+    display: inline-flex;
+    align-items: center;
+    margin-top: var(--space-md);
+    padding: var(--space-2xs) var(--space-md);
+    border: var(--border-width-hairline) solid var(--border-accent);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+    transition: opacity var(--duration-micro) var(--ease-standard);
+  }
+
+  .refusal-action:hover {
+    opacity: var(--opacity-hover);
+  }
+
+  .tab-heading {
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  /* The card shows the agent's declared limits and clips rather than counting
+   * them in the component: the card has a fixed height, and how many fit is a
+   * geometry question, not a number for a component to decide. */
+  .card-limit-list {
+    max-height: var(--card-limit-list-height);
+    overflow: hidden;
+  }
+
+  /* -------------------------------------------------------------------
+   * The mesh (M9.3, M9.4).
+   *
+   * The diagram is server-rendered SVG in a box of fixed aspect, so it
+   * reserves its space before paint and never settles. Nothing here animates
+   * on load: a graph that rearranges itself for two seconds is a graph nobody
+   * can point at while it does.
+   * ---------------------------------------------------------------- */
+  .mesh-figure {
+    margin: 0;
+  }
+
+  .mesh-svg {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: var(--mesh-max-height);
+    margin-inline: auto;
+  }
+
+  .mesh-edge {
+    stroke: var(--colour-accent);
+    fill: none;
+  }
+
+  .mesh-node circle {
+    fill: var(--surface-raised);
+    stroke: var(--border-strong);
+    stroke-width: var(--border-width-emphasis);
+  }
+
+  .mesh-node[data-connected='true'] circle {
+    stroke: var(--border-accent);
+  }
+
+  /* A node with no edge is still on the ring, dimmed. Removing it would hide
+   * the most interesting thing the mesh can say: this asset is connected to
+   * nothing. */
+  .mesh-node[data-connected='false'] circle {
+    opacity: var(--opacity-hover);
+  }
+
+  .mesh-node text {
+    font-size: var(--mesh-label-size);
+    fill: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mesh-node[data-connected='true'] text {
+    fill: var(--text-secondary);
+  }
+
+  .mesh-caption {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-top: var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    text-align: center;
+  }
+}
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * Incidents (M10.2, M10.3).
+   *
+   * A banner is a statement of fact placed where the consumer is already
+   * looking. It has no dismiss control here because it has none in the API:
+   * an incident stops being shown when it is resolved, and at no other time.
+   * Severity is carried on a data attribute rather than a class per band, so
+   * the bands stay a closed set the CSS enumerates once.
+   * ---------------------------------------------------------------- */
+  .incident-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .incident-banner {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-inline-start-width: var(--border-width-accent);
+    border-inline-start-color: var(--incident-colour, var(--colour-status-info));
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-md);
+  }
+
+  .incident-banner[data-severity='sev1'] { --incident-colour: var(--colour-severity-sev1); }
+  .incident-banner[data-severity='sev2'] { --incident-colour: var(--colour-severity-sev2); }
+  .incident-banner[data-severity='sev3'] { --incident-colour: var(--colour-severity-sev3); }
+  .incident-banner[data-severity='sev4'] { --incident-colour: var(--colour-severity-sev4); }
+
+  .incident-headline {
+    max-width: var(--measure-prose);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  .incident-detail {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-3xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* The band, as a word. A colour alone would carry the whole meaning for a
+   * reader who can see it and none for a reader who cannot. */
+  .incident-severity {
+    display: inline-block;
+    border: var(--border-width-hairline) solid currentcolor;
+    border-radius: var(--radius-pill);
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--incident-colour, var(--text-muted));
+  }
+
+  .incident-severity[data-severity='sev1'] { --incident-colour: var(--colour-severity-sev1); }
+  .incident-severity[data-severity='sev2'] { --incident-colour: var(--colour-severity-sev2); }
+  .incident-severity[data-severity='sev3'] { --incident-colour: var(--colour-severity-sev3); }
+  .incident-severity[data-severity='sev4'] { --incident-colour: var(--colour-severity-sev4); }
+}
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * The landing page (BUILD.md section 13; specification 6.2, ten bands).
+   *
+   * Every band declares its height so its box is reserved before paint. That
+   * is the whole of the CLS budget: nothing here is sized by what arrives.
+   *
+   * Only `transform` and `opacity` are animated anywhere in this block, and
+   * `npm run lint:animatable-props` fails the build if that ever stops being
+   * true. Hover feedback lifts a card with a translate rather than a shadow,
+   * for the same reason.
+   * ---------------------------------------------------------------- */
+  .landing {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .landing-bands {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4xl);
+    width: 100%;
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding: var(--space-3xl) var(--space-lg);
+  }
+
+  .band-heading {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .band-sub {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* --- Band 1: hero and constellation ------------------------------- */
+  .hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: var(--hero-height);
+    overflow: hidden;
+    background: var(--surface-hero);
+    isolation: isolate;
+  }
+
+  .constellation {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  /* As the miniature it is an ordinary block in the flow at full strength,
+   * not a backdrop. Same component, same encoding, different job. */
+  .constellation[data-interactive='true'] {
+    position: relative;
+    inset: auto;
+    height: var(--constellation-height);
+    margin-top: var(--space-md);
+  }
+
+  .constellation-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--hero-scrim);
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: var(--measure-wide);
+    padding: var(--space-3xl) var(--space-lg);
+  }
+
+  .hero-headline {
+    max-width: var(--measure-prose);
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    font-weight: var(--weight-bold);
+    color: var(--text-on-hero);
+  }
+
+  .hero-sub {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-md);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-on-hero);
+    opacity: var(--opacity-hover);
+  }
+
+  .hero-search {
+    display: flex;
+    gap: var(--space-xs);
+    max-width: var(--measure-prose);
+    margin-top: var(--space-lg);
+  }
+
+  .hero-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: var(--border-width-hairline) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-base);
+    color: var(--text-primary);
+  }
+
+  .hero-search-button,
+  .hero-cta-primary {
+    border-radius: var(--radius-md);
+    background: var(--colour-accent);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-inverse);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+  }
+
+  .hero-cta-ghost {
+    border: var(--border-width-hairline) solid var(--text-on-hero);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-on-hero);
+  }
+
+  .constellation-edge {
+    stroke: var(--colour-accent);
+    opacity: var(--opacity-hover);
+  }
+
+  .constellation-edge[data-dimmed='true'],
+  .constellation-node[data-dimmed='true'] {
+    opacity: var(--constellation-dim-opacity);
+  }
+
+  .constellation-node circle {
+    fill: var(--surface-raised);
+    stroke: var(--border-strong);
+    stroke-width: var(--border-width-emphasis);
+  }
+
+  .constellation-node[data-band='exemplary'] circle { fill: var(--colour-band-exemplary); }
+  .constellation-node[data-band='healthy'] circle { fill: var(--colour-band-healthy); }
+  .constellation-node[data-band='watch'] circle { fill: var(--colour-band-watch); }
+  .constellation-node[data-band='at_risk'] circle { fill: var(--colour-band-at-risk); }
+  .constellation-node[data-band='unfit'] circle { fill: var(--colour-band-unfit); }
+
+  .constellation-node[data-certification='certified'] circle {
+    stroke: var(--colour-cert-certified);
+  }
+  .constellation-node[data-certification='published'] circle {
+    stroke: var(--colour-cert-published);
+  }
+  .constellation-node[data-certification='beta'] circle { stroke: var(--colour-cert-beta); }
+
+  /* An open incident is the one thing on this graph that moves without a
+   * visitor asking. Opacity only — a pulsing radius would animate layout. */
+  .constellation-node[data-incident='true'] circle {
+    animation: incident-pulse var(--duration-slow) ease-in-out infinite alternate;
+  }
+
+  @keyframes incident-pulse {
+    from { opacity: var(--opacity-hover); }
+    to { opacity: var(--constellation-dim-opacity); }
+  }
+
+  .constellation-satellite {
+    fill: var(--colour-accent);
+  }
+
+  .constellation-pulse {
+    fill: var(--colour-accent);
+    animation: answer-pulse var(--constellation-pulse-ms) var(--ease-exit) forwards;
+  }
+
+  @keyframes answer-pulse {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(3); }
+  }
+
+  .constellation-peek {
+    position: absolute;
+    inset-inline-start: var(--space-md);
+    inset-block-end: var(--space-md);
+    max-width: var(--measure-chip);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    box-shadow: var(--elevation-overlay);
+    padding: var(--space-sm);
+  }
+
+  .constellation-peek-name {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .constellation-peek-meta {
+    margin-top: var(--space-3xs);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .constellation-peek-link {
+    display: inline-block;
+    margin-top: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+  }
+
+  .motion-toggle {
+    margin-top: var(--space-xl);
+  }
+
+  .motion-toggle-button {
+    border: var(--border-width-hairline) solid var(--text-on-hero);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-on-hero);
+  }
+
+  .motion-toggle-note {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-2xs);
+    color: var(--text-on-hero);
+    opacity: var(--opacity-hover);
+  }
+
+  /* --- Band 2: counters --------------------------------------------- */
+  .counters {
+    border-block: var(--border-width-hairline) solid var(--border-subtle);
+    background: var(--surface-sunken);
+  }
+
+  .counter-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--measure-chip), 1fr));
+    gap: var(--space-lg);
+    align-items: center;
+    min-height: var(--counter-strip-height);
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding: var(--space-lg);
+  }
+
+  .counter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  .counter-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .counter-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  /* --- Band 3: industry selector ------------------------------------ */
+  .industry-strip {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    margin-top: var(--space-md);
+    padding-bottom: var(--space-2xs);
+  }
+
+  .industry-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    width: var(--industry-tile-width);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-sm);
+    text-align: start;
+  }
+
+  .industry-tile[aria-current='true'] {
+    border-color: var(--border-accent);
+  }
+
+  .industry-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .industry-counts {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  /* --- Band 4: the ribbon ------------------------------------------- */
+  .ribbon-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .ribbon-control,
+  .theatre-control {
+    border: var(--border-width-hairline) solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-sm);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .ribbon-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .ribbon-viewport {
+    overflow: hidden;
+    min-height: var(--ribbon-band-height);
+  }
+
+  .ribbon-track {
+    display: flex;
+    width: max-content;
+    /* One composited layer per row. Sixty cards each promoting themselves is
+     * sixty things for the compositor to reconcile every frame. */
+    will-change: transform;
+  }
+
+  .ribbon-list {
+    display: flex;
+    gap: var(--space-md);
+    margin-inline-end: var(--space-md);
+  }
+
+  /* 13.2: the standard catalog card at 88%. The scale is a transform, so the
+   * ribbon costs no layout for it. */
+  .ribbon-list .product-card {
+    transform: scale(var(--ribbon-card-scale));
+    transform-origin: top inline-start;
+  }
+
+  .ribbon-list .product-card:hover,
+  .ribbon-list .product-card:focus-within {
+    transform: scale(var(--ribbon-card-scale))
+      translateY(calc(var(--ribbon-card-lift-px) * -1px));
+  }
+
+  .ribbon-static {
+    display: none;
+  }
+
+  .ribbon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .ribbon-more,
+  .mesh-band-link,
+  .agent-try {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+  }
+
+  /* --- Band 5: the agents ------------------------------------------- */
+  .agent-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .agent-tile {
+    display: flex;
+    flex-direction: column;
+    min-height: var(--card-agent-height);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-md);
+  }
+
+  .agent-try {
+    margin-top: auto;
+  }
+
+  /* --- Band 6: the theatre ------------------------------------------ */
+  .theatre-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .theatre-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .theatre-picker {
+    display: block;
+    margin-top: var(--space-md);
+  }
+
+  .theatre-select {
+    width: 100%;
+    max-width: var(--measure-prose);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-2xs) var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  .theatre-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    gap: var(--space-lg);
+    align-items: start;
+    min-height: var(--theatre-height);
+    margin-top: var(--space-md);
+  }
+
+  .theatre-stage {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-lg);
+  }
+
+  .theatre-question {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .theatre-caret {
+    display: inline-block;
+    width: var(--border-width-emphasis);
+    height: var(--text-sm);
+    margin-inline-start: var(--space-3xs);
+    background: var(--text-accent);
+    vertical-align: text-bottom;
+    animation: caret-blink var(--theatre-caret-blink-ms) steps(1, end) infinite;
+  }
+
+  @keyframes caret-blink {
+    from { opacity: 1; }
+    50% { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .theatre-thinking {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .theatre-headline {
+    margin-top: var(--space-md);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    color: var(--text-primary);
+  }
+
+  .theatre-narrative {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .theatre-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-sm);
+    height: var(--theatre-chart-height);
+    margin-top: var(--space-md);
+  }
+
+  .theatre-bar-slot {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: var(--theatre-bar-width);
+    height: 100%;
+  }
+
+  /* Bars grow from the axis with a scale, never a height: a chart that
+   * animated its height would animate layout for every frame it drew. */
+  .theatre-bar {
+    flex: 1 1 auto;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--colour-accent);
+    transform-origin: bottom;
+    transition: transform var(--theatre-chart-draw-ms) var(--ease-entrance);
+  }
+
+  .theatre-bar-label {
+    margin-top: var(--space-3xs);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .theatre-citations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-top: var(--space-md);
+  }
+
+  .theatre-citation {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-xs);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+  }
+
+  .theatre-rail {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+    padding: var(--space-md);
+  }
+
+  .theatre-rail-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    margin-top: var(--space-2xs);
+  }
+
+  .theatre-rail-item {
+    border-inline-start: var(--border-width-accent) solid var(--border-accent);
+    padding-inline-start: var(--space-xs);
+  }
+
+  .theatre-rail-tool {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--text-primary);
+  }
+
+  .theatre-rail-meta {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .theatre-rail-totals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--bar-value-width), 1fr));
+    gap: var(--space-2xs);
+    margin-top: var(--space-md);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+    padding-top: var(--space-sm);
+    font-size: var(--text-2xs);
+  }
+
+  .theatre-rail-totals dt {
+    color: var(--text-muted);
+  }
+
+  .theatre-rail-totals dd {
+    color: var(--text-primary);
+  }
+
+  /* --- Band 7: how it works ----------------------------------------- */
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+  }
+
+  .how-index {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: var(--text-muted);
+  }
+
+  .how-title {
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .how-body {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+  }
+
+  /* --- Band 9: value proof ------------------------------------------ */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .proof-tile {
+    min-height: var(--proof-tile-height);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-lg);
+  }
+
+  .proof-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .proof-unit {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+    color: var(--text-muted);
+  }
+
+  .proof-label {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .proof-detail {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+  }
+
+  /* --- The ticker ---------------------------------------------------- */
+  .ticker-viewport {
+    overflow: hidden;
+    height: var(--ticker-height);
+    border-block: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .ticker-track {
+    will-change: transform;
+  }
+
+  .ticker-item {
+    padding: var(--space-2xs) 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* --- Reduced motion ------------------------------------------------
+   * Every ambient animation has a static equivalent carrying the same
+   * information (13.6). The ribbon swaps its moving rows for the top cards as
+   * a grid; the ticker becomes the list it always was; the constellation holds
+   * its settled frame. Nothing is hidden and nothing is summarised away.
+   * ---------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon-rows {
+      display: none;
+    }
+
+    .ribbon-static {
+      display: block;
+    }
+
+    .ticker-viewport {
+      height: auto;
+    }
+
+    .constellation-node[data-incident='true'] circle,
+    .constellation-pulse,
+    .theatre-caret {
+      animation: none;
+    }
+
+    .theatre-bar {
+      transition: none;
+    }
+  }
+}
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * The academy and the admin console (M12).
+   *
+   * Both are reading surfaces first. The academy is prose the learner works
+   * through, so its measure matters more than its density; the console is a
+   * table of what depends on what, so its density matters more than its
+   * measure. Neither animates anything.
+   * ---------------------------------------------------------------- */
+  .academy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+  }
+
+  .academy-path {
+    display: flex;
+    flex-direction: column;
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-md);
+  }
+
+  .academy-badge {
+    border-radius: var(--radius-pill);
+    border: var(--border-width-hairline) solid var(--colour-status-ok);
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--colour-status-ok);
+    white-space: nowrap;
+  }
+
+  .academy-modules {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    margin-top: var(--space-sm);
+  }
+
+  .academy-module {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .academy-module:hover {
+    background: var(--surface-sunken);
+  }
+
+  /* A passed module is marked with a word as well as a colour: the tick is
+   * text, so a reader who cannot see the accent still knows. */
+  .academy-module[data-passed='true']::after {
+    content: ' passed';
+    font-size: var(--text-2xs);
+    color: var(--colour-status-ok);
+  }
+
+  .academy-minutes {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .academy-cert {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .module {
+    max-width: var(--measure-prose);
+  }
+
+  .module-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-primary);
+  }
+
+  .module-code {
+    border-radius: var(--radius-sm);
+    background: var(--surface-sunken);
+    padding-inline: var(--space-3xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .module-sandbox {
+    margin-top: var(--space-xl);
+    border-inline-start: var(--border-width-accent) solid var(--border-accent);
+    padding-inline-start: var(--space-md);
+  }
+
+  .module-link {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+  }
+
+  /* --- Administration ------------------------------------------------ */
+  .admin-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .rubric-payload {
+    max-height: var(--mesh-max-height);
+    overflow: auto;
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    padding: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    color: var(--text-primary);
+  }
+
+  .version-row {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+  }
+
+  .version-row[data-in-force='true'] {
+    border-color: var(--border-accent);
+  }
+
+  .taxonomy-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .taxonomy-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-xs);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .taxonomy-uses {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .flag-row {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+  }
+
+  /* A flag past its expiry is a branch in production somebody called
+   * temporary. It is marked, not hidden. */
+  .flag-row[data-expired='true'] {
+    border-inline-start: var(--border-width-accent) solid var(--colour-status-warn);
+  }
+
+  .flag-state {
+    border-radius: var(--radius-pill);
+    border: var(--border-width-hairline) solid currentcolor;
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .flag-state[data-enabled='true'] {
+    color: var(--colour-status-ok);
+  }
+
+  .tenancy-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--bar-label-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .tenancy-stats dt {
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .tenancy-stats dd {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+}
+
+@layer components {
+  /* The contextual runbook (M12.1). A rail rather than a band: it belongs
+   * beside the thing it explains, and it collapses under the content on a
+   * narrow screen instead of pushing it off the page. */
+  .detail-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .runbook {
+    position: sticky;
+    top: var(--space-lg);
+    margin-top: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+    padding: var(--space-md);
+  }
+
+  .runbook-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    margin-top: var(--space-sm);
+  }
+
+  .runbook-module {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .runbook-module:hover {
+    background: var(--surface-raised);
+  }
+
+  @media (max-width: 900px) {
+    .detail-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .runbook {
+      position: static;
+    }
+  }
+}

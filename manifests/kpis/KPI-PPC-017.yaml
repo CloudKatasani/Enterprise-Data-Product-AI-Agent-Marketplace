@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PPC-017
+  name: "Products per Customer"
+  domain: customer
+  steward: PTY-0034
+  status: certified
+spec:
+  business_definition: >-
+    Mean number of distinct active products held per customer at period end.
+  numerator_expr: "sum(active_product_count)"
+  denominator_expr: "count(distinct customer_id)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [segment, region, tenure_band]
+  unit: count
+  direction: higher_is_better
+  target: 2.8
+  source_of_record: DP-BNK-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["cross-hold", "product density"]

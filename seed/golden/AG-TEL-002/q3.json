@@ -1,0 +1,39 @@
+{
+  "agent_version_id": "AGV-AG-TEL-002-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "available_minutes",
+        "observed_hour",
+        "region",
+        "scheduled_minutes",
+        "site_class",
+        "site_id"
+      ],
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "15120",
+    "top": "99.28",
+    "top_share": "25.01"
+  },
+  "exchange_id": "DEMO-AG-TEL-002-03",
+  "headline": "Midwest leads on network availability at 99.28%, 25.01% of the total across 4 regions.",
+  "kpi_definitions": [
+    "KPI-NETAVAIL-006"
+  ],
+  "narrative": "Ranked by the certified definition KPI-NETAVAIL-006 over 15,120 rows in DP-TEL-002.",
+  "question": "How does availability compare across regions this month?",
+  "rows_scanned": 15120,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "region",
+    "KPI-NETAVAIL-006",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

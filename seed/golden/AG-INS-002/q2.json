@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-INS-002-1.0.0",
+  "analysis_type": "concentration",
+  "citations": [
+    {
+      "columns": [
+        "as_of_month",
+        "county",
+        "coverage_line",
+        "in_top_accumulation_zone",
+        "peril",
+        "policy_id",
+        "region",
+        "total_insured_value"
+      ],
+      "product_id": "DP-INS-002"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "17280",
+    "top": "75.34",
+    "top_share": "100.00"
+  },
+  "exchange_id": "DEMO-AG-INS-002-02",
+  "headline": "wind leads on exposure concentration at 75.34%, 100.00% of the total across 4 perils.",
+  "kpi_definitions": [
+    "KPI-EXPCONC-035"
+  ],
+  "narrative": "Ranked by the certified definition KPI-EXPCONC-035 over 17,280 rows in DP-INS-002.",
+  "question": "What is our exposure concentration by county for wind peril?",
+  "rows_scanned": 17280,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "peril",
+    "KPI-EXPCONC-035",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

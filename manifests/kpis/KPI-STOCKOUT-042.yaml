@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-STOCKOUT-042
+  name: "Pharmacy Stockout Rate"
+  domain: supply_chain
+  steward: PTY-0039
+  status: certified
+spec:
+  business_definition: >-
+    Share of item-location-days with demand and no stock on hand.
+  numerator_expr: "count(*) filter (where on_hand_units = 0 and demand_units > 0)"
+  denominator_expr: "count(*)"
+  grains_supported: [day, week, month]
+  slices_supported: [therapeutic_class, facility, item_class]
+  unit: percent
+  direction: lower_is_better
+  target: 1.2
+  source_of_record: DP-HLT-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["out of stock rate"]

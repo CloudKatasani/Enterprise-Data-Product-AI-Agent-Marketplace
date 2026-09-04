@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PMCOMP-065
+  name: "Preventive Maintenance Compliance"
+  domain: network_asset
+  steward: PTY-0043
+  status: certified
+spec:
+  business_definition: >-
+    Share of scheduled preventive maintenance tasks completed within their compliance window.
+  numerator_expr: "count(*) filter (where completed_within_window)"
+  denominator_expr: "count(*) filter (where scheduled)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [asset_class, region, crew]
+  unit: percent
+  direction: higher_is_better
+  target: 97.0
+  source_of_record: DP-UTL-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["PM compliance"]

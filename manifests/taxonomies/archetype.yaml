@@ -1,0 +1,29 @@
+apiVersion: marketplace/v1
+kind: Taxonomy
+taxonomy: archetype
+entries:
+  - code: source_aligned
+    label: Source aligned
+    description: Faithful representation of an operational source with minimal reshaping.
+    rank_order: 1
+  - code: aggregate
+    label: Aggregate
+    description: Cross-source integration producing a conformed, reusable subject area.
+    rank_order: 2
+  - code: consumer_aligned
+    label: Consumer aligned
+    description: Shaped for a named consuming use case, decision or analytical domain.
+    rank_order: 3
+  - code: document_corpus
+    label: Document corpus
+    description: Unstructured or semi-structured text collection; consistency and uniqueness
+      do not apply in the same way, so the quality rubric overrides its weights.
+    rank_order: 4
+  - code: feature_store
+    label: Feature store
+    description: Curated model features with point-in-time correctness guarantees.
+    rank_order: 5
+  - code: event_stream
+    label: Event stream
+    description: Append-only event flow consumed continuously rather than as a snapshot.
+    rank_order: 6

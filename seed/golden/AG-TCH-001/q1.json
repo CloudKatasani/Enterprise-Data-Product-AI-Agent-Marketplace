@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-TCH-001-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "account_id",
+        "acquisition_channel",
+        "activated",
+        "activity_date",
+        "onboarded",
+        "plan_tier",
+        "segment"
+      ],
+      "product_id": "DP-TCH-001"
+    }
+  ],
+  "claims": {
+    "groups": "3",
+    "rows_scanned": "17360",
+    "top": "93.33",
+    "top_share": "35.81"
+  },
+  "exchange_id": "DEMO-AG-TCH-001-01",
+  "headline": "enterprise leads on activation rate at 93.33%, 35.81% of the total across 3 plan tiers.",
+  "kpi_definitions": [
+    "KPI-ACTIV-013"
+  ],
+  "narrative": "Ranked by the certified definition KPI-ACTIV-013 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "question": "Which features are driving activation this quarter?",
+  "rows_scanned": 17360,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "plan_tier",
+    "KPI-ACTIV-013",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

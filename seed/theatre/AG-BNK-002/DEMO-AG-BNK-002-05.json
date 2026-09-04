@@ -1,0 +1,107 @@
+{
+  "agent_id": "AG-BNK-002",
+  "agent_name": "Financial Crime Triage",
+  "agent_version_id": "AGV-AG-BNK-002-1.0.0",
+  "analysis_type": "workload",
+  "answer": {
+    "headline": "trade_based leads on investigation cycle time at 16.19 days, 20.26% of the total across 5 typologys.",
+    "narrative": "Ranked by the certified definition KPI-INVCYCLE-024 over 14,400 rows in DP-BNK-002.",
+    "table": {
+      "columns": [
+        "typology",
+        "KPI-INVCYCLE-024",
+        "observations"
+      ],
+      "rows": [
+        [
+          "trade_based",
+          16.19,
+          1350
+        ],
+        [
+          "structuring",
+          16.1,
+          5760
+        ],
+        [
+          "sanctions_proximity",
+          15.92,
+          900
+        ],
+        [
+          "rapid_movement",
+          15.86,
+          3330
+        ],
+        [
+          "mule_network",
+          15.86,
+          3060
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 12.0,
+        "unit": "days",
+        "x": "typology",
+        "y": "KPI-INVCYCLE-024"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "alert_id",
+        "investigation_days",
+        "investigator_team",
+        "typology",
+        "business_line",
+        "event_timestamp"
+      ],
+      "contract_version": "2.9.0",
+      "product_id": "DP-BNK-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-BNK-002-05",
+  "kpi_definitions": [
+    "KPI-INVCYCLE-024"
+  ],
+  "notes": [],
+  "question": "Which investigators are carrying aged alerts above SLA?",
+  "recorded_at": "2026-09-04T08:34:02.627585+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 13,
+    "rows_scanned": 14400,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "typology",
+          "limit": 24,
+          "measure": "(percentile_cont(0.5) within group (order by investigation_days))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 5,
+        "rows_scanned": 14400,
+        "tool": "query_dp_bnk_002"
+      }
+    ]
+  }
+}

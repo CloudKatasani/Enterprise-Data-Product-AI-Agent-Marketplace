@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-FPRATE-022
+  name: "False Positive Rate"
+  domain: risk_compliance
+  steward: PTY-0035
+  status: certified
+spec:
+  business_definition: >-
+    Share of dispositioned alerts closed with no further action, the standard efficiency measure
+    for a surveillance rule set.
+  numerator_expr: "count(*) filter (where disposition = 'no_further_action')"
+  denominator_expr: "count(*) filter (where disposition is not null)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [typology, business_line, rule_id]
+  unit: percent
+  direction: lower_is_better
+  target: 92.0
+  source_of_record: DP-BNK-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["FPR", "no-action rate"]

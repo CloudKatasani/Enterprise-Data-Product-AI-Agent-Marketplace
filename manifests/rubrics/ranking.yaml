@@ -1,0 +1,39 @@
+# Catalog ranking rubric. Search fusion, facet ordering and the featured band
+# on the landing page all resolve their coefficients from here.
+rubric: catalog_ranking
+version: 1.3.0
+weights:
+  semantic_match: 0.35
+  quality_normalized: 0.20
+  active_consumers_90d_normalized: 0.15
+  certification_multiplier: 0.15
+  peer_affinity: 0.10
+  staleness_penalty: -0.05
+certification_multiplier:
+  certified: 1.0
+  published: 0.8
+  beta: 0.5
+  deprecated: 0.0
+featured_ranking:
+  formula: "adoption_velocity * quality_composite * recency_decay"
+  min_cards: 12
+  max_cards: 24
+  # A marketing surface that promotes an at-risk asset is a governance failure,
+  # so the featured band has a quality floor of its own.
+  min_quality_composite: 75
+fusion:
+  method: rrf
+  k: 60
+  # An exact name match must never lose to a semantic neighbour (M4 acceptance).
+  exact_name_boost: 1000
+  # How precisely a ranking signal is reported back to a consumer. Rounding
+  # happens where the rubric is resolved, so the portal prints the number it is
+  # given rather than deciding how honest to be about it.
+  explanation_precision: 3
+page_size:
+  default: 24
+  max: 100
+  facet_values: 12
+# Window for the adoption signal, in days. Named in the weight above as
+# active_consumers_90d_normalized; the window itself is data like everything else.
+adoption_window_days: 90

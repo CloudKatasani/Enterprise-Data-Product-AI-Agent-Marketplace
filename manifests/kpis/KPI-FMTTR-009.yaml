@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-FMTTR-009
+  name: "Fault Mean Time to Restore"
+  domain: network_asset
+  steward: PTY-0032
+  status: certified
+spec:
+  business_definition: >-
+    Mean elapsed hours between fault detection and service restoration for faults closed within
+    the period.
+  numerator_expr: "sum(restore_minutes)"
+  denominator_expr: "count(*) filter (where fault_closed)"
+  grains_supported: [week, month, quarter]
+  slices_supported: [region, fault_class, site_class]
+  unit: hours
+  direction: lower_is_better
+  target: 4.0
+  source_of_record: DP-TEL-002
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["MTTR", "mean time to repair"]

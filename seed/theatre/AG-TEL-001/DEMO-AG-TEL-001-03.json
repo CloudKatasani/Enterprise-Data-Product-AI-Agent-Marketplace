@@ -1,0 +1,102 @@
+{
+  "agent_id": "AG-TEL-001",
+  "agent_name": "Churn Sentinel",
+  "agent_version_id": "AGV-AG-TEL-001-1.0.0",
+  "analysis_type": "correlation",
+  "answer": {
+    "headline": "Northeast leads on impacted subscriber hours at 345,074.93, 32.75% of the total across 4 regions.",
+    "narrative": "Ranked by the certified definition KPI-IMPHRS-010 over 15,120 rows in DP-TEL-002.",
+    "table": {
+      "columns": [
+        "region",
+        "KPI-IMPHRS-010",
+        "observations"
+      ],
+      "rows": [
+        [
+          "Northeast",
+          345074.93,
+          4536
+        ],
+        [
+          "Midwest",
+          332365.55,
+          4872
+        ],
+        [
+          "West",
+          232799.93,
+          3360
+        ],
+        [
+          "Denver",
+          143304.1,
+          2352
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": null,
+        "unit": "count",
+        "x": "region",
+        "y": "KPI-IMPHRS-010"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "site_id",
+        "impacted_subscribers",
+        "outage_hours",
+        "impacted_subscriber_hours",
+        "region",
+        "observed_hour"
+      ],
+      "contract_version": "2.4.0",
+      "product_id": "DP-TEL-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TEL-001-03",
+  "kpi_definitions": [
+    "KPI-IMPHRS-010"
+  ],
+  "notes": [],
+  "question": "Are network issues contributing to churn in the Midwest?",
+  "recorded_at": "2026-09-04T08:34:03.878036+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 10,
+    "rows_scanned": 15120,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "region",
+          "limit": 24,
+          "measure": "(sum(impacted_subscribers * outage_hours))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_tel_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 5,
+        "rows_returned": 4,
+        "rows_scanned": 15120,
+        "tool": "query_dp_tel_002"
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "agent_id": "AG-HLT-001",
+  "agent_name": "Readmission Risk Navigator",
+  "agent_version_id": "AGV-AG-HLT-001-1.0.0",
+  "analysis_type": "programme_eval",
+  "answer": {
+    "headline": "Thirty Day Readmission Rate is 14.62% where cohort is false against 9.31% where it is true, a gap of 5.31%.",
+    "narrative": "Both cohorts are drawn from DP-HLT-001 over the same period: 25,474 observations against 5,726.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-READMIT-036",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          14.62,
+          25474
+        ],
+        [
+          "true",
+          9.31,
+          5726
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 11.5,
+        "unit": "percent",
+        "x": "cohort",
+        "y": "KPI-READMIT-036"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "encounter_id",
+        "index_encounter_id",
+        "eligible_index",
+        "readmitted_within_30d",
+        "condition",
+        "unit",
+        "payer",
+        "discharge_disposition",
+        "programme_enrolled",
+        "discharge_date"
+      ],
+      "contract_version": "4.3.0",
+      "product_id": "DP-HLT-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-001-05",
+  "kpi_definitions": [
+    "KPI-READMIT-036"
+  ],
+  "notes": [],
+  "question": "Did the transitional care programme reduce readmissions in the pilot units?",
+  "recorded_at": "2026-09-04T08:34:02.915584+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 68,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((count(distinct index_encounter_id) filter (where readmitted_within_30d))::numeric / NULLIF((count(distinct index_encounter_id) filter (where eligible_index))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 66,
+        "rows_returned": 2,
+        "rows_scanned": 31200,
+        "tool": "query_dp_hlt_001"
+      }
+    ]
+  }
+}

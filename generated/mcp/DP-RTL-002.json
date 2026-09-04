@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-RTL-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "99a80e0d1dbb27012fc672eef277ab5269c9f0e90b8e24b75c55f0a9b2cc01a0",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-RTL-002",
+  "product": {
+    "id": "DP-RTL-002",
+    "name": "Inventory Position & Replenishment Signal",
+    "version": "3.5.0",
+    "sensitivity": "internal",
+    "contains_pii": false,
+    "grain": "one row per sku per location per day"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-RTL-002:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_sku_supply_chain",
+      "description": "Return certified measures for Inventory Position & Replenishment Signal by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,week,month,quarter]",
+        "slices": "array[enum[category,store_format,season,horizon]]",
+        "kpi_ids": "array[enum[KPI-INSTOCK-051,KPI-WOS-052,KPI-SELLTHRU-053,KPI-MAPE-054,KPI-LOSTSALES-055]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 36000,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": false,
+    "max_rows_per_call": 36000,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-RTL-002",
+    "contract_version": "3.5.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "No transfer or purchase order may be executed without planner approval",
+    "Lost sales figures are modelled and must be labelled as estimates"
+  ]
+}

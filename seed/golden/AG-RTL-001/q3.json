@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-RTL-001-1.0.0",
+  "analysis_type": "promotion_eval",
+  "citations": [
+    {
+      "columns": [
+        "baseline_sales",
+        "business_date",
+        "category",
+        "cost_of_goods_sold",
+        "net_sales",
+        "promoted_sales",
+        "promotion",
+        "region"
+      ],
+      "product_id": "DP-RTL-001"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "23400",
+    "top": "14.32",
+    "top_share": "33.66"
+  },
+  "exchange_id": "DEMO-AG-RTL-001-03",
+  "headline": "spring_event leads on promotion lift at 14.32%, 33.66% of the total across 4 promotions.",
+  "kpi_definitions": [
+    "KPI-PROMOLIFT-050"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PROMOLIFT-050 over 23,400 rows in DP-RTL-001.",
+  "question": "Did the back-to-school promotion deliver incremental margin?",
+  "rows_scanned": 23400,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "promotion",
+    "KPI-PROMOLIFT-050",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

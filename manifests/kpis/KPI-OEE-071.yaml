@@ -1,0 +1,23 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-OEE-071
+  name: "Overall Equipment Effectiveness"
+  domain: operations
+  steward: PTY-0046
+  status: certified
+spec:
+  business_definition: >-
+    Product of availability, performance and quality rates for a line over a shift, the standard
+    composite measure of equipment effectiveness.
+  expression: "avg(availability_rate * performance_rate * quality_rate)"
+  grains_supported: [day, week, month, quarter]
+  slices_supported: [line, plant, shift, product_family]
+  unit: percent
+  direction: higher_is_better
+  target: 78.0
+  source_of_record: DP-MFG-001
+  forum_approved_at: 2026-05-18
+  last_reviewed: 2026-07-01
+  review_months: 12
+  synonyms: ["OEE"]

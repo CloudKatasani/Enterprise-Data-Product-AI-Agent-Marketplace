@@ -1,0 +1,115 @@
+{
+  "agent_id": "AG-TRN-001",
+  "agent_name": "Delivery SLA Sentinel",
+  "agent_version_id": "AGV-AG-TRN-001-1.0.0",
+  "analysis_type": "root_cause",
+  "answer": {
+    "headline": "SE-01 leads on on-time delivery rate at 96.90%, 17.28% of the total across 6 lanes.",
+    "narrative": "Ranked by the certified definition KPI-OTD-056 over 13,200 rows in DP-TRN-001.",
+    "table": {
+      "columns": [
+        "lane",
+        "KPI-OTD-056",
+        "observations"
+      ],
+      "rows": [
+        [
+          "SE-01",
+          96.9,
+          2160
+        ],
+        [
+          "MW-01",
+          96.68,
+          2171
+        ],
+        [
+          "W-01",
+          96.51,
+          2119
+        ],
+        [
+          "MW-02",
+          96.24,
+          2311
+        ],
+        [
+          "NE-01",
+          87.64,
+          2217
+        ],
+        [
+          "NE-02",
+          86.95,
+          2222
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 95.0,
+        "unit": "percent",
+        "x": "lane",
+        "y": "KPI-OTD-056"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04T00:00:00+00:00",
+      "columns": [
+        "shipment_leg_id",
+        "delivery_attempted",
+        "delivered_within_window",
+        "lane",
+        "carrier",
+        "customer",
+        "service_level",
+        "region",
+        "departure_timestamp"
+      ],
+      "contract_version": "2.2.0",
+      "product_id": "DP-TRN-001"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-TRN-001-02",
+  "kpi_definitions": [
+    "KPI-OTD-056"
+  ],
+  "notes": [],
+  "question": "What is driving late deliveries on the Northeast lanes?",
+  "recorded_at": "2026-09-04T08:34:04.021877+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 6,
+    "rows_scanned": 13200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "lane",
+          "limit": 24,
+          "measure": "((count(*) filter (where delivered_within_window))::numeric / NULLIF((count(*) filter (where delivery_attempted))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_trn_001"
+        },
+        "cost_class": "small",
+        "duration_ms": 4,
+        "rows_returned": 6,
+        "rows_scanned": 13200,
+        "tool": "query_dp_trn_001"
+      }
+    ]
+  }
+}

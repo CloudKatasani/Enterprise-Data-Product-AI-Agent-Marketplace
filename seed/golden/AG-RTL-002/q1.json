@@ -1,0 +1,40 @@
+{
+  "agent_version_id": "AGV-AG-RTL-002-1.0.0",
+  "analysis_type": "ranking",
+  "citations": [
+    {
+      "columns": [
+        "activity_date",
+        "category",
+        "location_id",
+        "on_hand_units",
+        "region",
+        "sku",
+        "store_format"
+      ],
+      "product_id": "DP-RTL-002"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "45000",
+    "top": "92.58",
+    "top_share": "20.04"
+  },
+  "exchange_id": "DEMO-AG-RTL-002-01",
+  "headline": "electronics leads on in-stock rate at 92.58%, 20.04% of the total across 5 categorys.",
+  "kpi_definitions": [
+    "KPI-INSTOCK-051"
+  ],
+  "narrative": "Ranked by the certified definition KPI-INSTOCK-051 over 45,000 rows in DP-RTL-002.",
+  "question": "Which stores have the worst in-stock rate this week?",
+  "rows_scanned": 45000,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "category",
+    "KPI-INSTOCK-051",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

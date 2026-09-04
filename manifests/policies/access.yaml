@@ -1,0 +1,137 @@
+# Access request policy (BUILD.md section 14.1).
+#
+# The approval path is data, not code, for a specific reason: the consumer is
+# shown exactly what will happen *before* they submit, and "exactly what will
+# happen" has to be one thing that both the preview and the engine read. A path
+# computed in one place and described in another drifts, and the first anyone
+# notices is when a request takes five days that the form promised would be
+# instant.
+#
+# Paths are evaluated in order and the first match wins, so the most restrictive
+# conditions come first. That ordering is load-bearing: a Restricted product
+# with a permitted purpose must not fall into auto-approve because the
+# auto-approve rule happened to be listed above it.
+policy: access_request
+version: 1.2.0
+
+# Business days, not calendar. A request submitted on Friday afternoon with a
+# two-day SLA is due Tuesday, and telling the consumer Sunday would be a lie
+# nobody could act on.
+sla_unit: business_days
+
+paths:
+  - code: blocked
+    label: "Blocked by policy"
+    # A hard violation. The request is not submittable; the consumer is shown
+    # the policy that stopped it and, where the mesh has one, a lower-sensitivity
+    # equivalent they could ask for instead.
+    when:
+      any_of:
+        - residency_conflict: true
+        # An impermissible purpose is a block, not a slower path. The
+        # purposes_by_sensitivity list below is a statement about what this
+        # estate will and will not do with its data; routing a forbidden
+        # purpose to a five-day review would make that list advisory.
+        - purpose_permitted: false
+    sla_days: 0
+    approvers: []
+    offer_alternative: true
+
+  - code: owner_privacy_security
+    label: "Owner, privacy and security"
+    when:
+      any_of:
+        - sensitivity: [restricted]
+        - contains_pii: true
+        - cross_border: true
+    sla_days: 5
+    approvers: [owner, privacy, security]
+
+  - code: owner_steward
+    label: "Owner and domain steward"
+    when:
+      all_of:
+        - sensitivity: [confidential]
+        - has_classified_columns: true
+    sla_days: 3
+    approvers: [owner, steward]
+
+  - code: certified_auto
+    label: "Automatic — academy certification"
+    # M12.1: what a certification is actually worth. A consumer who has finished
+    # the path for this asset class, on a product inside the tier their
+    # certificate covers, takes the automatic path without needing a
+    # pre-approved role.
+    #
+    # The conditions below the certification are the same ones the ordinary
+    # automatic path requires. Certification replaces the role check and nothing
+    # else: it is evidence that someone understands what they are asking for,
+    # not a reason to skip the purpose rule or hand out personal data. Which
+    # tier each certificate covers lives in the academy rubric.
+    when:
+      all_of:
+        - certification_pre_approved: true
+        - sensitivity: [public, internal]
+        - contains_pii: false
+        - purpose_permitted: true
+    sla_days: 0
+    approvers: []
+
+  - code: auto
+    label: "Automatic"
+    # Everything has to be true: a pre-approved role, low sensitivity, no PII,
+    # and a purpose the product permits. Any one of them missing routes to the
+    # owner, which is the default rather than the exception.
+    when:
+      all_of:
+        - role_pre_approved: true
+        - sensitivity: [public, internal]
+        - contains_pii: false
+        - purpose_permitted: true
+    sla_days: 0
+    approvers: []
+
+  - code: owner
+    label: "Product owner"
+    # The default. Listed last because it is what is left, not because it is
+    # rare — most requests land here.
+    when:
+      always: true
+    sla_days: 2
+    approvers: [owner]
+
+# Roles whose holders skip owner approval on low-sensitivity products. Held here
+# rather than per product so that widening it is one reviewable diff.
+pre_approved_roles: [steward, architect, administrator]
+
+escalation:
+  # Escalate before the clock runs out, not after: an escalation at breach is a
+  # notification that the SLA has already been missed.
+  #
+  # A fraction rather than a percentage, so nothing downstream has to carry a
+  # scale constant to divide by.
+  at_fraction_of_sla: 0.8
+  to_role: steward
+  on_breach_to_role: architect
+
+grant:
+  # How long a provisioned grant lives, and when the consumer hears about it.
+  duration_days: 365
+  renewal_notice_days: 14
+  dormant_after_days: 60
+
+purposes_by_sensitivity:
+  # Which declared purposes a product of each sensitivity may be requested for.
+  # Restricted data is not available for model training in this estate; that is
+  # a policy decision and it lives where policy decisions live.
+  public: [analytics, product_development, operational_planning, model_training,
+           regulatory_reporting, risk_management, customer_service,
+           retention_campaign, fraud_investigation, clinical_quality]
+  internal: [analytics, product_development, operational_planning, model_training,
+             regulatory_reporting, risk_management, customer_service,
+             retention_campaign, fraud_investigation, clinical_quality]
+  confidential: [analytics, operational_planning, regulatory_reporting,
+                 risk_management, customer_service, retention_campaign,
+                 fraud_investigation, clinical_quality]
+  restricted: [regulatory_reporting, risk_management, fraud_investigation,
+               clinical_quality]

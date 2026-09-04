@@ -1,0 +1,107 @@
+{
+  "agent_id": "AG-HLT-002",
+  "agent_name": "Pharmacy Utilization Agent",
+  "agent_version_id": "AGV-AG-HLT-002-1.0.0",
+  "analysis_type": "compliance_ranking",
+  "answer": {
+    "headline": "immunology leads on formulary adherence at 91.85%, 20.15% of the total across 5 therapeutic classs.",
+    "narrative": "Ranked by the certified definition KPI-FORMADH-041 over 30,600 rows in DP-HLT-002.",
+    "table": {
+      "columns": [
+        "therapeutic_class",
+        "KPI-FORMADH-041",
+        "observations"
+      ],
+      "rows": [
+        [
+          "immunology",
+          91.85,
+          4320
+        ],
+        [
+          "oncology",
+          91.62,
+          4320
+        ],
+        [
+          "cardiovascular",
+          91.36,
+          6480
+        ],
+        [
+          "anti_infective",
+          90.79,
+          9360
+        ],
+        [
+          "analgesia",
+          90.1,
+          6120
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 94.0,
+        "unit": "percent",
+        "x": "therapeutic_class",
+        "y": "KPI-FORMADH-041"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-04",
+      "columns": [
+        "item_id",
+        "facility",
+        "on_formulary",
+        "therapeutic_class",
+        "service_line",
+        "activity_date"
+      ],
+      "contract_version": "1.8.0",
+      "product_id": "DP-HLT-002"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-HLT-002-02",
+  "kpi_definitions": [
+    "KPI-FORMADH-041"
+  ],
+  "notes": [],
+  "question": "Where is formulary adherence lowest?",
+  "recorded_at": "2026-09-04T08:34:02.943868+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0020",
+    "cost_usd": 0.002,
+    "latency_ms": 11,
+    "rows_scanned": 30600,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "therapeutic_class",
+          "limit": 24,
+          "measure": "((count(*) filter (where on_formulary))::numeric / NULLIF((count(*))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_hlt_002"
+        },
+        "cost_class": "small",
+        "duration_ms": 8,
+        "rows_returned": 5,
+        "rows_scanned": 30600,
+        "tool": "query_dp_hlt_002"
+      }
+    ]
+  }
+}

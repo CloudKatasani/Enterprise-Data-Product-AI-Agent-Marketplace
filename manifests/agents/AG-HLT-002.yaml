@@ -1,0 +1,180 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-HLT-002
+  name: "Pharmacy Utilization Agent"
+  industry: healthcare
+  domain: supply_chain
+  owner:
+    party_id: PTY-0039
+    team: "Pharmacy Operations"
+    on_call: "pagerduty://pharmacy-agents"
+  autonomy_level: L2
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about pharmacy stock risk, formulary adherence, cost and waste, and drafts
+    replenishment adjustments for approval.
+  business_value_block:
+    analyses: [risk_list, compliance_ranking, decomposition, waste_analysis, action_draft]
+    replaces: >-
+      Weekly manual extracts per facility and the reorder review that follows them.
+    personas: [pharmacy_operations_manager, supply_chain_planner, formulary_committee]
+  out_of_scope:
+    - "Clinical substitution decisions"
+    - "Ordering without pharmacist approval"
+    - "Any change to a patient's medication"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-HLT-002/system@v1
+  data_products:
+    - product_id: DP-HLT-002
+      columns: [item_id, facility, activity_date, therapeutic_class, item_class, service_line, on_formulary, substitution_eligible, substituted, on_hand_units, demand_units, dispensed_cost, wasted_cost, patient_days, days_to_expiry, reorder_point]
+      access: read
+  tool_bindings:
+    - tool: query_dp_hlt_002
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-HLT-002"
+      scope: "dp:DP-HLT-002:read"
+      cost_class: small
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-STOCKOUT-042
+      source_product: DP-HLT-002
+      columns_used: [item_id, facility, on_hand_units, demand_units, reorder_point, therapeutic_class, item_class, activity_date]
+      grains: [day, week, month]
+      slices: [therapeutic_class, facility, item_class]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-FORMADH-041
+      source_product: DP-HLT-002
+      columns_used: [item_id, facility, on_formulary, therapeutic_class, service_line, activity_date]
+      grains: [week, month, quarter]
+      slices: [therapeutic_class, facility, service_line]
+      analysis_depth: compare
+    - kpi_id: KPI-COSTPPD-043
+      source_product: DP-HLT-002
+      columns_used: [item_id, facility, dispensed_cost, patient_days, therapeutic_class, service_line, activity_date]
+      grains: [month, quarter]
+      slices: [therapeutic_class, facility, service_line]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-WASTE-044
+      source_product: DP-HLT-002
+      columns_used: [item_id, facility, wasted_cost, dispensed_cost, item_class, days_to_expiry, therapeutic_class, activity_date]
+      grains: [month, quarter]
+      slices: [therapeutic_class, facility, item_class]
+      analysis_depth: explain
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-HLT-002-01
+      ordinal: 1
+      question: "Which items are at risk of stockout this week?"
+      kpi_class: KPI-STOCKOUT-042
+      analysis_type: risk_list
+      expected_shape:
+        headline: >-
+          how many items are at or below reorder point with live demand
+        visual: ranked_table
+        table_columns: [item_id, facility, on_hand_units, demand_units]
+        must_cite: [DP-HLT-002, KPI-STOCKOUT-042]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-002/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-002-02
+      ordinal: 2
+      question: "Where is formulary adherence lowest?"
+      kpi_class: KPI-FORMADH-041
+      analysis_type: compliance_ranking
+      expected_shape:
+        headline: >-
+          the facilities and classes with the weakest adherence, and the gap
+        visual: bar
+        table_columns: [facility, therapeutic_class, adherence_pct, dispenses]
+        must_cite: [DP-HLT-002, KPI-FORMADH-041]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-002/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-002-03
+      ordinal: 3
+      question: "What is driving the increase in pharmacy cost per patient day?"
+      kpi_class: KPI-COSTPPD-043
+      analysis_type: decomposition
+      expected_shape:
+        headline: >-
+          which classes account for the increase, and how much each contributed
+        visual: waterfall
+        table_columns: [therapeutic_class, cost_per_patient_day, delta, contribution_pct]
+        must_cite: [DP-HLT-002, KPI-COSTPPD-043]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-002/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-002-04
+      ordinal: 4
+      question: "How much waste came from short-dated stock last quarter?"
+      kpi_class: KPI-WASTE-044
+      analysis_type: waste_analysis
+      expected_shape:
+        headline: >-
+          the value of waste and how much of it was short-dated
+        visual: pareto
+        table_columns: [item_class, wasted_cost, share_pct, cumulative_share_pct]
+        must_cite: [DP-HLT-002, KPI-WASTE-044]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-002/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-HLT-002-05
+      ordinal: 5
+      question: "Draft a replenishment adjustment for the top 10 at-risk items."
+      kpi_class: KPI-STOCKOUT-042
+      analysis_type: action_draft
+      expected_shape:
+        headline: >-
+          a proposed adjustment per item with its basis, for a planner to approve or reject
+        visual: approval_card
+        table_columns: [item_id, facility, current_reorder_point, proposed_reorder_point]
+        must_cite: [DP-HLT-002, KPI-STOCKOUT-042]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-HLT-002/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-HLT-002/
+  value_case:
+    benefit_model: "avoided_waste_value + avoided_expedite_cost + formulary_savings"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per pharmacy supply question"
+        value: 50
+        unit: minutes
+        sample_size: 26
+        source: "analyst time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0039
