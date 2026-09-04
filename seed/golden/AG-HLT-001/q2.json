@@ -32,7 +32,7 @@
   "narrative": "Ranked by the certified definition KPI-READMIT-036 over 31,200 rows in DP-HLT-001.",
   "question": "Which conditions and units drive the most readmissions?",
   "rows_scanned": 31200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "condition",

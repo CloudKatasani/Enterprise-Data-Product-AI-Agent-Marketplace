@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TEL-002-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Fault Mean Time to Restore is 322.5620 hours for the quarter ending 2026-07-01.",
+    "headline": "Fault Mean Time to Restore is 322.56 hours for the quarter ending 2026-07-01.",
     "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 1 quarters and 15,120 rows.",
     "table": {
       "columns": [
@@ -15,7 +15,7 @@
       "rows": [
         [
           "2026-07-01",
-          322.562,
+          322.56,
           15120
         ]
       ]
@@ -54,12 +54,12 @@
   ],
   "notes": [],
   "question": "What is our MTTR trend and where is it worst?",
-  "recorded_at": "2026-09-04T07:00:14.844646+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.640707+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 7,
+    "latency_ms": 8,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {
@@ -77,7 +77,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_002"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 6,
         "rows_returned": 1,
         "rows_scanned": 15120,
         "tool": "query_dp_tel_002"

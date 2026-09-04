@@ -17,18 +17,18 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "18000",
-    "top": "46.7654",
+    "top": "46.77",
     "top_share": "34.40"
   },
   "exchange_id": "DEMO-AG-BNK-001-02",
-  "headline": "affluent leads on attrition risk score at 46.7654, 34.40% of the total across 3 segments.",
+  "headline": "affluent leads on attrition risk score at 46.77, 34.40% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-ATTRISK-019"
   ],
   "narrative": "Ranked by the certified definition KPI-ATTRISK-019 over 18,000 rows in DP-BNK-001.",
   "question": "Which high-value customers show attrition risk this month?",
   "rows_scanned": 18000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "segment",

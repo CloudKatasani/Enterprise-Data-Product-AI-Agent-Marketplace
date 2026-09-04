@@ -29,7 +29,7 @@
   "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 2 quarters and 25,200 rows.",
   "question": "What is our churn rate this quarter and how does it compare to last?",
   "rows_scanned": 25200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "period",

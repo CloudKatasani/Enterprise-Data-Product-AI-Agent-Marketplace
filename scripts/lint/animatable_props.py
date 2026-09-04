@@ -49,7 +49,7 @@ FORBIDDEN_JS = {
 }
 
 TRANSITION = re.compile(r"transition(?:-property)?\s*:\s*([^;{}]+)", re.IGNORECASE)
-KEYFRAMES = re.compile(r"@keyframes[^{]*\{(.*?)\n\}", re.DOTALL | re.IGNORECASE)
+KEYFRAMES_OPEN = re.compile(r"@keyframes[^{]*\{", re.IGNORECASE)
 DECLARATION = re.compile(r"([-a-z]+)\s*:", re.IGNORECASE)
 ANIMATE_CALL = re.compile(r"\.animate\s*\(\s*(\[.*?\])", re.DOTALL)
 JS_KEY = re.compile(r"([A-Za-z][A-Za-z0-9]*)\s*:")
@@ -57,6 +57,29 @@ JS_KEY = re.compile(r"([A-Za-z][A-Za-z0-9]*)\s*:")
 
 def _line_of(text: str, index: int) -> int:
     return text.count("\n", 0, index) + 1
+
+
+def keyframe_blocks(text: str) -> list[tuple[int, str]]:
+    """Every ``@keyframes`` body, found by matching braces.
+
+    Matching braces rather than looking for a closing brace in the first column:
+    a keyframes block nested inside ``@layer`` is indented, and a rule that
+    assumed otherwise would run past the end of the block and report every
+    declaration in the rest of the file.
+    """
+    blocks: list[tuple[int, str]] = []
+    for opening in KEYFRAMES_OPEN.finditer(text):
+        depth = 0
+        start = opening.end()
+        for index in range(opening.end() - 1, len(text)):
+            if text[index] == "{":
+                depth += 1
+            elif text[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    blocks.append((start, text[start:index]))
+                    break
+    return blocks
 
 
 def scan_css() -> list[Finding]:
@@ -74,14 +97,14 @@ def scan_css() -> list[Finding]:
                             f"transition animates {prop!r}; only transform and opacity may animate",
                         )
                     )
-        for block in KEYFRAMES.finditer(text):
-            for declaration in DECLARATION.finditer(block.group(1)):
+        for start, body in keyframe_blocks(text):
+            for declaration in DECLARATION.finditer(body):
                 prop = declaration.group(1).lower()
                 if prop in FORBIDDEN:
                     findings.append(
                         Finding(
                             path,
-                            _line_of(text, block.start(1) + declaration.start()),
+                            _line_of(text, start + declaration.start()),
                             f"@keyframes declares {prop!r}; only transform and opacity may animate",
                         )
                     )

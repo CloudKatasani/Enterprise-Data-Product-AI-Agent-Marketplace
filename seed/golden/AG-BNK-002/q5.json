@@ -17,18 +17,18 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "14400",
-    "top": "16.1900",
-    "top_share": "20.25"
+    "top": "16.19",
+    "top_share": "20.26"
   },
   "exchange_id": "DEMO-AG-BNK-002-05",
-  "headline": "trade_based leads on investigation cycle time at 16.1900 days, 20.25% of the total across 5 typologys.",
+  "headline": "trade_based leads on investigation cycle time at 16.19 days, 20.26% of the total across 5 typologys.",
   "kpi_definitions": [
     "KPI-INVCYCLE-024"
   ],
   "narrative": "Ranked by the certified definition KPI-INVCYCLE-024 over 14,400 rows in DP-BNK-002.",
   "question": "Which investigators are carrying aged alerts above SLA?",
   "rows_scanned": 14400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "typology",

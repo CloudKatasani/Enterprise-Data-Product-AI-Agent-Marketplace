@@ -29,7 +29,7 @@
   "narrative": "Ranked by the certified definition KPI-STOCKOUT-042 over 30,600 rows in DP-HLT-002.",
   "question": "Draft a replenishment adjustment for the top 10 at-risk items.",
   "rows_scanned": 30600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "therapeutic_class",

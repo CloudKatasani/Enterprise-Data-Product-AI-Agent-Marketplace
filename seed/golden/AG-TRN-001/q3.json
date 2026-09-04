@@ -19,18 +19,18 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "13200",
-    "top": "6.3600",
+    "top": "6.36",
     "top_share": "37.08"
   },
   "exchange_id": "DEMO-AG-TRN-001-03",
-  "headline": "DC-ALBANY leads on dwell time at 6.3600 hours, 37.08% of the total across 5 facilitys.",
+  "headline": "DC-ALBANY leads on dwell time at 6.36 hours, 37.08% of the total across 5 facilitys.",
   "kpi_definitions": [
     "KPI-DWELL-058"
   ],
   "narrative": "Ranked by the certified definition KPI-DWELL-058 over 13,200 rows in DP-TRN-001.",
   "question": "Where is dwell time eroding asset utilization?",
   "rows_scanned": 13200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "facility",

@@ -46,10 +46,24 @@
   --theatre-hold-ms: 4000;
   --theatre-max-cycles: 3;
 
+  /* Hero (13.3): how long each search placeholder example holds before the
+   * next one. Slow enough to read, short enough that a visitor sees more than
+   * one kind of thing this catalog contains. */
+  --hero-placeholder-rotate-ms: 4000;
+
   /* Counters and ticker (13.5). */
   --counter-count-up-ms: 1200;
   --counter-refresh-ms: 30000;
   --ticker-crawl-speed: 18;
+
+  /* Unit conversion rather than a design decision: the ribbon speeds above are
+   * px per second and the Web Animations API takes milliseconds. It lives here
+   * because the portal carries no numeric literals, not because anyone should
+   * ever change it. */
+  --motion-second-ms: 1000;
+  /* Same kind of thing: the orbit speeds above are stated in degrees per
+   * second, and an ellipse is walked in turns. */
+  --motion-turn-degrees: 360;
 
   /* Controller pause thresholds. */
   --motion-battery-floor: 0.2;

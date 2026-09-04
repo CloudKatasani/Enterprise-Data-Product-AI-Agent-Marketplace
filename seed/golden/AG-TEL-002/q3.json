@@ -28,7 +28,7 @@
   "narrative": "Ranked by the certified definition KPI-NETAVAIL-006 over 15,120 rows in DP-TEL-002.",
   "question": "How does availability compare across regions this month?",
   "rows_scanned": 15120,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "region",

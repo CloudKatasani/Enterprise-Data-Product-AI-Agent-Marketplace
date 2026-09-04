@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-BNK-002-1.0.0",
   "analysis_type": "backlog_profile",
   "answer": {
-    "headline": "sanctions_proximity leads on alert backlog age at 65.6320 days, 20.30% of the total across 5 typologys.",
+    "headline": "sanctions_proximity leads on alert backlog age at 65.63 days, 20.30% of the total across 5 typologys.",
     "narrative": "Ranked by the certified definition KPI-BACKLOG-025 over 14,400 rows in DP-BNK-002.",
     "table": {
       "columns": [
@@ -15,12 +15,12 @@
       "rows": [
         [
           "sanctions_proximity",
-          65.632,
+          65.63,
           900
         ],
         [
           "trade_based",
-          65.142,
+          65.14,
           1350
         ],
         [
@@ -30,12 +30,12 @@
         ],
         [
           "structuring",
-          63.782,
+          63.78,
           5760
         ],
         [
           "rapid_movement",
-          63.779,
+          63.78,
           3330
         ]
       ]
@@ -75,12 +75,12 @@
   ],
   "notes": [],
   "question": "What is the alert backlog and its age profile?",
-  "recorded_at": "2026-09-04T07:00:13.494171+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.296515+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 14,
+    "latency_ms": 16,
     "rows_scanned": 14400,
     "runtime": "analytic",
     "tokens": {
@@ -98,7 +98,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
         },
         "cost_class": "small",
-        "duration_ms": 8,
+        "duration_ms": 9,
         "rows_returned": 5,
         "rows_scanned": 14400,
         "tool": "query_dp_bnk_002"

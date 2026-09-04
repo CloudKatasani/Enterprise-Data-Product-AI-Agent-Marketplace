@@ -645,3 +645,183 @@ export interface ValuePlane {
                      within_cap: boolean };
   rubric_version_id: string;
 }
+
+// ---------------------------------------------------------------------------
+// The landing page (M11). Everything here is served to an unauthenticated
+// visitor, so nothing in these shapes carries an identity or a permission that
+// depends on one.
+// ---------------------------------------------------------------------------
+
+/** A catalog card, plus the single reason it was promoted to the front page. */
+export interface FeaturedProduct extends ProductCard {
+  why: string;
+  featured_score: number;
+}
+
+export interface FeaturedAgent {
+  agent_id: string;
+  name: string;
+  domain: string;
+  industry: string;
+  certification: string;
+  autonomy_level: string;
+  capability_statement: string;
+  out_of_scope: string | null;
+  products: string[];
+}
+
+export interface FeaturedBand {
+  industry: string | null;
+  products: FeaturedProduct[];
+  agents: FeaturedAgent[];
+  limits: {
+    per_row_max: number;
+    per_row_min: number;
+    static_grid_cards: number;
+    refresh_seconds: number;
+  };
+  rubric_version_id: string;
+}
+
+export interface IndustryTile {
+  code: string;
+  label: string;
+  products: number;
+  agents: number;
+}
+
+export interface LandingCounter {
+  code: string;
+  label: string;
+  value: number;
+  href: string;
+}
+
+export interface TickerEvent {
+  code: string;
+  text: string;
+  occurrences: number;
+}
+
+export interface CountersBand {
+  counters: LandingCounter[];
+  ticker: TickerEvent[];
+  refresh_seconds: number;
+  ticker_min_occurrences: number;
+  rubric_version_id: string;
+}
+
+export interface HeroNode {
+  id: string;
+  name: string;
+  domain: string;
+  industry: string;
+  certification: string;
+  quality: number | null;
+  band: string | null;
+  consumers: number;
+  incident: boolean;
+}
+
+export interface HeroEdge {
+  source: string;
+  target: string;
+  strength: number;
+  edge_type: string;
+}
+
+export interface HeroPlacement {
+  id: string;
+  x: number;
+  y: number;
+}
+
+export interface HeroOrbit {
+  id: string;
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+  rotation_turns: number;
+  phase_turns: number;
+  /** Where this satellite sits in the motion layer's speed range, in [0, 1). */
+  speed_seed: number;
+  products: string[];
+}
+
+export interface HeroBand {
+  nodes: HeroNode[];
+  edges: HeroEdge[];
+  placements: HeroPlacement[];
+  orbits: HeroOrbit[];
+  bounds: { x: number; y: number; width: number; height: number };
+  viewbox: number;
+  opacity: number;
+  rubric_version_id: string;
+}
+
+/** One recorded execution, replayed on the front page exactly as it ran. */
+export interface TheatreTrace {
+  exchange_id: string;
+  agent_id: string;
+  agent_name: string;
+  question: string;
+  analysis_type: string;
+  mode: string;
+  recorded_at: string;
+  answer: {
+    headline: string;
+    narrative: string;
+    visual: { type?: string; [key: string]: unknown };
+    table: { columns?: string[]; rows?: (string | number | null)[][] };
+  };
+  citations: { product_id: string; contract_version: string | null; columns: string[];
+               as_of: string | null }[];
+  kpi_definitions: string[];
+  trace: {
+    runtime: string;
+    tool_calls: {
+      tool: string;
+      arguments: Record<string, unknown>;
+      rows_returned: number;
+      rows_scanned: number;
+      duration_ms: number;
+      cost_class: string;
+    }[];
+    rows_scanned: number;
+    latency_ms: number;
+    tokens: { in: number; out: number };
+    cost_usd: number;
+    cost_display: string;
+  };
+  confidence: number;
+  confidence_display: string;
+  notes: string[];
+}
+
+export interface TheatreBand {
+  traces: TheatreTrace[];
+  mode: string;
+  rubric_version_id: string;
+}
+
+export interface ProofTile {
+  code: string;
+  label: string;
+  value: number;
+  unit: string;
+  detail: string;
+}
+
+export interface ProofBand {
+  tiles: ProofTile[];
+  rubric_version_id: string;
+}
+
+/** One grounded answer, streamed to the hero as a pulse along its edges. */
+export interface AnswerPulse {
+  agent_id: string;
+  products: string[];
+  question_class: string;
+  at: string;
+}

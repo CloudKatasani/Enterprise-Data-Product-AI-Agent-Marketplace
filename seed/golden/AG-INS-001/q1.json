@@ -29,7 +29,7 @@
   "narrative": "Ranked by the certified definition KPI-LEAKAGE-029 over 12,600 rows in DP-INS-001.",
   "question": "Where is leakage highest by coverage line?",
   "rows_scanned": 12600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "coverage_line",

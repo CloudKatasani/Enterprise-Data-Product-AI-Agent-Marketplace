@@ -18,18 +18,18 @@
   "claims": {
     "groups": "4",
     "rows_scanned": "12600",
-    "top": "23.7300",
+    "top": "23.73",
     "top_share": "26.36"
   },
   "exchange_id": "DEMO-AG-INS-001-03",
-  "headline": "auto_physical_damage leads on claims cycle time at 23.7300 days, 26.36% of the total across 4 coverage lines.",
+  "headline": "auto_physical_damage leads on claims cycle time at 23.73 days, 26.36% of the total across 4 coverage lines.",
   "kpi_definitions": [
     "KPI-CLMCYCLE-027"
   ],
   "narrative": "Ranked by the certified definition KPI-CLMCYCLE-027 over 12,600 rows in DP-INS-001.",
   "question": "What is driving cycle time increase in auto physical damage?",
   "rows_scanned": 12600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "coverage_line",

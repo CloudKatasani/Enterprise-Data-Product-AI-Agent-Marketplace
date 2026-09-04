@@ -29,7 +29,7 @@
   "narrative": "Ranked by the certified definition KPI-CHURN-001 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which customer segments drove the churn increase last quarter?",
   "rows_scanned": 6510,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "segment",

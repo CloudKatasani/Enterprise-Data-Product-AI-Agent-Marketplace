@@ -17,18 +17,18 @@
   "claims": {
     "groups": "4",
     "rows_scanned": "15120",
-    "top": "345074.9315",
+    "top": "345074.93",
     "top_share": "32.75"
   },
   "exchange_id": "DEMO-AG-TEL-001-03",
-  "headline": "Northeast leads on impacted subscriber hours at 345,074.9315, 32.75% of the total across 4 regions.",
+  "headline": "Northeast leads on impacted subscriber hours at 345,074.93, 32.75% of the total across 4 regions.",
   "kpi_definitions": [
     "KPI-IMPHRS-010"
   ],
   "narrative": "Ranked by the certified definition KPI-IMPHRS-010 over 15,120 rows in DP-TEL-002.",
   "question": "Are network issues contributing to churn in the Midwest?",
   "rows_scanned": 15120,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "region",

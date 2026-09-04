@@ -18,18 +18,18 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "30600",
-    "top": "8.107367",
-    "top_share": "68.90"
+    "top": "8.11",
+    "top_share": "68.96"
   },
   "exchange_id": "DEMO-AG-HLT-002-03",
-  "headline": "oncology leads on pharmacy cost per patient day at $8.107367, 68.90% of the total across 5 therapeutic classs.",
+  "headline": "oncology leads on pharmacy cost per patient day at $8.11, 68.96% of the total across 5 therapeutic classs.",
   "kpi_definitions": [
     "KPI-COSTPPD-043"
   ],
   "narrative": "Ranked by the certified definition KPI-COSTPPD-043 over 30,600 rows in DP-HLT-002.",
   "question": "What is driving the increase in pharmacy cost per patient day?",
   "rows_scanned": 30600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "therapeutic_class",

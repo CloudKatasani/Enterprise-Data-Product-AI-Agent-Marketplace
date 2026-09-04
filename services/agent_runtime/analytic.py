@@ -434,15 +434,31 @@ def _match_coverage(
     return best[1]
 
 
-def _quantise(value: Any, unit: str) -> Decimal | None:
+UNIT_PRECISION_PATH = {
+    "currency": "presentation.currency_precision",
+    "percent": "presentation.percent_precision",
+}
+MEASURE_PRECISION_PATH = "presentation.measure_precision"
+
+
+def _quantum(rubric: Rubric, unit: str) -> Decimal:
+    path = UNIT_PRECISION_PATH.get(unit, MEASURE_PRECISION_PATH)
+    return Decimal(1).scaleb(-int(rubric.number(path)))
+
+
+def _quantise(value: Any, unit: str, rubric: Rubric) -> Decimal | None:
+    """Round a measured value to the precision its unit is read at.
+
+    This is deliberately the same rounding the prose uses. The claim recorded
+    with the answer is what the sentence says, so the grounding check compares
+    the reader's number against the data rather than against a longer number
+    nobody was shown — and a currency figure quoted to six decimal places, which
+    is what happened before this, is not a figure anyone would put in a
+    sentence.
+    """
     if value is None:
         return None
-    number = Decimal(str(value))
-    if unit == "currency":
-        return number.quantize(MONEY, rounding=ROUND_HALF_EVEN)
-    if unit == "percent":
-        return number.quantize(PERCENT_POINTS, rounding=ROUND_HALF_EVEN)
-    return number.quantize(MEASURE, rounding=ROUND_HALF_EVEN)
+    return Decimal(str(value)).quantize(_quantum(rubric, unit), rounding=ROUND_HALF_EVEN)
 
 
 DEFAULT_GRAIN = "month"
@@ -691,7 +707,10 @@ def _compose(
             f"{context.kpi['kpi_id']}"
         )
 
-    values = [(row[label], _quantise(row["measure"], unit), row["observations"]) for row in rows]
+    values = [
+        (row[label], _quantise(row["measure"], unit, rubric), row["observations"])
+        for row in rows
+    ]
     total = sum((value for _, value, _ in values if value is not None), start=Decimal(0))
 
     if plan.shape == planner.SHAPE_PERIOD:
@@ -726,7 +745,11 @@ def _compose(
         # Quantised in the KPI's own unit, not in percentage points: the claim
         # and the sentence have to be the same number, and the sentence prints
         # whatever the unit's precision is.
-        gap = _quantise(top - bottom, unit) if top is not None and bottom is not None else None
+        gap = (
+            _quantise(top - bottom, unit, rubric)
+            if top is not None and bottom is not None
+            else None
+        )
         if gap is not None:
             claims["cohort_gap"] = gap
         headline = (
@@ -744,7 +767,7 @@ def _compose(
     elif plan.shape == planner.SHAPE_DISTRIBUTION:
         top_label, median, observations = values[0]
         claims["median"] = median if median is not None else Decimal(0)
-        tail = _quantise(rows[0].get("tail"), unit)
+        tail = _quantise(rows[0].get("tail"), unit, rubric)
         # "p90", not "90%": the percentile is a label for the statistic, and a
         # bare 90 in the prose would read as a claim the answer has to cite.
         tail_name = "p" + format(

@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-MFG-001-1.0.0",
   "analysis_type": "programme_eval",
   "answer": {
-    "headline": "Changeover Time is 56.3750 minutes where cohort is false against 33.0100 minutes where it is true, a gap of 23.3650 minutes.",
+    "headline": "Changeover Time is 56.38 minutes where cohort is false against 33.01 minutes where it is true, a gap of 23.37 minutes.",
     "narrative": "Both cohorts are drawn from DP-MFG-001 over the same period: 6,300 observations against 6,300.",
     "table": {
       "columns": [
@@ -15,7 +15,7 @@
       "rows": [
         [
           "false",
-          56.375,
+          56.38,
           6300
         ],
         [
@@ -61,12 +61,12 @@
   ],
   "notes": [],
   "question": "Did changeover standardization reduce changeover time?",
-  "recorded_at": "2026-09-04T07:00:14.122415+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.926498+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 9,
+    "latency_ms": 10,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {
@@ -84,7 +84,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_001"
         },
         "cost_class": "small",
-        "duration_ms": 6,
+        "duration_ms": 7,
         "rows_returned": 2,
         "rows_scanned": 12600,
         "tool": "query_dp_mfg_001"

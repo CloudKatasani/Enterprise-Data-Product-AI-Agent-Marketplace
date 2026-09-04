@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TEL-002-1.0.0",
   "analysis_type": "pattern_detection",
   "answer": {
-    "headline": "West leads on fault mean time to restore at 331.3195 hours, 25.56% of the total across 4 regions.",
+    "headline": "West leads on fault mean time to restore at 331.32 hours, 25.57% of the total across 4 regions.",
     "narrative": "Ranked by the certified definition KPI-FMTTR-009 over 15,120 rows in DP-TEL-002.",
     "table": {
       "columns": [
@@ -15,12 +15,12 @@
       "rows": [
         [
           "West",
-          331.3195,
+          331.32,
           3360
         ],
         [
           "Denver",
-          324.7042,
+          324.7,
           2352
         ],
         [
@@ -30,7 +30,7 @@
         ],
         [
           "Northeast",
-          315.7407,
+          315.74,
           4536
         ]
       ]
@@ -69,8 +69,8 @@
   ],
   "notes": [],
   "question": "Which faults are recurring on the same assets?",
-  "recorded_at": "2026-09-04T07:00:14.836159+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.630940+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
@@ -92,7 +92,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_002"
         },
         "cost_class": "small",
-        "duration_ms": 4,
+        "duration_ms": 3,
         "rows_returned": 4,
         "rows_scanned": 15120,
         "tool": "query_dp_tel_002"

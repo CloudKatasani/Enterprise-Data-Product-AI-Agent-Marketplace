@@ -14,8 +14,6 @@
     "@typescript-eslint/parser": "^8.19.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "d3-force": "3.0.0",
-    "d3-quadtree": "3.0.1",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -31,8 +29,6 @@
     "tailwind-merge": "2.6.0"
   },
   "devDependencies": {
-    "@types/d3-force": "3.0.10",
-    "@types/d3-quadtree": "3.0.6",
     "@types/node": "22.10.2",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",

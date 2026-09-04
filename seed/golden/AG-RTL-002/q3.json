@@ -18,18 +18,18 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "45000",
-    "top": "3.9433",
-    "top_share": "20.49"
+    "top": "3.94",
+    "top_share": "20.48"
   },
   "exchange_id": "DEMO-AG-RTL-002-03",
-  "headline": "seasonal leads on weeks of supply at 3.9433 weeks, 20.49% of the total across 5 categorys.",
+  "headline": "seasonal leads on weeks of supply at 3.94 weeks, 20.48% of the total across 5 categorys.",
   "kpi_definitions": [
     "KPI-WOS-052"
   ],
   "narrative": "Ranked by the certified definition KPI-WOS-052 over 45,000 rows in DP-RTL-002.",
   "question": "Where do we have excess weeks of supply?",
   "rows_scanned": 45000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "category",

@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TEL-002-1.0.0",
   "analysis_type": "root_cause",
   "answer": {
-    "headline": "West leads on throughput percentile at 85.3600, 26.54% of the total across 4 regions.",
+    "headline": "West leads on throughput percentile at 85.36, 26.54% of the total across 4 regions.",
     "narrative": "Ranked by the certified definition KPI-THRPUT-008 over 15,120 rows in DP-TEL-002.",
     "table": {
       "columns": [
@@ -20,12 +20,12 @@
         ],
         [
           "Midwest",
-          84.965,
+          84.96,
           4872
         ],
         [
           "Northeast",
-          84.315,
+          84.32,
           4536
         ],
         [
@@ -69,12 +69,12 @@
   ],
   "notes": [],
   "question": "What is driving the throughput drop in the Denver cluster?",
-  "recorded_at": "2026-09-04T07:00:14.820644+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.616074+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 10,
+    "latency_ms": 9,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {

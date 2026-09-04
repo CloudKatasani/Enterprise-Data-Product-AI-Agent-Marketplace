@@ -18,18 +18,18 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "14400",
-    "top": "65.6320",
+    "top": "65.63",
     "top_share": "20.30"
   },
   "exchange_id": "DEMO-AG-BNK-002-01",
-  "headline": "sanctions_proximity leads on alert backlog age at 65.6320 days, 20.30% of the total across 5 typologys.",
+  "headline": "sanctions_proximity leads on alert backlog age at 65.63 days, 20.30% of the total across 5 typologys.",
   "kpi_definitions": [
     "KPI-BACKLOG-025"
   ],
   "narrative": "Ranked by the certified definition KPI-BACKLOG-025 over 14,400 rows in DP-BNK-002.",
   "question": "What is the alert backlog and its age profile?",
   "rows_scanned": 14400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "typology",

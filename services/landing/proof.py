@@ -19,7 +19,7 @@ from typing import Any
 
 import psycopg
 
-from services.common.db import fetch_all, fetch_one
+from services.common.db import fetch_one
 from services.common.rubrics import Rubric
 from services.common.timing import HOUR
 from services.mesh import data as data_mesh

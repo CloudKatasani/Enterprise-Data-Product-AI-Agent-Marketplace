@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-HLT-002-1.0.0",
   "analysis_type": "decomposition",
   "answer": {
-    "headline": "oncology leads on pharmacy cost per patient day at $8.107367, 68.90% of the total across 5 therapeutic classs.",
+    "headline": "oncology leads on pharmacy cost per patient day at $8.11, 68.96% of the total across 5 therapeutic classs.",
     "narrative": "Ranked by the certified definition KPI-COSTPPD-043 over 30,600 rows in DP-HLT-002.",
     "table": {
       "columns": [
@@ -15,27 +15,27 @@
       "rows": [
         [
           "oncology",
-          8.107367,
+          8.11,
           4320
         ],
         [
           "analgesia",
-          0.92612,
+          0.93,
           6120
         ],
         [
           "cardiovascular",
-          0.923895,
+          0.92,
           6480
         ],
         [
           "anti_infective",
-          0.904852,
+          0.9,
           9360
         ],
         [
           "immunology",
-          0.904562,
+          0.9,
           4320
         ]
       ]
@@ -75,12 +75,12 @@
   ],
   "notes": [],
   "question": "What is driving the increase in pharmacy cost per patient day?",
-  "recorded_at": "2026-09-04T07:00:13.880635+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.687307+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 12,
+    "latency_ms": 10,
     "rows_scanned": 30600,
     "runtime": "analytic",
     "tokens": {

@@ -18,18 +18,18 @@
   "claims": {
     "groups": "6",
     "rows_scanned": "23400",
-    "top": "66.539124",
+    "top": "66.54",
     "top_share": "16.83"
   },
   "exchange_id": "DEMO-AG-RTL-001-05",
-  "headline": "grocery leads on average basket value at $66.539124, 16.83% of the total across 6 categorys.",
+  "headline": "grocery leads on average basket value at $66.54, 16.83% of the total across 6 categorys.",
   "kpi_definitions": [
     "KPI-BASKET-047"
   ],
   "narrative": "Ranked by the certified definition KPI-BASKET-047 over 23,400 rows in DP-RTL-001.",
   "question": "Where is basket size declining and what is leaving the basket?",
   "rows_scanned": 23400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "category",

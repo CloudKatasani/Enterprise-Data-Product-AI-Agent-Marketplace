@@ -29,7 +29,7 @@
   "narrative": "Computed from DP-BNK-002 under the certified definition KPI-SARCONV-023, across 2 quarters and 14,400 rows.",
   "question": "Has SAR conversion changed since the June rule tuning?",
   "rows_scanned": 14400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "period",

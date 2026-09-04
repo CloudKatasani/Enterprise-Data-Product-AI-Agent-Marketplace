@@ -30,7 +30,7 @@
   "narrative": "Computed from DP-BNK-001 under the certified definition KPI-DEPGRW-020, across 4 years and 18,000 rows.",
   "question": "How did deposit balances shift after the April rate change?",
   "rows_scanned": 18000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "period",

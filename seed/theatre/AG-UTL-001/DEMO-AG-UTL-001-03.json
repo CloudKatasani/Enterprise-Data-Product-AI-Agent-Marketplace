@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-UTL-001-1.0.0",
   "analysis_type": "risk_prioritization",
   "answer": {
-    "headline": "switch leads on asset health index at 67.5809, 26.00% of the total across 4 asset classs.",
+    "headline": "switch leads on asset health index at 67.58, 26.00% of the total across 4 asset classs.",
     "narrative": "Ranked by the certified definition KPI-AHI-063 over 21,600 rows in DP-UTL-001.",
     "table": {
       "columns": [
@@ -15,22 +15,22 @@
       "rows": [
         [
           "switch",
-          67.5809,
+          67.58,
           4050
         ],
         [
           "transformer",
-          66.2231,
+          66.22,
           8370
         ],
         [
           "recloser",
-          63.4496,
+          63.45,
           4950
         ],
         [
           "pole",
-          62.6826,
+          62.68,
           4230
         ]
       ]
@@ -71,8 +71,8 @@
   ],
   "notes": [],
   "question": "Which poor-health assets serve the most customers?",
-  "recorded_at": "2026-09-04T07:00:14.950092+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.753227+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 6,
         "rows_returned": 4,
         "rows_scanned": 21600,
         "tool": "query_dp_utl_001"

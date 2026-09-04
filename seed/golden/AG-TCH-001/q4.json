@@ -32,7 +32,7 @@
   "narrative": "Both cohorts are drawn from DP-TCH-001 over the same period: 5,136 observations against 8,304. Computed within the quarter beginning 2026-04-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Did the March onboarding change improve activation?",
   "rows_scanned": 13440,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "cohort",

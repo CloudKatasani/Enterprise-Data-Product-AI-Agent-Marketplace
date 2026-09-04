@@ -1169,7 +1169,10 @@
           "required": [
             "percent_scale",
             "cost_precision",
-            "confidence_precision"
+            "confidence_precision",
+            "currency_precision",
+            "percent_precision",
+            "measure_precision"
           ],
           "additionalProperties": false,
           "properties": {
@@ -1182,6 +1185,18 @@
               "minimum": 0
             },
             "confidence_precision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "currency_precision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "percent_precision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "measure_precision": {
               "type": "integer",
               "minimum": 0
             }

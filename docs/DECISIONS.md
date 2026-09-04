@@ -224,3 +224,73 @@ from the canonical model. Importing it put `generated/types/` on `sys.path` and 
 ignores build caches.
 **Consequence** No bytecode in `generated/`, and a missing or malformed constant fails loudly
 with "run npm run gen".
+
+### D-023 — The mesh render threshold is lowered, and the rubric says why (M9, 2026-09-04)
+**Context** Section 13.3 states a render threshold of 0.25. Measured across this estate the
+strength distribution has a natural gap between 0.087 and 0.100 and nothing above 0.188, because
+`kpi_overlap` is structurally zero here: every certified KPI has exactly one source of record
+(I1), so no two products can share one.
+**Decision** `render_threshold` is 0.10 in `manifests/rubrics/mesh.yaml`, with the reasoning
+recorded beside the value rather than in a commit message.
+**Consequence** The mesh renders the edges that exist instead of an empty graph. An estate where
+products genuinely share KPIs would raise it back, and the rubric is where that argument happens.
+
+### D-024 — An owner can add context to an incident and can never suppress it (M10, 2026-09-04)
+**Context** Every incident tool eventually grows a mute button, and the reason is always
+reasonable at the time.
+**Decision** There is no suppression path: not in the engine, not as an API parameter, not as a
+prop on the banner. An owner adds context, which is shown alongside the fact and never in place
+of it. Resolution requires a root cause, so "it went away" does not close an incident.
+**Consequence** A noisy signal has to be fixed in the rubric where everyone can see the
+threshold move, rather than silenced on one asset where nobody can.
+
+### D-025 — Findings carry the unit their number is measured in (M10, 2026-09-04)
+**Context** The health plane showed `0.0666` and `79` in one column. Both are true; neither is
+legible, and no formatting rule in the portal could tell them apart.
+**Decision** The unit belongs to the signal, so `UNIT_BY_SIGNAL` states it once and the payload
+carries it. The portal renders a fraction as a percentage using `Intl.NumberFormat`, which takes
+the fraction directly and therefore needs no conversion factor of its own.
+**Consequence** A new detector without a unit fails a test rather than shipping a column of bare
+decimals. The portal never holds a number that could drift from the server's.
+
+### D-026 — The hero constellation settles on the server (M11, 2026-09-04)
+**Context** 13.3 asks for a pre-warmed layout so the client paints a settled graph. The obvious
+route is `d3-force` in the browser, warmed for 300 ticks before first paint.
+**Decision** The simulation — link springs, many-body repulsion, collision, velocity decay — is
+implemented in `services/landing/layout.py` and runs on the server. Its parameters are rubric
+data, it is seeded from the identifiers, and it sorts its nodes, so the same estate always
+settles into the same picture. `d3-force` and `d3-quadtree` were removed from the portal.
+**Consequence** A screenshot in a deck is the graph the client opens, the hero and the mesh
+explorer cannot disagree about the shape of the same estate, and the largest single item in the
+motion budget is gone. Above 150 nodes a canvas renderer with quadtree hit-testing is still the
+right answer, and the quadtree comes back with the renderer that needs it.
+
+### D-027 — Orbit speed is returned as a seed, not a rate (M11, 2026-09-04)
+**Context** Agent satellites orbit at 0.6–1.1 deg/sec, a range that lives in the motion tokens.
+The server knows which agent orbits which products; the token layer knows how fast anything may
+move.
+**Decision** The API returns `speed_seed` in [0, 1). The client maps it onto the token range.
+**Consequence** The server never states a number the token layer would then have to agree with,
+and changing the range is a token edit rather than a coordinated change on both sides.
+
+### D-028 — A KPI value is rounded once, and the claim is what the reader sees (M11, 2026-09-04)
+**Context** Currency values were quantised to six decimal places, so an answer read "$58,557,319.919999"
+while its recorded claim held the same figure. The grounding check compared the two and passed,
+which is the wrong thing to be reassured by.
+**Decision** Precision per unit lives in the runtime rubric, and `_quantise` applies it before
+the claim is recorded. The number in the sentence, the number in the table and the number
+grounding checks are one number.
+**Consequence** An agent is held to the figure a reader was actually shown. Re-capturing the
+golden answers changed 70 files and no behaviour, which is what a display-only change should
+look like.
+
+### D-029 — The landing page fetches on the server and never renders a skeleton (M11, 2026-09-04)
+**Context** 13.6 asks for CLS 0.00 and 13.2 forbids skeletons on the marketing page. Those two
+rule out the usual pattern of streaming each band in as it arrives.
+**Decision** Every band is fetched in one `Promise.all` on the server, every band declares its
+box height as a token, and a band whose data is unavailable collapses rather than reserving
+space for something that is not coming. The answer theatre renders its *completed* answer
+server-side and the choreography starts from that frame.
+**Consequence** The page is coherent without JavaScript, identical under reduced motion, and
+nothing moves after paint. A slow API makes the page slower rather than jumpier, which is the
+trade the budget asks for.

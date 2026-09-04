@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-DEPGRW-020 over 18,000 rows in DP-BNK-001.",
   "question": "Which single-product customers show strong balance growth?",
   "rows_scanned": 18000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "segment",

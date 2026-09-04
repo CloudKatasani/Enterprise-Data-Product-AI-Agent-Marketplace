@@ -18,18 +18,18 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "17280",
-    "top": "1.0494",
-    "top_share": "34.79"
+    "top": "1.05",
+    "top_share": "34.77"
   },
   "exchange_id": "DEMO-AG-INS-002-01",
-  "headline": "auto leads on rate adequacy at 1.0494, 34.79% of the total across 3 coverage lines.",
+  "headline": "auto leads on rate adequacy at 1.05, 34.77% of the total across 3 coverage lines.",
   "kpi_definitions": [
     "KPI-RATEADQ-034"
   ],
   "narrative": "Ranked by the certified definition KPI-RATEADQ-034 over 17,280 rows in DP-INS-002.",
   "question": "Where is rate adequacy weakest in the commercial property book?",
   "rows_scanned": 17280,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "coverage_line",

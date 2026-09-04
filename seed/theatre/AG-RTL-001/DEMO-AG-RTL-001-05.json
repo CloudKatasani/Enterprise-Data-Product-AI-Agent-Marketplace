@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-RTL-001-1.0.0",
   "analysis_type": "basket_composition",
   "answer": {
-    "headline": "grocery leads on average basket value at $66.539124, 16.83% of the total across 6 categorys.",
+    "headline": "grocery leads on average basket value at $66.54, 16.83% of the total across 6 categorys.",
     "narrative": "Ranked by the certified definition KPI-BASKET-047 over 23,400 rows in DP-RTL-001.",
     "table": {
       "columns": [
@@ -15,32 +15,32 @@
       "rows": [
         [
           "grocery",
-          66.539124,
+          66.54,
           5128
         ],
         [
           "home",
-          66.133779,
+          66.13,
           3848
         ],
         [
           "electronics",
-          66.030556,
+          66.03,
           3920
         ],
         [
           "apparel",
-          65.564947,
+          65.56,
           5242
         ],
         [
           "toys",
-          65.516478,
+          65.52,
           2626
         ],
         [
           "beauty",
-          65.495542,
+          65.5,
           2636
         ]
       ]
@@ -80,12 +80,12 @@
   ],
   "notes": [],
   "question": "Where is basket size declining and what is leaving the basket?",
-  "recorded_at": "2026-09-04T07:00:14.228233+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.040532+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 47,
+    "latency_ms": 50,
     "rows_scanned": 23400,
     "runtime": "analytic",
     "tokens": {
@@ -103,7 +103,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "small",
-        "duration_ms": 44,
+        "duration_ms": 47,
         "rows_returned": 6,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

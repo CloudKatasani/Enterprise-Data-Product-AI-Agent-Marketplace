@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-MFG-001-1.0.0",
   "analysis_type": "pareto",
   "answer": {
-    "headline": "LINE-3 leads on unplanned downtime hours at 7,391.5900 hours, 39.32% of the total across 4 lines.",
+    "headline": "LINE-3 leads on unplanned downtime hours at 7,391.59 hours, 39.32% of the total across 4 lines.",
     "narrative": "Ranked by the certified definition KPI-DOWNTIME-073 over 12,600 rows in DP-MFG-001.",
     "table": {
       "columns": [
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "What are the top downtime reasons on Line 3?",
-  "recorded_at": "2026-09-04T07:00:14.104247+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.904605+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 7,
+    "latency_ms": 6,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {

@@ -35,7 +35,7 @@
   "narrative": "Both cohorts are drawn from DP-HLT-001 over the same period: 25,474 observations against 5,726.",
   "question": "Did the transitional care programme reduce readmissions in the pilot units?",
   "rows_scanned": 31200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "cohort",

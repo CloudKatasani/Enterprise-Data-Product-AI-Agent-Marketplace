@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-INS-001-1.0.0",
   "analysis_type": "variance",
   "answer": {
-    "headline": "auto_liability leads on average claim severity at $2,276,772.088235, 28.09% of the total across 4 coverage lines.",
+    "headline": "auto_liability leads on average claim severity at $2,276,772.09, 28.09% of the total across 4 coverage lines.",
     "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 12,600 rows in DP-INS-001. Computed within the year beginning 2026-01-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
@@ -15,22 +15,22 @@
       "rows": [
         [
           "auto_liability",
-          2276772.088235,
+          2276772.09,
           3060
         ],
         [
           "auto_physical_damage",
-          2148956.578723,
+          2148956.58,
           4230
         ],
         [
           "property",
-          1882282.415625,
+          1882282.42,
           2880
         ],
         [
           "general_liability",
-          1798089.266667,
+          1798089.27,
           2430
         ]
       ]
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Which settlement patterns diverge most from peers on like claims?",
-  "recorded_at": "2026-09-04T07:00:13.946301+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.747824+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 31,
+    "latency_ms": 28,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "small",
-        "duration_ms": 26,
+        "duration_ms": 24,
         "rows_returned": 4,
         "rows_scanned": 12600,
         "tool": "query_dp_ins_001"

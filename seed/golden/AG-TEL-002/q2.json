@@ -17,18 +17,18 @@
   "claims": {
     "groups": "4",
     "rows_scanned": "15120",
-    "top": "85.3600",
+    "top": "85.36",
     "top_share": "26.54"
   },
   "exchange_id": "DEMO-AG-TEL-002-02",
-  "headline": "West leads on throughput percentile at 85.3600, 26.54% of the total across 4 regions.",
+  "headline": "West leads on throughput percentile at 85.36, 26.54% of the total across 4 regions.",
   "kpi_definitions": [
     "KPI-THRPUT-008"
   ],
   "narrative": "Ranked by the certified definition KPI-THRPUT-008 over 15,120 rows in DP-TEL-002.",
   "question": "What is driving the throughput drop in the Denver cluster?",
   "rows_scanned": 15120,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "region",

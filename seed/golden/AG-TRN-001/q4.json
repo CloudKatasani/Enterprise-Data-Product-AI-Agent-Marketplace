@@ -19,18 +19,18 @@
   "claims": {
     "groups": "6",
     "rows_scanned": "13200",
-    "top": "1.876813",
+    "top": "1.88",
     "top_share": "16.74"
   },
   "exchange_id": "DEMO-AG-TRN-001-04",
-  "headline": "W-01 leads on cost per mile at $1.876813, 16.74% of the total across 6 lanes.",
+  "headline": "W-01 leads on cost per mile at $1.88, 16.74% of the total across 6 lanes.",
   "kpi_definitions": [
     "KPI-CPM-057"
   ],
   "narrative": "Ranked by the certified definition KPI-CPM-057 over 13,200 rows in DP-TRN-001.",
   "question": "How does cost per mile compare across carriers on the same lanes?",
   "rows_scanned": 13200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "lane",

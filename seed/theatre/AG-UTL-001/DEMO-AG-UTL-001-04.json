@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-UTL-001-1.0.0",
   "analysis_type": "event_analysis",
   "answer": {
-    "headline": "SAIFI is 2,164.9775 for the year ending 2026-01-01.",
+    "headline": "SAIFI is 2,164.98 for the year ending 2026-01-01.",
     "narrative": "Computed from DP-UTL-001 under the certified definition KPI-SAIFI-062, across 1 years and 21,600 rows.",
     "table": {
       "columns": [
@@ -15,7 +15,7 @@
       "rows": [
         [
           "2026-01-01",
-          2164.9775,
+          2164.98,
           21600
         ]
       ]
@@ -57,12 +57,12 @@
   ],
   "notes": [],
   "question": "What was the customer and load impact of last week's storm?",
-  "recorded_at": "2026-09-04T07:00:14.968557+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.774026+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 17,
+    "latency_ms": 19,
     "rows_scanned": 21600,
     "runtime": "analytic",
     "tokens": {

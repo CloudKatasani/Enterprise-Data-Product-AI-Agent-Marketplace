@@ -17,23 +17,23 @@
     }
   ],
   "claims": {
-    "cohort_gap": "23.3650",
-    "cohort_high": "56.3750",
+    "cohort_gap": "23.37",
+    "cohort_high": "56.38",
     "cohort_high_observations": "6300",
-    "cohort_low": "33.0100",
+    "cohort_low": "33.01",
     "cohort_low_observations": "6300",
     "groups": "2",
     "rows_scanned": "12600"
   },
   "exchange_id": "DEMO-AG-MFG-001-04",
-  "headline": "Changeover Time is 56.3750 minutes where cohort is false against 33.0100 minutes where it is true, a gap of 23.3650 minutes.",
+  "headline": "Changeover Time is 56.38 minutes where cohort is false against 33.01 minutes where it is true, a gap of 23.37 minutes.",
   "kpi_definitions": [
     "KPI-CHANGEOVER-075"
   ],
   "narrative": "Both cohorts are drawn from DP-MFG-001 over the same period: 6,300 observations against 6,300.",
   "question": "Did changeover standardization reduce changeover time?",
   "rows_scanned": 12600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "cohort",

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { QualityRing } from '@/components/ui/QualityRing';
 import type { ProductCard as ProductCardData } from '@/lib/types';
+import { count } from '@/lib/units';
 
 /**
  * The product card: twelve elements in fixed positions (BUILD.md section 12).
@@ -69,7 +70,8 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         <div>
           <dt className="text-muted">Consumers</dt>
           <dd className="text-secondary">
-            {product.adoption.active_consumers} across {product.adoption.distinct_teams} teams
+            {product.adoption.active_consumers} across{' '}
+            {count(product.adoption.distinct_teams, 'team', 'teams')}
           </dd>
         </div>
         <div>

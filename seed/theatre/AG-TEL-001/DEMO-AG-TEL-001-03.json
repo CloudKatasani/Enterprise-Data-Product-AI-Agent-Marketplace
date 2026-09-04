@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TEL-001-1.0.0",
   "analysis_type": "correlation",
   "answer": {
-    "headline": "Northeast leads on impacted subscriber hours at 345,074.9315, 32.75% of the total across 4 regions.",
+    "headline": "Northeast leads on impacted subscriber hours at 345,074.93, 32.75% of the total across 4 regions.",
     "narrative": "Ranked by the certified definition KPI-IMPHRS-010 over 15,120 rows in DP-TEL-002.",
     "table": {
       "columns": [
@@ -15,22 +15,22 @@
       "rows": [
         [
           "Northeast",
-          345074.9315,
+          345074.93,
           4536
         ],
         [
           "Midwest",
-          332365.5533,
+          332365.55,
           4872
         ],
         [
           "West",
-          232799.9328,
+          232799.93,
           3360
         ],
         [
           "Denver",
-          143304.0981,
+          143304.1,
           2352
         ]
       ]
@@ -69,12 +69,12 @@
   ],
   "notes": [],
   "question": "Are network issues contributing to churn in the Midwest?",
-  "recorded_at": "2026-09-04T07:00:14.737454+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.528441+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 10,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {

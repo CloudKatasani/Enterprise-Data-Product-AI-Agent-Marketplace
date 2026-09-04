@@ -8,7 +8,7 @@
 # is that a number an output depends on is resolvable by rubric_version_id, and
 # "this one will never change" is not an exception the replay path can honour.
 rubric: agent_runtime
-version: 1.2.0
+version: 1.3.0
 
 # How many grouped rows an answer may carry. Wide enough for a two-year monthly
 # series, narrow enough that the table stays readable without paging.
@@ -45,3 +45,10 @@ presentation:
   # in a component is a number nobody can find later.
   cost_precision: 4
   confidence_precision: 2
+  # A KPI value's precision, by the unit it is measured in. These are the
+  # numbers an answer *asserts*, so they are also what the claim records: a
+  # claim held to six decimal places while the sentence shows two would mean
+  # the agent is checked against a number no reader was ever shown.
+  currency_precision: 2
+  percent_precision: 2
+  measure_precision: 2

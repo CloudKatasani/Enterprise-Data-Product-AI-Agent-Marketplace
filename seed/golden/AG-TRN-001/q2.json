@@ -31,7 +31,7 @@
   "narrative": "Ranked by the certified definition KPI-OTD-056 over 13,200 rows in DP-TRN-001.",
   "question": "What is driving late deliveries on the Northeast lanes?",
   "rows_scanned": 13200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "lane",

@@ -92,7 +92,21 @@ def resolve_principal(
     )
 
 
+# The visitor nobody has identified. Named rather than improvised at each call
+# site, so "unauthenticated" is one object with no roles and no party, and a
+# surface that serves it cannot accidentally be handed a real principal's
+# identity by a refactor. Its party id matches no row, so `held_scopes` returns
+# the empty set and every asset presents as request-required — which is the
+# truth for a caller nobody has identified.
+ANONYMOUS = Principal(
+    party_id="", display_name="a visitor", roles=frozenset(), on_behalf_of=None,
+    agent_identity=None,
+)
+
+
 def held_scopes(connection: psycopg.Connection[Any], party_id: str) -> frozenset[str]:
+    if not party_id:
+        return frozenset()
     """OAuth scopes carried by the caller's live grants.
 
     Read fresh on every call. A grant that expired a second ago is not in the

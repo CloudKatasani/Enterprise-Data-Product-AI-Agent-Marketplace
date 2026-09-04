@@ -28,7 +28,7 @@
   "narrative": "Computed from DP-BNK-001 under the certified definition KPI-PBSHARE-016, across 4 years and 18,000 rows.",
   "question": "What is our primary bank share trend by segment?",
   "rows_scanned": 18000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "period",

@@ -18,18 +18,18 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "25200",
-    "top": "5.5189",
-    "top_share": "33.57"
+    "top": "5.52",
+    "top_share": "33.58"
   },
   "exchange_id": "DEMO-AG-TEL-001-04",
-  "headline": "consumer leads on churn propensity decile at 5.5189, 33.57% of the total across 3 segments.",
+  "headline": "consumer leads on churn propensity decile at 5.52, 33.58% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-PROP-005"
   ],
   "narrative": "Ranked by the certified definition KPI-PROP-005 over 25,200 rows in DP-TEL-001.",
   "question": "Which subscribers should we prioritise for a save offer this week?",
   "rows_scanned": 25200,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "segment",

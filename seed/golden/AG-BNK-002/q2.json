@@ -28,7 +28,7 @@
   "narrative": "Ranked by the certified definition KPI-FPRATE-022 over 14,400 rows in DP-BNK-002.",
   "question": "Which typologies have the highest false positive rate?",
   "rows_scanned": 14400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "typology",

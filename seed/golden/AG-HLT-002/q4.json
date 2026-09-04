@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-WASTE-044 over 30,600 rows in DP-HLT-002.",
   "question": "How much waste came from short-dated stock last quarter?",
   "rows_scanned": 30600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "therapeutic_class",

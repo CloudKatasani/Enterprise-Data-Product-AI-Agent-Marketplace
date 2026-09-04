@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Where is formulary adherence lowest?",
-  "recorded_at": "2026-09-04T07:00:13.867148+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.675393+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 11,
+    "latency_ms": 10,
     "rows_scanned": 30600,
     "runtime": "analytic",
     "tokens": {

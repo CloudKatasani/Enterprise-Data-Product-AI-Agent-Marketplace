@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-INS-002-1.0.0",
   "analysis_type": "adequacy_ranking",
   "answer": {
-    "headline": "auto leads on rate adequacy at 1.0494, 34.79% of the total across 3 coverage lines.",
+    "headline": "auto leads on rate adequacy at 1.05, 34.77% of the total across 3 coverage lines.",
     "narrative": "Ranked by the certified definition KPI-RATEADQ-034 over 17,280 rows in DP-INS-002.",
     "table": {
       "columns": [
@@ -15,17 +15,17 @@
       "rows": [
         [
           "auto",
-          1.0494,
+          1.05,
           6192
         ],
         [
           "casualty",
-          1.0393,
+          1.04,
           4752
         ],
         [
           "property",
-          0.9278,
+          0.93,
           6336
         ]
       ]
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Where is rate adequacy weakest in the commercial property book?",
-  "recorded_at": "2026-09-04T07:00:14.006097+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.805473+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 9,
     "rows_scanned": 17280,
     "runtime": "analytic",
     "tokens": {

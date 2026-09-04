@@ -18,18 +18,18 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "18000",
-    "top": "58557319.919999",
+    "top": "58557319.92",
     "top_share": "64.14"
   },
   "exchange_id": "DEMO-AG-BNK-001-01",
-  "headline": "mass leads on customer lifetime value at $58,557,319.919999, 64.14% of the total across 3 segments.",
+  "headline": "mass leads on customer lifetime value at $58,557,319.92, 64.14% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-CLV-018"
   ],
   "narrative": "Ranked by the certified definition KPI-CLV-018 over 18,000 rows in DP-BNK-001.",
   "question": "Who are my top 20 households by relationship value in the Southeast?",
   "rows_scanned": 18000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "segment",

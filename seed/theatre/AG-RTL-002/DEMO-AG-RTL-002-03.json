@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-RTL-002-1.0.0",
   "analysis_type": "excess_analysis",
   "answer": {
-    "headline": "seasonal leads on weeks of supply at 3.9433 weeks, 20.49% of the total across 5 categorys.",
+    "headline": "seasonal leads on weeks of supply at 3.94 weeks, 20.48% of the total across 5 categorys.",
     "narrative": "Ranked by the certified definition KPI-WOS-052 over 45,000 rows in DP-RTL-002.",
     "table": {
       "columns": [
@@ -15,27 +15,27 @@
       "rows": [
         [
           "seasonal",
-          3.9433,
+          3.94,
           6300
         ],
         [
           "home",
-          3.873,
+          3.87,
           9300
         ],
         [
           "electronics",
-          3.8296,
+          3.83,
           7200
         ],
         [
           "apparel",
-          3.8222,
+          3.82,
           10800
         ],
         [
           "grocery",
-          3.775,
+          3.78,
           11400
         ]
       ]
@@ -75,12 +75,12 @@
   ],
   "notes": [],
   "question": "Where do we have excess weeks of supply?",
-  "recorded_at": "2026-09-04T07:00:14.281029+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.085862+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 16,
+    "latency_ms": 12,
     "rows_scanned": 45000,
     "runtime": "analytic",
     "tokens": {
@@ -98,7 +98,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
         },
         "cost_class": "small",
-        "duration_ms": 11,
+        "duration_ms": 10,
         "rows_returned": 5,
         "rows_scanned": 45000,
         "tool": "query_dp_rtl_002"

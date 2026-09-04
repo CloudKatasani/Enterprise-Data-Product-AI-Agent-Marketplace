@@ -253,3 +253,85 @@ def test_status_colour_is_never_the_only_signal() -> None:
     # The ring carries its numeric value and an aria-label naming the band.
     assert "quality-ring__value" in ring
     assert "aria-label" in ring
+
+
+# ---------------------------------------------------------------------------
+# M11 acceptance: a keyboard user can pause every moving element, and the
+# reduced-motion page carries the same information as the moving one.
+# ---------------------------------------------------------------------------
+
+LANDING = PORTAL / "components" / "landing"
+
+
+def _landing_source(name: str) -> str:
+    return (LANDING / name).read_text(encoding="utf-8")
+
+
+def test_every_band_that_moves_offers_a_visible_pause_control() -> None:
+    """WCAG 2.2.2, and the M11 acceptance criterion.
+
+    The ribbon and the theatre both run longer than five seconds, so each needs
+    its own control — and there is a global one in the hero for everything at
+    once, because a visitor who wants the page to stop should not have to find
+    three buttons.
+    """
+    for name, label in (("ProductRibbon.tsx", "Pause"), ("AnswerTheatre.tsx", "Pause")):
+        source = _landing_source(name)
+        assert f"{label}" in source
+        assert "aria-pressed" in source
+
+    toggle = (PORTAL / "components" / "motion" / "MotionToggle.tsx").read_text(encoding="utf-8")
+    assert "aria-pressed" in toggle
+    assert "Reduce motion" in toggle
+
+
+def test_the_pause_controls_are_buttons_rather_than_glyphs() -> None:
+    """A control operated by pointer only is not a control for everyone."""
+    for name in ("ProductRibbon.tsx", "AnswerTheatre.tsx"):
+        source = _landing_source(name)
+        assert 'type="button"' in source
+
+
+def test_the_ribbon_pauses_while_focus_is_inside_it() -> None:
+    """13.2: tab moves card to card and motion holds for as long as focus is in.
+
+    Without this a keyboard user is reading a moving target, which is the one
+    way a ribbon becomes actively hostile rather than merely decorative.
+    """
+    source = _landing_source("ProductRibbon.tsx")
+    assert "onFocusCapture" in source
+    assert "onBlurCapture" in source
+
+
+def test_the_seam_copy_is_hidden_from_assistive_technology() -> None:
+    """The duplicate exists to make a loop seamless, not to be read twice."""
+    for name in ("ProductRibbon.tsx", "ActivityTicker.tsx"):
+        assert "aria-hidden" in _landing_source(name)
+
+
+def test_the_constellation_is_decorative_behind_the_copy() -> None:
+    """13.3: it never captures scroll, and it is not a landmark to get lost in.
+
+    As the interactive miniature further down the page the same component is
+    reachable and labelled; behind the headline it is a backdrop, and a screen
+    reader announcing sixty product nodes before the hero copy would be
+    announcing the whole catalog before the sentence explaining it.
+    """
+    source = _landing_source("Constellation.tsx")
+    assert "aria-hidden={interactive ? undefined : true}" in source
+    assert "pointerEvents: interactive ? 'auto' : 'none'" in source
+    # Interactive mode is keyboard-reachable and labelled.
+    assert "tabIndex={interactive ? 0 : undefined}" in source
+    assert "aria-label={interactive" in source
+
+
+def test_the_theatre_renders_its_answer_without_javascript() -> None:
+    """The completed answer is the server frame, not something that arrives.
+
+    It is also the reduced-motion frame. A visitor who never runs the
+    choreography sees the same headline, the same chart and the same rows as
+    one who watches it type.
+    """
+    source = _landing_source("AnswerTheatre.tsx")
+    assert "useState<Stage>('hold')" in source
+    assert "renderStatic: complete" in source

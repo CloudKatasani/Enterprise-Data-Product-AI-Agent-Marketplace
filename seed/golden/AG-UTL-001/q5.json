@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-PMCOMP-065 over 21,600 rows in DP-UTL-001.",
   "question": "Which maintenance deferrals carry the highest customer-minute risk?",
   "rows_scanned": 21600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "asset_class",

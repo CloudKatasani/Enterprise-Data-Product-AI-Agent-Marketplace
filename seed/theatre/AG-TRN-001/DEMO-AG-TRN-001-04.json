@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TRN-001-1.0.0",
   "analysis_type": "like_for_like",
   "answer": {
-    "headline": "W-01 leads on cost per mile at $1.876813, 16.74% of the total across 6 lanes.",
+    "headline": "W-01 leads on cost per mile at $1.88, 16.74% of the total across 6 lanes.",
     "narrative": "Ranked by the certified definition KPI-CPM-057 over 13,200 rows in DP-TRN-001.",
     "table": {
       "columns": [
@@ -15,32 +15,32 @@
       "rows": [
         [
           "W-01",
-          1.876813,
+          1.88,
           2119
         ],
         [
           "MW-02",
-          1.869321,
+          1.87,
           2311
         ],
         [
           "SE-01",
-          1.869244,
+          1.87,
           2160
         ],
         [
           "MW-01",
-          1.866679,
+          1.87,
           2171
         ],
         [
           "NE-01",
-          1.865059,
+          1.87,
           2217
         ],
         [
           "NE-02",
-          1.865051,
+          1.87,
           2222
         ]
       ]
@@ -81,12 +81,12 @@
   ],
   "notes": [],
   "question": "How does cost per mile compare across carriers on the same lanes?",
-  "recorded_at": "2026-09-04T07:00:14.876594+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.676976+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 6,
+    "latency_ms": 7,
     "rows_scanned": 13200,
     "runtime": "analytic",
     "tokens": {

@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-BNK-002-1.0.0",
   "analysis_type": "workload",
   "answer": {
-    "headline": "trade_based leads on investigation cycle time at 16.1900 days, 20.25% of the total across 5 typologys.",
+    "headline": "trade_based leads on investigation cycle time at 16.19 days, 20.26% of the total across 5 typologys.",
     "narrative": "Ranked by the certified definition KPI-INVCYCLE-024 over 14,400 rows in DP-BNK-002.",
     "table": {
       "columns": [
@@ -25,17 +25,17 @@
         ],
         [
           "sanctions_proximity",
-          15.925,
+          15.92,
           900
         ],
         [
           "rapid_movement",
-          15.865,
+          15.86,
           3330
         ],
         [
           "mule_network",
-          15.855,
+          15.86,
           3060
         ]
       ]
@@ -74,8 +74,8 @@
   ],
   "notes": [],
   "question": "Which investigators are carrying aged alerts above SLA?",
-  "recorded_at": "2026-09-04T07:00:13.561607+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.370020+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,

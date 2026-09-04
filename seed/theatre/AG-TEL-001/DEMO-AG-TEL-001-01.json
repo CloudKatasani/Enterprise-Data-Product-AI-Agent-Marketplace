@@ -60,12 +60,12 @@
   ],
   "notes": [],
   "question": "What is our churn rate this quarter and how does it compare to last?",
-  "recorded_at": "2026-09-04T07:00:14.687629+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.474810+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 23,
+    "latency_ms": 25,
     "rows_scanned": 25200,
     "runtime": "analytic",
     "tokens": {
@@ -83,7 +83,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 19,
+        "duration_ms": 21,
         "rows_returned": 2,
         "rows_scanned": 25200,
         "tool": "query_dp_tel_001"

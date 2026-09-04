@@ -155,7 +155,7 @@ def test_no_ticker_event_falls_below_the_occurrence_floor(db, landing) -> None:
 
 
 def test_the_ticker_names_no_person_and_no_asset_identifier(db, landing) -> None:
-    identifiers = {row for row in _all_asset_ids(db)}
+    identifiers = _all_asset_ids(db)
     for event in pulse.ticker(db, landing):
         for identifier in identifiers:
             assert identifier not in event.text

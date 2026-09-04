@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-UTL-001-1.0.0",
   "analysis_type": "contribution_ranking",
   "answer": {
-    "headline": "FDR-101 leads on saidi at 178,522.5212 minutes, 32.45% of the total across 7 feeders.",
+    "headline": "FDR-101 leads on saidi at 178,522.52 minutes, 32.45% of the total across 7 feeders.",
     "narrative": "Ranked by the certified definition KPI-SAIDI-061 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
@@ -15,17 +15,17 @@
       "rows": [
         [
           "FDR-101",
-          178522.5212,
+          178522.52,
           1054
         ],
         [
           "FDR-102",
-          158108.1946,
+          158108.19,
           1209
         ],
         [
           "FDR-104",
-          48436.4572,
+          48436.46,
           992
         ],
         [
@@ -35,17 +35,17 @@
         ],
         [
           "FDR-105",
-          41059.4452,
+          41059.45,
           837
         ],
         [
           "FDR-107",
-          40896.2497,
+          40896.25,
           1116
         ],
         [
           "FDR-106",
-          38360.0218,
+          38360.02,
           1240
         ]
       ]
@@ -86,12 +86,12 @@
   ],
   "notes": [],
   "question": "Which feeders contribute most to interruption minutes?",
-  "recorded_at": "2026-09-04T07:00:14.940559+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.742762+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 35,
+    "latency_ms": 37,
     "rows_scanned": 7440,
     "runtime": "analytic",
     "tokens": {
@@ -109,7 +109,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 33,
+        "duration_ms": 34,
         "rows_returned": 7,
         "rows_scanned": 7440,
         "tool": "query_dp_utl_001"

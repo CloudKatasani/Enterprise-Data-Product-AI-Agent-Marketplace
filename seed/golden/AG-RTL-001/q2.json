@@ -30,7 +30,7 @@
   "narrative": "Ranked by the certified definition KPI-COMPSALES-046 over 23,400 rows in DP-RTL-001.",
   "question": "Which categories are missing plan and why?",
   "rows_scanned": 23400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "category",

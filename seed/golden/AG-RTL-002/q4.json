@@ -18,18 +18,18 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "45000",
-    "top": "213892.396200",
+    "top": "213892.40",
     "top_share": "25.35"
   },
   "exchange_id": "DEMO-AG-RTL-002-04",
-  "headline": "apparel leads on lost sales estimate at $213,892.396200, 25.35% of the total across 5 categorys.",
+  "headline": "apparel leads on lost sales estimate at $213,892.40, 25.35% of the total across 5 categorys.",
   "kpi_definitions": [
     "KPI-LOSTSALES-055"
   ],
   "narrative": "Ranked by the certified definition KPI-LOSTSALES-055 over 45,000 rows in DP-RTL-002.",
   "question": "What did stockouts cost us last month?",
   "rows_scanned": 45000,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "category",

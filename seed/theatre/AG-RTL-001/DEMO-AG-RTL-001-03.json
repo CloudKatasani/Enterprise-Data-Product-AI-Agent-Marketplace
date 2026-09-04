@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Did the back-to-school promotion deliver incremental margin?",
-  "recorded_at": "2026-09-04T07:00:14.163543+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.971019+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 9,
     "rows_scanned": 23400,
     "runtime": "analytic",
     "tokens": {

@@ -17,18 +17,18 @@
   "claims": {
     "groups": "4",
     "rows_scanned": "15120",
-    "top": "331.3195",
-    "top_share": "25.56"
+    "top": "331.32",
+    "top_share": "25.57"
   },
   "exchange_id": "DEMO-AG-TEL-002-04",
-  "headline": "West leads on fault mean time to restore at 331.3195 hours, 25.56% of the total across 4 regions.",
+  "headline": "West leads on fault mean time to restore at 331.32 hours, 25.57% of the total across 4 regions.",
   "kpi_definitions": [
     "KPI-FMTTR-009"
   ],
   "narrative": "Ranked by the certified definition KPI-FMTTR-009 over 15,120 rows in DP-TEL-002.",
   "question": "Which faults are recurring on the same assets?",
   "rows_scanned": 15120,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "region",

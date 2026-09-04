@@ -19,18 +19,18 @@
   "claims": {
     "groups": "7",
     "rows_scanned": "7440",
-    "top": "178522.5212",
+    "top": "178522.52",
     "top_share": "32.45"
   },
   "exchange_id": "DEMO-AG-UTL-001-02",
-  "headline": "FDR-101 leads on saidi at 178,522.5212 minutes, 32.45% of the total across 7 feeders.",
+  "headline": "FDR-101 leads on saidi at 178,522.52 minutes, 32.45% of the total across 7 feeders.",
   "kpi_definitions": [
     "KPI-SAIDI-061"
   ],
   "narrative": "Ranked by the certified definition KPI-SAIDI-061 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which feeders contribute most to interruption minutes?",
   "rows_scanned": 7440,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "feeder",

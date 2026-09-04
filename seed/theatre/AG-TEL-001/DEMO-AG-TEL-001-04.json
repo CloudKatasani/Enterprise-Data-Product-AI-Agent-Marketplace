@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TEL-001-1.0.0",
   "analysis_type": "cohort_targeting",
   "answer": {
-    "headline": "consumer leads on churn propensity decile at 5.5189, 33.57% of the total across 3 segments.",
+    "headline": "consumer leads on churn propensity decile at 5.52, 33.58% of the total across 3 segments.",
     "narrative": "Ranked by the certified definition KPI-PROP-005 over 25,200 rows in DP-TEL-001.",
     "table": {
       "columns": [
@@ -15,12 +15,12 @@
       "rows": [
         [
           "consumer",
-          5.5189,
+          5.52,
           17040
         ],
         [
           "enterprise",
-          5.4615,
+          5.46,
           2880
         ],
         [
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which subscribers should we prioritise for a save offer this week?",
-  "recorded_at": "2026-09-04T07:00:14.756976+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.549183+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 18,
+    "latency_ms": 19,
     "rows_scanned": 25200,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 15,
+        "duration_ms": 16,
         "rows_returned": 3,
         "rows_scanned": 25200,
         "tool": "query_dp_tel_001"

@@ -30,7 +30,7 @@
   "narrative": "Computed from DP-RTL-001 under the certified definition KPI-COMPSALES-046, across 14 weeks and 23,400 rows.",
   "question": "How are comparable sales trending by category this week?",
   "rows_scanned": 23400,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "period",

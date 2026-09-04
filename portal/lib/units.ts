@@ -38,3 +38,14 @@ export function inUnit(value: number, unit: string): string {
       return decimal.format(value);
   }
 }
+
+/**
+ * A count with its noun, agreeing in number.
+ *
+ * "1 products" is the kind of thing a reader notices and a writer never does.
+ * English pluralisation is irregular enough that a rule would be wrong more
+ * often than it is right, so the caller states both forms.
+ */
+export function count(value: number, singular: string, plural: string): string {
+  return `${value.toLocaleString()} ${value === 1 ? singular : plural}`;
+}

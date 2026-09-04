@@ -564,3 +564,737 @@
   .incident-severity[data-severity='sev3'] { --incident-colour: var(--colour-severity-sev3); }
   .incident-severity[data-severity='sev4'] { --incident-colour: var(--colour-severity-sev4); }
 }
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * The landing page (BUILD.md section 13; specification 6.2, ten bands).
+   *
+   * Every band declares its height so its box is reserved before paint. That
+   * is the whole of the CLS budget: nothing here is sized by what arrives.
+   *
+   * Only `transform` and `opacity` are animated anywhere in this block, and
+   * `npm run lint:animatable-props` fails the build if that ever stops being
+   * true. Hover feedback lifts a card with a translate rather than a shadow,
+   * for the same reason.
+   * ---------------------------------------------------------------- */
+  .landing {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .landing-bands {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4xl);
+    width: 100%;
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding: var(--space-3xl) var(--space-lg);
+  }
+
+  .band-heading {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .band-sub {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* --- Band 1: hero and constellation ------------------------------- */
+  .hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: var(--hero-height);
+    overflow: hidden;
+    background: var(--surface-hero);
+    isolation: isolate;
+  }
+
+  .constellation {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  /* As the miniature it is an ordinary block in the flow at full strength,
+   * not a backdrop. Same component, same encoding, different job. */
+  .constellation[data-interactive='true'] {
+    position: relative;
+    inset: auto;
+    height: var(--constellation-height);
+    margin-top: var(--space-md);
+  }
+
+  .constellation-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--hero-scrim);
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: var(--measure-wide);
+    padding: var(--space-3xl) var(--space-lg);
+  }
+
+  .hero-headline {
+    max-width: var(--measure-prose);
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    font-weight: var(--weight-bold);
+    color: var(--text-on-hero);
+  }
+
+  .hero-sub {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-md);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-on-hero);
+    opacity: var(--opacity-hover);
+  }
+
+  .hero-search {
+    display: flex;
+    gap: var(--space-xs);
+    max-width: var(--measure-prose);
+    margin-top: var(--space-lg);
+  }
+
+  .hero-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: var(--border-width-hairline) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-base);
+    color: var(--text-primary);
+  }
+
+  .hero-search-button,
+  .hero-cta-primary {
+    border-radius: var(--radius-md);
+    background: var(--colour-accent);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-inverse);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+  }
+
+  .hero-cta-ghost {
+    border: var(--border-width-hairline) solid var(--text-on-hero);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-on-hero);
+  }
+
+  .constellation-edge {
+    stroke: var(--colour-accent);
+    opacity: var(--opacity-hover);
+  }
+
+  .constellation-edge[data-dimmed='true'],
+  .constellation-node[data-dimmed='true'] {
+    opacity: var(--constellation-dim-opacity);
+  }
+
+  .constellation-node circle {
+    fill: var(--surface-raised);
+    stroke: var(--border-strong);
+    stroke-width: var(--border-width-emphasis);
+  }
+
+  .constellation-node[data-band='exemplary'] circle { fill: var(--colour-band-exemplary); }
+  .constellation-node[data-band='healthy'] circle { fill: var(--colour-band-healthy); }
+  .constellation-node[data-band='watch'] circle { fill: var(--colour-band-watch); }
+  .constellation-node[data-band='at_risk'] circle { fill: var(--colour-band-at-risk); }
+  .constellation-node[data-band='unfit'] circle { fill: var(--colour-band-unfit); }
+
+  .constellation-node[data-certification='certified'] circle {
+    stroke: var(--colour-cert-certified);
+  }
+  .constellation-node[data-certification='published'] circle {
+    stroke: var(--colour-cert-published);
+  }
+  .constellation-node[data-certification='beta'] circle { stroke: var(--colour-cert-beta); }
+
+  /* An open incident is the one thing on this graph that moves without a
+   * visitor asking. Opacity only — a pulsing radius would animate layout. */
+  .constellation-node[data-incident='true'] circle {
+    animation: incident-pulse var(--duration-slow) ease-in-out infinite alternate;
+  }
+
+  @keyframes incident-pulse {
+    from { opacity: var(--opacity-hover); }
+    to { opacity: var(--constellation-dim-opacity); }
+  }
+
+  .constellation-satellite {
+    fill: var(--colour-accent);
+  }
+
+  .constellation-pulse {
+    fill: var(--colour-accent);
+    animation: answer-pulse var(--constellation-pulse-ms) var(--ease-exit) forwards;
+  }
+
+  @keyframes answer-pulse {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(3); }
+  }
+
+  .constellation-peek {
+    position: absolute;
+    inset-inline-start: var(--space-md);
+    inset-block-end: var(--space-md);
+    max-width: var(--measure-chip);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    box-shadow: var(--elevation-overlay);
+    padding: var(--space-sm);
+  }
+
+  .constellation-peek-name {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .constellation-peek-meta {
+    margin-top: var(--space-3xs);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .constellation-peek-link {
+    display: inline-block;
+    margin-top: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+  }
+
+  .motion-toggle {
+    margin-top: var(--space-xl);
+  }
+
+  .motion-toggle-button {
+    border: var(--border-width-hairline) solid var(--text-on-hero);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-on-hero);
+  }
+
+  .motion-toggle-note {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-2xs);
+    color: var(--text-on-hero);
+    opacity: var(--opacity-hover);
+  }
+
+  /* --- Band 2: counters --------------------------------------------- */
+  .counters {
+    border-block: var(--border-width-hairline) solid var(--border-subtle);
+    background: var(--surface-sunken);
+  }
+
+  .counter-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--measure-chip), 1fr));
+    gap: var(--space-lg);
+    align-items: center;
+    min-height: var(--counter-strip-height);
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding: var(--space-lg);
+  }
+
+  .counter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  .counter-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .counter-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  /* --- Band 3: industry selector ------------------------------------ */
+  .industry-strip {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    margin-top: var(--space-md);
+    padding-bottom: var(--space-2xs);
+  }
+
+  .industry-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    width: var(--industry-tile-width);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-sm);
+    text-align: start;
+  }
+
+  .industry-tile[aria-current='true'] {
+    border-color: var(--border-accent);
+  }
+
+  .industry-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .industry-counts {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  /* --- Band 4: the ribbon ------------------------------------------- */
+  .ribbon-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .ribbon-control,
+  .theatre-control {
+    border: var(--border-width-hairline) solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-sm);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .ribbon-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .ribbon-viewport {
+    overflow: hidden;
+    min-height: var(--ribbon-band-height);
+  }
+
+  .ribbon-track {
+    display: flex;
+    width: max-content;
+    /* One composited layer per row. Sixty cards each promoting themselves is
+     * sixty things for the compositor to reconcile every frame. */
+    will-change: transform;
+  }
+
+  .ribbon-list {
+    display: flex;
+    gap: var(--space-md);
+    margin-inline-end: var(--space-md);
+  }
+
+  /* 13.2: the standard catalog card at 88%. The scale is a transform, so the
+   * ribbon costs no layout for it. */
+  .ribbon-list .product-card {
+    transform: scale(var(--ribbon-card-scale));
+    transform-origin: top left;
+  }
+
+  .ribbon-list .product-card:hover,
+  .ribbon-list .product-card:focus-within {
+    transform: scale(var(--ribbon-card-scale))
+      translateY(calc(var(--ribbon-card-lift-px) * -1px));
+  }
+
+  .ribbon-static {
+    display: none;
+  }
+
+  .ribbon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .ribbon-more,
+  .mesh-band-link,
+  .agent-try {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+  }
+
+  /* --- Band 5: the agents ------------------------------------------- */
+  .agent-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .agent-tile {
+    display: flex;
+    flex-direction: column;
+    min-height: var(--card-agent-height);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-md);
+  }
+
+  .agent-try {
+    margin-top: auto;
+  }
+
+  /* --- Band 6: the theatre ------------------------------------------ */
+  .theatre-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .theatre-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .theatre-picker {
+    display: block;
+    margin-top: var(--space-md);
+  }
+
+  .theatre-select {
+    width: 100%;
+    max-width: var(--measure-prose);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    padding: var(--space-2xs) var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  .theatre-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    gap: var(--space-lg);
+    align-items: start;
+    min-height: var(--theatre-height);
+    margin-top: var(--space-md);
+  }
+
+  .theatre-stage {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-lg);
+  }
+
+  .theatre-question {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .theatre-caret {
+    display: inline-block;
+    width: var(--border-width-emphasis);
+    height: var(--text-sm);
+    margin-inline-start: var(--space-3xs);
+    background: var(--text-accent);
+    vertical-align: text-bottom;
+    animation: caret-blink var(--theatre-caret-blink-ms) steps(1, end) infinite;
+  }
+
+  @keyframes caret-blink {
+    from { opacity: 1; }
+    50% { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .theatre-thinking {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .theatre-headline {
+    margin-top: var(--space-md);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    color: var(--text-primary);
+  }
+
+  .theatre-narrative {
+    max-width: var(--measure-prose);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .theatre-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-sm);
+    height: var(--theatre-chart-height);
+    margin-top: var(--space-md);
+  }
+
+  .theatre-bar-slot {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: var(--theatre-bar-width);
+    height: 100%;
+  }
+
+  /* Bars grow from the axis with a scale, never a height: a chart that
+   * animated its height would animate layout for every frame it drew. */
+  .theatre-bar {
+    flex: 1 1 auto;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--colour-accent);
+    transform-origin: bottom;
+    transition: transform var(--theatre-chart-draw-ms) var(--ease-entrance);
+  }
+
+  .theatre-bar-label {
+    margin-top: var(--space-3xs);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .theatre-citations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-top: var(--space-md);
+  }
+
+  .theatre-citation {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-xs);
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+  }
+
+  .theatre-rail {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+    padding: var(--space-md);
+  }
+
+  .theatre-rail-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    margin-top: var(--space-2xs);
+  }
+
+  .theatre-rail-item {
+    border-inline-start: var(--border-width-accent) solid var(--border-accent);
+    padding-inline-start: var(--space-xs);
+  }
+
+  .theatre-rail-tool {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--text-primary);
+  }
+
+  .theatre-rail-meta {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .theatre-rail-totals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--bar-value-width), 1fr));
+    gap: var(--space-2xs);
+    margin-top: var(--space-md);
+    border-top: var(--border-width-hairline) solid var(--border-subtle);
+    padding-top: var(--space-sm);
+    font-size: var(--text-2xs);
+  }
+
+  .theatre-rail-totals dt {
+    color: var(--text-muted);
+  }
+
+  .theatre-rail-totals dd {
+    color: var(--text-primary);
+  }
+
+  /* --- Band 7: how it works ----------------------------------------- */
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+  }
+
+  .how-index {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: var(--text-muted);
+  }
+
+  .how-title {
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .how-body {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+  }
+
+  /* --- Band 9: value proof ------------------------------------------ */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .proof-tile {
+    min-height: var(--proof-tile-height);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-lg);
+  }
+
+  .proof-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .proof-unit {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+    color: var(--text-muted);
+  }
+
+  .proof-label {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .proof-detail {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+  }
+
+  /* --- The ticker ---------------------------------------------------- */
+  .ticker-viewport {
+    overflow: hidden;
+    height: var(--ticker-height);
+    border-block: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .ticker-track {
+    will-change: transform;
+  }
+
+  .ticker-item {
+    padding: var(--space-2xs) 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* --- Reduced motion ------------------------------------------------
+   * Every ambient animation has a static equivalent carrying the same
+   * information (13.6). The ribbon swaps its moving rows for the top cards as
+   * a grid; the ticker becomes the list it always was; the constellation holds
+   * its settled frame. Nothing is hidden and nothing is summarised away.
+   * ---------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon-rows {
+      display: none;
+    }
+
+    .ribbon-static {
+      display: block;
+    }
+
+    .ticker-viewport {
+      height: auto;
+    }
+
+    .constellation-node[data-incident='true'] circle,
+    .constellation-pulse,
+    .theatre-caret {
+      animation: none;
+    }
+
+    .theatre-bar {
+      transition: none;
+    }
+  }
+}

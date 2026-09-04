@@ -28,6 +28,7 @@ from fastapi.responses import StreamingResponse
 from services.api.deps import request_connection, rubric_dependency, tenant
 from services.common import http_status
 from services.common.db import connect, fetch_all
+from services.common.principal import ANONYMOUS
 from services.common.rubrics import Rubric
 from services.landing import featured, layout, proof, pulse, theatre
 
@@ -64,7 +65,7 @@ def featured_band(
     judgement the estate makes anyway, not a different one arranged for them.
     """
     window = int(ranking.number("adoption_window_days"))
-    products = featured.rank(
+    ordering = featured.rank(
         connection, landing, quality, industry=industry, window_days=window
     )
     per_row = int(landing.number("featured.products_per_row_max"))
@@ -72,7 +73,7 @@ def featured_band(
 
     return {
         "industry": industry,
-        "products": [item.document(int(landing.number("presentation.precision"))) for item in products[:per_row]],
+        "products": _cards(connection, ranking, ordering[:per_row], landing),
         "agents": _agents(connection, landing, industry),
         "limits": {
             # The client needs the reduced-motion grid size and the ribbon's
@@ -85,6 +86,46 @@ def featured_band(
         },
         "rubric_version_id": landing.rubric_version_id,
     }
+
+
+def _cards(
+    connection: psycopg.Connection[Any],
+    ranking: Rubric,
+    ordering: list[featured.FeaturedProduct],
+    landing: Rubric,
+) -> list[dict[str, Any]]:
+    """The ranked products, rendered as ordinary catalog cards.
+
+    Section 13.2 says the ribbon shows the standard catalog card. It means the
+    component, and it also means the payload: a second product shape for the
+    marketing surface would be a second thing to keep true, and the day the two
+    disagreed the front page would be the one that was wrong.
+
+    The listing is asked as the anonymous visitor, so every card presents its
+    real access state for someone nobody has identified — request-required —
+    rather than a state borrowed from whoever happens to be signed in.
+    """
+    from services.catalog import products as catalog
+
+    precision = int(landing.number("presentation.precision"))
+    reasons = {item.product_id: item for item in ordering}
+    page, _ = catalog.list_products(
+        connection, tenant(), ANONYMOUS, ranking,
+        featured=True, limit=len(ordering) or None,
+    )
+    by_id = {card["product_id"]: card for card in page.items}
+
+    return [
+        {
+            **by_id[item.product_id],
+            # Section 6.3: no unexplained recommendations. The caption is the
+            # only thing that makes the ranking checkable by a reader.
+            "why": reasons[item.product_id].why,
+            "featured_score": round(item.score, precision),
+        }
+        for item in ordering
+        if item.product_id in by_id
+    ]
 
 
 AGENTS = """

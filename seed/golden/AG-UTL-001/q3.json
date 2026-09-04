@@ -19,18 +19,18 @@
   "claims": {
     "groups": "4",
     "rows_scanned": "21600",
-    "top": "67.5809",
+    "top": "67.58",
     "top_share": "26.00"
   },
   "exchange_id": "DEMO-AG-UTL-001-03",
-  "headline": "switch leads on asset health index at 67.5809, 26.00% of the total across 4 asset classs.",
+  "headline": "switch leads on asset health index at 67.58, 26.00% of the total across 4 asset classs.",
   "kpi_definitions": [
     "KPI-AHI-063"
   ],
   "narrative": "Ranked by the certified definition KPI-AHI-063 over 21,600 rows in DP-UTL-001.",
   "question": "Which poor-health assets serve the most customers?",
   "rows_scanned": 21600,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "asset_class",

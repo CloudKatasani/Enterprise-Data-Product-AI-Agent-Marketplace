@@ -56,4 +56,15 @@
   --card-limit-list-height: 60px;
   --mesh-max-height: 760px;
   --mesh-label-size: 13px;
+
+  /* Landing geometry (13.6). Every band reserves an exact box before paint, so
+   * the page never settles and CLS stays at 0.00. These are heights the
+   * content is designed to fit, not heights measured after the fact. */
+  --hero-height: 560px;
+  --ticker-height: 96px;
+  --counter-strip-height: 132px;
+  --industry-tile-width: 176px;
+  --proof-tile-height: 176px;
+  --theatre-chart-height: 160px;
+  --theatre-bar-width: 40px;
 }

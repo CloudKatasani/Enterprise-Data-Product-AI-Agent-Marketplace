@@ -60,8 +60,8 @@
   ],
   "notes": [],
   "question": "Has SAR conversion changed since the June rule tuning?",
-  "recorded_at": "2026-09-04T07:00:13.548337+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.356131+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
@@ -83,7 +83,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 6,
         "rows_returned": 2,
         "rows_scanned": 14400,
         "tool": "query_dp_bnk_002"

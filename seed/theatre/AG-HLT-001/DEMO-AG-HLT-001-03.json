@@ -63,12 +63,12 @@
   ],
   "notes": [],
   "question": "Which discharge patterns are associated with higher readmission?",
-  "recorded_at": "2026-09-04T07:00:13.742426+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.558689+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 67,
+    "latency_ms": 70,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {
@@ -86,7 +86,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
         },
         "cost_class": "small",
-        "duration_ms": 64,
+        "duration_ms": 65,
         "rows_returned": 2,
         "rows_scanned": 31200,
         "tool": "query_dp_hlt_001"

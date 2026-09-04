@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-BNK-001-1.0.0",
   "analysis_type": "ranking",
   "answer": {
-    "headline": "mass leads on customer lifetime value at $58,557,319.919999, 64.14% of the total across 3 segments.",
+    "headline": "mass leads on customer lifetime value at $58,557,319.92, 64.14% of the total across 3 segments.",
     "narrative": "Ranked by the certified definition KPI-CLV-018 over 18,000 rows in DP-BNK-001.",
     "table": {
       "columns": [
@@ -15,7 +15,7 @@
       "rows": [
         [
           "mass",
-          58557319.919999,
+          58557319.92,
           11088
         ],
         [
@@ -65,8 +65,8 @@
   ],
   "notes": [],
   "question": "Who are my top 20 households by relationship value in the Southeast?",
-  "recorded_at": "2026-09-04T07:00:13.414061+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.207854+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,

@@ -69,12 +69,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Which segments are we retaining below plan?",
-  "recorded_at": "2026-09-04T07:00:14.059643+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:43.860131+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 24,
+    "latency_ms": 25,
     "rows_scanned": 480,
     "runtime": "analytic",
     "tokens": {
@@ -92,7 +92,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_002"
         },
         "cost_class": "small",
-        "duration_ms": 21,
+        "duration_ms": 22,
         "rows_returned": 3,
         "rows_scanned": 480,
         "tool": "query_dp_ins_002"

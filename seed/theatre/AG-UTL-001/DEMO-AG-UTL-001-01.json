@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-UTL-001-1.0.0",
   "analysis_type": "regulatory_tracking",
   "answer": {
-    "headline": "SAIDI is 264,443.6480 minutes for the year ending 2026-01-01.",
+    "headline": "SAIDI is 264,443.65 minutes for the year ending 2026-01-01.",
     "narrative": "Computed from DP-UTL-001 under the certified definition KPI-SAIDI-061, across 1 years and 21,600 rows.",
     "table": {
       "columns": [
@@ -15,7 +15,7 @@
       "rows": [
         [
           "2026-01-01",
-          264443.648,
+          264443.65,
           21600
         ]
       ]
@@ -56,8 +56,8 @@
   ],
   "notes": [],
   "question": "What is our SAIDI year to date against the regulatory target?",
-  "recorded_at": "2026-09-04T07:00:14.903821+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.704323+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
@@ -79,7 +79,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 15,
+        "duration_ms": 16,
         "rows_returned": 1,
         "rows_scanned": 21600,
         "tool": "query_dp_utl_001"

@@ -31,7 +31,7 @@
   "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 480 rows in DP-INS-002. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which segments are we retaining below plan?",
   "rows_scanned": 480,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "segment",

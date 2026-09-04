@@ -34,7 +34,7 @@
   "narrative": "Both cohorts are drawn from DP-INS-002 over the same period: 280 observations against 4,040. Computed within the year beginning 2026-01-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "What would a 5% increase on the worst-performing segment do to retention?",
   "rows_scanned": 4320,
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
     "cohort",

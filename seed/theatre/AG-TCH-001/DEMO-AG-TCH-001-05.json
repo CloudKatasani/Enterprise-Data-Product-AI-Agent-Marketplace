@@ -90,12 +90,12 @@
   ],
   "notes": [],
   "question": "Which features have high usage but low entitlement coverage?",
-  "recorded_at": "2026-09-04T07:00:14.662726+00:00",
-  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-be016e6bed32",
+  "recorded_at": "2026-09-04T07:28:44.448248+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 80,
+    "latency_ms": 79,
     "rows_scanned": 17360,
     "runtime": "analytic",
     "tokens": {
