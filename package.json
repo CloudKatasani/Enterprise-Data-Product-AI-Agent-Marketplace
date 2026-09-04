@@ -1,0 +1,49 @@
+{
+  "name": "marketplace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Enterprise Data Product and AI Agent Marketplace",
+  "workspaces": [
+    "portal"
+  ],
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "bootstrap": "python3 scripts/bootstrap.py",
+    "dev": "python3 scripts/dev.py",
+    "gen": "python3 scripts/gen.py",
+    "migrate": "python3 scripts/migrate.py",
+    "seed": "python3 scripts/seed.py",
+    "api": "python3 -m uvicorn services.api.main:app --host 0.0.0.0 --port 8000",
+    "worker": "python3 -m services.worker.main",
+    "verify": "npm run lint && npm run typecheck && npm run test:unit && npm run test:contract && npm run test:golden && npm run test:publish-gate && npm run test:a11y",
+    "lint": "npm run lint:no-magic-numbers && npm run lint:no-brand-strings && npm run lint:animatable-props && npm run lint:migrations && npm run lint:py && npm run lint:web",
+    "lint:no-magic-numbers": "python3 scripts/lint/no_magic_numbers.py",
+    "lint:no-brand-strings": "python3 scripts/lint/no_brand_strings.py",
+    "lint:animatable-props": "python3 scripts/lint/animatable_props.py",
+    "lint:migrations": "python3 scripts/lint/migrations.py",
+    "lint:py": "python3 -m ruff check services connectors scripts tests",
+    "lint:web": "npm run --workspace portal lint",
+    "typecheck": "python3 -m mypy services connectors && npm run --workspace portal typecheck",
+    "test:unit": "python3 scripts/run_tests.py tests/unit",
+    "test:contract": "python3 scripts/run_tests.py tests/contract",
+    "test:golden": "python3 scripts/run_tests.py tests/golden",
+    "test:publish-gate": "python3 scripts/run_tests.py tests/publish_gate",
+    "test:security": "python3 scripts/run_tests.py tests/security",
+    "test:kill": "python3 scripts/run_tests.py tests/kill",
+    "test:a11y": "python3 scripts/run_tests.py tests/a11y",
+    "test:e2e": "python3 scripts/run_tests.py tests/e2e",
+    "test:perf": "python3 scripts/run_tests.py tests/perf",
+    "gen:diff": "python3 scripts/gen.py && git diff --exit-code generated/",
+    "build": "npm run --workspace portal build"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3"
+  },
+  "dependencies": {
+    "browserslist": "^4.24.3",
+    "caniuse-lite": "^1.0.30001690"
+  }
+}

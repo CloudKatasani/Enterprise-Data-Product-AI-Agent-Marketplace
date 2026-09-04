@@ -1,0 +1,66 @@
+/* -------------------------------------------------------------------------
+ * Motion tokens — BUILD.md 13.1.
+ *
+ * Every duration, easing curve and ambient speed used by the motion layer is
+ * declared here. Components read the token; they never write a number.
+ * ---------------------------------------------------------------------- */
+
+:root {
+  --duration-micro: 120ms;
+  --duration-base: 240ms;
+  --duration-slow: 480ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-entrance: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  /* Ribbon (13.2): px per second. Different speeds so the two rows do not
+   * read as one block. */
+  --ribbon-speed-row1: 32;
+  --ribbon-speed-row2: 24;
+  --ribbon-pause-ms: 120;
+  --ribbon-card-lift-px: 4;
+  --ribbon-quality-sweep-ms: 700;
+
+  /* Constellation (13.3). */
+  --constellation-drift-alpha: 0.02;
+  --orbit-deg-per-sec-min: 0.6;
+  --orbit-deg-per-sec-max: 1.1;
+  --constellation-prewarm-ticks: 300;
+  --constellation-pulse-ms: 900;
+  --constellation-pulse-rate-max: 6;
+  --constellation-dim-opacity: 0.2;
+  --constellation-node-radius-min: 3;
+  --constellation-node-radius-max: 14;
+  --constellation-svg-node-ceiling: 150;
+  --constellation-webgl-node-floor: 1500;
+  --constellation-edge-lod-px: 900;
+  --constellation-static-lod-px: 640;
+
+  /* Answer theatre (13.4). */
+  --theatre-type-cps: 45;
+  --theatre-caret-blink-ms: 900;
+  --theatre-thinking-ms: 400;
+  --theatre-chart-draw-ms: 600;
+  --theatre-row-stagger-ms: 24;
+  --theatre-hold-ms: 4000;
+  --theatre-max-cycles: 3;
+
+  /* Counters and ticker (13.5). */
+  --counter-count-up-ms: 1200;
+  --counter-refresh-ms: 30000;
+  --ticker-crawl-speed: 18;
+
+  /* Controller pause thresholds. */
+  --motion-battery-floor: 0.2;
+  --motion-viewport-floor-px: 640;
+  --motion-frame-budget-ms: 4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-micro: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}

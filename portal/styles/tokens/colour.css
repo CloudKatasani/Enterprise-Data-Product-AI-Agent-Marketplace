@@ -1,0 +1,115 @@
+/* -------------------------------------------------------------------------
+ * Colour tokens.
+ *
+ * I13: this file and its siblings under styles/tokens/ are the ONLY place a raw
+ * hex value may appear. Everything else references a custom property. The lint
+ * rule scripts/lint/no_brand_strings.py enforces it.
+ *
+ * The palette is deliberately brand-neutral: a deployment overrides these
+ * values in a theme file without touching a single component.
+ * ---------------------------------------------------------------------- */
+
+:root {
+  /* Neutral ramp — the substrate everything else sits on. */
+  --colour-ink-000: #ffffff;
+  --colour-ink-025: #f7f8fa;
+  --colour-ink-050: #eef0f4;
+  --colour-ink-100: #e1e5ec;
+  --colour-ink-200: #c8cfda;
+  --colour-ink-300: #a3adbf;
+  --colour-ink-400: #7c8799;
+  --colour-ink-500: #5c667a;
+  --colour-ink-600: #434d61;
+  --colour-ink-700: #2f3849;
+  --colour-ink-800: #1d2434;
+  --colour-ink-900: #121826;
+  --colour-ink-950: #0a0e18;
+
+  /* Accent — interactive affordances and the primary brand-neutral hue. */
+  --colour-accent-100: #dbeafe;
+  --colour-accent-300: #93b4fd;
+  --colour-accent-500: #3b6ef2;
+  --colour-accent-600: #2b55c8;
+  --colour-accent-700: #1f3f96;
+
+  /* Quality bands. Resolved from the rubric band code, never from a score. */
+  --colour-band-exemplary: #0f9d6e;
+  --colour-band-healthy: #2f9ac4;
+  --colour-band-watch: #c78a12;
+  --colour-band-at-risk: #d1601c;
+  --colour-band-unfit: #c02a3c;
+
+  /* Certification rings. */
+  --colour-cert-certified: #0f9d6e;
+  --colour-cert-published: #3b6ef2;
+  --colour-cert-beta: #8b6ad4;
+  --colour-cert-deprecated: #7c8799;
+
+  /* Sensitivity. */
+  --colour-sensitivity-public: #5c667a;
+  --colour-sensitivity-internal: #2f9ac4;
+  --colour-sensitivity-confidential: #c78a12;
+  --colour-sensitivity-restricted: #c02a3c;
+
+  /* Status. */
+  --colour-status-ok: #0f9d6e;
+  --colour-status-warn: #c78a12;
+  --colour-status-error: #c02a3c;
+  --colour-status-info: #3b6ef2;
+
+  /* Semantic surface roles — components only ever use these. */
+  --surface-page: var(--colour-ink-025);
+  --surface-raised: var(--colour-ink-000);
+  --surface-sunken: var(--colour-ink-050);
+  --surface-inverse: var(--colour-ink-900);
+  --surface-hero: var(--colour-ink-900);
+  --border-subtle: var(--colour-ink-100);
+  --border-strong: var(--colour-ink-200);
+  --text-primary: var(--colour-ink-900);
+  --text-secondary: var(--colour-ink-600);
+  --text-muted: var(--colour-ink-400);
+  --text-inverse: var(--colour-ink-000);
+  --text-on-hero: #eef0f4;
+  --focus-ring: var(--colour-accent-500);
+
+  /* Hero scrim. 13.3 requires the constellation to sit behind a scrim that
+   * guarantees 4.5:1 contrast for hero copy. CI asserts the rendered result. */
+  --hero-scrim: rgba(10, 14, 24, 0.82);
+  --hero-constellation-opacity: 0.12;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --surface-page: var(--colour-ink-950);
+    --surface-raised: var(--colour-ink-900);
+    --surface-sunken: var(--colour-ink-800);
+    --surface-inverse: var(--colour-ink-025);
+    --surface-hero: var(--colour-ink-950);
+    --border-subtle: var(--colour-ink-800);
+    --border-strong: var(--colour-ink-700);
+    --text-primary: var(--colour-ink-025);
+    --text-secondary: var(--colour-ink-300);
+    --text-muted: var(--colour-ink-400);
+    --text-inverse: var(--colour-ink-950);
+    --focus-ring: var(--colour-accent-300);
+    --hero-scrim: rgba(10, 14, 24, 0.88);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --surface-page: var(--colour-ink-950);
+  --surface-raised: var(--colour-ink-900);
+  --surface-sunken: var(--colour-ink-800);
+  --surface-inverse: var(--colour-ink-025);
+  --surface-hero: var(--colour-ink-950);
+  --border-subtle: var(--colour-ink-800);
+  --border-strong: var(--colour-ink-700);
+  --text-primary: var(--colour-ink-025);
+  --text-secondary: var(--colour-ink-300);
+  --text-muted: var(--colour-ink-400);
+  --text-inverse: var(--colour-ink-950);
+  --focus-ring: var(--colour-accent-300);
+  --hero-scrim: rgba(10, 14, 24, 0.88);
+}

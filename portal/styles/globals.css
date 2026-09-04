@@ -1,0 +1,59 @@
+@import './tokens/colour.css';
+@import './tokens/motion.css';
+@import './tokens/space.css';
+@import './tokens/typography.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: var(--border-width-emphasis) solid var(--focus-ring);
+    outline-offset: var(--space-3xs);
+  }
+
+  /* Reserve exact boxes for the motion surfaces before they paint so the
+   * landing page holds CLS at 0.00 (13.6). */
+  .reserve-ribbon {
+    min-height: var(--ribbon-band-height);
+  }
+
+  .reserve-constellation {
+    min-height: var(--constellation-height);
+  }
+
+  .reserve-theatre {
+    min-height: var(--theatre-height);
+  }
+}
+
+@layer utilities {
+  .skip-link {
+    position: absolute;
+    transform: translateY(-200%);
+    z-index: 100;
+    background: var(--surface-raised);
+    color: var(--text-primary);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    transition: transform var(--duration-micro) var(--ease-standard);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+}
