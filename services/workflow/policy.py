@@ -59,6 +59,13 @@ class Facts:
     requester_roles: frozenset[str]
     requester_region: str | None
     purpose_code: str
+    # M12.1: a certification the requester holds that pre-approves this asset
+    # class at this sensitivity. Resolved into a fact here rather than looked up
+    # inside a predicate, because every other predicate is a fact about the
+    # asset or the caller and this one should not be the exception that reads a
+    # second rubric mid-evaluation.
+    certification_pre_approved: bool = False
+    certifications: tuple[str, ...] = ()
 
     def document(self) -> dict[str, Any]:
         return {
@@ -69,6 +76,8 @@ class Facts:
             "residency": list(self.residency),
             "has_classified_columns": self.has_classified_columns,
             "purpose_code": self.purpose_code,
+            "certifications": list(self.certifications),
+            "certification_pre_approved": self.certification_pre_approved,
         }
 
 
@@ -205,6 +214,10 @@ def gather(
         sensitivity = row["sensitivity_tier"]
         classified = bool(row["classified"])
 
+    certifications, pre_approved = _certification_benefit(
+        connection, requester_party_id, asset_type, sensitivity
+    )
+
     return Facts(
         asset_type=asset_type,
         asset_id=asset_id,
@@ -216,7 +229,76 @@ def gather(
         requester_roles=roles,
         requester_region=region["region"] if region else None,
         purpose_code=purpose_code,
+        certification_pre_approved=pre_approved,
+        certifications=certifications,
     )
+
+
+# Which access level an asset class is asked for. An agent invocation and a
+# product read are different grants, and a certification that pre-approves one
+# says nothing about the other.
+ACCESS_FOR_ASSET = {ASSET_DATA_PRODUCT: "read_data", ASSET_AGENT: "agent_invoke"}
+
+ACADEMY_RUBRIC = "academy"
+PRE_APPROVED_PATH = "pre_approved_access"
+
+
+def _certification_benefit(
+    connection: psycopg.Connection[Any],
+    party_id: str,
+    asset_type: str,
+    sensitivity: str,
+) -> tuple[tuple[str, ...], bool]:
+    """Whether a certification the requester holds covers this asset.
+
+    This is what makes the academy worth finishing: a certified consumer asking
+    for a product at or below the tier their certificate covers takes the
+    automatic path. The mapping lives in the academy rubric because it is a
+    governance decision — how much access a piece of learning is worth is
+    exactly the kind of thing that should be versioned and arguable, not
+    written into an evaluator.
+
+    Certification widens nothing on its own. It changes which path a request
+    takes; the grant that follows is still scoped, purposed and expiring.
+    """
+    from services.academy import paths as academy
+    from services.common import flags
+    from services.common.rubrics import RubricNotFound, load_current
+
+    held = tuple(entry["code"] for entry in academy.held(connection, party_id))
+    if not held:
+        return (), False
+
+    # The switch, read on every evaluation and never cached. A governance
+    # feature that hands out access needs one somebody can reach in a hurry, and
+    # a cached answer would mean the hurry did not help. Turning it off leaves
+    # the certifications intact and stops them shortening anyone's route.
+    if not flags.enabled(connection, flags.ACADEMY_PRE_APPROVED_ACCESS):
+        return held, False
+
+    try:
+        rubric = load_current(connection, ACADEMY_RUBRIC)
+    except RubricNotFound:
+        # No academy rubric seeded means no pre-approval, never blanket
+        # pre-approval. Fail closed.
+        return held, False
+
+    rank = fetch_one(
+        connection, "SELECT rank_order FROM sensitivity_tier WHERE code = %s", (sensitivity,)
+    )
+    if rank is None:
+        return held, False
+
+    wanted_access = ACCESS_FOR_ASSET.get(asset_type)
+    for code in held:
+        try:
+            ceiling = int(rubric.number(f"{PRE_APPROVED_PATH}.{code}.max_sensitivity_rank"))
+        except Exception:  # noqa: BLE001 - an unmapped certification grants nothing
+            continue
+        level = rubric.text(f"{PRE_APPROVED_PATH}.{code}.access_level")
+        if level == wanted_access and int(rank["rank_order"]) <= ceiling:
+            return held, True
+    return held, False
 
 
 # ---------------------------------------------------------------------------
@@ -241,6 +323,8 @@ def _predicate(name: str, wanted: Any, facts: Facts, rules: dict[str, Any]) -> b
         return _cross_border(facts) is bool(wanted)
     if name == "residency_conflict":
         return _residency_conflict(facts) is bool(wanted)
+    if name == "certification_pre_approved":
+        return facts.certification_pre_approved is bool(wanted)
     if name == "always":
         return bool(wanted)
     raise PolicyUnavailableError(
@@ -334,6 +418,12 @@ def _reason(name: str, wanted: Any, facts: Facts) -> str:
             "your role is on the pre-approved list"
             if affirmative
             else "your role is not on the pre-approved list"
+        )
+    if name == "certification_pre_approved":
+        return (
+            "you hold a certification that pre-approves this asset class"
+            if affirmative
+            else "you hold no certification covering this asset class at this sensitivity"
         )
     if name == "purpose_permitted":
         return (

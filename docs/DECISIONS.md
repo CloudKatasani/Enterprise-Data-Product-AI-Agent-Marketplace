@@ -294,3 +294,88 @@ server-side and the choreography starts from that frame.
 **Consequence** The page is coherent without JavaScript, identical under reduced motion, and
 nothing moves after paint. A slow API makes the page slower rather than jumpier, which is the
 trade the budget asks for.
+
+### D-030 — The application connects as a role RLS applies to (M12.5, 2026-09-04)
+**Context** The security suite asserted that a connection bound to another tenant sees nothing.
+It saw everything. PostgreSQL exempts superusers from row-level security entirely — `FORCE ROW
+LEVEL SECURITY` included — and the application was connecting as the owner of its own schema,
+so every policy in the generated DDL was decoration and nothing anywhere reported it.
+**Decision** Two URLs. `DATABASE_URL` owns the schema and is used by migrations; the new
+`APP_DATABASE_URL` is the application's own login, created by `npm run migrate` as a member of
+`app_role` with `NOSUPERUSER NOBYPASSRLS` re-asserted on every run. The `tenant` table moved off
+the shared-vocabulary list at the same time: its rows are per-tenant and disclosing one tenant's
+name, deployment mode and residency to another is a leak.
+**Consequence** Isolation is real and a test asserts the connection cannot bypass it. Two
+consequences fell out immediately and are the reason this was worth finding: the demo-tier and
+platform-sandbox schemas needed explicit grants, and `entitlement_grant` turned out to revoke
+`UPDATE` at the table level while its trigger existed to police updates — which meant a grant
+could never be revoked at all.
+
+### D-031 — Append-only comes in two shapes (M12.5, 2026-09-04)
+**Context** Rule 6 says snapshot, publication, audit and grant history are append-only, and the
+generator emitted one `REVOKE UPDATE, DELETE` for all four. But a grant is *ended* by stamping
+`revoked_at` on it rather than by writing a new row, and a trigger already existed to freeze its
+terms while permitting exactly that.
+**Decision** `stamped_in_place` on the canonical model. Those tables revoke `DELETE` only, and
+the trigger — required by the migration lint rather than assumed — is what makes `UPDATE` safe.
+**Consequence** The strongest constraint that can be expressed is still expressed, and the one
+operation the table exists to support works. The lint now checks the trigger rather than the
+grant, which is the thing that actually holds.
+
+### D-032 — A certification is worth an access tier (M12.1, 2026-09-04)
+**Context** An academy nobody finishes is a cost. Badges do not make people finish.
+**Decision** A certification pre-approves an access tier for its asset class: a certified
+consumer's request for a product inside that tier takes the automatic path. Which certificate
+covers what lives in the academy rubric, the policy reads it through a `certification_pre_approved`
+fact, and a feature flag can switch the whole benefit off in a hurry.
+**Consequence** Finishing the path is worth something concrete, and how much it is worth is a
+versioned, arguable number rather than a line in an evaluator. Certification widens nothing on
+its own — it changes which path a request takes, and the grant that follows is still scoped,
+purposed and expiring.
+
+### D-033 — A version is a bundle, so rollback is one action (M12.3, 2026-09-04)
+**Context** "Restore the previous bundle in one action" is easy to claim and hard to mean.
+Restoring a prompt without its bindings restores a configuration that never existed.
+**Decision** An agent version *is* the bundle — prompt, model, parameters, guardrails, coverage
+map, product and tool bindings, budgets, evaluation run — and versions are immutable, so rolling
+back is pointing at the previous one. One transaction, nothing reconstructed.
+**Consequence** The rollback drill releases a real candidate through the real gate and rolls it
+back, comparing every field of the restored bundle to the one that was live. It runs in CI and
+leaves the estate exactly as it found it.
+
+### D-034 — Right-to-left is a lint, not a project (M12.4, 2026-09-04)
+**Context** Mirroring an interface after it is built is a rewrite. Mirroring one written in
+logical properties is an attribute on `<html>`.
+**Decision** `lint:logical-properties` fails the build on any physical direction property in
+`portal/` — CSS and the Tailwind classes that compile to the same thing — with no suppression
+comment. Direction comes from `PORTAL_LOCALE`.
+**Consequence** Serving the portal in Arabic is one environment variable, verified by rendering
+it. The 35% string-expansion pass is asserted in the a11y suite against the reserved box heights
+the CLS budget depends on, so the two requirements are reconciled in the tokens rather than
+discovered in a screenshot.
+
+### D-035 — One connection per session, and the load test says so (M12.5, 2026-09-04)
+**Context** Section 20 asks the load gate to hold at 500 concurrent sessions. At 200 the
+harness ran 129 and the rest were refused a database connection: every session opens its own,
+there is no pool, and PostgreSQL's `max_connections` is the ceiling. Catalog search also went
+over its 400ms p95 under that concurrency, on an estate of fifteen products.
+**Decision** Recorded rather than papered over. The load harness reports how many sessions
+actually ran, names the cause, and prints the size of the estate it measured — a green run
+against fifteen products proves the code path and nothing about the scale the budget was
+written for, and it says that in those words. A connection pool is the fix and is not attempted
+here: pooling changes how the tenant setting is bound to a connection, which is the mechanism
+row-level security depends on, and that is a change to make deliberately rather than at the end
+of a milestone.
+**Consequence** The quarterly gate produces a number and a named blocker instead of a tick.
+Nobody reading the report can mistake it for a 500-session result.
+
+### D-036 — A grant is keyed on its request, not on (principal, asset) (M12.5, 2026-09-04)
+**Context** The end-to-end journey test revokes the access it was granted, so it can run twice.
+The second run approved a request and provisioned nothing: the grant id was
+`GRT-<party>-<asset>`, the revoked row from the first run was already there, and the insert's
+`ON CONFLICT DO NOTHING` silently did nothing while the workflow reported success.
+**Decision** The grant id is `GRT-<request_id>`. A grant is the record of one approval, so
+keying it on the approval is both correct and unique by construction.
+**Consequence** Revocation ends an access rather than blacklisting a person, and re-granting
+works. This is the worst shape a permission bug can take — both sides believe access was
+given — and it was invisible until a test tried the same journey twice.

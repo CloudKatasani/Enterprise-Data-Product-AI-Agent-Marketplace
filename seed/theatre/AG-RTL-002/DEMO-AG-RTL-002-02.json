@@ -75,12 +75,12 @@
   ],
   "notes": [],
   "question": "What is our forecast accuracy by category?",
-  "recorded_at": "2026-09-04T07:28:44.071928+00:00",
+  "recorded_at": "2026-09-04T08:34:03.367471+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 14,
+    "latency_ms": 17,
     "rows_scanned": 45000,
     "runtime": "analytic",
     "tokens": {
@@ -98,7 +98,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
         },
         "cost_class": "small",
-        "duration_ms": 11,
+        "duration_ms": 14,
         "rows_returned": 5,
         "rows_scanned": 45000,
         "tool": "query_dp_rtl_002"

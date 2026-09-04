@@ -1,6 +1,45 @@
 {
   "components": {
     "schemas": {
+      "Body_enrol_api_v1_academy_enrollments_post": {
+        "properties": {
+          "path_id": {
+            "title": "Path Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path_id"
+        ],
+        "title": "Body_enrol_api_v1_academy_enrollments_post",
+        "type": "object"
+      },
+      "Body_rollback_api_v1_agents__agent_id__rollback_post": {
+        "properties": {
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "Body_rollback_api_v1_agents__agent_id__rollback_post",
+        "type": "object"
+      },
+      "Body_set_flag_api_v1_admin_flags__code__post": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "title": "Body_set_flag_api_v1_admin_flags__code__post",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -57,12 +96,970 @@
       "by": "scripts/gen.py",
       "from": "services/api/main.py",
       "generator_version": "1.0.0",
-      "manifest_hash": "e1c5be2d541fb1a6afd03eed3d7c263665a2937f22746956d5eec5636e955c45",
+      "manifest_hash": "050a8e25b3257929c47ba51039b44f34fd5d60a2d9d9f41eb4b3a53e07995239",
       "warning": "DO NOT EDIT"
     }
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/academy/assessments": {
+      "post": {
+        "description": "Record one attempt, and certify if that completes the path.\n\nAttempts are append-only. A pass on the fourth try and a pass on the first\nare the same certificate and different evidence, and only one of those\nsurvives if a failed attempt can be replaced.",
+        "operationId": "assess_api_v1_academy_assessments_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Payload",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Assess Api V1 Academy Assessments Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Record an attempt",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/academy/contextual": {
+      "get": {
+        "description": "The reading list a listing links to (section 20.2).\n\nContextual means *this* asset class in *this* order, not the whole academy\nfiltered. A link that opens eleven modules has not answered the question the\nreader had.",
+        "operationId": "contextual_api_v1_academy_contextual_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "asset_type",
+            "required": true,
+            "schema": {
+              "title": "Asset Type",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Contextual Api V1 Academy Contextual Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Modules for one asset",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/academy/enrollments": {
+      "post": {
+        "operationId": "enrol_api_v1_academy_enrollments_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_enrol_api_v1_academy_enrollments_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Enrol Api V1 Academy Enrollments Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Enrol on a path",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/academy/me": {
+      "get": {
+        "operationId": "my_progress_api_v1_academy_me_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response My Progress Api V1 Academy Me Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "My progress and certifications",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/academy/modules/{module_id}": {
+      "get": {
+        "operationId": "read_module_api_v1_academy_modules__module_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "module_id",
+            "required": true,
+            "schema": {
+              "title": "Module Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Read Module Api V1 Academy Modules  Module Id  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "A module and its body",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/academy/paths": {
+      "get": {
+        "operationId": "list_paths_api_v1_academy_paths_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Paths Api V1 Academy Paths Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Every learning path",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/academy/paths/{path_id}": {
+      "get": {
+        "operationId": "read_path_api_v1_academy_paths__path_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "path_id",
+            "required": true,
+            "schema": {
+              "title": "Path Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Read Path Api V1 Academy Paths  Path Id  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One path",
+        "tags": [
+          "academy"
+        ]
+      }
+    },
+    "/api/v1/admin/connectors": {
+      "get": {
+        "operationId": "connectors_api_v1_admin_connectors_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Connectors Api V1 Admin Connectors Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Source systems",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/flags": {
+      "get": {
+        "operationId": "flags_api_v1_admin_flags_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Flags Api V1 Admin Flags Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Feature flags",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/flags/{code}": {
+      "post": {
+        "operationId": "set_flag_api_v1_admin_flags__code__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_set_flag_api_v1_admin_flags__code__post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Set Flag Api V1 Admin Flags  Code  Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Toggle a flag",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/rubrics": {
+      "get": {
+        "operationId": "list_rubrics_api_v1_admin_rubrics_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Rubrics Api V1 Admin Rubrics Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Every rubric",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/rubrics/{code}": {
+      "get": {
+        "operationId": "read_rubric_api_v1_admin_rubrics__code__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Read Rubric Api V1 Admin Rubrics  Code  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One rubric and its history",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/rubrics/{code}/versions": {
+      "post": {
+        "description": "Publish a new version, then re-score under it.\n\nThe acceptance criterion for M12.2 is that a weight change here re-scores\nthe estate *and* preserves prior snapshots, so both happen in one call and\nthe response reports both counts. A console that published without\nre-scoring would leave the estate describing itself under a rubric no longer\nin force.",
+        "operationId": "publish_version_api_v1_admin_rubrics__code__versions_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Payload",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Publish Version Api V1 Admin Rubrics  Code  Versions Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Publish an edited rubric",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/taxonomies": {
+      "get": {
+        "operationId": "taxonomies_api_v1_admin_taxonomies_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Taxonomies Api V1 Admin Taxonomies Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Controlled vocabulary",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tenancy": {
+      "get": {
+        "operationId": "tenancy_api_v1_admin_tenancy_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Tenancy Api V1 Admin Tenancy Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Tenancy and isolation",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/agents": {
       "get": {
         "operationId": "list_agents_api_v1_agents_get",
@@ -752,6 +1749,167 @@
           }
         },
         "summary": "Accept or reject an answer; a rejected defect becomes an evaluation case",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v1/agents/{agent_id}/release": {
+      "get": {
+        "operationId": "release_state_api_v1_agents__agent_id__release_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Release State Api V1 Agents  Agent Id  Release Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "What is live, what is in canary, and what a rollback would restore",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v1/agents/{agent_id}/rollback": {
+      "post": {
+        "description": "One call. The previous bundle, entire, in one transaction.\n\nA reason is required and is not a formality: \"rolled back\" in an incident\nreview is a fact with no cause, and the next person to ship that version\nwill ship it for the reason nobody wrote down.",
+        "operationId": "rollback_api_v1_agents__agent_id__rollback_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_rollback_api_v1_agents__agent_id__rollback_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Rollback Api V1 Agents  Agent Id  Rollback Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Restore the previous bundle",
         "tags": [
           "agents"
         ]

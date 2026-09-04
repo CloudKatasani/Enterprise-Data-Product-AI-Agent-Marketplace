@@ -12,7 +12,7 @@
 # with a permitted purpose must not fall into auto-approve because the
 # auto-approve rule happened to be listed above it.
 policy: access_request
-version: 1.1.0
+version: 1.2.0
 
 # Business days, not calendar. A request submitted on Friday afternoon with a
 # two-day SLA is due Tuesday, and telling the consumer Sunday would be a lie
@@ -55,6 +55,27 @@ paths:
         - has_classified_columns: true
     sla_days: 3
     approvers: [owner, steward]
+
+  - code: certified_auto
+    label: "Automatic — academy certification"
+    # M12.1: what a certification is actually worth. A consumer who has finished
+    # the path for this asset class, on a product inside the tier their
+    # certificate covers, takes the automatic path without needing a
+    # pre-approved role.
+    #
+    # The conditions below the certification are the same ones the ordinary
+    # automatic path requires. Certification replaces the role check and nothing
+    # else: it is evidence that someone understands what they are asking for,
+    # not a reason to skip the purpose rule or hand out personal data. Which
+    # tier each certificate covers lives in the academy rubric.
+    when:
+      all_of:
+        - certification_pre_approved: true
+        - sensitivity: [public, internal]
+        - contains_pii: false
+        - purpose_permitted: true
+    sla_days: 0
+    approvers: []
 
   - code: auto
     label: "Automatic"

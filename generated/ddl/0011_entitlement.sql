@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: fbb3ffd6721e1ee7d8fd5fb08735ed416f5d4af8855002b3a319a5670d827d46  generated_at: 2026-09-04T02:21:56+00:00
+-- generator_version: 1.0.0  manifest_hash: d1f98ff85cc2f0960625524186ad283cf6aa6b90484a80f01f2f65faefd2ca34  generated_at: 2026-09-04T08:33:00+00:00
 
 -- grants, scopes, purpose bindings, revocations and drift
 
@@ -32,8 +32,9 @@ CREATE POLICY entitlement_grant_tenant_isolation ON entitlement_grant
   USING (tenant_id = current_setting('app.tenant_id', true))
   WITH CHECK (tenant_id = current_setting('app.tenant_id', true));
 -- rule 6: append-only. History is written, never rewritten.
-REVOKE UPDATE, DELETE ON entitlement_grant FROM app_role;
+REVOKE DELETE ON entitlement_grant FROM app_role;
 GRANT SELECT, INSERT ON entitlement_grant TO app_role;
+GRANT UPDATE ON entitlement_grant TO app_role;
 
 -- grant_scope: Column-level narrowing of a grant. A grant is never wider than its scope rows.
 CREATE TABLE grant_scope (

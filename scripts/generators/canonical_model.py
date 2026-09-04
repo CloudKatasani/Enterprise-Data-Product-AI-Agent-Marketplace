@@ -50,7 +50,12 @@ REFERENCE: list[Table] = [
         name="tenant",
         group="reference",
         purpose="A deployment boundary. Every tenant-scoped row names one.",
-        tenant_scoped=False,
+        # Scoped to itself. The registry of tenants is not shared vocabulary: a
+        # multi-tenant deployment that let one tenant read the row for another
+        # would be disclosing its name, its deployment mode and its residency
+        # regions. The primary key *is* tenant_id, so the standard isolation
+        # policy applies unchanged.
+        tenant_scoped=True,
         columns=[
             Column("tenant_id", "TEXT", primary_key=True),
             Column("name", "TEXT", null=False),
@@ -1244,6 +1249,11 @@ ENTITLEMENT: list[Table] = [
         group="entitlement",
         purpose="The record of what was granted. Effective permission lives in the platform, not here.",
         append_only=True,
+        # Revocation stamps `revoked_at` on the grant rather than deleting it,
+        # and `entitlement_grant_history_only` below is what says which columns
+        # may move. Revoking UPDATE at the table level would put the trigger out
+        # of reach and make a grant impossible to revoke.
+        stamped_in_place=True,
         columns=[
             Column("grant_id", "TEXT", primary_key=True),
             Column("request_id", "TEXT", null=False, references="request(request_id)"),

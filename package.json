@@ -18,8 +18,8 @@
     "seed": "python3 scripts/seed.py",
     "api": "python3 -m uvicorn services.api.main:app --host 0.0.0.0 --port 8000",
     "worker": "python3 -m services.worker.main",
-    "verify": "npm run lint && npm run typecheck && npm run test:unit && npm run test:contract && npm run test:golden && npm run test:publish-gate && npm run test:a11y",
-    "lint": "npm run validate:manifests && npm run lint:no-magic-numbers && npm run lint:no-brand-strings && npm run lint:animatable-props && npm run lint:migrations && npm run lint:generated && npm run lint:py && npm run lint:web",
+    "verify": "npm run lint && npm run typecheck && npm run test:unit && npm run test:contract && npm run test:golden && npm run test:publish-gate && npm run test:security && npm run test:a11y && npm run test:perf",
+    "lint": "npm run validate:manifests && npm run lint:no-magic-numbers && npm run lint:no-brand-strings && npm run lint:animatable-props && npm run lint:logical-properties && npm run lint:migrations && npm run lint:generated && npm run lint:py && npm run lint:web",
     "lint:no-magic-numbers": "python3 scripts/lint/no_magic_numbers.py",
     "lint:no-brand-strings": "python3 scripts/lint/no_brand_strings.py",
     "lint:animatable-props": "python3 scripts/lint/animatable_props.py",
@@ -51,7 +51,11 @@
     "evaluate": "python3 scripts/evaluate.py",
     "publish:agents": "python3 scripts/publish_agents.py",
     "mesh": "python3 scripts/mesh.py",
-    "observe": "python3 scripts/observe.py"
+    "observe": "python3 scripts/observe.py",
+    "rollback:drill": "python3 scripts/rollback_drill.py",
+    "lint:logical-properties": "python3 scripts/lint/logical_properties.py",
+    "test:load": "python3 scripts/load_test.py",
+    "test:chaos": "python3 scripts/chaos_test.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"

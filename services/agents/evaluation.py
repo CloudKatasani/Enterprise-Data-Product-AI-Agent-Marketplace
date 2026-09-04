@@ -39,7 +39,9 @@ What each suite is actually asserting:
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -693,3 +695,46 @@ def _declared_threshold(connection: psycopg.Connection[Any], agent_id: str) -> D
     if row is None:
         raise SuiteMisconfiguredError(f"{agent_id} has no current version to read a threshold from")
     return Decimal(str(row["eval_threshold_pct"]))
+
+
+def record_run(
+    connection: psycopg.Connection[Any], tenant: str, result: RunResult
+) -> str:
+    """Persist a run and point the version at it.
+
+    Here rather than in the evaluation script because two callers need it: the
+    pipeline stage, and the rollback drill, which evaluates the candidate it
+    creates. A second copy would let a drill record a run in a shape the
+    publish gate does not read.
+    """
+    run_id = f"EVL-{result.agent_version_id}-{datetime.now(UTC):%Y%m%d%H%M%S}"
+    connection.execute(
+        "INSERT INTO evaluation_run (eval_run_id, tenant_id, agent_id, agent_version_ref, "
+        "  suite_results, pass_rate_pct, groundedness_pct, threshold_pct, passed, "
+        "  started_at, finished_at) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, now(), now())",
+        (
+            run_id, tenant, result.agent_id, result.agent_version_id,
+            json.dumps(result.document()), result.pass_rate_pct, result.groundedness_pct,
+            result.threshold_pct, result.passed,
+        ),
+    )
+    for suite in result.suites:
+        for case in suite.cases:
+            connection.execute(
+                "INSERT INTO evaluation_case (case_id, tenant_id, agent_id, suite, question, "
+                "  expected_behaviour, expected_payload, blocking, origin) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                "ON CONFLICT (case_id) DO UPDATE SET expected_behaviour = "
+                "  EXCLUDED.expected_behaviour, expected_payload = EXCLUDED.expected_payload",
+                (
+                    case.case_id, tenant, result.agent_id, suite.suite, case.question,
+                    case.detail, json.dumps({"passed": case.passed}), case.blocking,
+                    case.origin,
+                ),
+            )
+    connection.execute(
+        "UPDATE agent_version SET eval_run_id = %s WHERE agent_version_id = %s",
+        (run_id, result.agent_version_id),
+    )
+    return run_id

@@ -85,7 +85,7 @@ export default async function NewSupplyRequestPage({
       </p>
 
       {question ? (
-        <blockquote className="mt-lg rounded-md border-l-2 border-accent bg-sunken px-md py-sm text-sm text-primary">
+        <blockquote className="mt-lg rounded-md border-s-2 border-accent bg-sunken px-md py-sm text-sm text-primary">
           {question}
         </blockquote>
       ) : (

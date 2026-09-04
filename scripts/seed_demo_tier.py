@@ -22,7 +22,7 @@ from scripts.seeders._base import load_directory  # noqa: E402
 from seed.synthetic.framework import create_and_fill  # noqa: E402
 from seed.synthetic.products import ALL_SPECS  # noqa: E402
 from services.common.config import load_dotenv  # noqa: E402
-from services.common.db import connect, tenant_id  # noqa: E402
+from services.common.db import connect, grant_read, tenant_id  # noqa: E402
 
 
 def main(argv: list[str]) -> int:
@@ -35,9 +35,13 @@ def main(argv: list[str]) -> int:
         document["metadata"]["id"]: document for document in load_directory("products")
     }
     total = 0
-    with connect(tenant_id()) as connection:
+    # As the owner: creating a schema needs privileges the application role
+    # deliberately does not have, and the grant below is what gives it read
+    # access to what is created here.
+    with connect(tenant_id(), as_owner=True) as connection:
         with connection.cursor() as cursor:
             cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+        grant_read(connection, schema)
         for spec in ALL_SPECS:
             if wanted and spec.product_id not in wanted:
                 continue

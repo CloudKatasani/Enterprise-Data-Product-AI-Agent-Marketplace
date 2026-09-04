@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:marketplace:learning-path",
+  "title": "Learning path manifest",
+  "description": "A path through the academy, its modules and the certification it grants. Module bodies live here rather than in a separate content store so a change to what the estate teaches arrives in a reviewable diff.",
+  "type": "object",
+  "required": [
+    "apiVersion",
+    "kind",
+    "spec"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "marketplace/v1"
+    },
+    "kind": {
+      "const": "LearningPath"
+    },
+    "spec": {
+      "type": "object",
+      "required": [
+        "path_id",
+        "title",
+        "persona",
+        "audience",
+        "summary",
+        "certification_code",
+        "modules"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path_id": {
+          "type": "string",
+          "pattern": "^LP-[A-Z0-9-]+$"
+        },
+        "title": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "persona": {
+          "type": "string",
+          "enum": [
+            "consumer",
+            "owner",
+            "agent_owner",
+            "steward",
+            "sponsor"
+          ]
+        },
+        "audience": {
+          "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 40
+        },
+        "certification_code": {
+          "type": "string",
+          "pattern": "^CERT-[A-Z0-9-]+$"
+        },
+        "modules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "module_id",
+              "title",
+              "estimated_minutes",
+              "summary",
+              "body"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "module_id": {
+                "type": "string",
+                "pattern": "^MOD-[A-Z0-9-]+$"
+              },
+              "title": {
+                "$ref": "urn:marketplace:common#/$defs/nonEmptyText"
+              },
+              "estimated_minutes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 20
+              },
+              "sandbox_tier": {
+                "type": "string",
+                "enum": [
+                  "demo"
+                ]
+              },
+              "asset_type": {
+                "type": "string",
+                "enum": [
+                  "data_product",
+                  "agent"
+                ]
+              },
+              "asset_id": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string",
+                "minLength": 200
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

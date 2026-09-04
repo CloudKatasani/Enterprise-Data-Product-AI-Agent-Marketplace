@@ -1,5 +1,5 @@
 -- AUTO-GENERATED FROM scripts/generators/canonical_model.py BY scripts/gen.py — DO NOT EDIT
--- generator_version: 1.0.0  manifest_hash: fbb3ffd6721e1ee7d8fd5fb08735ed416f5d4af8855002b3a319a5670d827d46  generated_at: 2026-09-04T02:21:56+00:00
+-- generator_version: 1.0.0  manifest_hash: 763ba098eaf80570986c3d4f7b3d20e6dc4ab1d78879c37be07c4c13091ce7fc  generated_at: 2026-09-04T07:52:18+00:00
 
 -- reference taxonomies and tenancy
 
@@ -11,6 +11,11 @@ CREATE TABLE tenant (
   residency_regions TEXT[] NOT NULL DEFAULT '{}',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+ALTER TABLE tenant ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tenant FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_tenant_isolation ON tenant
+  USING (tenant_id = current_setting('app.tenant_id', true))
+  WITH CHECK (tenant_id = current_setting('app.tenant_id', true));
 GRANT SELECT, INSERT ON tenant TO app_role;
 GRANT UPDATE, DELETE ON tenant TO app_role;
 

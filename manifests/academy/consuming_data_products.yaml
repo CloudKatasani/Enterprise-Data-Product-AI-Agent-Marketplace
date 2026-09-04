@@ -1,0 +1,149 @@
+apiVersion: marketplace/v1
+kind: LearningPath
+spec:
+  path_id: LP-CONSUME
+  title: Consuming data products
+  persona: consumer
+  audience: Business consumers and analysts
+  certification_code: CERT-CONSUMER
+  summary: >-
+    Find the right product, judge whether you can trust it, get access, and run
+    your first query without needing anyone to explain the estate to you.
+  modules:
+    - module_id: MOD-CONSUME-01
+      title: Finding the right product
+      estimated_minutes: 8
+      sandbox_tier: demo
+      summary: >-
+        Search, facets and the one question worth asking of every result.
+      body: |
+        Search runs over names, purposes, columns, certified KPIs and glossary
+        terms at once, and fuses a lexical and a semantic ranking. An exact name
+        always wins: if you know what a product is called, type it.
+
+        The facets are the questions worth asking before you read a card.
+        **Certification** says whether the estate stands behind it. **Quality
+        band** says whether it currently meets its own contract. **Access
+        status** says whether you can query it today or must ask first.
+
+        The one question worth asking of every result: *what is this product's
+        grain?* A row here is one what, on what date? Two products that both
+        say "customer" and mean different things is how two teams end up with
+        different answers to the same question, and the grain is where that is
+        visible before anything else.
+
+        In the sandbox below, search for a term you would actually use and read
+        the top result's grain before you read anything else about it.
+    - module_id: MOD-CONSUME-02
+      title: Reading a quality score
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        What the composite is made of, and why the band matters more than the
+        number.
+      body: |
+        The composite is a weighted score over six dimensions: completeness,
+        accuracy, freshness, consistency, validity and uniqueness. Every weight
+        lives in a rubric, not in code, and the version that produced a score is
+        recorded with it — so any score on this platform can be replayed exactly.
+
+        Read the band, not the number. Ninety-one and eighty-nine are the same
+        product on two days; Exemplary and Healthy are the same product too. The
+        bands exist so that a two-point movement does not read as news.
+
+        What *is* news is a dimension that fell while the composite held. Open
+        the Quality tab and read the dimensions rather than the total: a product
+        whose freshness collapsed and whose completeness rose is not a product
+        that stayed the same.
+
+        A score below the At Risk band flags the product in the catalog and puts
+        a trust warning on every agent attached to it. That is automatic and no
+        owner can turn it off.
+    - module_id: MOD-CONSUME-03
+      title: Understanding a data contract
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        The promise a product makes, and what happens when it breaks one.
+      body: |
+        A contract states grain, freshness, availability, completeness, accuracy
+        and a deprecation policy. It is enforceable: the quality engine measures
+        against it, and a breach raises an incident with a severity computed
+        from who is downstream — not from how the owner feels about it.
+
+        Read the freshness guarantee before you build anything on a schedule. A
+        product that promises 06:00 and delivers at 07:30 has broken its
+        contract; one that promises "daily" has promised you very little.
+
+        The deprecation policy is the part nobody reads and the part that will
+        cost you a rebuild. It says how much notice you get and what the
+        replacement path is.
+
+        Every contract is versioned. If you pin a version in an agent binding or
+        a pipeline, a breaking change cannot arrive without a version bump.
+    - module_id: MOD-CONSUME-04
+      title: Requesting access
+      estimated_minutes: 8
+      sandbox_tier: demo
+      summary: >-
+        Purpose, path and clock — all three visible before you submit.
+      body: |
+        Access is granted for a declared **purpose**, and the purpose is logged
+        with every query made under the grant. That is not paperwork: it is what
+        makes an entitlement reviewable later, and it is why a request that
+        cannot name a purpose cannot be approved.
+
+        The form previews the decision before you submit it. It tells you which
+        policy path your request will take, who decides, and the SLA clock that
+        starts. Nothing about the outcome should reach you as a surprise days
+        later.
+
+        A denial names the missing scope and links straight back to a pre-filled
+        request. If you are refused, the refusal is a next step rather than a
+        dead end.
+
+        Grants expire. A grant nobody has used for the dormancy window is
+        flagged for review, because standing access nobody exercises is the
+        thing this marketplace exists to replace.
+    - module_id: MOD-CONSUME-05
+      title: Your first query
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Four surfaces, the same contract, and the one that fits your tool.
+      body: |
+        A product can publish over SQL, REST, MCP, a streaming topic, a file
+        drop or a semantic view. They are surfaces on the same contract, not
+        different products: the grain and the guarantees are identical, and the
+        one you want is the one your tool already speaks.
+
+        Row and column policy is enforced in the data platform, never in this
+        application. What you can see through the semantic view is what you can
+        see through SQL, because they are the same grant.
+
+        Start on the demo tier. It is synthetic data in a separate schema on the
+        same code path, so a query you write there works unchanged against
+        production once your grant lands.
+    - module_id: MOD-CONSUME-06
+      title: Citing certified KPIs
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        Why one measure has exactly one definition, and how to use it.
+      body: |
+        A certified KPI has exactly one authoritative definition in the
+        registry: one numerator, one denominator, one set of inclusions and
+        exclusions, one source of record. That is enforced, not encouraged — the
+        registry refuses a second authoritative definition of the same name.
+
+        Use the KPI id in anything you publish. "Churn was 1.7%" invites the
+        question *whose churn*; "KPI-CHURN-001 was 1.7%" answers it, and anyone
+        can open the definition and see what was included.
+
+        Every KPI states the grains and slices it supports. Asking for a slice
+        it does not support is not a small liberty: it is a different measure
+        wearing the same name.
+
+        If the definition is wrong, that is an enhancement request against the
+        registry, and it goes through the steward. Recomputing it yourself is
+        how an estate ends up with four churn rates.

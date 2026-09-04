@@ -31,6 +31,14 @@ APPEND_ONLY_TABLES = {
     "audit_event",
     "entitlement_grant",
 }
+
+# History whose *ending* is stamped in place rather than written as a new row.
+# A grant is closed by setting `revoked_at` on it, and a trigger polices exactly
+# which columns may move; revoking UPDATE at the table level would put that
+# trigger out of reach and make a grant impossible to revoke, which is the
+# opposite of what append-only is for. DELETE is still revoked, and the trigger
+# is checked below rather than taken on trust.
+STAMPED_IN_PLACE = {"entitlement_grant"}
 # Reference and configuration tables are tenant-independent by design: they are
 # the shared vocabulary every tenant resolves against.
 GLOBAL_TABLES = {
@@ -47,6 +55,11 @@ CREATE_TABLE = re.compile(r"CREATE TABLE(?: IF NOT EXISTS)?\s+([a-z_][a-z0-9_]*)
 ENABLE_RLS = re.compile(r"ALTER TABLE\s+([a-z_][a-z0-9_]*)\s+ENABLE ROW LEVEL SECURITY", re.I)
 CREATE_POLICY = re.compile(r"CREATE POLICY\s+\S+\s+ON\s+([a-z_][a-z0-9_]*)", re.I)
 REVOKE = re.compile(r"REVOKE\s+UPDATE\s*,\s*DELETE\s+ON\s+([a-z_][a-z0-9_]*)", re.I)
+REVOKE_DELETE = re.compile(r"REVOKE\s+DELETE\s+ON\s+([a-z_][a-z0-9_]*)", re.I)
+IMMUTABILITY_TRIGGER = re.compile(
+    r"CREATE\s+TRIGGER\s+[a-z_]+\s+BEFORE\s+UPDATE\s+OR\s+DELETE\s+ON\s+([a-z_][a-z0-9_]*)",
+    re.I,
+)
 
 
 def main() -> int:
@@ -68,6 +81,8 @@ def main() -> int:
     rls_enabled = {match.group(1).lower() for match in ENABLE_RLS.finditer(sql)}
     policied = {match.group(1).lower() for match in CREATE_POLICY.finditer(sql)}
     revoked = {match.group(1).lower() for match in REVOKE.finditer(sql)}
+    delete_revoked = {match.group(1).lower() for match in REVOKE_DELETE.finditer(sql)}
+    triggered = {match.group(1).lower() for match in IMMUTABILITY_TRIGGER.finditer(sql)}
 
     bodies: dict[str, str] = {}
     for match in CREATE_TABLE.finditer(sql):
@@ -84,10 +99,29 @@ def main() -> int:
         if table not in policied:
             findings.append(Finding(first_path, 1, f"table {table!r} has no row-level policy"))
 
-    for table in sorted(APPEND_ONLY_TABLES):
+    for table in sorted(APPEND_ONLY_TABLES - STAMPED_IN_PLACE):
         if table in tables and table not in revoked:
             findings.append(
                 Finding(first_path, 1, f"append-only table {table!r} does not revoke UPDATE, DELETE")
+            )
+
+    for table in sorted(STAMPED_IN_PLACE):
+        if table not in tables:
+            continue
+        if table not in delete_revoked and table not in revoked:
+            findings.append(
+                Finding(first_path, 1, f"append-only table {table!r} does not revoke DELETE")
+            )
+        # The trigger is what makes UPDATE safe here, so it is required rather
+        # than assumed: without it, granting UPDATE would leave the terms of a
+        # grant editable.
+        if table not in triggered:
+            findings.append(
+                Finding(
+                    first_path, 1,
+                    f"table {table!r} permits UPDATE with no BEFORE UPDATE OR DELETE trigger "
+                    "policing which columns may move",
+                )
             )
 
     return report("lint:migrations", findings)

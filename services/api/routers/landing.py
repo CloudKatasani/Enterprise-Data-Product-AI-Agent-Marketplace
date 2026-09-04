@@ -26,7 +26,7 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
 
 from services.api.deps import request_connection, rubric_dependency, tenant
-from services.common import http_status
+from services.common import flags, http_status
 from services.common.db import connect, fetch_all
 from services.common.principal import ANONYMOUS
 from services.common.rubrics import Rubric
@@ -334,7 +334,7 @@ LIMIT %(limit)s
 """
 
 
-def _pulses(after: Any, limit: int) -> tuple[list[dict[str, Any]], Any]:
+def _pulses(after: Any, limit: int, flag: str) -> tuple[list[dict[str, Any]], Any]:
     """Answer pulses since a watermark, and the new watermark.
 
     Opened on its own connection: the stream outlives the request-scoped one,
@@ -342,6 +342,10 @@ def _pulses(after: Any, limit: int) -> tuple[list[dict[str, Any]], Any]:
     a snapshot for as long as a visitor leaves the tab open.
     """
     with connect(tenant()) as connection:
+        if not flags.enabled(connection, flag):
+            # The watermark still advances. Turning the flag back on resumes
+            # from now rather than replaying an hour of answers at once.
+            return [], _now(connection)
         rows = fetch_all(
             connection, RECENT,
             {"system": f"{SYSTEM_SESSION_PREFIX}%", "after": after, "limit": limit},
@@ -383,11 +387,14 @@ async def stream(
     rate = int(landing.number("hero.max_pulses_per_second"))
     interval = float(landing.number("hero.stream_interval_seconds"))
     watermark = _now(connection)
+    # Read per frame rather than once at subscribe: a stream a visitor opened an
+    # hour ago should stop pulsing when the flag goes off, not when they reload.
+    streaming = flags.LANDING_ANSWER_STREAM
 
     async def frames() -> AsyncIterator[str]:
         nonlocal watermark
         while True:
-            events, watermark = await asyncio.to_thread(_pulses, watermark, rate)
+            events, watermark = await asyncio.to_thread(_pulses, watermark, rate, streaming)
             if events:
                 for event in events:
                     yield _frame(EVENT_PULSE, event)

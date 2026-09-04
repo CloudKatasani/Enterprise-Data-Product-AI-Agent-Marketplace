@@ -53,9 +53,19 @@ APPEND_ONLY = {
     "quality_score_snapshot", "publication_snapshot", "audit_event", "entitlement_grant",
 }
 
-# Reference and configuration vocabulary is shared across tenants by design.
+# History whose ending is stamped on the row rather than written as a new one.
+STAMPED_IN_PLACE = {"entitlement_grant"}
+
+# Reference vocabulary is shared across tenants by design: it is what every
+# tenant resolves its manifests against.
+#
+# `tenant` is not on this list and was moved off it in M12.5. The registry of
+# tenants is not shared vocabulary — a multi-tenant deployment letting one
+# tenant read another's row discloses its name, its deployment mode and its
+# residency regions. Its primary key is `tenant_id`, so the standard isolation
+# policy applies to it unchanged.
 GLOBAL_TABLES = {
-    "tenant", "industry", "business_domain", "product_archetype", "sensitivity_tier",
+    "industry", "business_domain", "product_archetype", "sensitivity_tier",
     "purpose_category",
 }
 
@@ -185,11 +195,33 @@ def test_emitted_ddl_enables_rls_and_a_policy_for_every_tenant_scoped_table() ->
 
 
 def test_emitted_ddl_revokes_write_verbs_on_append_only_tables() -> None:
+    """Rule 6, in the two shapes append-only actually takes.
+
+    Most history is written and never touched again, so both verbs go. A grant
+    is history whose *ending* is stamped on it — `revoked_at` beside the row
+    rather than a new row — and a trigger polices which columns may move.
+    Revoking UPDATE there would put that trigger out of reach and make a grant
+    impossible to revoke, which is the opposite of what append-only is for.
+    """
     from scripts.generators.ddl import GROUP_ORDER, _group_body
 
     sql = "\n".join(_group_body(group) for group, _ in GROUP_ORDER)
-    for name in APPEND_ONLY:
+    for name in APPEND_ONLY - STAMPED_IN_PLACE:
         assert re.search(rf"REVOKE UPDATE, DELETE ON {name} FROM app_role;", sql)
+    for name in STAMPED_IN_PLACE:
+        assert re.search(rf"REVOKE DELETE ON {name} FROM app_role;", sql)
+        assert not re.search(rf"REVOKE UPDATE, DELETE ON {name} FROM app_role;", sql)
+
+
+def test_a_table_that_permits_update_declares_the_trigger_that_polices_it() -> None:
+    """The grant is not the constraint here; the trigger is."""
+    from scripts.generators.canonical_model import ALL_TABLES
+
+    stamped = {table.name for table in ALL_TABLES if table.stamped_in_place}
+    assert stamped == STAMPED_IN_PLACE
+    for name in stamped:
+        table = next(entry for entry in ALL_TABLES if entry.name == name)
+        assert table.append_only, f"{name} stamps in place but is not append-only"
 
 
 def test_generated_ddl_is_deterministic() -> None:

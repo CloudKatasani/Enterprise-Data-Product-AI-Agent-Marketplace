@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Which poor-health assets serve the most customers?",
-  "recorded_at": "2026-09-04T07:28:44.753227+00:00",
+  "recorded_at": "2026-09-04T08:34:04.126315+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 9,
     "rows_scanned": 21600,
     "runtime": "analytic",
     "tokens": {

@@ -64,12 +64,12 @@
   ],
   "notes": [],
   "question": "How long does a new account take to reach first value?",
-  "recorded_at": "2026-09-04T07:28:44.292636+00:00",
+  "recorded_at": "2026-09-04T08:34:03.619923+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 22,
+    "latency_ms": 24,
     "rows_scanned": 50400,
     "runtime": "analytic",
     "tokens": {
@@ -87,7 +87,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 19,
+        "duration_ms": 21,
         "rows_returned": 3,
         "rows_scanned": 50400,
         "tool": "query_dp_tch_001"

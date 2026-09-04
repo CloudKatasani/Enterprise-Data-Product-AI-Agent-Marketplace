@@ -1,0 +1,136 @@
+apiVersion: marketplace/v1
+kind: LearningPath
+spec:
+  path_id: LP-OWNER
+  title: Owning a data product
+  persona: owner
+  audience: Product owners
+  certification_code: CERT-PRODUCT-OWNER
+  summary: >-
+    Write a contract you can keep, express quality as data rather than code,
+    and defend a value case with numbers somebody can check.
+  modules:
+    - module_id: MOD-OWNER-01
+      title: Writing a contract
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Promise what you can keep, in the units the engine measures.
+      body: |
+        A contract is enforceable here, so write one you can keep on your worst
+        week rather than your best. Freshness is measured against the target you
+        state, and the incident that follows a breach names you.
+
+        State the grain in a sentence a consumer can check: one row per what,
+        per what period. Most disagreements about a number turn out to be
+        disagreements about the grain.
+
+        Availability and completeness need a measurement window, not just a
+        percentage. "99.5%" over a day and over a quarter are different
+        promises.
+
+        The deprecation policy is a commitment to your consumers about notice
+        and a replacement path. Write it now, while nothing depends on it.
+    - module_id: MOD-OWNER-02
+      title: Designing quality rules as data
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Every threshold in a table, every score replayable.
+      body: |
+        A rule carries its dimension, its threshold, its severity and its owner,
+        and it lives in the rule table. No threshold belongs in pipeline code:
+        CI fails the build on a numeric threshold in application source, and the
+        reason is that a threshold in code is a threshold nobody can find, argue
+        with or version.
+
+        Severity is the rule's weight within its dimension. A critical
+        completeness rule and a low-severity one are not the same evidence, and
+        averaging them as though they were is how a composite stops meaning
+        anything.
+
+        A dimension you declare no rules for has its weight redistributed rather
+        than scored as zero. You are not penalised for evidence nobody asked you
+        to produce — but you are also not credited for it.
+
+        Change a weight, re-seed, and the estate re-scores with no code change.
+        Prior snapshots are immutable, so the old score stays exactly where it
+        was and the change is visible as a change.
+    - module_id: MOD-OWNER-03
+      title: Defining certified KPIs
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        One name, one definition, one source of record.
+      body: |
+        Certifying a KPI means claiming your product is its source of record.
+        The registry enforces that there is exactly one authoritative definition
+        per name, so a second team certifying the same measure is a conversation
+        rather than a duplicate row.
+
+        State the numerator, the denominator, the inclusions and the exclusions.
+        The exclusions are the useful half: "excludes plan migrations within the
+        same account" is where two churn definitions actually differ.
+
+        Declare the grains and slices you support and no more. An agent will
+        refuse a slice you did not declare, which is the behaviour you want —
+        the alternative is an agent quietly computing something you never
+        certified.
+    - module_id: MOD-OWNER-04
+      title: Publishing and versioning
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        The gate is executable, and there is no way around it.
+      body: |
+        Publication is a gate, not a review meeting. It runs as a checklist you
+        can execute, and there is no "approve anyway" path — not for you, not
+        for an administrator. A version that does not clear the gate stays a
+        draft.
+
+        Every publication writes an immutable snapshot: what was published, on
+        what evidence, under which rubric version. That is what makes a
+        certification decision reviewable a year later.
+
+        A breaking change needs a version bump. The platform can tell a breaking
+        change from an additive one by comparing contract versions, and it will
+        not let a consumer's pinned version move underneath them.
+    - module_id: MOD-OWNER-05
+      title: Running the backlog
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        A public backlog, an SLA clock, and the duplicate check that saves you
+        writing the same thing twice.
+      body: |
+        Enhancement requests against your product land in a public backlog. It
+        is public because a backlog only works if the people who filed things
+        can see what happened to them.
+
+        The duplicate check is containment-based rather than similarity-based: a
+        request that restates an existing one in different words is caught and
+        linked, so you answer once.
+
+        Your SLA clock is visible to requesters. An escalation at the rubric's
+        fraction of the SLA reaches you before the breach, not after.
+    - module_id: MOD-OWNER-06
+      title: Defending the value case
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Assumptions stated openly, sample sizes shown, and a number that can be
+        argued with.
+      body: |
+        A value case here is a model with its assumptions written down and its
+        sample sizes shown next to every figure derived from them. An estimate
+        without its evidence is a large number nobody can check, and it will not
+        survive its first review.
+
+        The realised measurement is computed from answered questions and their
+        acceptance rate — not from a projection. It is snapshotted, and the
+        board pack reads the snapshot rather than recomputing, so the pack and
+        the dashboard cannot disagree.
+
+        Attribution confidence is part of the record. A value case that claims
+        high confidence on thin evidence is easier to spot when the confidence
+        is a field rather than a tone of voice.

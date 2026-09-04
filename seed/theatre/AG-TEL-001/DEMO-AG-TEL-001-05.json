@@ -59,12 +59,12 @@
   ],
   "notes": [],
   "question": "Did the May retention campaign actually work?",
-  "recorded_at": "2026-09-04T07:28:44.594482+00:00",
+  "recorded_at": "2026-09-04T08:34:03.951203+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 43,
+    "latency_ms": 49,
     "rows_scanned": 11340,
     "runtime": "analytic",
     "tokens": {
@@ -82,7 +82,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 41,
+        "duration_ms": 45,
         "rows_returned": 2,
         "rows_scanned": 11340,
         "tool": "query_dp_tel_001"

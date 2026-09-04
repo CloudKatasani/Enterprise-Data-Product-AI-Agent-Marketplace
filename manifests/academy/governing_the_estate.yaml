@@ -1,0 +1,105 @@
+apiVersion: marketplace/v1
+kind: LearningPath
+spec:
+  path_id: LP-STEWARD
+  title: Governing the estate
+  persona: steward
+  audience: Stewards and architects
+  certification_code: CERT-STEWARD
+  summary: >-
+    Classification, certification, mesh interpretation and the two review
+    queues that keep an estate honest.
+  modules:
+    - module_id: MOD-GOV-01
+      title: Classification propagation
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Sensitivity is derived from columns and never set by hand.
+      body: |
+        A product's sensitivity tier is derived from the classification of its
+        columns, by trigger, and it is the highest tier present. It is not a
+        field an owner fills in, because the field an owner fills in is always
+        one classification behind the schema.
+
+        Adding a restricted column raises the product's tier immediately, which
+        changes what appears on a marketing surface, what a purpose must
+        declare, and which policy path an access request takes. That cascade is
+        the point.
+
+        A classified column left unprotected caps the quality composite. It is a
+        hard blocker rather than a deduction, so it cannot be averaged away by
+        good scores elsewhere.
+    - module_id: MOD-GOV-02
+      title: The certification workflow
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Evidence, snapshot, and no override.
+      body: |
+        Certification is a decision on evidence, recorded as an immutable
+        snapshot naming the rubric version that produced the score. A year later
+        it can be replayed exactly, which is the only way a certification
+        decision means anything.
+
+        There is no "approve anyway". If that seems inconvenient, the fix is to
+        change the rubric — in the open, versioned, applying to everything — not
+        to wave one asset through.
+
+        Deprecation is a certification state, not a deletion. Consumers keep
+        their notice period and the replacement path stays visible.
+    - module_id: MOD-GOV-03
+      title: Reading the mesh
+      estimated_minutes: 15
+      sandbox_tier: demo
+      summary: >-
+        Every edge carries a rationale, a confidence and the factors behind it.
+      body: |
+        An edge is not a similarity score. It carries the factors that produced
+        it — shared sources, shared columns, KPI overlap, co-consumption — with
+        a confidence and a rationale in words. An edge nobody can explain is a
+        line on a picture.
+
+        Duplication needs two thresholds met, not one. Products in a domain
+        share sources; products with similar purposes are common and
+        unremarkable. Both together is a signal.
+
+        Read a low strength as information. In an estate where every certified
+        KPI has exactly one source of record, KPI overlap is structurally zero,
+        and the render threshold has been lowered to match with the reasoning
+        recorded in the rubric. If you find yourself wanting to raise it, that
+        is an argument to have in the rubric where everyone can see it.
+    - module_id: MOD-GOV-04
+      title: Duplicate-supply triage
+      estimated_minutes: 10
+      sandbox_tier: demo
+      summary: >-
+        Two teams building the same thing, caught before the second one ships.
+      body: |
+        A new-supply request is checked against the existing estate and against
+        the open demand board before it reaches you. Containment, not
+        similarity: a request that restates an existing one in different words is
+        caught, which similarity scoring misses.
+
+        Triage records a reason. The demand score orders the board but never
+        decides alone — the panel makes the call and the reason is what a
+        requester reads.
+    - module_id: MOD-GOV-05
+      title: Entitlement review
+      estimated_minutes: 12
+      sandbox_tier: demo
+      summary: >-
+        Drift, dormancy, and the register that is never the source of truth.
+      body: |
+        The marketplace never stores effective permissions. It records requests,
+        decisions and grants, and provisions into the platform's own RBAC. A
+        nightly job compares the register against actual platform grants and
+        raises any difference as drift.
+
+        Drift in either direction matters. A platform grant with no record
+        behind it is ungoverned access; a record with no platform grant is a
+        consumer who thinks they have access and does not.
+
+        A grant nobody has exercised for the dormancy window is flagged. Renewal
+        is a decision, not a default: standing access nobody uses is exactly
+        what this replaces.

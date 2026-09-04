@@ -24,7 +24,8 @@
         "agent_runtime",
         "governance",
         "observability",
-        "landing"
+        "landing",
+        "academy"
       ]
     },
     "version": {
@@ -186,6 +187,18 @@
       },
       "then": {
         "$ref": "#/$defs/landing"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rubric": {
+            "const": "academy"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/academy"
       }
     }
   ],
@@ -1566,6 +1579,105 @@
             "precision": {
               "type": "integer",
               "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "academy": {
+      "type": "object",
+      "required": [
+        "assessment",
+        "certification",
+        "pre_approved_access",
+        "progress"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rubric": true,
+        "version": true,
+        "assessment": {
+          "type": "object",
+          "required": [
+            "pass_score_pct",
+            "attempts_before_review",
+            "questions_per_module"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "pass_score_pct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "attempts_before_review": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "questions_per_module": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "certification": {
+          "type": "object",
+          "required": [
+            "valid_days",
+            "renewal_notice_days",
+            "completion_fraction"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "valid_days": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "renewal_notice_days": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "completion_fraction": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        "pre_approved_access": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^CERT-[A-Z0-9-]+$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "max_sensitivity_rank",
+              "access_level"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "max_sensitivity_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "access_level": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "progress": {
+          "type": "object",
+          "required": [
+            "reporting_window_days"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "reporting_window_days": {
+              "type": "integer",
+              "minimum": 1
             }
           }
         }

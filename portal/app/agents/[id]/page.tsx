@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { ContextualRunbook } from '@/components/academy/ContextualRunbook';
 import { AGENT_TABS, AgentTabPanel, type AgentDetail } from '@/components/agents/AgentTabs';
 import { TabBar } from '@/components/detail/Tabs';
 import { Badge } from '@/components/ui/Badge';
@@ -106,8 +107,11 @@ export default async function AgentPage({
 
       <TabBar tabs={[...AGENT_TABS]} states={states} active={tab} basePath={`/agents/${id}`} />
 
-      <div className="py-lg">
+      <div className="detail-body py-lg">
         <AgentTabPanel tab={tab} detail={detail} />
+        {/* Section 20.2: what an agent will and will not do is the thing new
+            consumers get wrong, so the module that explains it sits here. */}
+        <ContextualRunbook assetType="agent" assetId={id} />
       </div>
     </div>
   );

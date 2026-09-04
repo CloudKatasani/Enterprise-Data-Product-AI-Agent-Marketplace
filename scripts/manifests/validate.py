@@ -40,6 +40,7 @@ KIND_SCHEMA = {
     "Agent": "agent.schema.json",
     "Kpi": "kpi.schema.json",
     "Taxonomy": "taxonomy.schema.json",
+    "LearningPath": "learning_path.schema.json",
 }
 
 
@@ -483,7 +484,10 @@ def validate_all(root: Path | None = None) -> list[ValidationError]:
     policies, load_errors = _load_all(manifests_root / "policies")
     errors.extend(load_errors)
 
-    for manifest in [*products, *agents, *kpis, *taxonomies]:
+    academy, load_errors = _load_all(manifests_root / "academy")
+    errors.extend(load_errors)
+
+    for manifest in [*products, *agents, *kpis, *taxonomies, *academy]:
         errors.extend(validate_document(manifest, registry))
     for manifest in rubrics:
         errors.extend(validate_rubric(manifest, registry))

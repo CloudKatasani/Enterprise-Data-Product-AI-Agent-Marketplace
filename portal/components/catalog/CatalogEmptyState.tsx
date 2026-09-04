@@ -43,7 +43,7 @@ export function CatalogEmptyState({
                 >
                   {result.name}
                 </Link>
-                <span className="ml-xs text-2xs uppercase tracking-wide text-muted">
+                <span className="ms-xs text-2xs uppercase tracking-wide text-muted">
                   {result.asset_type.replace(/_/g, ' ')}
                 </span>
               </li>
@@ -63,7 +63,7 @@ export function CatalogEmptyState({
                 <Link href={`/demand#${item.demand_id}`} className="text-accent hover:underline">
                   {item.title}
                 </Link>
-                <span className="ml-xs text-2xs text-muted">
+                <span className="ms-xs text-2xs text-muted">
                   {item.state.replace(/_/g, ' ')} · {item.votes} votes
                 </span>
               </li>

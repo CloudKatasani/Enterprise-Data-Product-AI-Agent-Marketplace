@@ -60,12 +60,12 @@
   ],
   "notes": [],
   "question": "Has SAR conversion changed since the June rule tuning?",
-  "recorded_at": "2026-09-04T07:28:43.356131+00:00",
+  "recorded_at": "2026-09-04T08:34:02.613325+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 11,
+    "latency_ms": 9,
     "rows_scanned": 14400,
     "runtime": "analytic",
     "tokens": {

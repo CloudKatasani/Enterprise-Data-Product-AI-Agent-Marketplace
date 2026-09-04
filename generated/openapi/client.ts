@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: e1c5be2d541fb1a6afd03eed3d7c263665a2937f22746956d5eec5636e955c45  generated_at: 2026-09-04T07:06:14+00:00
+// generator_version: 1.0.0  manifest_hash: 050a8e25b3257929c47ba51039b44f34fd5d60a2d9d9f41eb4b3a53e07995239  generated_at: 2026-09-04T08:15:10+00:00
 
 /* eslint-disable */
 /**
@@ -56,6 +56,81 @@ async function request<T>(
 export class MarketplaceClient {
   constructor(private readonly baseUrl: string) {}
 
+  /** Record an attempt */
+  postAcademyAssessments(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/academy/assessments`, undefined, body, options);
+  }
+
+  /** Modules for one asset */
+  getAcademyContextual(query?: { asset_type?: unknown, asset_id?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/academy/contextual`, query, undefined, options);
+  }
+
+  /** Enrol on a path */
+  postAcademyEnrollments(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/academy/enrollments`, undefined, body, options);
+  }
+
+  /** My progress and certifications */
+  getAcademyMe(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/academy/me`, undefined, undefined, options);
+  }
+
+  /** A module and its body */
+  getAcademyModulesModule_id(module_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/academy/modules/${module_id}`, undefined, undefined, options);
+  }
+
+  /** Every learning path */
+  getAcademyPaths(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/academy/paths`, undefined, undefined, options);
+  }
+
+  /** One path */
+  getAcademyPathsPath_id(path_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/academy/paths/${path_id}`, undefined, undefined, options);
+  }
+
+  /** Source systems */
+  getAdminConnectors(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/admin/connectors`, undefined, undefined, options);
+  }
+
+  /** Feature flags */
+  getAdminFlags(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/admin/flags`, undefined, undefined, options);
+  }
+
+  /** Toggle a flag */
+  postAdminFlagsCode(code: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/admin/flags/${code}`, undefined, body, options);
+  }
+
+  /** Every rubric */
+  getAdminRubrics(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/admin/rubrics`, undefined, undefined, options);
+  }
+
+  /** One rubric and its history */
+  getAdminRubricsCode(code: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/admin/rubrics/${code}`, undefined, undefined, options);
+  }
+
+  /** Publish an edited rubric */
+  postAdminRubricsCodeVersions(code: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/admin/rubrics/${code}/versions`, undefined, body, options);
+  }
+
+  /** Controlled vocabulary */
+  getAdminTaxonomies(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/admin/taxonomies`, undefined, undefined, options);
+  }
+
+  /** Tenancy and isolation */
+  getAdminTenancy(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/admin/tenancy`, undefined, undefined, options);
+  }
+
   /** Filter and page the agent catalog */
   getAgents(query?: { industry?: unknown, domain?: unknown, autonomy?: unknown, certification?: unknown, kpi?: unknown, product?: unknown, sort?: unknown, cursor?: unknown, limit?: unknown }, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/agents`, query, undefined, options);
@@ -89,6 +164,16 @@ export class MarketplaceClient {
   /** Accept or reject an answer; a rejected defect becomes an evaluation case */
   postAgentsAgent_idFeedback(agent_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'POST', `/api/v1/agents/${agent_id}/feedback`, undefined, body, options);
+  }
+
+  /** What is live, what is in canary, and what a rollback would restore */
+  getAgentsAgent_idRelease(agent_id: string, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/agents/${agent_id}/release`, undefined, undefined, options);
+  }
+
+  /** Restore the previous bundle */
+  postAgentsAgent_idRollback(agent_id: string, body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/agents/${agent_id}/rollback`, undefined, body, options);
   }
 
   /** The public demand board */

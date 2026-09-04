@@ -26,8 +26,9 @@ from services.agents import ask as ask_service
 from services.agents import catalog, feedback, theatre
 from services.api.deps import request_connection, rubric_dependency, tenant
 from services.common import http_status
+from services.common.db import fetch_all, fetch_one
 from services.common.principal import Principal, current_principal
-from services.common.problem import bad_request, not_found
+from services.common.problem import bad_request, not_found, role_required
 from services.common.rubrics import Rubric
 
 router = APIRouter(prefix="/agents", tags=["agents"])
@@ -239,3 +240,117 @@ def get_evaluation(
         # History, oldest last: a pass rate means little without the run before it.
         "history": runs,
     }
+
+
+# ---------------------------------------------------------------------------
+# Release (M12.3)
+# ---------------------------------------------------------------------------
+
+EvaluationRubric = Annotated[Rubric, Depends(rubric_dependency("agent_evaluation"))]
+ROLE_RELEASE = ("owner", "architect", "administrator")
+
+
+def _releaser(principal: Caller) -> Principal:
+    """Who may move a version between states.
+
+    Deliberately narrower than who may read the registry and wider than the
+    administrator role: an agent's owner releases their own agent, and an
+    architect or administrator can act during an incident when the owner is
+    asleep. A rollback nobody on call can perform is a rollback that does not
+    happen.
+    """
+    if not principal.has_role(*ROLE_RELEASE):
+        raise role_required(*ROLE_RELEASE)
+    return principal
+
+
+Releaser = Annotated[Principal, Depends(_releaser)]
+
+
+@router.get(
+    "/{agent_id}/release",
+    status_code=http_status.OK,
+    summary="What is live, what is in canary, and what a rollback would restore",
+)
+def release_state(
+    connection: Connection, principal: Caller, agent_id: str, evaluation: EvaluationRubric
+) -> dict[str, Any]:
+    from services.agents import release
+
+    live_id = _version_id(connection, tenant(), agent_id)
+    live = release.bundle(connection, live_id)
+    canaries = [
+        release.bundle(connection, row["agent_version_id"]).document()
+        for row in fetch_all(
+            connection,
+            "SELECT agent_version_id FROM agent_version "
+            "WHERE agent_id = %s AND status = 'canary' ORDER BY semver",
+            (agent_id,),
+        )
+    ]
+    return {
+        "agent_id": agent_id,
+        "live": live.document(),
+        "canaries": [
+            {
+                **canary,
+                "evidence": release.canary_evidence(
+                    connection, evaluation, agent_version_id=canary["agent_version_id"]
+                ),
+            }
+            for canary in canaries
+        ],
+        # What a rollback would actually restore, before anyone asks for one.
+        # "Roll back" is not a decision somebody should make without seeing the
+        # bundle on the other side of it.
+        "rollback_target": _rollback_target(connection, agent_id, live_id),
+    }
+
+
+def _rollback_target(
+    connection: psycopg.Connection[Any], agent_id: str, live_id: str
+) -> dict[str, Any] | None:
+    from services.agents import release
+
+    row = fetch_one(
+        connection,
+        "SELECT agent_version_id FROM agent_version "
+        "WHERE agent_id = %s AND agent_version_id <> %s AND status IN ('retired', 'published') "
+        "ORDER BY retired_at DESC NULLS LAST, published_at DESC NULLS LAST LIMIT 1",
+        (agent_id, live_id),
+    )
+    if row is None:
+        return None
+    target = release.bundle(connection, row["agent_version_id"])
+    live = release.bundle(connection, live_id)
+    return {**target.document(), "changes": target.differences(live)}
+
+
+@router.post(
+    "/{agent_id}/rollback",
+    status_code=http_status.OK,
+    summary="Restore the previous bundle",
+)
+def rollback(
+    connection: Connection,
+    principal: Releaser,
+    tenant_id: Tenant,
+    governance: GovernanceRubric,
+    agent_id: str,
+    reason: Annotated[str, Body(embed=True)],
+) -> dict[str, Any]:
+    """One call. The previous bundle, entire, in one transaction.
+
+    A reason is required and is not a formality: "rolled back" in an incident
+    review is a fact with no cause, and the next person to ship that version
+    will ship it for the reason nobody wrote down.
+    """
+    from services.agents import release
+
+    try:
+        return release.rollback(
+            connection, tenant_id, governance,
+            agent_id=agent_id, reason=reason, actor_party_id=principal.party_id,
+        )
+    except release.ReleaseRefused as error:
+        raise bad_request(str(error), agent_id=agent_id) from None

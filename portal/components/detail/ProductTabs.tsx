@@ -68,7 +68,7 @@ export function OverviewTab({ tab }: { tab: Tab<OverviewData> }) {
             <Badge tone="sensitivity" code={data.sensitivity}>
               {data.sensitivity}
             </Badge>
-            <span className="ml-xs text-xs text-muted">
+            <span className="ms-xs text-xs text-muted">
               derived from column classification, never written directly
             </span>
           </Row>
@@ -92,7 +92,7 @@ export function SchemaTab({
               {tab.data.column_count} columns with type, nullability and classification
             </caption>
             <thead>
-              <tr className="border-b border-strong text-left text-2xs uppercase tracking-wide text-muted">
+              <tr className="border-b border-strong text-start text-2xs uppercase tracking-wide text-muted">
                 <th scope="col" className="px-sm py-xs">Column</th>
                 <th scope="col" className="px-sm py-xs">Business name</th>
                 <th scope="col" className="px-sm py-xs">Type</th>
@@ -160,7 +160,7 @@ export function QualityTab({ tab }: { tab: Tab<QualityData> }) {
                   </p>
                 ) : null}
               </div>
-              <dl className="ml-auto grid grid-cols-3 gap-x-lg gap-y-2xs text-xs">
+              <dl className="ms-auto grid grid-cols-3 gap-x-lg gap-y-2xs text-xs">
                 {Object.entries(tab.data.current.dimensions).map(
                   ([dimension, value]) => (
                     <div key={dimension}>
@@ -197,7 +197,7 @@ export function QualityTab({ tab }: { tab: Tab<QualityData> }) {
                     Rule results contributing to the current quality composite
                   </caption>
                   <thead>
-                    <tr className="border-b border-strong text-left text-2xs uppercase tracking-wide text-muted">
+                    <tr className="border-b border-strong text-start text-2xs uppercase tracking-wide text-muted">
                       <th scope="col" className="px-sm py-xs">Rule</th>
                       <th scope="col" className="px-sm py-xs">Dimension</th>
                       <th scope="col" className="px-sm py-xs">Threshold</th>
@@ -247,7 +247,7 @@ export function ContractTab({ tab }: { tab: Tab<ContractData> }) {
               {tab.data.guarantees.map((guarantee) => (
                 <Row key={guarantee.dimension} label={guarantee.dimension}>
                   {guarantee.target_text}
-                  <span className="ml-xs text-xs text-muted">
+                  <span className="ms-xs text-xs text-muted">
                     measured {guarantee.measurement_window} at {guarantee.measured_at_grain}
                     {guarantee.reference_system ? ` against ${guarantee.reference_system}` : ''}
                   </span>
@@ -363,7 +363,7 @@ function EdgeTable({ rows, idKey }: { rows: LineageEdgeRow[]; idKey: 'id' | 'nei
           Related assets with the relationship, the confidence and the reason for the edge
         </caption>
         <thead>
-          <tr className="border-b border-strong text-left text-2xs uppercase tracking-wide text-muted">
+          <tr className="border-b border-strong text-start text-2xs uppercase tracking-wide text-muted">
             <th scope="col" className="px-sm py-xs">Asset</th>
             <th scope="col" className="px-sm py-xs">Relationship</th>
             <th scope="col" className="px-sm py-xs">Confidence</th>
@@ -398,7 +398,7 @@ export function ConsumptionTab({ tab }: { tab: Tab<ConsumptionData> }) {
               Daily consumption: active consumers, teams, queries and permission denials
             </caption>
             <thead>
-              <tr className="border-b border-strong text-left text-2xs uppercase tracking-wide text-muted">
+              <tr className="border-b border-strong text-start text-2xs uppercase tracking-wide text-muted">
                 <th scope="col" className="px-sm py-xs">Date</th>
                 <th scope="col" className="px-sm py-xs">Consumers</th>
                 <th scope="col" className="px-sm py-xs">Teams</th>

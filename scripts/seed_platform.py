@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.seeders import platform_sandbox  # noqa: E402
 from services.common.config import load_dotenv  # noqa: E402
-from services.common.db import connect, tenant_id  # noqa: E402
+from services.common.db import connect, grant_read, tenant_id  # noqa: E402
 
 
 def main() -> int:
@@ -21,8 +21,11 @@ def main() -> int:
         return 0
     schema = os.environ["DEMO_TIER_SCHEMA"].lower()
     tenant = tenant_id()
-    with connect(tenant) as connection:
+    # As the owner: the sandbox creates the schema that stands in for the
+    # platform, which the application role is not allowed to do.
+    with connect(tenant, as_owner=True) as connection:
         written = platform_sandbox.seed(connection, tenant, schema)
+        grant_read(connection, schema)
     print(f"seed:platform: {written} row(s) in schema {schema}")
     return 0
 

@@ -41,11 +41,11 @@ export function CompareTable({ products }: { products: ProductCard[] }) {
         <caption className="sr-only">Selected data products compared attribute by attribute</caption>
         <thead>
           <tr>
-            <th scope="col" className="sticky left-0 bg-page px-sm py-xs text-left text-2xs uppercase tracking-wide text-muted">
+            <th scope="col" className="sticky start-0 bg-page px-sm py-xs text-start text-2xs uppercase tracking-wide text-muted">
               Attribute
             </th>
             {products.map((product) => (
-              <th key={product.product_id} scope="col" className="px-sm py-xs text-left align-bottom">
+              <th key={product.product_id} scope="col" className="px-sm py-xs text-start align-bottom">
                 <Link href={`/data-products/${product.product_id}`} className="text-sm font-semibold text-primary hover:underline">
                   {product.name}
                 </Link>
@@ -57,7 +57,7 @@ export function CompareTable({ products }: { products: ProductCard[] }) {
         <tbody>
           {ROWS.map((row) => (
             <tr key={row.label} className="border-t border-subtle">
-              <th scope="row" className="sticky left-0 bg-page px-sm py-xs text-left text-xs font-medium text-secondary">
+              <th scope="row" className="sticky start-0 bg-page px-sm py-xs text-start text-xs font-medium text-secondary">
                 {row.label}
               </th>
               {products.map((product) => (

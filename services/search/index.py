@@ -64,6 +64,18 @@ GROUP BY k.kpi_id
 ORDER BY k.kpi_id
 """
 
+# M12.1: a glossary card is reachable from anywhere the term appears, which
+# means the search has to find it. The card is not a paraphrase — it indexes the
+# definition the KPI's steward wrote, so a glossary that contradicted the
+# registry it came from is not a state this can reach.
+GLOSSARY_SOURCE = """
+SELECT g.term_id, g.term, g.definition, g.domain_code,
+       coalesce(g.related_kpi_ids, '{}') AS related_kpi_ids
+FROM glossary_term g
+WHERE g.tenant_id = %s AND g.status = 'approved'
+ORDER BY g.term_id
+"""
+
 AGENT_SOURCE = """
 SELECT a.agent_id, a.name, a.industry_code, a.domain_code,
        v.capability_statement, v.business_value_block, v.out_of_scope,
@@ -115,7 +127,7 @@ def _index_one(
 
 def reindex(connection: psycopg.Connection[Any], tenant: str) -> dict[str, int]:
     """Rebuild the index for every asset. Idempotent."""
-    counts = {"data_product": 0, "kpi": 0, "agent": 0}
+    counts = {"data_product": 0, "kpi": 0, "agent": 0, "glossary_term": 0}
 
     with connection.cursor() as cursor:
         cursor.execute(PRODUCT_SOURCE, (tenant,))
@@ -146,5 +158,14 @@ def reindex(connection: psycopg.Connection[Any], tenant: str) -> dict[str, int]:
             )
             _index_one(cursor, tenant, "agent", row["agent_id"], row["name"], body)
             counts["agent"] += 1
+
+        cursor.execute(GLOSSARY_SOURCE, (tenant,))
+        for row in [dict(r) for r in cursor.fetchall()]:
+            body = "\n".join(
+                [row["definition"], row["domain_code"].replace("_", " "),
+                 " ".join(row["related_kpi_ids"] or [])]
+            )
+            _index_one(cursor, tenant, "glossary_term", row["term_id"], row["term"], body)
+            counts["glossary_term"] += 1
 
     return counts

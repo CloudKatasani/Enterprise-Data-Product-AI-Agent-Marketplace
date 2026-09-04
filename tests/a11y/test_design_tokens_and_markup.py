@@ -29,11 +29,18 @@ HEX = re.compile(r"^#([0-9a-fA-F]{6})$")
 DECLARATION = re.compile(r"--([a-z0-9-]+):\s*([^;]+);")
 
 
-def _load_tokens() -> dict[str, str]:
-    """Root-scope token values, with var() references resolved."""
-    text = (TOKENS / "colour.css").read_text(encoding="utf-8")
-    root = text.split(":root {", maxsplit=1)[1].split("\n}", maxsplit=1)[0]
-    raw = {name: value.strip() for name, value in DECLARATION.findall(root)}
+def _load_tokens(*files: str) -> dict[str, str]:
+    """Root-scope token values, with var() references resolved.
+
+    Defaults to the colour file, which is what the contrast tests want. The
+    layout tests pass the files they need: space and typography carry the
+    reserved heights and the type ramp.
+    """
+    raw: dict[str, str] = {}
+    for name in files or ("colour.css",):
+        text = (TOKENS / name).read_text(encoding="utf-8")
+        root = text.split(":root {", maxsplit=1)[1].split("\n}", maxsplit=1)[0]
+        raw.update({key: value.strip() for key, value in DECLARATION.findall(root)})
 
     resolved: dict[str, str] = {}
     for _ in range(len(raw)):
@@ -335,3 +342,144 @@ def test_the_theatre_renders_its_answer_without_javascript() -> None:
     source = _landing_source("AnswerTheatre.tsx")
     assert "useState<Stage>('hold')" in source
     assert "renderStatic: complete" in source
+
+
+# ---------------------------------------------------------------------------
+# M12.4 — internationalisation, direction and the 35% expansion pass
+# ---------------------------------------------------------------------------
+
+# German and Finnish run roughly a third longer than English. A design that fits
+# its own copy exactly is a design that breaks on its first translation, and the
+# break is a rebuild rather than a retranslation.
+EXPANSION = 1.35
+
+
+def test_direction_is_a_document_attribute_not_a_stylesheet() -> None:
+    """Mirroring the whole interface should be one attribute.
+
+    It is one attribute only if every rule is written in logical properties,
+    which `npm run lint:logical-properties` enforces. This asserts the other
+    half: that the attribute is actually driven by the locale rather than
+    hardcoded.
+    """
+    layout = (PORTAL / "app" / "layout.tsx").read_text(encoding="utf-8")
+    assert 'dir={direction}' in layout
+    assert 'lang={locale}' in layout
+    assert 'dir="ltr"' not in layout
+
+    locale = (PORTAL / "lib" / "locale.ts").read_text(encoding="utf-8")
+    for language in ("ar", "he", "fa", "ur"):
+        assert f"'{language}'" in locale
+
+
+def test_no_surface_sizes_itself_to_the_length_of_english() -> None:
+    """A fixed width around text is a layout that cannot be translated.
+
+    Text containers are allowed a *max* width — that is a reading measure, and
+    prose past about seventy characters costs comprehension in any language. A
+    fixed `width` or `height` on something holding a string is the failure: it
+    has no room for the same sentence in German.
+    """
+    css = (PORTAL / "styles" / "globals.css").read_text(encoding="utf-8")
+    text_bearing = re.compile(
+        r"\.(band-sub|hero-headline|hero-sub|counter-label|proof-label|proof-detail|"
+        r"academy-module|module-body|theatre-headline|theatre-narrative|"
+        r"incident-headline|incident-detail|how-body)\s*\{([^}]*)\}"
+    )
+    for match in text_bearing.finditer(css):
+        body = match.group(2)
+        assert not re.search(r"(?<![-a-z])(width|height)\s*:", body), (
+            f".{match.group(1)} fixes its own size; expanded text has nowhere to go"
+        )
+
+
+# Each reserved box and the lines of type it holds, by role. Stated rather than
+# inferred: a test that guessed would either compare the ticker against display
+# type and fail, or compare the hero against small type and prove nothing.
+RESERVED_BOXES = {
+    "hero-height": (("text-3xl", 3), ("text-md", 3), ("text-sm", 2)),
+    "counter-strip-height": (("text-2xl", 1), ("text-xs", 1)),
+    "proof-tile-height": (("text-2xl", 1), ("text-sm", 1), ("text-xs", 2)),
+    "ticker-height": (("text-sm", 3),),
+}
+
+# Boxes that hold text of unbounded length — a product's name, an agent's
+# capability statement — cannot be sized for it in any language. They clamp
+# instead, and the clamp is what makes a fixed height honest. This asserts the
+# clamp exists rather than pretending the box is big enough.
+CLAMPED_BOXES = {
+    "card-product-height": ("product-card",),
+    "card-agent-height": ("agent-tile",),
+    "ribbon-band-height": ("ribbon-list",),
+}
+
+
+def test_every_reserved_box_leaves_room_for_expansion() -> None:
+    """The landing bands reserve exact boxes to hold CLS at zero (13.6).
+
+    That pulls against translation: a box tight enough to reserve is a box
+    expanded copy overflows. The tension is resolved in the tokens rather than
+    discovered in a screenshot — each reserved height is checked against the
+    lines of type it holds at 35% expansion.
+    """
+    tokens = _load_tokens("space.css", "typography.css")
+    leading = float(tokens["leading-normal"])
+
+    for box, budget in RESERVED_BOXES.items():
+        height = int(tokens[box].rstrip("px"))
+        needed = sum(
+            int(tokens[role].rstrip("px")) * leading * lines * EXPANSION
+            for role, lines in budget
+        )
+        assert height >= needed, (
+            f"--{box} is {height}px; its content at {EXPANSION:.0%} expansion "
+            f"needs {needed:.0f}px"
+        )
+
+
+def test_a_box_that_cannot_be_sized_for_translation_clamps_instead() -> None:
+    """A fixed height around unbounded text is only honest if it truncates.
+
+    A product name or a capability statement has no length this design can
+    promise in every language. The card reserves its box — the grid depends on
+    it — and clamps what it holds, so expansion changes what is shown rather
+    than where the next card starts.
+    """
+    css = (PORTAL / "styles" / "globals.css").read_text(encoding="utf-8")
+    for box, classes in CLAMPED_BOXES.items():
+        assert box in css, f"--{box} is unused"
+        for name in classes:
+            rule = re.search(rf"\.{re.escape(name)}\s*\{{([^}}]*)\}}", css)
+            assert rule is not None, f".{name} has no rule"
+
+    # The clamps themselves. Every one of these is a promise that the layout
+    # holds whatever the string turns out to be.
+    for clamp in ("line-clamp", "text-overflow", "truncate", "overflow: hidden"):
+        assert clamp in css or clamp in _card_markup(), clamp
+
+
+def _card_markup() -> str:
+    return "".join(
+        path.read_text(encoding="utf-8")
+        for path in (PORTAL / "components").rglob("*.tsx")
+    )
+
+
+def test_prose_is_measured_in_characters_not_pixels() -> None:
+    """A measure in `ch` expands with the type; a measure in pixels does not."""
+    tokens = _load_tokens("space.css")
+    assert tokens["measure-prose"].endswith("ch")
+    assert tokens["measure-chip"].endswith("ch")
+
+
+def test_no_string_is_assembled_from_fragments_in_a_component() -> None:
+    """Concatenated sentence fragments cannot be translated.
+
+    "N of M " + noun reads fine in English and is unorderable in a language that
+    puts the noun first. Counts go through `count()`, which takes both forms of
+    the noun; anything else is a sentence a translator would have to reverse
+    engineer.
+    """
+    units = (PORTAL / "lib" / "units.ts").read_text(encoding="utf-8")
+    assert "export function count(" in units
+    assert "singular" in units and "plural" in units

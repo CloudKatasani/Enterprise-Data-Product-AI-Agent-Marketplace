@@ -9,7 +9,9 @@ The DSL exists so three things are structural rather than remembered:
 
   * ``tenant_scoped`` adds ``tenant_id`` and emits RLS enable + policy, so a
     table cannot silently ship without one (section 6.2);
-  * ``append_only`` emits the ``REVOKE UPDATE, DELETE`` grant, so immutability is
+  * ``append_only`` emits the ``REVOKE UPDATE, DELETE`` grant (``DELETE`` only
+    where ``stamped_in_place`` says a trigger polices the updates), so
+    immutability is
     a property of the declaration rather than of reviewer attention (rule 6);
   * column and constraint order is fixed by declaration order, which is what
     makes regeneration byte-identical (I9).
@@ -83,6 +85,13 @@ class Table:
     columns: list[Column]
     tenant_scoped: bool = True
     append_only: bool = False
+    # A table whose rows are history but whose *ending* is stamped in place: a
+    # grant is closed by writing `revoked_at` beside it rather than by a new
+    # row, and a trigger polices exactly which columns may move. DELETE stays
+    # revoked either way. Without this distinction the table-level revoke of
+    # UPDATE would make the trigger unreachable — the grant could never be
+    # revoked at all, which is the opposite of what append-only is for.
+    stamped_in_place: bool = False
     table_checks: list[str] = field(default_factory=list)
     unique_together: list[tuple[str, ...]] = field(default_factory=list)
     indexes: list[Index] = field(default_factory=list)

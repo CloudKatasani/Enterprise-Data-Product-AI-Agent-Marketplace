@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { ContextualRunbook } from '@/components/academy/ContextualRunbook';
 import { PRODUCT_TABS, renderTab } from '@/components/detail/ProductTabs';
 import { TabBar } from '@/components/detail/Tabs';
 import { Badge } from '@/components/ui/Badge';
@@ -74,7 +75,7 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="flex items-center gap-lg">
-          <div className="text-right">
+          <div className="text-end">
             <p className="text-2xs uppercase tracking-wide text-muted">Owner</p>
             <p className="text-sm text-secondary">{card.owner.name}</p>
             <p className="mt-xs text-2xs uppercase tracking-wide text-muted">Consumers</p>
@@ -105,9 +106,14 @@ export default async function ProductDetailPage({
         basePath={`/data-products/${card.product_id}`}
       />
 
-      <section className="pt-lg" aria-label={active.replace(/_/g, ' ')}>
-        {renderTab(active, detail)}
-      </section>
+      <div className="detail-body">
+        <section className="pt-lg" aria-label={active.replace(/_/g, ' ')}>
+          {renderTab(active, detail)}
+        </section>
+        {/* Section 20.2: the module that answers the question is one click from
+            the listing that raised it. */}
+        <ContextualRunbook assetType="data_product" assetId={card.product_id} />
+      </div>
     </div>
   );
 }

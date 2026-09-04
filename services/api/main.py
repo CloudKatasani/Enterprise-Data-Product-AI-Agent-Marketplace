@@ -17,6 +17,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from services.api.routers import (
+    academy,
+    admin,
     agents,
     discover,
     kpis,
@@ -83,7 +85,7 @@ def create_app() -> FastAPI:
         products.router, agents.router, discover.router, kpis.router, quality.router,
         requests.router, requests.demand_router, mesh.router,
         observability.router, observability.value_router,
-        landing.router, landing.events_router,
+        landing.router, landing.events_router, academy.router, admin.router,
     ):
         app.include_router(router, prefix=API_PREFIX)
 

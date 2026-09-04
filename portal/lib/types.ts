@@ -825,3 +825,120 @@ export interface AnswerPulse {
   question_class: string;
   at: string;
 }
+
+// ---------------------------------------------------------------------------
+// The academy and the admin console (M12).
+// ---------------------------------------------------------------------------
+
+export interface AcademyModule {
+  module_id: string;
+  title: string;
+  summary: string;
+  estimated_minutes: number;
+  sandbox_tier: string | null;
+  asset_type: string | null;
+  asset_id: string | null;
+  body?: string;
+  path_id?: string;
+}
+
+export interface LearningPath {
+  path_id: string;
+  title: string;
+  persona: string;
+  summary: string;
+  certification_code: string;
+  modules: AcademyModule[];
+  estimated_minutes: number;
+}
+
+export interface AcademyIndex {
+  paths: LearningPath[];
+  pass_score_pct: number;
+  certification_valid_days: number;
+  rubric_version_id: string;
+}
+
+export interface PathProgress {
+  path_id: string;
+  party_id: string;
+  enrolled: boolean;
+  state: string | null;
+  completed_module_ids: string[];
+  completed: number;
+  total: number;
+  certification_code: string;
+}
+
+export interface HeldCertification {
+  code: string;
+  path_id: string;
+  issued_at: string;
+  expires_at: string;
+}
+
+export interface AcademyMe {
+  party_id: string;
+  certifications: HeldCertification[];
+  progress: PathProgress[];
+}
+
+export interface RubricSummary {
+  code: string;
+  description: string;
+  rubric_version_id: string | null;
+  semver: string | null;
+  effective_from: string | null;
+  created_by: string | null;
+  criteria: number;
+  versions: number;
+}
+
+export interface RubricVersionRow {
+  rubric_version_id: string;
+  semver: string;
+  source_hash: string;
+  effective_from: string;
+  created_by: string;
+  superseded_at: string | null;
+  in_force: boolean;
+  quality_snapshots: number;
+}
+
+export interface TaxonomyPanel {
+  taxonomy: string;
+  table: string;
+  entries: { code: string; label: string; uses: number }[];
+}
+
+export interface ConnectorRow {
+  source_id: string;
+  name: string;
+  platform: string;
+  owner_team: string;
+  criticality: string;
+  products: number;
+  last_harvest: string | null;
+}
+
+export interface FeatureFlagRow {
+  code: string;
+  flag_type: string;
+  enabled: boolean;
+  description: string;
+  owner_party_id: string | null;
+  created_at: string;
+  expires_at: string | null;
+  expired: boolean;
+  age_days: number;
+}
+
+export interface TenancyPanel {
+  tenant: Record<string, unknown> | null;
+  org_units: { org_unit_id: string; name: string; region: string | null }[];
+  tables: number;
+  tenanted_tables: number;
+  shared_reference_tables: string[];
+  row_level_security: number;
+  unprotected_tables: string[];
+}

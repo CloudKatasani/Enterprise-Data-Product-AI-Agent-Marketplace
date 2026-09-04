@@ -75,7 +75,7 @@
   ],
   "notes": [],
   "question": "Which SKUs have high sell-through but poor in-stock?",
-  "recorded_at": "2026-09-04T07:28:43.988211+00:00",
+  "recorded_at": "2026-09-04T08:34:03.278950+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
@@ -98,7 +98,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_002"
         },
         "cost_class": "small",
-        "duration_ms": 12,
+        "duration_ms": 13,
         "rows_returned": 5,
         "rows_scanned": 45000,
         "tool": "query_dp_rtl_002"

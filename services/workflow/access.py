@@ -388,7 +388,12 @@ def provision(
     duration = int(rules["grant"]["duration_days"])
     expires = datetime.now(UTC) + timedelta(days=duration)
 
-    grant_id = f"GRT-{header['requester_party_id']}-{item['asset_id']}"
+    # Keyed on the request, not on (principal, asset). A grant is the record of
+    # one approval: keying it on the pair meant a principal whose access had
+    # been revoked could never be granted it again — the insert conflicted with
+    # the revoked row and did nothing, and the request completed reporting
+    # success while provisioning nothing at all.
+    grant_id = f"GRT-{request_id}"
     role = _platform_role(item["asset_id"], item["access_level"])
     scopes = (_scope_for(item["asset_type"], item["asset_id"]),)
 

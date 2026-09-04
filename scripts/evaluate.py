@@ -13,9 +13,7 @@ cleared its threshold for every version evaluated.
 from __future__ import annotations
 
 import argparse
-import json
 import sys
-from datetime import UTC, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -27,40 +25,6 @@ from services.common.db import connect, fetch_all, tenant_id  # noqa: E402
 from services.common.rubrics import load_current  # noqa: E402
 
 RUBRIC = "agent_evaluation"
-
-
-def _record(connection, tenant: str, result: evaluation.RunResult) -> str:
-    run_id = f"EVL-{result.agent_version_id}-{datetime.now(UTC):%Y%m%d%H%M%S}"
-    connection.execute(
-        "INSERT INTO evaluation_run (eval_run_id, tenant_id, agent_id, agent_version_ref, "
-        "  suite_results, pass_rate_pct, groundedness_pct, threshold_pct, passed, "
-        "  started_at, finished_at) "
-        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, now(), now())",
-        (
-            run_id, tenant, result.agent_id, result.agent_version_id,
-            json.dumps(result.document()), result.pass_rate_pct, result.groundedness_pct,
-            result.threshold_pct, result.passed,
-        ),
-    )
-    for suite in result.suites:
-        for case in suite.cases:
-            connection.execute(
-                "INSERT INTO evaluation_case (case_id, tenant_id, agent_id, suite, question, "
-                "  expected_behaviour, expected_payload, blocking, origin) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                "ON CONFLICT (case_id) DO UPDATE SET expected_behaviour = "
-                "  EXCLUDED.expected_behaviour, expected_payload = EXCLUDED.expected_payload",
-                (
-                    case.case_id, tenant, result.agent_id, suite.suite, case.question,
-                    case.detail, json.dumps({"passed": case.passed}), case.blocking,
-                    case.origin,
-                ),
-            )
-    connection.execute(
-        "UPDATE agent_version SET eval_run_id = %s WHERE agent_version_id = %s",
-        (run_id, result.agent_version_id),
-    )
-    return run_id
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -92,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
             result = evaluation.run_version(
                 connection, runtime, row["agent_id"], row["current_version_id"], rubric
             )
-            run_id = _record(connection, tenant, result)
+            run_id = evaluation.record_run(connection, tenant, result)
             mark = "pass" if result.passed else "FAIL"
             print(
                 f"{mark}  {row['agent_id']}  {result.pass_rate_pct}% overall, "

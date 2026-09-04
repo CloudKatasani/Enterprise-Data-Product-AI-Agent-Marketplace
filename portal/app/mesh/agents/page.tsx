@@ -137,7 +137,7 @@ export default async function AgentMeshPage({
                         <Link
                           key={agent}
                           href={`/agents/${agent}`}
-                          className="mr-2xs hover:underline"
+                          className="me-2xs hover:underline"
                         >
                           {agent}
                         </Link>

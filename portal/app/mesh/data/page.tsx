@@ -150,7 +150,7 @@ function SourceAnchored({
                 className="demo-question-chip"
               >
                 {entry.source_id}
-                <span className="ml-3xs text-muted">({entry.downstream_products})</span>
+                <span className="ms-3xs text-muted">({entry.downstream_products})</span>
               </Link>
             </li>
           ))}

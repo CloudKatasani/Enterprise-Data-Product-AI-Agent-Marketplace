@@ -82,7 +82,7 @@ export function PolicyPreview({ evaluation }: { evaluation: PolicyEvaluation }) 
                 >
                   {alternative.name}
                 </Link>
-                <span className="ml-2xs text-2xs text-muted">{alternative.why}</span>
+                <span className="ms-2xs text-2xs text-muted">{alternative.why}</span>
               </li>
             ))}
           </ul>

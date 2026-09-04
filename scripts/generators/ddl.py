@@ -90,14 +90,20 @@ def _render_table(table: Table) -> str:
         )
 
     if table.append_only:
+        verbs = "DELETE" if table.stamped_in_place else "UPDATE, DELETE"
         lines.append(
             f"-- rule 6: append-only. History is written, never rewritten.\n"
-            f"REVOKE UPDATE, DELETE ON {table.name} FROM {APP_ROLE};"
+            f"REVOKE {verbs} ON {table.name} FROM {APP_ROLE};"
         )
 
     lines.append(f"GRANT SELECT, INSERT ON {table.name} TO {APP_ROLE};")
     if not table.append_only:
         lines.append(f"GRANT UPDATE, DELETE ON {table.name} TO {APP_ROLE};")
+    elif table.stamped_in_place:
+        # The trigger, not the grant, is what makes this table history: it
+        # freezes every term and permits only the columns that record what
+        # happened to the grant afterwards.
+        lines.append(f"GRANT UPDATE ON {table.name} TO {APP_ROLE};")
 
     return "\n".join(lines)
 

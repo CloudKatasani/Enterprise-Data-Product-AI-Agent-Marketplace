@@ -21,9 +21,11 @@ Seeder = Callable[["psycopg.Connection[Any]", str], int]
 
 def _seeders() -> list[tuple[str, Seeder]]:
     from scripts.seeders import (
+        academy,
         agent_usage,
         agents,
         entitlements,
+        flags,
         kpis,
         policies,
         products,
@@ -39,6 +41,8 @@ def _seeders() -> list[tuple[str, Seeder]]:
         ("taxonomies", taxonomies.seed),
         ("rubrics", rubrics.seed),
         ("policies", policies.seed),
+        # After tenancy: every flag names an owner, and the owner is a party.
+        ("feature flags", flags.seed),
         ("kpis", kpis.seed),
         ("data products", products.seed),
         ("agents", agents.seed),
@@ -47,6 +51,9 @@ def _seeders() -> list[tuple[str, Seeder]]:
         ("kpi source back-fill", kpis.backfill_source_of_record),
         # After agents and their demo exchanges: usage references both.
         ("agent usage", agent_usage.seed),
+        # After the KPI registry: the glossary indexes the definitions its
+        # stewards wrote rather than restating them.
+        ("academy", academy.seed),
         ("search index", _reindex),
     ]
 

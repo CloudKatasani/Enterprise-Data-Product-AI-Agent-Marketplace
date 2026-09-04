@@ -249,13 +249,13 @@
     height: 100%;
     border-radius: var(--radius-pill);
     background: var(--colour-accent);
-    transform-origin: left center;
+    transform-origin: inline-start center;
     transition: transform var(--duration-slow) var(--ease-entrance);
   }
 
   .answer-bar-value {
     font-variant-numeric: tabular-nums;
-    text-align: right;
+    text-align: end;
     color: var(--text-primary);
   }
 
@@ -275,7 +275,7 @@
     border-bottom: var(--border-width-hairline) solid var(--border-strong);
     color: var(--text-muted);
     font-weight: var(--weight-medium);
-    text-align: left;
+    text-align: start;
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);
     white-space: nowrap;
@@ -361,13 +361,13 @@
   .refusal-panel {
     padding: var(--space-lg);
     border: var(--border-width-hairline) solid var(--border-subtle);
-    border-left: var(--border-width-accent) solid var(--colour-band-watch);
+    border-inline-start: var(--border-width-accent) solid var(--colour-band-watch);
     border-radius: var(--radius-lg);
     background: var(--surface-raised);
   }
 
   .refusal-panel[data-kind='ungrounded'] {
-    border-left-color: var(--colour-band-unfit);
+    border-inline-start-color: var(--colour-band-unfit);
   }
 
   .refusal-title {
@@ -520,8 +520,8 @@
 
   .incident-banner {
     border: var(--border-width-hairline) solid var(--border-subtle);
-    border-left-width: var(--border-width-accent);
-    border-left-color: var(--incident-colour, var(--colour-status-info));
+    border-inline-start-width: var(--border-width-accent);
+    border-inline-start-color: var(--incident-colour, var(--colour-status-info));
     border-radius: var(--radius-md);
     background: var(--surface-raised);
     padding: var(--space-md);
@@ -941,7 +941,7 @@
    * ribbon costs no layout for it. */
   .ribbon-list .product-card {
     transform: scale(var(--ribbon-card-scale));
-    transform-origin: top left;
+    transform-origin: top inline-start;
   }
 
   .ribbon-list .product-card:hover,
@@ -1295,6 +1295,273 @@
 
     .theatre-bar {
       transition: none;
+    }
+  }
+}
+
+@layer components {
+  /* -------------------------------------------------------------------
+   * The academy and the admin console (M12).
+   *
+   * Both are reading surfaces first. The academy is prose the learner works
+   * through, so its measure matters more than its density; the console is a
+   * table of what depends on what, so its density matters more than its
+   * measure. Neither animates anything.
+   * ---------------------------------------------------------------- */
+  .academy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--space-md);
+  }
+
+  .academy-path {
+    display: flex;
+    flex-direction: column;
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    padding: var(--space-md);
+  }
+
+  .academy-badge {
+    border-radius: var(--radius-pill);
+    border: var(--border-width-hairline) solid var(--colour-status-ok);
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--colour-status-ok);
+    white-space: nowrap;
+  }
+
+  .academy-modules {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    margin-top: var(--space-sm);
+  }
+
+  .academy-module {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .academy-module:hover {
+    background: var(--surface-sunken);
+  }
+
+  /* A passed module is marked with a word as well as a colour: the tick is
+   * text, so a reader who cannot see the accent still knows. */
+  .academy-module[data-passed='true']::after {
+    content: ' passed';
+    font-size: var(--text-2xs);
+    color: var(--colour-status-ok);
+  }
+
+  .academy-minutes {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .academy-cert {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .module {
+    max-width: var(--measure-prose);
+  }
+
+  .module-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-primary);
+  }
+
+  .module-code {
+    border-radius: var(--radius-sm);
+    background: var(--surface-sunken);
+    padding-inline: var(--space-3xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .module-sandbox {
+    margin-top: var(--space-xl);
+    border-inline-start: var(--border-width-accent) solid var(--border-accent);
+    padding-inline-start: var(--space-md);
+  }
+
+  .module-link {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-accent);
+  }
+
+  /* --- Administration ------------------------------------------------ */
+  .admin-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .rubric-payload {
+    max-height: var(--mesh-max-height);
+    overflow: auto;
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    padding: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    color: var(--text-primary);
+  }
+
+  .version-row {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+  }
+
+  .version-row[data-in-force='true'] {
+    border-color: var(--border-accent);
+  }
+
+  .taxonomy-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .taxonomy-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    padding: var(--space-3xs) var(--space-xs);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .taxonomy-uses {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .flag-row {
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+  }
+
+  /* A flag past its expiry is a branch in production somebody called
+   * temporary. It is marked, not hidden. */
+  .flag-row[data-expired='true'] {
+    border-inline-start: var(--border-width-accent) solid var(--colour-status-warn);
+  }
+
+  .flag-state {
+    border-radius: var(--radius-pill);
+    border: var(--border-width-hairline) solid currentcolor;
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .flag-state[data-enabled='true'] {
+    color: var(--colour-status-ok);
+  }
+
+  .tenancy-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--bar-label-width), 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .tenancy-stats dt {
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .tenancy-stats dd {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+}
+
+@layer components {
+  /* The contextual runbook (M12.1). A rail rather than a band: it belongs
+   * beside the thing it explains, and it collapses under the content on a
+   * narrow screen instead of pushing it off the page. */
+  .detail-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--trace-rail-width);
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .runbook {
+    position: sticky;
+    top: var(--space-lg);
+    margin-top: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+    padding: var(--space-md);
+  }
+
+  .runbook-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    margin-top: var(--space-sm);
+  }
+
+  .runbook-module {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .runbook-module:hover {
+    background: var(--surface-raised);
+  }
+
+  @media (max-width: 900px) {
+    .detail-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .runbook {
+      position: static;
     }
   }
 }

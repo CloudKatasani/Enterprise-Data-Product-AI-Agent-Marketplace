@@ -80,12 +80,12 @@
   ],
   "notes": [],
   "question": "Where is basket size declining and what is leaving the basket?",
-  "recorded_at": "2026-09-04T07:28:44.040532+00:00",
+  "recorded_at": "2026-09-04T08:34:03.331782+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 50,
+    "latency_ms": 51,
     "rows_scanned": 23400,
     "runtime": "analytic",
     "tokens": {
@@ -103,7 +103,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "small",
-        "duration_ms": 47,
+        "duration_ms": 48,
         "rows_returned": 6,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

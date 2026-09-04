@@ -78,6 +78,23 @@ def entitlement_missing(required_scope: str, asset_id: str, surface: str) -> Pro
     )
 
 
+def role_required(*roles: str) -> Problem:
+    """A 403 for a console a role opens rather than a grant.
+
+    Named separately from ``entitlement_missing`` because the remedy is
+    different and the consumer should not be sent to an access request form for
+    it: no grant will ever carry an administrator role, and a link offering to
+    request one would be a link that goes nowhere.
+    """
+    wanted = ", ".join(sorted(roles))
+    return Problem(
+        http_status.FORBIDDEN,
+        "role_required",
+        f"this console is open to the {wanted} role; the caller holds none of them",
+        required_roles=sorted(roles),
+    )
+
+
 def purpose_required(asset_id: str, sensitivity: str) -> Problem:
     """Fail closed on a missing purpose (rule 7, section 11)."""
     return Problem(

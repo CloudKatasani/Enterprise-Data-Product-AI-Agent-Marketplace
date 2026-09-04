@@ -50,6 +50,7 @@
             "type": "string",
             "enum": [
               "auto",
+              "certified_auto",
               "owner",
               "owner_steward",
               "owner_privacy_security",

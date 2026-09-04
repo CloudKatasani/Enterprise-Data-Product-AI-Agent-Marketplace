@@ -12,7 +12,13 @@ concurrency:
 env:
   PRODUCT_NAME: "Marketplace CI"
   TENANT_ID: TEN-CI
+  # Owns the schema. Migrations only.
   DATABASE_URL: postgresql://marketplace:marketplace@localhost:5432/marketplace
+  # What the application connects as: a member of app_role, not a superuser.
+  # Row-level security does not apply to a superuser, so a build that ran the
+  # application as its schema owner would have isolation switched off and the
+  # security suite would say so.
+  APP_DATABASE_URL: postgresql://marketplace_app:marketplace_app@localhost:5432/marketplace
   REDIS_URL: redis://localhost:6379/0
   OIDC_ISSUER: https://oidc.ci.invalid/realms/marketplace
   OIDC_CLIENT_ID: marketplace-portal
@@ -33,6 +39,10 @@ env:
   API_BASE_URL: http://localhost:8000/api/v1
   PORTAL_BASE_URL: http://localhost:3000
   PORTAL_DEV_SUBJECT: PTY-0061
+  # Direction follows from the locale. Every style in the portal is written in
+  # logical properties, so serving it right-to-left is this variable and
+  # nothing else (lint:logical-properties keeps that true).
+  PORTAL_LOCALE: en
 
 jobs:
   # Pipeline order from BUILD.md section 20:
@@ -132,6 +142,13 @@ jobs:
       - name: observe, attribute and snapshot
         run: npm run observe
 
+      # M12.3: a rollback first attempted during an incident is a rollback
+      # nobody has tested. The drill releases a candidate through the real gate
+      # and rolls it back, asserting every field of the previous bundle came
+      # with it, and leaves the estate exactly as it found it.
+      - name: rollback drill
+        run: npm run rollback:drill
+
       - name: unit
         run: npm run test:unit
 
@@ -163,6 +180,47 @@ jobs:
 
       - name: perf
         run: npm run test:perf
+
+  # Section 20 puts load and chaos on a quarterly cadence, not on every pull
+  # request: the load gate needs an estate of 50,000 assets and the chaos gate
+  # needs a real platform to take away. They run on a schedule and on demand,
+  # and both report what they actually measured rather than a green tick — a
+  # load run against a fifteen-product estate says the code path works and
+  # nothing about the scale the budget was written for, and it says so.
+  quarterly-gates:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: marketplace
+          POSTGRES_PASSWORD: marketplace
+          POSTGRES_DB: marketplace
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U marketplace -d marketplace"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: pip install -e ".[dev]" && npm ci --no-audit --no-fund
+      - run: npm run migrate && npm run seed && npm run seed:platform && npm run harvest
+      - name: load
+        run: npm run test:load -- --report load-report.json
+      - name: chaos
+        run: npm run test:chaos
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quarterly-gates
+          path: load-report.json
 
   # The kill test needs a real sandbox account, so it runs on a schedule and on
   # demand rather than on every pull request. It is blocking for a release.

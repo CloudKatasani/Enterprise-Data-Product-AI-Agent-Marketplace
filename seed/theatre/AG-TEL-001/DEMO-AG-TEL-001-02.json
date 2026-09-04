@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which customer segments drove the churn increase last quarter?",
-  "recorded_at": "2026-09-04T07:28:44.516904+00:00",
+  "recorded_at": "2026-09-04T08:34:03.865919+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 40,
+    "latency_ms": 45,
     "rows_scanned": 6510,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 37,
+        "duration_ms": 42,
         "rows_returned": 3,
         "rows_scanned": 6510,
         "tool": "query_dp_tel_001"
