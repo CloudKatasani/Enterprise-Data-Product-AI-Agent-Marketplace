@@ -1,0 +1,257 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-HLT-002
+  name: "Pharmacy & Clinical Supply Utilization"
+  industry: healthcare
+  domain: supply_chain
+  archetype: consumer_aligned
+  tier: tier2
+  owner:
+    party_id: PTY-0039
+    team: "Pharmacy Operations"
+    escalation: "#dp-pharmacy"
+  certification: certified
+spec:
+  purpose: >-
+    Item and location level view of pharmacy dispensing, formulary adherence, stock position,
+    waste and substitution for supply and cost management.
+  grain: "one row per item per location per day"
+  history_months: 36
+  known_limitations: >-
+    Investigational and clinical trial supply is out of scope. Controlled substance detail is
+    masked to aggregate counts and cannot be resolved to a dispensing event.
+  upstream_sources: [SRC-PHARMACY-SYS, SRC-ERP-SUPPLY, SRC-EHR]
+  entities: [item, location, therapeutic_class, supplier]
+  certified_kpis: [KPI-FORMADH-041, KPI-STOCKOUT-042, KPI-COSTPPD-043, KPI-WASTE-044, KPI-SUBST-045]
+  columns:
+    - name: item_id
+      type: string
+      business_name: "Item ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Pharmacy item identifier.
+    - name: facility
+      type: string
+      business_name: "Facility"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Facility the stock is held at.
+    - name: activity_date
+      type: date
+      business_name: "Activity Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Calendar date the row describes.
+    - name: therapeutic_class
+      type: string
+      business_name: "Therapeutic Class"
+      nullable: false
+      classification: [clinical]
+      sensitivity: confidential
+      description: >-
+        Therapeutic classification of the item.
+    - name: item_class
+      type: string
+      business_name: "Item Class"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Supply classification such as high cost, cold chain or short dated.
+    - name: service_line
+      type: string
+      business_name: "Service Line"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Clinical service line consuming the item.
+    - name: on_formulary
+      type: boolean
+      business_name: "On Formulary"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        True when the dispensed item was formulary listed.
+    - name: substitution_eligible
+      type: boolean
+      business_name: "Substitution Eligible"
+      nullable: false
+      classification: [clinical]
+      sensitivity: confidential
+      description: >-
+        True when an approved therapeutic alternative existed.
+    - name: substituted
+      type: boolean
+      business_name: "Substituted"
+      nullable: false
+      classification: [clinical]
+      sensitivity: confidential
+      description: >-
+        True when an approved alternative was supplied.
+    - name: on_hand_units
+      type: number
+      business_name: "On Hand Units"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Sellable units on hand at the start of the day.
+    - name: demand_units
+      type: number
+      business_name: "Demand Units"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Units demanded during the day.
+    - name: dispensed_cost
+      type: number
+      business_name: "Dispensed Cost"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Acquisition cost of units dispensed.
+    - name: wasted_cost
+      type: number
+      business_name: "Wasted Cost"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Value of expired, damaged or returned stock.
+    - name: patient_days
+      type: number
+      business_name: "Patient Days"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Inpatient patient days attributed to the facility and day.
+    - name: days_to_expiry
+      type: integer
+      business_name: "Days to Expiry"
+      nullable: true
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Shelf life remaining on the oldest held lot.
+    - name: reorder_point
+      type: number
+      business_name: "Reorder Point"
+      nullable: true
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Current reorder point for the item at the location.
+  contract:
+    version: 1.8.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "03:00 local"
+        p95_minutes: 30
+        measured: per_partition
+      availability:
+        target_pct: 99.0
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "pharmacy_system_of_record"
+    deprecation_policy:
+      notice_days: 60
+      minimum_parallel_run_days: 30
+    support:
+      hours: "24x5"
+      p1_response_minutes: 30
+      on_call: "pagerduty://pharmacy-dp"
+    classification:
+      max_sensitivity: confidential
+      contains_pii: false
+      residency: [US]
+    consumer_obligations:
+      - "No clinical substitution decision may be executed without pharmacist approval"
+      - "Controlled substance aggregates may not be disaggregated"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 30 minutes of detection.
+  quality_rules:
+    - id: QR-HLT-002-01
+      dimension: completeness
+      column: item_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-HLT-002-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "03:00"
+      tolerance_minutes: 30
+      severity: high
+    - id: QR-HLT-002-03
+      dimension: validity
+      column: therapeutic_class
+      rule: in_reference_set
+      threshold_pct: 99.5
+      severity: high
+    - id: QR-HLT-002-04
+      dimension: uniqueness
+      columns: [item_id, facility, activity_date]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-HLT-002-05
+      dimension: consistency
+      column: substituted
+      rule: implies_substitution_eligible
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, rest, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 320000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: shortdated-waste
+        description: >-
+            Waste concentrates in short-dated high cost items at two facilities, which is the Pareto
+            finding.
+      - id: stockout-risk-list
+        description: >-
+            A stable set of items sits repeatedly at or below reorder point with live demand, making the
+            at-risk list non-trivial.
+  value_case:
+    business_outcome: >-
+      Pharmacy operations sees stockout risk and waste in one place and acts before either becomes
+      a shortage.
+    baseline:
+      method: "weekly manual extracts per facility"
+      analyst_hours_month: 70
+      captured: "2026-03"
+    benefit_model: "avoided_waste_value + avoided_expedite_cost + formulary_savings"
+    assumptions:
+      - text: "expedite premium on an emergency resupply"
+        value: 240.0
+        unit: usd
+        source: "supply chain FY26 budget"
+        dated: 2026-03-01
+      - text: "achievable waste reduction from earlier visibility"
+        value: 14.0
+        unit: percent
+        sample_size: 95
+        source: "facility pilot"
+        dated: 2026-05-01
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-05
+      reviewer: PTY-0039

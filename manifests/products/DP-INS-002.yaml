@@ -1,0 +1,274 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-INS-002
+  name: "Policy & Underwriting Portfolio"
+  industry: insurance
+  domain: product
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0037
+    team: "Underwriting Analytics"
+    escalation: "#dp-underwriting"
+  certification: certified
+spec:
+  purpose: >-
+    Policy level portfolio view covering written premium, retention, quote conversion, rate
+    adequacy and exposure concentration for underwriting management.
+  grain: "one row per policy per month"
+  history_months: 84
+  known_limitations: >-
+    Facultative reinsurance placements are out of scope. Exposure concentration uses the
+    modelled accumulation zones current at the time of writing and is restated when the model
+    version changes.
+  upstream_sources: [SRC-POLICY-ADMIN, SRC-RATING-ENGINE, SRC-EXPOSURE-MODEL]
+  entities: [policy, quote, exposure, peril]
+  certified_kpis: [KPI-WRITTENPREM-031, KPI-POLRETEN-032, KPI-QTB-033, KPI-RATEADQ-034, KPI-EXPCONC-035]
+  columns:
+    - name: policy_id
+      type: string
+      business_name: "Policy ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Policy identifier.
+    - name: quote_id
+      type: string
+      business_name: "Quote ID"
+      nullable: true
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Quote the policy originated from.
+    - name: as_of_month
+      type: date
+      business_name: "As Of Month"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        First day of the month the row describes.
+    - name: coverage_line
+      type: string
+      business_name: "Coverage Line"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Line of business.
+    - name: segment
+      type: string
+      business_name: "Segment"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Underwriting segment.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the insured risk.
+    - name: county
+      type: string
+      business_name: "County"
+      nullable: true
+      classification: [location]
+      sensitivity: confidential
+      description: >-
+        County of the insured location, used for accumulation.
+    - name: channel
+      type: string
+      business_name: "Channel"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Distribution channel.
+    - name: peril
+      type: string
+      business_name: "Peril"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Modelled peril the exposure row relates to.
+    - name: written_premium
+      type: number
+      business_name: "Written Premium"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Premium written in the month.
+    - name: charged_premium
+      type: number
+      business_name: "Charged Premium"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Premium actually charged on the policy.
+    - name: technical_premium
+      type: number
+      business_name: "Technical Premium"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Premium indicated by the pricing model.
+    - name: total_insured_value
+      type: number
+      business_name: "Total Insured Value"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Insured value exposed at the location.
+    - name: in_top_accumulation_zone
+      type: boolean
+      business_name: "In Top Accumulation Zone"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the exposure sits in the largest accumulation zone for the peril.
+    - name: up_for_renewal
+      type: boolean
+      business_name: "Up For Renewal"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the policy was due to renew in the month.
+    - name: renewed
+      type: boolean
+      business_name: "Renewed"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when a policy due to renew did renew.
+    - name: bound
+      type: boolean
+      business_name: "Bound"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the originating quote converted to a bound policy.
+    - name: rate_change_pct
+      type: number
+      business_name: "Rate Change Percent"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Rate change applied at the most recent renewal.
+  contract:
+    version: 2.6.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "04:30 local"
+        p95_minutes: 35
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "policy_admin_system_of_record"
+    deprecation_policy:
+      notice_days: 90
+      minimum_parallel_run_days: 45
+    support:
+      hours: "24x5"
+      p1_response_minutes: 30
+      on_call: "pagerduty://underwriting-dp"
+    classification:
+      max_sensitivity: confidential
+      contains_pii: false
+      residency: [US, EU]
+    consumer_obligations:
+      - "No binding authority may be exercised from this product"
+      - "Rate adequacy figures must cite the pricing model version in force"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 30 minutes of detection.
+  quality_rules:
+    - id: QR-INS-002-01
+      dimension: completeness
+      column: policy_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-INS-002-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "04:30"
+      tolerance_minutes: 35
+      severity: high
+    - id: QR-INS-002-03
+      dimension: validity
+      column: peril
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-INS-002-04
+      dimension: uniqueness
+      columns: [policy_id, as_of_month, peril]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-INS-002-05
+      dimension: accuracy
+      column: written_premium
+      rule: reconcile_to_general_ledger
+      threshold_pct: 99.5
+      severity: critical
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 260000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: commercial-property-adequacy
+        description: >-
+            Rate adequacy is weakest in a specific commercial property segment, and the weakness is
+            masked at book level.
+      - id: wind-concentration
+        description: >-
+            Wind exposure concentrates in a small number of coastal counties, which is what makes the
+            concentration question answerable.
+  value_case:
+    business_outcome: >-
+      Underwriting sees where the book is priced below technical and where exposure is piling up,
+      in the same view.
+    baseline:
+      method: "actuarial extract refreshed quarterly"
+      analyst_hours_month: 100
+      captured: "2026-03"
+    benefit_model: "rate_correction_on_inadequate_segments * written_premium_exposed"
+    assumptions:
+      - text: "share of book identified as rate inadequate"
+        value: 11.0
+        unit: percent
+        source: "actuarial FY26 review"
+        dated: 2026-03-01
+      - text: "achievable rate correction at renewal"
+        value: 3.5
+        unit: percent
+        sample_size: 140
+        source: "renewal pricing pilot"
+        dated: 2026-05-15
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-11
+      reviewer: PTY-0037

@@ -1,0 +1,293 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-HLT-001
+  name: "Patient Care Journey & Readmission"
+  industry: healthcare
+  domain: clinical
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0038
+    team: "Clinical Informatics"
+    escalation: "#dp-clinical"
+  certification: certified
+spec:
+  purpose: >-
+    Encounter and journey level view of admissions, discharges, follow-up and readmission
+    outcomes for care quality improvement.
+  grain: "one row per encounter and per journey segment"
+  history_months: 60
+  known_limitations: >-
+    Readmissions to facilities outside the network are visible only where a payer claims feed
+    exists, so out-of-network readmission is understated for self-pay patients. Behavioural
+    health encounters are excluded under the consent model.
+  upstream_sources: [SRC-EHR, SRC-ADT, SRC-CLAIMS-PAYER, SRC-SCHEDULING]
+  entities: [patient, encounter, condition, unit]
+  certified_kpis: [KPI-READMIT-036, KPI-ALOS-037, KPI-EDUTIL-038, KPI-CAREGAP-039, KPI-FOLLOWUP-040]
+  columns:
+    - name: encounter_id
+      type: string
+      business_name: "Encounter ID"
+      nullable: false
+      classification: [phi, identifier]
+      sensitivity: restricted
+      description: >-
+        Pseudonymous encounter identifier.
+    - name: index_encounter_id
+      type: string
+      business_name: "Index Encounter ID"
+      nullable: true
+      classification: [phi, identifier]
+      sensitivity: restricted
+      description: >-
+        Index admission a readmission is attributed to.
+    - name: attributed_member_id
+      type: string
+      business_name: "Attributed Member ID"
+      nullable: true
+      classification: [phi, identifier]
+      sensitivity: restricted
+      description: >-
+        Pseudonymous member identifier for attribution.
+    - name: ed_encounter_id
+      type: string
+      business_name: "ED Encounter ID"
+      nullable: true
+      classification: [phi, identifier]
+      sensitivity: restricted
+      description: >-
+        Emergency department encounter identifier where applicable.
+    - name: discharge_date
+      type: date
+      business_name: "Discharge Date"
+      nullable: true
+      classification: [phi]
+      sensitivity: restricted
+      description: >-
+        Date the encounter ended.
+    - name: condition
+      type: string
+      business_name: "Condition Group"
+      nullable: false
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        Clinical condition grouping for the encounter.
+    - name: unit
+      type: string
+      business_name: "Unit"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Inpatient unit the encounter was primarily managed on.
+    - name: payer
+      type: string
+      business_name: "Payer"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Primary payer for the encounter.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: confidential
+      description: >-
+        Service region of the facility.
+    - name: clinic
+      type: string
+      business_name: "Clinic"
+      nullable: true
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Ambulatory clinic responsible for follow-up.
+    - name: measure
+      type: string
+      business_name: "Quality Measure"
+      nullable: true
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        Care gap measure the row relates to.
+    - name: discharge_disposition
+      type: string
+      business_name: "Discharge Disposition"
+      nullable: true
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        Where the patient went on discharge.
+    - name: eligible_index
+      type: boolean
+      business_name: "Eligible Index Admission"
+      nullable: false
+      classification: []
+      sensitivity: restricted
+      description: >-
+        True when the encounter qualifies as an index admission under the measure.
+    - name: readmitted_within_30d
+      type: boolean
+      business_name: "Readmitted Within 30 Days"
+      nullable: false
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        True when an unplanned readmission occurred within thirty days.
+    - name: inpatient_days
+      type: number
+      business_name: "Inpatient Days"
+      nullable: true
+      classification: []
+      sensitivity: restricted
+      description: >-
+        Length of stay in days.
+    - name: days_to_followup
+      type: number
+      business_name: "Days to Follow-up"
+      nullable: true
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        Days from discharge to first completed ambulatory follow-up.
+    - name: gap_open_at_period_start
+      type: boolean
+      business_name: "Gap Open at Period Start"
+      nullable: false
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        True when the care gap was open at the start of the period.
+    - name: gap_closed
+      type: boolean
+      business_name: "Gap Closed"
+      nullable: false
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        True when the care gap closed within the period.
+    - name: programme_enrolled
+      type: boolean
+      business_name: "Transitional Care Enrolled"
+      nullable: false
+      classification: [clinical]
+      sensitivity: restricted
+      description: >-
+        True when the patient was enrolled in the transitional care programme.
+  contract:
+    version: 4.3.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "every 4 hours"
+        p95_minutes: 25
+        measured: per_partition
+      availability:
+        target_pct: 99.9
+        window: monthly
+      completeness:
+        required_fields_pct: 99.9
+      accuracy:
+        reconciliation_variance_pct: 0.2
+        against: "ehr_system_of_record"
+    deprecation_policy:
+      notice_days: 180
+      minimum_parallel_run_days: 90
+    support:
+      hours: "24x7"
+      p1_response_minutes: 15
+      on_call: "pagerduty://clinical-dp"
+    classification:
+      max_sensitivity: restricted
+      contains_pii: true
+      residency: [US]
+    consumer_obligations:
+      - "No individual clinical recommendation, diagnosis or treatment decision may be derived"
+      - "Minimum necessary applies: only the columns required by the declared purpose are granted"
+      - "Re-identification of a pseudonymous patient identifier is prohibited"
+    breach_process: >-
+      Auto-incident raised, privacy office and compliance notified immediately, breach assessment
+      within one hour.
+  quality_rules:
+    - id: QR-HLT-001-01
+      dimension: completeness
+      column: encounter_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-HLT-001-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "4h"
+      tolerance_minutes: 25
+      severity: critical
+    - id: QR-HLT-001-03
+      dimension: validity
+      column: condition
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: critical
+    - id: QR-HLT-001-04
+      dimension: uniqueness
+      columns: [encounter_id, measure]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-HLT-001-05
+      dimension: consistency
+      column: readmitted_within_30d
+      rule: implies_index_eligible
+      threshold_pct: 100
+      severity: critical
+    - id: QR-HLT-001-06
+      dimension: accuracy
+      column: inpatient_days
+      rule: reconcile_to_adt
+      threshold_pct: 99.5
+      severity: high
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 280000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: condition-unit-pareto
+        description: >-
+            Readmissions concentrate in two condition groups on three units, which is the Pareto
+            finding.
+      - id: followup-window-compliance
+        description: >-
+            Follow-up scheduling compliance differs sharply by discharge disposition.
+      - id: transitional-care-effect
+        description: >-
+            The transitional care pilot units show a measurable readmission reduction against matched
+            comparison units.
+  value_case:
+    business_outcome: >-
+      Care teams see which discharges are at risk and whether the transitional programme is
+      working, on the same evidence.
+    baseline:
+      method: "monthly manual chart abstraction and registry export"
+      analyst_hours_month: 180
+      captured: "2026-01"
+    benefit_model: "avoided_readmissions * average_readmission_cost - programme_cost"
+    assumptions:
+      - text: "average cost of an avoidable readmission"
+        value: 13800.0
+        unit: usd
+        source: "finance and clinical costing FY26"
+        dated: 2026-02-01
+      - text: "readmission reduction attributable to earlier identification"
+        value: 8.0
+        unit: percent
+        sample_size: 420
+        source: "pilot unit comparison"
+        dated: 2026-06-01
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-25
+      reviewer: PTY-0038

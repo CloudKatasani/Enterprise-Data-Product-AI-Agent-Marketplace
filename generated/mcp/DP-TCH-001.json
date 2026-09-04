@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-TCH-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-TCH-001",
+  "product": {
+    "id": "DP-TCH-001",
+    "name": "Product Usage & Feature Adoption",
+    "version": "4.1.0",
+    "sensitivity": "confidential",
+    "contains_pii": false,
+    "grain": "one row per account per feature per day"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-TCH-001:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_account_product",
+      "description": "Return certified measures for Product Usage & Feature Adoption by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,week,month,quarter,year]",
+        "slices": "array[enum[feature,plan_tier,segment,acquisition_channel]]",
+        "kpi_ids": "array[enum[KPI-DAUMAU-011,KPI-FEATADP-012,KPI-ACTIV-013,KPI-TTV-014,KPI-NRR-015]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 24000,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": true,
+    "max_rows_per_call": 24000,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-TCH-001",
+    "contract_version": "4.1.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "Individual user behaviour may only be analysed with a recorded consent basis",
+    "Revenue columns may not be redistributed outside finance-approved purposes"
+  ]
+}

@@ -107,3 +107,33 @@ operational tuning that must not be a literal in source (I10).
 `.env.example` and to the required set, so they are validated at boot like everything else.
 **Consequence** The rule that the app refuses to boot on a missing variable still covers every
 variable the app actually reads.
+
+### D-011 — The OpenAPI document carries a fixed title, not the deployment's (M2, 2026-09-04)
+**Context** The running API titles itself `<PRODUCT_NAME> API`, but the generated OpenAPI
+document is a committed build artifact. Embedding the deployment name would make two machines
+generate different bytes from the same code (I9) and would put a brand string into a committed
+file (I13).
+**Decision** The generator overwrites `info.title` with a fixed, deployment-independent name.
+The running app still titles itself with `PRODUCT_NAME`.
+**Consequence** Regeneration is stable across environments, and `/docs` still shows the
+deployment's own name.
+
+### D-012 — Source systems are a tenant-scoped taxonomy (M2, 2026-09-04)
+**Context** BUILD.md section 6.1 lists `source_system` under Reference, but which upstream
+systems feed a marketplace is a property of the deployment, not shared vocabulary like the
+sensitivity ladder.
+**Decision** `manifests/taxonomies/source_system.yaml` is authored as a taxonomy manifest and
+seeded into the tenant-scoped `source_system` table, carrying platform, owning team and
+criticality. The taxonomy schema requires those three fields for `SRC-` codes only.
+**Consequence** Two tenants can name different upstream systems, and shared-source mesh edges
+are computed within a tenant rather than across all of them.
+
+### D-013 — `lint:generated` compares against what the generators reported writing (M2, 2026-09-04)
+**Context** The rule re-runs generation into a scratch copy of `generated/` so unchanged files
+keep their timestamps. Scanning that tree afterwards would count a hand-added file as
+"generated", because the copy put it there.
+**Decision** Each generator returns the paths it wrote; the rule compares that set against the
+committed set. A file nothing generates, and a generated file that was not committed, are both
+reported.
+**Consequence** Adding, editing or deleting a file under `generated/` all fail the build, which
+is what rule 3 asks for.

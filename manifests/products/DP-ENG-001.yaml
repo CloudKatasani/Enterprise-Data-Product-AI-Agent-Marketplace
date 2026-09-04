@@ -1,0 +1,248 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-ENG-001
+  name: "Smart Meter Consumption & Load Profile"
+  industry: utilities_energy
+  domain: customer
+  archetype: source_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0045
+    team: "Grid Operations"
+    escalation: "#dp-metering"
+  certification: certified
+spec:
+  purpose: >-
+    Interval meter consumption, demand and demand response participation joined to rate class
+    and weather for load and programme analysis.
+  grain: "one row per meter per interval"
+  history_months: 24
+  known_limitations: >-
+    Intervals missing from the head end are left null rather than interpolated, so any consumer
+    averaging must handle gaps explicitly. Non-communicating meters fall back to estimated
+    billing reads and are flagged as such.
+  upstream_sources: [SRC-AMI-HEAD-END, SRC-CIS-BILLING, SRC-WEATHER]
+  entities: [meter, premise, customer, programme]
+  certified_kpis: [KPI-PEAKDEM-066, KPI-LOADFACT-067, KPI-CONSPC-068, KPI-DRRESP-069, KPI-ESTREAD-070]
+  columns:
+    - name: meter_id
+      type: string
+      business_name: "Meter ID"
+      nullable: false
+      classification: [pii, identifier]
+      sensitivity: confidential
+      description: >-
+        Pseudonymous meter identifier.
+    - name: interval_start
+      type: timestamp
+      business_name: "Interval Start"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Start of the metering interval, in local time.
+    - name: rate_class
+      type: string
+      business_name: "Rate Class"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Tariff class the meter is billed under.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: confidential
+      description: >-
+        Service region of the premise.
+    - name: feeder
+      type: string
+      business_name: "Feeder"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Distribution feeder serving the premise.
+    - name: dwelling_type
+      type: string
+      business_name: "Dwelling Type"
+      nullable: true
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Premise type used for load segmentation.
+    - name: meter_type
+      type: string
+      business_name: "Meter Type"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Communicating or non-communicating meter.
+    - name: programme
+      type: string
+      business_name: "Demand Response Programme"
+      nullable: true
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Programme the meter is enrolled in.
+    - name: read_type
+      type: string
+      business_name: "Read Type"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Actual or estimated read.
+    - name: consumption_kwh
+      type: number
+      business_name: "Consumption kWh"
+      nullable: true
+      classification: [behavioural]
+      sensitivity: confidential
+      description: >-
+        Metered consumption for the interval.
+    - name: interval_demand_kw
+      type: number
+      business_name: "Interval Demand kW"
+      nullable: true
+      classification: [behavioural]
+      sensitivity: confidential
+      description: >-
+        Average demand across the interval.
+    - name: period_hours
+      type: number
+      business_name: "Period Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours in the aggregation period, used for load factor.
+    - name: enrolled_and_called
+      type: boolean
+      business_name: "Enrolled and Called"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        True when the meter was enrolled and called for a demand response event.
+    - name: curtailed_during_event
+      type: boolean
+      business_name: "Curtailed During Event"
+      nullable: false
+      classification: [behavioural]
+      sensitivity: confidential
+      description: >-
+        True when measurable curtailment was delivered during the event.
+    - name: temperature_c
+      type: number
+      business_name: "Temperature"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Observed temperature for the interval and geography.
+  contract:
+    version: 2.1.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "02:00 local"
+        p95_minutes: 50
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.0
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "head_end_system_of_record"
+    deprecation_policy:
+      notice_days: 90
+      minimum_parallel_run_days: 45
+    support:
+      hours: "24x5"
+      p1_response_minutes: 30
+      on_call: "pagerduty://metering-dp"
+    classification:
+      max_sensitivity: confidential
+      contains_pii: true
+      residency: [US]
+    consumer_obligations:
+      - "Interval consumption is personal data and may only be used for the granted purpose"
+      - "Missing intervals are null and must not be interpolated without labelling"
+    breach_process: >-
+      Auto-incident raised, privacy office notified and consumers notified within 30 minutes.
+  quality_rules:
+    - id: QR-ENG-001-01
+      dimension: completeness
+      column: meter_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-ENG-001-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "02:00"
+      tolerance_minutes: 50
+      severity: high
+    - id: QR-ENG-001-03
+      dimension: validity
+      column: rate_class
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-ENG-001-04
+      dimension: uniqueness
+      columns: [meter_id, interval_start]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-ENG-001-05
+      dimension: consistency
+      column: read_type
+      rule: estimated_implies_null_interval
+      threshold_pct: 99.0
+      severity: medium
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 700000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: dr-response-spread
+        description: >-
+            Demand response delivery differs markedly by rate class, which is what makes the response-
+            rate question worth asking.
+      - id: estimated-read-cluster
+        description: >-
+            Estimated reads cluster on one meter type in two regions.
+  value_case:
+    business_outcome: >-
+      Load and programme teams see actual delivered curtailment rather than enrolment counts.
+    baseline:
+      method: "post-event manual settlement analysis"
+      analyst_hours_month: 85
+      captured: "2026-03"
+    benefit_model: "avoided_peak_capacity_mw * capacity_value_per_mw - programme_cost"
+    assumptions:
+      - text: "annual capacity value per avoided megawatt"
+        value: 68000.0
+        unit: usd
+        source: "resource planning FY26"
+        dated: 2026-03-01
+      - text: "uplift in delivered curtailment from targeting responsive meters"
+        value: 9.0
+        unit: percent
+        sample_size: 240
+        source: "event analysis"
+        dated: 2026-06-15
+    attribution_confidence: low
+    review:
+      last_reviewed: 2026-07-09
+      reviewer: PTY-0045

@@ -1,0 +1,324 @@
+apiVersion: marketplace/v1
+kind: Taxonomy
+taxonomy: source_system
+entries:
+  - code: SRC-BILLING
+    label: "Billing and Rating"
+    description: >-
+        System of record for subscriber billing accounts, charges and payment state.
+    platform: oracle
+    owner_team: "Revenue Systems"
+    criticality: tier1
+    rank_order: 1
+  - code: SRC-CRM
+    label: "Customer Relationship Management"
+    description: >-
+        System of record for customer, contact, account hierarchy and interaction history.
+    platform: salesforce
+    owner_team: "Customer Platforms"
+    criticality: tier1
+    rank_order: 2
+  - code: SRC-NETWORK-USAGE
+    label: "Network Usage Mediation"
+    description: >-
+        Mediated call, session and data usage records from the mobile and fixed network.
+    platform: kafka
+    owner_team: "Network Engineering"
+    criticality: tier1
+    rank_order: 3
+  - code: SRC-CARE-TICKETS
+    label: "Customer Care Ticketing"
+    description: >-
+        Care contacts, tickets, dispositions and resolution outcomes.
+    platform: servicenow
+    owner_team: "Customer Operations"
+    criticality: tier2
+    rank_order: 4
+  - code: SRC-NETWORK-OSS
+    label: "Network Operations Support System"
+    description: >-
+        Alarms, fault records, configuration state and element availability.
+    platform: netcool
+    owner_team: "Network Engineering"
+    criticality: tier1
+    rank_order: 5
+  - code: SRC-FIELD-WORK
+    label: "Field Work Management"
+    description: >-
+        Work orders, crew dispatch, arrival and completion events.
+    platform: clicksoftware
+    owner_team: "Field Operations"
+    criticality: tier2
+    rank_order: 6
+  - code: SRC-PRODUCT-EVENTS
+    label: "Product Event Stream"
+    description: >-
+        Instrumented product and feature events emitted by the application tier.
+    platform: kafka
+    owner_team: "Product Engineering"
+    criticality: tier1
+    rank_order: 7
+  - code: SRC-ENTITLEMENTS
+    label: "Entitlement Service"
+    description: >-
+        Plan, seat and feature entitlement state per account.
+    platform: postgres
+    owner_team: "Product Engineering"
+    criticality: tier1
+    rank_order: 8
+  - code: SRC-CORE-BANKING
+    label: "Core Banking Platform"
+    description: >-
+        Accounts, balances, postings and product holdings system of record.
+    platform: temenos
+    owner_team: "Banking Platforms"
+    criticality: tier1
+    rank_order: 9
+  - code: SRC-CARD-TXN
+    label: "Card Transaction Switch"
+    description: >-
+        Authorised and settled card transactions with merchant and channel detail.
+    platform: kafka
+    owner_team: "Payments"
+    criticality: tier1
+    rank_order: 10
+  - code: SRC-SURVEILLANCE
+    label: "Transaction Surveillance Engine"
+    description: >-
+        Scenario execution, alert generation and disposition workflow.
+    platform: actimize
+    owner_team: "Financial Crime"
+    criticality: tier1
+    rank_order: 11
+  - code: SRC-KYC
+    label: "Know Your Customer Register"
+    description: >-
+        Customer due diligence, risk rating and beneficial ownership records.
+    platform: fenergo
+    owner_team: "Financial Crime"
+    criticality: tier1
+    rank_order: 12
+  - code: SRC-CLAIMS-ADMIN
+    label: "Claims Administration"
+    description: >-
+        Claim, feature, reserve, payment and recovery transaction records.
+    platform: guidewire
+    owner_team: "Claims Technology"
+    criticality: tier1
+    rank_order: 13
+  - code: SRC-POLICY-ADMIN
+    label: "Policy Administration"
+    description: >-
+        Policy, coverage, exposure, endorsement and premium transaction records.
+    platform: guidewire
+    owner_team: "Underwriting Technology"
+    criticality: tier1
+    rank_order: 14
+  - code: SRC-VENDOR-INVOICES
+    label: "Vendor Invoice Processing"
+    description: >-
+        Repair, medical and legal vendor invoices supporting claim settlement.
+    platform: sap
+    owner_team: "Finance Operations"
+    criticality: tier2
+    rank_order: 15
+  - code: SRC-RATING-ENGINE
+    label: "Rating Engine"
+    description: >-
+        Technical premium, rating factors and quote outcomes.
+    platform: earnix
+    owner_team: "Underwriting Technology"
+    criticality: tier1
+    rank_order: 16
+  - code: SRC-EXPOSURE-MODEL
+    label: "Catastrophe Exposure Model"
+    description: >-
+        Geocoded exposure, peril accumulation and modelled loss output.
+    platform: verisk
+    owner_team: "Actuarial"
+    criticality: tier2
+    rank_order: 17
+  - code: SRC-EHR
+    label: "Electronic Health Record"
+    description: >-
+        Encounters, diagnoses, procedures, orders and clinical documentation.
+    platform: epic
+    owner_team: "Clinical Informatics"
+    criticality: tier1
+    rank_order: 18
+  - code: SRC-ADT
+    label: "Admission Discharge Transfer Feed"
+    description: >-
+        Real-time patient movement events across inpatient and emergency settings.
+    platform: hl7
+    owner_team: "Clinical Informatics"
+    criticality: tier1
+    rank_order: 19
+  - code: SRC-CLAIMS-PAYER
+    label: "Payer Claims Feed"
+    description: >-
+        Adjudicated payer claims used for attribution and out-of-network utilisation.
+    platform: sftp
+    owner_team: "Population Health"
+    criticality: tier2
+    rank_order: 20
+  - code: SRC-SCHEDULING
+    label: "Ambulatory Scheduling"
+    description: >-
+        Appointment slots, bookings, arrivals and no-show outcomes.
+    platform: epic
+    owner_team: "Clinical Informatics"
+    criticality: tier2
+    rank_order: 21
+  - code: SRC-PHARMACY-SYS
+    label: "Pharmacy Information System"
+    description: >-
+        Dispensing, cabinet transactions, formulary state and substitution events.
+    platform: omnicell
+    owner_team: "Pharmacy Operations"
+    criticality: tier1
+    rank_order: 22
+  - code: SRC-ERP-SUPPLY
+    label: "Supply Chain ERP"
+    description: >-
+        Purchase orders, receipts, stock movements and item master.
+    platform: sap
+    owner_team: "Supply Chain Systems"
+    criticality: tier1
+    rank_order: 23
+  - code: SRC-POS
+    label: "Point of Sale"
+    description: >-
+        Transaction lines, tenders, discounts and returns from stores.
+    platform: ncr
+    owner_team: "Retail Systems"
+    criticality: tier1
+    rank_order: 24
+  - code: SRC-ECOM
+    label: "Ecommerce Platform"
+    description: >-
+        Sessions, carts, orders and fulfilment outcomes from digital channels.
+    platform: commercetools
+    owner_team: "Digital Commerce"
+    criticality: tier1
+    rank_order: 25
+  - code: SRC-LOYALTY
+    label: "Loyalty Platform"
+    description: >-
+        Loyalty membership, identification at transaction and points activity.
+    platform: sap
+    owner_team: "Customer Marketing"
+    criticality: tier2
+    rank_order: 26
+  - code: SRC-PROMO-PLAN
+    label: "Promotion Planning"
+    description: >-
+        Promotion definition, funding, mechanic and participating item lists.
+    platform: oracle
+    owner_team: "Merchandising"
+    criticality: tier2
+    rank_order: 27
+  - code: SRC-WMS
+    label: "Warehouse Management System"
+    description: >-
+        Receiving, put-away, picking and shipment confirmation across nodes.
+    platform: manhattan
+    owner_team: "Supply Chain Systems"
+    criticality: tier1
+    rank_order: 28
+  - code: SRC-FORECAST-ENGINE
+    label: "Demand Forecast Engine"
+    description: >-
+        Statistical and judgemental demand forecasts by item, location and horizon.
+    platform: o9
+    owner_team: "Supply Chain Planning"
+    criticality: tier2
+    rank_order: 29
+  - code: SRC-TMS
+    label: "Transportation Management System"
+    description: >-
+        Shipments, legs, appointments, tenders and delivery confirmation.
+    platform: oracle
+    owner_team: "Logistics Systems"
+    criticality: tier1
+    rank_order: 30
+  - code: SRC-TELEMATICS
+    label: "Fleet Telematics"
+    description: >-
+        Vehicle position, movement, idling and driver hours-of-service events.
+    platform: samsara
+    owner_team: "Fleet Operations"
+    criticality: tier1
+    rank_order: 31
+  - code: SRC-CARRIER-EDI
+    label: "Carrier EDI Gateway"
+    description: >-
+        Carrier status messages, accessorial charges and freight invoices.
+    platform: edi
+    owner_team: "Logistics Systems"
+    criticality: tier2
+    rank_order: 32
+  - code: SRC-SCADA
+    label: "Supervisory Control and Data Acquisition"
+    description: >-
+        High-frequency telemetry from field devices, plant and network equipment.
+    platform: osisoft
+    owner_team: "Operations Technology"
+    criticality: tier1
+    rank_order: 33
+  - code: SRC-OMS
+    label: "Outage Management System"
+    description: >-
+        Outage detection, switching, crew assignment and restoration events.
+    platform: ge
+    owner_team: "Grid Operations"
+    criticality: tier1
+    rank_order: 34
+  - code: SRC-ASSET-EAM
+    label: "Enterprise Asset Management"
+    description: >-
+        Asset register, condition assessments, inspections and maintenance history.
+    platform: maximo
+    owner_team: "Asset Management"
+    criticality: tier1
+    rank_order: 35
+  - code: SRC-AMI-HEAD-END
+    label: "Advanced Metering Head End"
+    description: >-
+        Interval meter reads, events and command acknowledgements.
+    platform: landisgyr
+    owner_team: "Metering Operations"
+    criticality: tier1
+    rank_order: 36
+  - code: SRC-CIS-BILLING
+    label: "Customer Information and Billing"
+    description: >-
+        Customer accounts, rate classes, billing determinants and invoices.
+    platform: sap
+    owner_team: "Revenue Systems"
+    criticality: tier1
+    rank_order: 37
+  - code: SRC-WEATHER
+    label: "Weather Reference Feed"
+    description: >-
+        Observed and forecast temperature, wind and precipitation by geography.
+    platform: noaa
+    owner_team: "Data Platform"
+    criticality: tier3
+    rank_order: 38
+  - code: SRC-MES
+    label: "Manufacturing Execution System"
+    description: >-
+        Production orders, run events, downtime reasons and unit-level genealogy.
+    platform: rockwell
+    owner_team: "Manufacturing Systems"
+    criticality: tier1
+    rank_order: 39
+  - code: SRC-ERP-QUALITY
+    label: "Quality Management Module"
+    description: >-
+        Inspection results, non-conformance records, scrap and rework dispositions.
+    platform: sap
+    owner_team: "Quality Assurance"
+    criticality: tier1
+    rank_order: 40

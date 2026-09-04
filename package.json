@@ -19,7 +19,7 @@
     "api": "python3 -m uvicorn services.api.main:app --host 0.0.0.0 --port 8000",
     "worker": "python3 -m services.worker.main",
     "verify": "npm run lint && npm run typecheck && npm run test:unit && npm run test:contract && npm run test:golden && npm run test:publish-gate && npm run test:a11y",
-    "lint": "npm run validate:manifests && npm run lint:no-magic-numbers && npm run lint:no-brand-strings && npm run lint:animatable-props && npm run lint:migrations && npm run lint:py && npm run lint:web",
+    "lint": "npm run validate:manifests && npm run lint:no-magic-numbers && npm run lint:no-brand-strings && npm run lint:animatable-props && npm run lint:migrations && npm run lint:generated && npm run lint:py && npm run lint:web",
     "lint:no-magic-numbers": "python3 scripts/lint/no_magic_numbers.py",
     "lint:no-brand-strings": "python3 scripts/lint/no_brand_strings.py",
     "lint:animatable-props": "python3 scripts/lint/animatable_props.py",
@@ -38,7 +38,8 @@
     "test:perf": "python3 scripts/run_tests.py tests/perf",
     "gen:diff": "python3 scripts/gen.py && git diff --exit-code generated/",
     "build": "npm run --workspace portal build",
-    "validate:manifests": "python3 scripts/manifests/validate.py"
+    "validate:manifests": "python3 scripts/manifests/validate.py",
+    "lint:generated": "python3 scripts/lint/generated.py"
   },
   "devDependencies": {
     "typescript": "5.6.3"

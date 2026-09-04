@@ -1,0 +1,94 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-ENG-001.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-ENG-001",
+  "product": {
+    "id": "DP-ENG-001",
+    "name": "Smart Meter Consumption & Load Profile",
+    "version": "2.1.0",
+    "sensitivity": "confidential",
+    "contains_pii": true,
+    "grain": "one row per meter per interval"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-ENG-001:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_meter_customer",
+      "description": "Return certified measures for Smart Meter Consumption & Load Profile by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,month,quarter,year]",
+        "slices": "array[enum[rate_class,feeder,dwelling_type,meter_type,programme,read_type]]",
+        "kpi_ids": "array[enum[KPI-PEAKDEM-066,KPI-LOADFACT-067,KPI-CONSPC-068,KPI-DRRESP-069,KPI-ESTREAD-070]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 28000,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": true,
+    "max_rows_per_call": 28000,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-ENG-001",
+    "contract_version": "2.1.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "Interval consumption is personal data and may only be used for the granted purpose",
+    "Missing intervals are null and must not be interpolated without labelling"
+  ]
+}

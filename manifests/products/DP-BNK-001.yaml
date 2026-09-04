@@ -1,0 +1,265 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-BNK-001
+  name: "Customer Financial 360"
+  industry: banking
+  domain: customer
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0034
+    team: "Banking Customer Domain"
+    escalation: "#dp-banking"
+  certification: certified
+spec:
+  purpose: >-
+    Household and customer level relationship view covering holdings, balances, primacy, value
+    and attrition risk for relationship management.
+  grain: "one row per customer per month"
+  history_months: 60
+  known_limitations: >-
+    Business banking relationships are excluded. Household grouping uses address and shared-
+    account heuristics and is not a legal determination. External holdings are only visible
+    where an aggregation consent exists.
+  upstream_sources: [SRC-CORE-BANKING, SRC-CRM, SRC-CARD-TXN]
+  entities: [customer, household, account, product]
+  certified_kpis: [KPI-PBSHARE-016, KPI-PPC-017, KPI-CLV-018, KPI-ATTRISK-019, KPI-DEPGRW-020]
+  columns:
+    - name: customer_id
+      type: string
+      business_name: "Customer ID"
+      nullable: false
+      classification: [pii, identifier]
+      sensitivity: restricted
+      description: >-
+        Pseudonymous customer identifier.
+    - name: household_id
+      type: string
+      business_name: "Household ID"
+      nullable: false
+      classification: [pii, identifier]
+      sensitivity: restricted
+      description: >-
+        Inferred household grouping identifier.
+    - name: as_of_month
+      type: date
+      business_name: "As Of Month"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        First day of the month the row describes.
+    - name: segment
+      type: string
+      business_name: "Segment"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Relationship segment assigned by the customer domain.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: confidential
+      description: >-
+        Servicing region derived from the primary address.
+    - name: tenure_band
+      type: string
+      business_name: "Tenure Band"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Banded relationship tenure.
+    - name: value_band
+      type: string
+      business_name: "Value Band"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Banded relationship value used for prioritisation.
+    - name: product_family
+      type: string
+      business_name: "Product Family"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Predominant product family held.
+    - name: active_product_count
+      type: integer
+      business_name: "Active Products"
+      nullable: false
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Count of distinct active products held at month end.
+    - name: primary_relationship
+      type: boolean
+      business_name: "Primary Relationship"
+      nullable: false
+      classification: [behavioural]
+      sensitivity: confidential
+      description: >-
+        True when salary credit and transaction concentration indicate primacy.
+    - name: starting_deposit_balance
+      type: number
+      business_name: "Starting Deposit Balance"
+      nullable: false
+      classification: [financial]
+      sensitivity: restricted
+      description: >-
+        Total deposit balances at the start of the month.
+    - name: ending_deposit_balance
+      type: number
+      business_name: "Ending Deposit Balance"
+      nullable: false
+      classification: [financial]
+      sensitivity: restricted
+      description: >-
+        Total deposit balances at the end of the month.
+    - name: discounted_contribution_margin
+      type: number
+      business_name: "Discounted Contribution Margin"
+      nullable: true
+      classification: [financial]
+      sensitivity: restricted
+      description: >-
+        Modelled discounted contribution margin over remaining relationship life.
+    - name: attrition_model_score
+      type: number
+      business_name: "Attrition Model Score"
+      nullable: true
+      classification: [behavioural]
+      sensitivity: restricted
+      description: >-
+        Modelled probability of material attrition in the next two quarters.
+    - name: relationship_value
+      type: number
+      business_name: "Relationship Value"
+      nullable: true
+      classification: [financial]
+      sensitivity: restricted
+      description: >-
+        Twelve-month trailing contribution margin from the relationship.
+    - name: last_contact_date
+      type: date
+      business_name: "Last Contact Date"
+      nullable: true
+      classification: []
+      sensitivity: confidential
+      description: >-
+        Date of the most recent banker or service interaction.
+  contract:
+    version: 5.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "05:00 local"
+        p95_minutes: 60
+        measured: per_partition
+      availability:
+        target_pct: 99.9
+        window: monthly
+      completeness:
+        required_fields_pct: 99.9
+      accuracy:
+        reconciliation_variance_pct: 0.2
+        against: "core_banking_general_ledger"
+    deprecation_policy:
+      notice_days: 120
+      minimum_parallel_run_days: 60
+    support:
+      hours: "24x7"
+      p1_response_minutes: 15
+      on_call: "pagerduty://banking-dp"
+    classification:
+      max_sensitivity: restricted
+      contains_pii: true
+      residency: [US]
+    consumer_obligations:
+      - "No individual recommendation without banker review"
+      - "Model scores may not be used as the sole basis for a credit decision"
+      - "Household grouping is inferred and must be labelled as such in any output"
+    breach_process: >-
+      Auto-incident raised, privacy office notified and affected consumers notified within 15
+      minutes.
+  quality_rules:
+    - id: QR-BNK-001-01
+      dimension: completeness
+      column: customer_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-001-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "05:00"
+      tolerance_minutes: 60
+      severity: critical
+    - id: QR-BNK-001-03
+      dimension: validity
+      column: segment
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-BNK-001-04
+      dimension: uniqueness
+      columns: [customer_id, as_of_month]
+      rule: unique_at_grain
+      threshold_pct: 100
+      severity: critical
+    - id: QR-BNK-001-05
+      dimension: accuracy
+      column: ending_deposit_balance
+      rule: reconcile_to_general_ledger
+      threshold_pct: 99.8
+      severity: critical
+    - id: QR-BNK-001-06
+      dimension: consistency
+      column: household_id
+      rule: stable_across_months
+      threshold_pct: 98.0
+      severity: medium
+  endpoints: [sql, mcp, share]
+  demo_tier:
+    synthetic: true
+    rows_target: 300000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: southeast-value-concentration
+        description: >-
+            Relationship value in the Southeast concentrates in a small set of households, which is what
+            makes the top-20 ranking non-trivial.
+      - id: rate-change-deposit-shift
+        description: >-
+            Deposit balances shift measurably after the April rate change, and the shift differs by
+            segment.
+  value_case:
+    business_outcome: >-
+      Bankers spend their week on the relationships where attention changes the outcome.
+    baseline:
+      method: "branch-level spreadsheets refreshed monthly"
+      analyst_hours_month: 160
+      captured: "2026-01"
+    benefit_model: "retained_relationship_value * intervention_success_rate - servicing_cost"
+    assumptions:
+      - text: "average annual contribution margin per high-value household"
+        value: 1820.0
+        unit: usd
+        source: "finance FY26 model"
+        dated: 2026-01-15
+      - text: "intervention success rate on flagged attrition risk"
+        value: 22.0
+        unit: percent
+        sample_size: 340
+        source: "retention pilot"
+        dated: 2026-04-30
+    attribution_confidence: high
+    review:
+      last_reviewed: 2026-07-20
+      reviewer: PTY-0034

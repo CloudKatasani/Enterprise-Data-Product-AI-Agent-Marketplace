@@ -1,0 +1,268 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-RTL-001
+  name: "Omnichannel Sales & Basket Analytics"
+  industry: retail
+  domain: customer
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0040
+    team: "Merchandising Analytics"
+    escalation: "#dp-retail"
+  certification: certified
+spec:
+  purpose: >-
+    Transaction line level sales, margin, basket and promotion view across stores and digital
+    channels for merchandising decisions.
+  grain: "one row per transaction line"
+  history_months: 36
+  known_limitations: >-
+    Marketplace and concession sales are recorded at order level only and carry no line detail.
+    Loyalty identification covers roughly two thirds of transactions, so customer-level analysis
+    is a subset rather than the whole.
+  upstream_sources: [SRC-POS, SRC-ECOM, SRC-LOYALTY, SRC-PROMO-PLAN]
+  entities: [transaction, item, store, promotion]
+  certified_kpis: [KPI-COMPSALES-046, KPI-BASKET-047, KPI-CONVRATE-048, KPI-GMRATE-049, KPI-PROMOLIFT-050]
+  columns:
+    - name: transaction_id
+      type: string
+      business_name: "Transaction ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Transaction identifier.
+    - name: visit_id
+      type: string
+      business_name: "Visit ID"
+      nullable: true
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Store or site visit the transaction belongs to.
+    - name: business_date
+      type: date
+      business_name: "Business Date"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Trading date of the transaction.
+    - name: category
+      type: string
+      business_name: "Category"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Merchandise category of the line.
+    - name: sku
+      type: string
+      business_name: "SKU"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Stock keeping unit sold on the line.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Trading region.
+    - name: channel
+      type: string
+      business_name: "Channel"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Store, digital or marketplace channel.
+    - name: store_format
+      type: string
+      business_name: "Store Format"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Format of the selling store.
+    - name: promotion
+      type: string
+      business_name: "Promotion"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Promotion the line participated in.
+    - name: comparable_store
+      type: boolean
+      business_name: "Comparable Store"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the store traded in both comparison periods.
+    - name: net_sales
+      type: number
+      business_name: "Net Sales"
+      nullable: false
+      classification: [financial]
+      sensitivity: internal
+      description: >-
+        Net sales value of the line after discount and returns.
+    - name: prior_year_net_sales
+      type: number
+      business_name: "Prior Year Net Sales"
+      nullable: true
+      classification: [financial]
+      sensitivity: internal
+      description: >-
+        Comparable net sales for the same store, category and week last year.
+    - name: cost_of_goods_sold
+      type: number
+      business_name: "Cost of Goods Sold"
+      nullable: false
+      classification: [financial]
+      sensitivity: internal
+      description: >-
+        Cost of goods for the line.
+    - name: promoted_sales
+      type: number
+      business_name: "Promoted Sales"
+      nullable: true
+      classification: [financial]
+      sensitivity: internal
+      description: >-
+        Sales value recorded under a promotion mechanic.
+    - name: baseline_sales
+      type: number
+      business_name: "Baseline Sales"
+      nullable: true
+      classification: [financial]
+      sensitivity: internal
+      description: >-
+        Modelled non-promoted baseline for the same item and store.
+    - name: units
+      type: integer
+      business_name: "Units"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Units sold on the line.
+    - name: basket_item_count
+      type: integer
+      business_name: "Basket Item Count"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Distinct items in the parent basket.
+  contract:
+    version: 6.2.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "hourly, 15 minutes past"
+        p95_minutes: 15
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.3
+        against: "finance_sales_ledger"
+    deprecation_policy:
+      notice_days: 60
+      minimum_parallel_run_days: 30
+    support:
+      hours: "24x7"
+      p1_response_minutes: 20
+      on_call: "pagerduty://retail-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US, EU]
+    consumer_obligations:
+      - "No price change or markdown may be executed from this product"
+      - "Promotion lift figures must cite the baseline model version"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 20 minutes of detection.
+  quality_rules:
+    - id: QR-RTL-001-01
+      dimension: completeness
+      column: transaction_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-RTL-001-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "hourly+15m"
+      tolerance_minutes: 15
+      severity: critical
+    - id: QR-RTL-001-03
+      dimension: validity
+      column: category
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-RTL-001-04
+      dimension: uniqueness
+      columns: [transaction_id, sku]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-RTL-001-05
+      dimension: accuracy
+      column: net_sales
+      rule: reconcile_to_finance_ledger
+      threshold_pct: 99.7
+      severity: critical
+  endpoints: [sql, rest, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 800000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: category-plan-miss
+        description: >-
+            Two categories miss plan, and the miss decomposes into traffic in one and basket size in the
+            other.
+      - id: bts-promotion-margin
+        description: >-
+            The back-to-school promotion delivers volume but negative incremental margin in one
+            category.
+      - id: basket-erosion
+        description: >-
+            Basket size declines where a specific complementary category leaves the basket.
+  value_case:
+    business_outcome: >-
+      Merchandising sees where the plan is missed and why, on Monday rather than at month end.
+    baseline:
+      method: "weekly trading pack assembled by hand"
+      analyst_hours_month: 130
+      captured: "2026-01"
+    benefit_model: "faster_markdown_decisions * margin_protected + promotion_reallocation_uplift"
+    assumptions:
+      - text: "margin protected per week of earlier markdown action"
+        value: 18500.0
+        unit: usd
+        source: "merchandising FY26 model"
+        dated: 2026-02-01
+      - text: "share of promotions identified as margin dilutive"
+        value: 17.0
+        unit: percent
+        sample_size: 64
+        source: "promotion review"
+        dated: 2026-04-01
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-18
+      reviewer: PTY-0040

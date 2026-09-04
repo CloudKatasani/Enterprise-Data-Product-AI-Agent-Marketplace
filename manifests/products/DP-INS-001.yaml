@@ -1,0 +1,267 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-INS-001
+  name: "Claims Lifecycle & Loss Performance"
+  industry: insurance
+  domain: risk
+  archetype: consumer_aligned
+  tier: tier1
+  owner:
+    party_id: PTY-0036
+    team: "Claims Analytics"
+    escalation: "#dp-claims"
+  certification: certified
+spec:
+  purpose: >-
+    Claim level lifecycle view covering reserves, payments, recoveries, cycle time and assessed
+    leakage for loss performance management.
+  grain: "one row per claim per status transition"
+  history_months: 84
+  known_limitations: >-
+    Reinsurance recoveries are recorded net at the treaty level and are not attributable to
+    individual claims. Leakage is an assessed measure derived from sampled file reviews and is
+    not a complete census.
+  upstream_sources: [SRC-CLAIMS-ADMIN, SRC-POLICY-ADMIN, SRC-VENDOR-INVOICES]
+  entities: [claim, policy, claimant, adjuster]
+  certified_kpis: [KPI-LOSSRATIO-026, KPI-CLMCYCLE-027, KPI-AVGSEV-028, KPI-LEAKAGE-029, KPI-RECOVERY-030]
+  columns:
+    - name: claim_id
+      type: string
+      business_name: "Claim ID"
+      nullable: false
+      classification: [pii, identifier]
+      sensitivity: confidential
+      description: >-
+        Pseudonymous claim identifier.
+    - name: policy_id
+      type: string
+      business_name: "Policy ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: confidential
+      description: >-
+        Policy the claim was made against.
+    - name: transition_timestamp
+      type: timestamp
+      business_name: "Transition Timestamp"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Time of the status transition the row describes.
+    - name: coverage_line
+      type: string
+      business_name: "Coverage Line"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Line of business the claim sits in.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the loss event.
+    - name: channel
+      type: string
+      business_name: "Channel"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Distribution channel the policy was sold through.
+    - name: complexity_band
+      type: string
+      business_name: "Complexity Band"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Assessed handling complexity at first notice of loss.
+    - name: adjuster_team
+      type: string
+      business_name: "Adjuster Team"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Team handling the claim at the transition.
+    - name: claim_status
+      type: string
+      business_name: "Claim Status"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Status the claim moved into.
+    - name: incurred_losses
+      type: number
+      business_name: "Incurred Losses"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Paid plus outstanding reserve including allocated expense.
+    - name: earned_premium
+      type: number
+      business_name: "Earned Premium"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Premium earned on the policy allocated to the period.
+    - name: cycle_days
+      type: number
+      business_name: "Cycle Days"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Elapsed days from first notice of loss to closure.
+    - name: assessed_leakage_amount
+      type: number
+      business_name: "Assessed Leakage"
+      nullable: true
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Avoidable cost identified by file review.
+    - name: subrogation_recovered
+      type: number
+      business_name: "Subrogation Recovered"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Amounts recovered from a liable third party.
+    - name: salvage_recovered
+      type: number
+      business_name: "Salvage Recovered"
+      nullable: false
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Proceeds from disposal of damaged property.
+    - name: settlement_amount
+      type: number
+      business_name: "Settlement Amount"
+      nullable: true
+      classification: [financial]
+      sensitivity: confidential
+      description: >-
+        Final settlement paid to the claimant.
+    - name: triage_rule_version
+      type: string
+      business_name: "Triage Rule Version"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Version of the triage rule set applied at first notice of loss.
+  contract:
+    version: 3.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "04:00 local"
+        p95_minutes: 40
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "claims_general_ledger"
+    deprecation_policy:
+      notice_days: 90
+      minimum_parallel_run_days: 45
+    support:
+      hours: "24x5"
+      p1_response_minutes: 30
+      on_call: "pagerduty://claims-dp"
+    classification:
+      max_sensitivity: confidential
+      contains_pii: true
+      residency: [US, EU]
+    consumer_obligations:
+      - "No coverage determination may be made from this product"
+      - "Adjuster-level aggregates may not be used for individual performance ratings"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 30 minutes of detection.
+  quality_rules:
+    - id: QR-INS-001-01
+      dimension: completeness
+      column: claim_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-INS-001-02
+      dimension: freshness
+      rule: partition_completion_by
+      target: "04:00"
+      tolerance_minutes: 40
+      severity: high
+    - id: QR-INS-001-03
+      dimension: validity
+      column: coverage_line
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-INS-001-04
+      dimension: uniqueness
+      columns: [claim_id, transition_timestamp]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-INS-001-05
+      dimension: accuracy
+      column: incurred_losses
+      rule: reconcile_to_general_ledger
+      threshold_pct: 99.5
+      severity: critical
+  endpoints: [sql, rest, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 220000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    planted_patterns:
+      - id: apd-cycle-time
+        description: >-
+            Cycle time in auto physical damage lengthens at the vendor assignment stage, which is the
+            decomposition finding.
+      - id: subrogation-gap
+        description: >-
+            A quantifiable share of eligible claims never opens a subrogation file, concentrated in one
+            coverage line.
+  value_case:
+    business_outcome: >-
+      Claims leaders see where money leaves the process and act on the stage rather than the
+      symptom.
+    baseline:
+      method: "quarterly file review sampling extrapolated by hand"
+      analyst_hours_month: 110
+      captured: "2026-02"
+    benefit_model: "identified_leakage * remediation_capture_rate + recovered_subrogation_uplift"
+    assumptions:
+      - text: "remediation capture rate on identified leakage"
+        value: 35.0
+        unit: percent
+        sample_size: 180
+        source: "claims improvement programme"
+        dated: 2026-05-01
+      - text: "incremental subrogation capture from earlier identification"
+        value: 4.2
+        unit: percent
+        sample_size: 260
+        source: "recovery pilot"
+        dated: 2026-06-01
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-07-08
+      reviewer: PTY-0036

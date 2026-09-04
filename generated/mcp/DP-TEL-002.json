@@ -1,0 +1,93 @@
+{
+  "_generated": {
+    "from": "manifests/products/DP-TEL-002.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "6b3bdcc61fdf1bdb94713ea967b74622e853f598a88b9678a925458dc60bbc6c",
+    "warning": "DO NOT EDIT"
+  },
+  "server": "mcp://marketplace.${TENANT}.internal/dp/DP-TEL-002",
+  "product": {
+    "id": "DP-TEL-002",
+    "name": "Network Experience & Fault Signal",
+    "version": "2.4.0",
+    "sensitivity": "internal",
+    "contains_pii": false,
+    "grain": "one row per site per hour"
+  },
+  "auth": {
+    "type": "oauth2",
+    "flow": "client_credentials",
+    "scopes": [
+      "dp:DP-TEL-002:read"
+    ],
+    "identity": "agent",
+    "delegation": "on_behalf_of_required"
+  },
+  "tools": [
+    {
+      "name": "query_site_network_asset",
+      "description": "Return certified measures for Network Experience & Fault Signal by period and slice.",
+      "input_schema": {
+        "period": "string",
+        "grain": "enum[day,week,month,quarter]",
+        "slices": "array[enum[site_class,technology,fault_class]]",
+        "kpi_ids": "array[enum[KPI-NETAVAIL-006,KPI-DROP-007,KPI-THRPUT-008,KPI-FMTTR-009,KPI-IMPHRS-010]]",
+        "purpose": "string"
+      },
+      "returns": "rows + certified KPI definition IDs + freshness_as_of",
+      "row_limit": 16000,
+      "cost_class": "small"
+    },
+    {
+      "name": "describe_schema",
+      "description": "Columns, types and classifications for this product.",
+      "input_schema": {},
+      "returns": "column list with classification and masking state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_kpi_definition",
+      "description": "Authoritative definition by KPI ID.",
+      "input_schema": {
+        "kpi_id": "string"
+      },
+      "returns": "certified definition, version, grains, slices, steward",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_freshness",
+      "description": "Load state against the contract freshness guarantee.",
+      "input_schema": {},
+      "returns": "as_of, target, p95_minutes, breach state",
+      "cost_class": "trivial"
+    },
+    {
+      "name": "get_quality",
+      "description": "Current composite and dimension scores.",
+      "input_schema": {},
+      "returns": "composite, dimensions, band, rubric_version_id, computed_at",
+      "cost_class": "trivial"
+    }
+  ],
+  "policy": {
+    "row_filters_applied": true,
+    "column_masking_applied": true,
+    "purpose_required": false,
+    "max_rows_per_call": 16000,
+    "audit": "agent_id, user_on_behalf_of, purpose, columns_returned",
+    "enforced_in": "data_platform"
+  },
+  "provenance": {
+    "product_id": "DP-TEL-002",
+    "contract_version": "2.4.0",
+    "includes": [
+      "freshness_as_of",
+      "quality_composite",
+      "kpi_definition_ids"
+    ]
+  },
+  "consumer_obligations": [
+    "Impacted subscriber counts are modelled and must be described as such"
+  ]
+}
