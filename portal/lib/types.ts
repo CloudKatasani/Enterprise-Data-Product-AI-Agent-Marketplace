@@ -489,3 +489,59 @@ export interface DemandTheme {
   confidence: number;
   rationale: string;
 }
+
+export interface MeshNode {
+  id: string;
+  name: string;
+  domain: string;
+  industry: string;
+  sensitivity?: string;
+  certification: string;
+  tier?: string;
+  quality?: number | null;
+  band?: string | null;
+  autonomy_level?: string;
+  status?: string;
+}
+
+export interface MeshEdge {
+  edge_id: string;
+  source: string;
+  target: string;
+  edge_type: string;
+  strength: number;
+  confidence: number;
+  factors: Record<string, { value: number; evidence: number; detail: string }>;
+  rationale: string;
+  reviewed_by: string | null;
+}
+
+export interface MeshTableRow {
+  source: string;
+  source_name: string;
+  target: string;
+  target_name: string;
+  edge_type: string;
+  strength: number;
+  confidence: number;
+  rationale: string;
+}
+
+export interface MeshGraph {
+  mode: string;
+  nodes: MeshNode[];
+  edges: MeshEdge[];
+  layout: Record<string, number>;
+  rubric_version_id: string;
+  table: MeshTableRow[];
+  modes: string[];
+}
+
+export interface BlastRadius {
+  source_id: string;
+  products: { product_id: string; name: string; domain_code: string;
+              sensitivity_tier: string; tier: string }[];
+  agents: { agent_id: string; name: string; product_id: string }[];
+  consumers: { asset_id: string; consumers: number }[];
+  consumer_count: number;
+}

@@ -57,7 +57,7 @@
       "by": "scripts/gen.py",
       "from": "services/api/main.py",
       "generator_version": "1.0.0",
-      "manifest_hash": "ebb58cdc4b9bdea63d7cb36ad934afc97d4d407107f2d253acbc4fbf635d9e3d",
+      "manifest_hash": "854fed41198947e5d7028a5b9aa10fb17ff82563f217dbed64714a8f78e7b938",
       "warning": "DO NOT EDIT"
     }
   },
@@ -1343,6 +1343,451 @@
         "summary": "Definition, versions and every consumer of a KPI",
         "tags": [
           "kpis"
+        ]
+      }
+    },
+    "/api/v1/mesh/agents": {
+      "get": {
+        "operationId": "agent_graph_api_v1_mesh_agents_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "default": "force",
+              "title": "Mode",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "domain",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Domain"
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_strength",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Strength"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Agent Graph Api V1 Mesh Agents Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The agent mesh",
+        "tags": [
+          "mesh"
+        ]
+      }
+    },
+    "/api/v1/mesh/data": {
+      "get": {
+        "operationId": "data_graph_api_v1_mesh_data_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "default": "force",
+              "title": "Mode",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scope"
+            }
+          },
+          {
+            "in": "query",
+            "name": "domain",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Domain"
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_strength",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Strength"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Data Graph Api V1 Mesh Data Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The data product mesh",
+        "tags": [
+          "mesh"
+        ]
+      }
+    },
+    "/api/v1/mesh/data/blast-radius": {
+      "get": {
+        "operationId": "blast_radius_api_v1_mesh_data_blast_radius_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "title": "Source",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Blast Radius Api V1 Mesh Data Blast Radius Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Everything downstream of one source system",
+        "tags": [
+          "mesh"
+        ]
+      }
+    },
+    "/api/v1/mesh/divergence": {
+      "get": {
+        "operationId": "kpi_divergence_api_v1_mesh_divergence_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Kpi Divergence Api V1 Mesh Divergence Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "KPIs more than one agent answers on, and whether they agree",
+        "tags": [
+          "mesh"
+        ]
+      }
+    },
+    "/api/v1/mesh/sources": {
+      "get": {
+        "operationId": "sources_api_v1_mesh_sources_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Sources Api V1 Mesh Sources Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Source systems, for the source-anchored layout",
+        "tags": [
+          "mesh"
         ]
       }
     },

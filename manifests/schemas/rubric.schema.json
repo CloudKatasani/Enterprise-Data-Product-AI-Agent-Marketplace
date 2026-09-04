@@ -423,7 +423,10 @@
         "review_required_below_confidence",
         "agent_mesh_weights",
         "consolidation_candidate",
-        "co_consumption_session_minutes"
+        "co_consumption_session_minutes",
+        "rationale",
+        "presentation",
+        "divergence"
       ],
       "additionalProperties": false,
       "properties": {
@@ -469,6 +472,92 @@
           "type": "object",
           "additionalProperties": {
             "type": "number"
+          },
+          "properties": {
+            "svg": {
+              "type": "object",
+              "required": [
+                "viewbox",
+                "centre",
+                "radius",
+                "node_radius",
+                "label_offset",
+                "min_edge_opacity",
+                "max_edge_width",
+                "start_angle_turns"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "viewbox": {
+                  "type": "number"
+                },
+                "centre": {
+                  "type": "number"
+                },
+                "radius": {
+                  "type": "number"
+                },
+                "node_radius": {
+                  "type": "number"
+                },
+                "label_offset": {
+                  "type": "number"
+                },
+                "min_edge_opacity": {
+                  "type": "number"
+                },
+                "max_edge_width": {
+                  "type": "number"
+                },
+                "start_angle_turns": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "rationale": {
+          "type": "object",
+          "required": [
+            "listed_items"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "listed_items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "presentation": {
+          "type": "object",
+          "required": [
+            "precision"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "precision": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "divergence": {
+          "type": "object",
+          "required": [
+            "percent_scale",
+            "default_tolerance_pct"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "percent_scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "default_tolerance_pct": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
           }
         }
       }

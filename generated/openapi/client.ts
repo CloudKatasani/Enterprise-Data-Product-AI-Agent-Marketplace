@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: ebb58cdc4b9bdea63d7cb36ad934afc97d4d407107f2d253acbc4fbf635d9e3d  generated_at: 2026-09-04T05:45:55+00:00
+// generator_version: 1.0.0  manifest_hash: 854fed41198947e5d7028a5b9aa10fb17ff82563f217dbed64714a8f78e7b938  generated_at: 2026-09-04T06:12:09+00:00
 
 /* eslint-disable */
 /**
@@ -129,6 +129,31 @@ export class MarketplaceClient {
   /** Definition, versions and every consumer of a KPI */
   getKpisKpi_id(kpi_id: string, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'GET', `/api/v1/kpis/${kpi_id}`, undefined, undefined, options);
+  }
+
+  /** The agent mesh */
+  getMeshAgents(query?: { mode?: unknown, domain?: unknown, min_strength?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/mesh/agents`, query, undefined, options);
+  }
+
+  /** The data product mesh */
+  getMeshData(query?: { mode?: unknown, scope?: unknown, domain?: unknown, min_strength?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/mesh/data`, query, undefined, options);
+  }
+
+  /** Everything downstream of one source system */
+  getMeshDataBlast_radius(query?: { source?: unknown }, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/mesh/data/blast-radius`, query, undefined, options);
+  }
+
+  /** KPIs more than one agent answers on, and whether they agree */
+  getMeshDivergence(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/mesh/divergence`, undefined, undefined, options);
+  }
+
+  /** Source systems, for the source-anchored layout */
+  getMeshSources(options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'GET', `/api/v1/mesh/sources`, undefined, undefined, options);
   }
 
   /** Search, filter and page the product catalog */

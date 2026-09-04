@@ -54,4 +54,6 @@
 
   --border-width-accent: 3px;
   --card-limit-list-height: 60px;
+  --mesh-max-height: 760px;
+  --mesh-label-size: 13px;
 }

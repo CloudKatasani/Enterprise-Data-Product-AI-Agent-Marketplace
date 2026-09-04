@@ -32,6 +32,7 @@ import psycopg
 
 from connectors.base import HarvestResult, Session
 from connectors.snowflake import queries
+from services.common.db import fetch_all
 from services.common.rubrics import Rubric
 
 # Windows, confidences and the credit rate all resolve from the platform_harvest
@@ -255,7 +256,33 @@ def harvest_usage(
     counts: dict[str, int] = defaultdict(int)
     since = _since(_lookback(rubric, "usage"))
 
+    # The harvest re-reads the whole lookback window, so it replaces that window
+    # rather than adding to it. Without this a query that no longer exists on the
+    # platform lives on in the marketplace forever, and a product whose usage
+    # collapsed goes on looking busy — which is the opposite of what an
+    # observability plane is for.
+    with marketplace.cursor() as cursor:
+        cursor.execute(
+            "DELETE FROM usage_event WHERE asset_type = 'data_product' "
+            "AND surface = 'sql' AND occurred_at >= %s",
+            (since,),
+        )
+
     daily: dict[tuple[str, Any], dict[str, Any]] = {}
+
+    # The platform names a user; the marketplace knows people by party. The
+    # mapping is the identity provider's subject, which is the only thing both
+    # sides agree on. A user with no mapping is recorded with a null principal
+    # rather than dropped: the query happened, and an unattributable query is
+    # itself worth seeing.
+    principals = {
+        row["external_subject"]: row["party_id"]
+        for row in fetch_all(
+            marketplace,
+            "SELECT external_subject, party_id FROM party "
+            "WHERE external_subject IS NOT NULL",
+        )
+    }
 
     for object_schema, product_id in sorted(products.items()):
         for row in session.query(queries.QUERY_HISTORY, (since, object_schema)):
@@ -270,11 +297,15 @@ def harvest_usage(
                     INSERT INTO usage_event (
                       event_id, tenant_id, asset_type, asset_id, principal_id, surface,
                       event_name, purpose_code, rows_returned, outcome, occurred_at
-                    ) VALUES (%s, %s, 'data_product', %s, NULL, 'sql',
+                    ) VALUES (%s, %s, 'data_product', %s, %s, 'sql',
                               'data_product.queried', %s, %s, %s, %s)
-                    ON CONFLICT (event_id) DO NOTHING
+                    ON CONFLICT (event_id) DO UPDATE SET
+                      principal_id = EXCLUDED.principal_id,
+                      purpose_code = EXCLUDED.purpose_code,
+                      outcome = EXCLUDED.outcome
                     """,
-                    (f"UE-{row['query_id']}", tenant, product_id, purpose,
+                    (f"UE-{row['query_id']}", tenant, product_id,
+                     principals.get(row["user_name"]), purpose,
                      row["rows_produced"], outcome, row["query_start_time"]),
                 )
                 counts["usage_event"] += 1

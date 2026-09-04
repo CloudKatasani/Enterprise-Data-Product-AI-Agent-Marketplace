@@ -16,7 +16,15 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from services.api.routers import agents, discover, kpis, products, quality, requests
+from services.api.routers import (
+    agents,
+    discover,
+    kpis,
+    mesh,
+    products,
+    quality,
+    requests,
+)
 from services.common import http_status, problem
 from services.common.config import get_settings
 from services.common.db import connect, tenant_id
@@ -71,7 +79,7 @@ def create_app() -> FastAPI:
 
     for router in (
         products.router, agents.router, discover.router, kpis.router, quality.router,
-        requests.router, requests.demand_router,
+        requests.router, requests.demand_router, mesh.router,
     ):
         app.include_router(router, prefix=API_PREFIX)
 

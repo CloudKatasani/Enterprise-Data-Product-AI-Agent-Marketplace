@@ -62,7 +62,10 @@ OUTCOME_OUT_OF_SCOPE = "out_of_scope"
 OUTCOME_ERROR = "error"
 OUTCOME_DENIED = "denied"
 
-SESSION_PREFIX = "SES-DEMO-RUNNER"
+# The marketplace testing itself. Prefixed so every usage query can exclude it:
+# fourteen agents asked in ten seconds by one principal is not adoption, and
+# counting it as adoption would inflate every figure in the same direction.
+SESSION_PREFIX = "SES-SYS-DEMO"
 EVENT_STALE = "demo_exchange.stale"
 # The runner asks analytical questions of demo data. It declares that purpose
 # rather than inventing a "demo" one, so its interactions sit in the same purpose

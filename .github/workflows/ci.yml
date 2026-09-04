@@ -120,6 +120,12 @@ jobs:
       - name: publish agents that clear the gate
         run: npm run publish:agents
 
+      # Both meshes, plus divergence detection. Non-zero exit on divergence:
+      # two agents giving different numbers for the same certified KPI is the
+      # failure the whole registry exists to prevent.
+      - name: mesh and divergence
+        run: npm run mesh
+
       - name: unit
         run: npm run test:unit
 

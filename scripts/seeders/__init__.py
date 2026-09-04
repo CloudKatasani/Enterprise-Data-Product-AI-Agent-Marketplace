@@ -21,6 +21,7 @@ Seeder = Callable[["psycopg.Connection[Any]", str], int]
 
 def _seeders() -> list[tuple[str, Seeder]]:
     from scripts.seeders import (
+        agent_usage,
         agents,
         entitlements,
         kpis,
@@ -44,6 +45,8 @@ def _seeders() -> list[tuple[str, Seeder]]:
         # After agents: a grant is scoped to a binding, so the bindings have to exist.
         ("entitlements", entitlements.seed),
         ("kpi source back-fill", kpis.backfill_source_of_record),
+        # After agents and their demo exchanges: usage references both.
+        ("agent usage", agent_usage.seed),
         ("search index", _reindex),
     ]
 

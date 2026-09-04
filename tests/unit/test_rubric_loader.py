@@ -127,6 +127,15 @@ def test_bands_resolve_highest_first_and_map_a_score_to_a_band(seeded) -> None:
 
 
 def test_thresholds_from_every_rubric_resolve_by_path(seeded) -> None:
+    """Every path a consumer resolves is present, and typed as it expects.
+
+    Values that are deliberately tunable per estate are checked for range and
+    kind rather than pinned to a number: a test that asserts the mesh's render
+    threshold is exactly 0.25 makes the rubric no longer configuration, which
+    is the whole thing rubrics-as-data buys. Values fixed by an invariant — the
+    confidence floor in I6, groundedness at 100% in I11 — are pinned, because
+    those are not tunable and a change to them should fail here loudly.
+    """
     mesh = load_current(seeded, "mesh_edges")
     demand = load_current(seeded, "demand_scoring")
     finops = load_current(seeded, "finops")
@@ -134,7 +143,8 @@ def test_thresholds_from_every_rubric_resolve_by_path(seeded) -> None:
     ranking = load_current(seeded, "catalog_ranking")
     agent_eval = load_current(seeded, "agent_evaluation")
 
-    assert mesh.number("render_threshold") == Decimal("0.25")
+    assert Decimal("0") < mesh.number("render_threshold") < Decimal("1")
+    # I6: the confidence floor is an invariant, not a preference.
     assert mesh.number("review_required_below_confidence") == Decimal("0.80")
     assert demand.number("duplicate_detection.blocking_threshold") == Decimal("0.75")
     assert demand.number("theme_escalation.distinct_teams_min") == Decimal("5")

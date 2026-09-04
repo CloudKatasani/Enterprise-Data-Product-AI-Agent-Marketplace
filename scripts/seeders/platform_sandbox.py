@@ -149,6 +149,52 @@ def _draw(seed: str, lower: int, upper: int) -> int:
     return lower + (int.from_bytes(digest[:8], "big") % span)
 
 
+# The platform's users are the marketplace's people, named the way the identity
+# provider names them, so the harvest can map a query back to a party.
+#
+# Consumers are drawn from one shared pool with a per-industry offset, which
+# means products in the same industry are queried by overlapping sets of people
+# and products in different ones are not. That is not decoration: co-consumption
+# is one of the five mesh signals, and a sandbox where every product has its own
+# disjoint pool of USER_000..USER_059 makes that signal structurally zero and the
+# mesh edge it feeds impossible to demonstrate.
+MIN_CONSUMERS = 4
+CONSUMER_WINDOW_DIVISOR = 3
+
+# A nine-hour working day, in minutes. Queries land inside it rather than all at
+# midnight, so an hour-long session window means an hour.
+MINUTES_IN_WORKING_DAY = 540
+
+
+def _consumer_pool(connection: psycopg.Connection[Any]) -> list[str]:
+    """The identity provider's subjects for the people this estate has.
+
+    Read from the party register rather than invented, so every user the
+    platform reports maps back to somebody the marketplace knows. A synthetic
+    user the harvest cannot place produces an unattributable query, and enough
+    of those make the usage plane useless.
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT external_subject FROM party "
+            "WHERE party_type = 'person' AND external_subject IS NOT NULL "
+            "ORDER BY party_id"
+        )
+        return [row["external_subject"] for row in cursor.fetchall()]
+
+
+def _consumer_window(pool: list[str], industry: str, count: int) -> list[str]:
+    """The people who query a product: a contiguous window into the shared pool.
+
+    Anchored on the industry so that two telecom products overlap heavily and a
+    telecom product and a pharmacy one barely do.
+    """
+    if not pool:
+        return []
+    anchor = _draw(f"industry-{industry}", 0, len(pool) - 1)
+    return [pool[(anchor + offset) % len(pool)] for offset in range(count)]
+
+
 def _object_name(product_id: str) -> str:
     return f"T_{product_id.replace('-', '_').upper()}"
 
@@ -166,6 +212,7 @@ def _sql_type(manifest_type: str) -> str:
 
 def seed(connection: psycopg.Connection[Any], tenant: str, schema: str) -> int:
     products = load_directory("products")
+    consumer_pool = _consumer_pool(connection)
     now = datetime.now(UTC).replace(microsecond=0)
     written = 0
 
@@ -234,17 +281,32 @@ def seed(connection: psycopg.Connection[Any], tenant: str, schema: str) -> int:
                 written += 1
 
             # Usage: a deterministic spread of consumers and queries per day.
-            consumers = _draw(f"{product_id}-consumers", 4, 60)
+            # Capped at a share of the pool. A window wide enough to wrap it
+            # would give every product the same consumers and erase the
+            # industry separation the co-consumption signal is meant to find.
+            consumers = _draw(
+                f"{product_id}-consumers", MIN_CONSUMERS,
+                max(MIN_CONSUMERS, len(consumer_pool) // CONSUMER_WINDOW_DIVISOR),
+            )
+            pool = _consumer_window(consumer_pool, metadata["industry"], consumers)
             for day in range(30):
                 day_start = now - timedelta(days=day)
                 query_count = _draw(f"{product_id}-{day}-queries", 5, 400)
                 for index in range(min(query_count, consumers)):
                     seed_key = f"{product_id}-{day}-{index}"
+                    # Spread through the working day. Writing every query at the
+                    # same instant would put a whole day in one session bucket,
+                    # and co-consumption — which asks who queried two things in
+                    # one sitting — would then mean "on the same day", which is
+                    # not the same question.
+                    at = day_start + timedelta(
+                        minutes=_draw(seed_key + "-minute", 0, MINUTES_IN_WORKING_DAY)
+                    )
                     denied = _draw(seed_key + "-denied", 1, 100) <= 3
                     cursor.execute(
                         f"INSERT INTO {schema}.query_history "
                         f"VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                        (f"q-{seed_key}", day_start, f"USER_{index:03d}", "MKT_CONSUMER",
+                        (f"q-{seed_key}", at, pool[index], "MKT_CONSUMER",
                          WAREHOUSE, CATALOG, object_schema, "SELECT",
                          "FAIL" if denied else "SUCCESS", "003001" if denied else None,
                          0 if denied else _draw(seed_key + "-rows", 10, 50000),
@@ -255,7 +317,7 @@ def seed(connection: psycopg.Connection[Any], tenant: str, schema: str) -> int:
                     written += 1
                     cursor.execute(
                         f"INSERT INTO {schema}.access_history VALUES (%s,%s,%s,%s,%s,%s)",
-                        (f"q-{seed_key}", day_start, f"USER_{index:03d}",
+                        (f"q-{seed_key}", at, pool[index],
                          psycopg.types.json.Jsonb(
                              [{"objectName": f"{CATALOG}.{object_schema}.{object_name}"}]),
                          psycopg.types.json.Jsonb([]),

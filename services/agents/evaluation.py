@@ -215,7 +215,7 @@ def _request(agent_id: str, version_id: str, question: str, principal: str, **ex
         "question": question,
         "tier": TIER_DEMO,
         "purpose": PURPOSE,
-        "session_id": f"SES-EVAL-{version_id}",
+        "session_id": f"SES-SYS-EVAL-{version_id}",
         "principal_id": principal,
         **extra,
     }

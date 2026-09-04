@@ -439,4 +439,65 @@
     max-height: var(--card-limit-list-height);
     overflow: hidden;
   }
+
+  /* -------------------------------------------------------------------
+   * The mesh (M9.3, M9.4).
+   *
+   * The diagram is server-rendered SVG in a box of fixed aspect, so it
+   * reserves its space before paint and never settles. Nothing here animates
+   * on load: a graph that rearranges itself for two seconds is a graph nobody
+   * can point at while it does.
+   * ---------------------------------------------------------------- */
+  .mesh-figure {
+    margin: 0;
+  }
+
+  .mesh-svg {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: var(--mesh-max-height);
+    margin-inline: auto;
+  }
+
+  .mesh-edge {
+    stroke: var(--colour-accent);
+    fill: none;
+  }
+
+  .mesh-node circle {
+    fill: var(--surface-raised);
+    stroke: var(--border-strong);
+    stroke-width: var(--border-width-emphasis);
+  }
+
+  .mesh-node[data-connected='true'] circle {
+    stroke: var(--border-accent);
+  }
+
+  /* A node with no edge is still on the ring, dimmed. Removing it would hide
+   * the most interesting thing the mesh can say: this asset is connected to
+   * nothing. */
+  .mesh-node[data-connected='false'] circle {
+    opacity: var(--opacity-hover);
+  }
+
+  .mesh-node text {
+    font-size: var(--mesh-label-size);
+    fill: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mesh-node[data-connected='true'] text {
+    fill: var(--text-secondary);
+  }
+
+  .mesh-caption {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-top: var(--space-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    text-align: center;
+  }
 }
