@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-UTL-002-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Average Restoration Time is 194.38 minutes for the month ending 2026-09-01, up 4.59 minutes on the prior month.",
+    "headline": "Average Restoration Time is 190.18 minutes for the month ending 2026-09-01, up 0.13 minutes on the prior month.",
     "narrative": "Computed from DP-UTL-001 under the certified definition KPI-RESTORE-064, across 4 months and 21,600 rows.",
     "table": {
       "columns": [
@@ -15,23 +15,23 @@
       "rows": [
         [
           "2026-06-01",
-          193.95,
-          5760
+          194.56,
+          5520
         ],
         [
           "2026-07-01",
-          189.86,
+          189.88,
           7440
         ],
         [
           "2026-08-01",
-          189.79,
+          190.05,
           7440
         ],
         [
           "2026-09-01",
-          194.38,
-          960
+          190.18,
+          1200
         ]
       ]
     },
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "outage_id",
         "observed_date",
@@ -70,12 +70,12 @@
   ],
   "notes": [],
   "question": "How has restoration time moved month by month?",
-  "recorded_at": "2026-09-04T21:58:31.724429+00:00",
+  "recorded_at": "2026-09-05T23:31:02.010738+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 9,
+    "latency_ms": 14,
     "rows_scanned": 21600,
     "runtime": "analytic",
     "tokens": {
@@ -93,7 +93,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 7,
+        "duration_ms": 11,
         "rows_returned": 4,
         "rows_scanned": 21600,
         "tool": "query_dp_utl_001"

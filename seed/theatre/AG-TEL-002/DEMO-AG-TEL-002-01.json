@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "site_id",
         "impacted_subscribers",
@@ -69,12 +69,12 @@
   ],
   "notes": [],
   "question": "Which sites had the worst customer impact yesterday?",
-  "recorded_at": "2026-09-04T21:58:31.324588+00:00",
+  "recorded_at": "2026-09-05T23:31:01.513861+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 7,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {
@@ -92,7 +92,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_002"
         },
         "cost_class": "small",
-        "duration_ms": 4,
+        "duration_ms": 5,
         "rows_returned": 4,
         "rows_scanned": 15120,
         "tool": "query_dp_tel_002"

@@ -68,7 +68,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "account_id",
         "feature",
@@ -90,12 +90,12 @@
   ],
   "notes": [],
   "question": "Which features have high usage but low entitlement coverage?",
-  "recorded_at": "2026-09-04T21:58:30.981203+00:00",
+  "recorded_at": "2026-09-05T23:31:01.086587+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 77,
+    "latency_ms": 94,
     "rows_scanned": 17360,
     "runtime": "analytic",
     "tokens": {
@@ -113,7 +113,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 73,
+        "duration_ms": 91,
         "rows_returned": 8,
         "rows_scanned": 17360,
         "tool": "query_dp_tch_001"

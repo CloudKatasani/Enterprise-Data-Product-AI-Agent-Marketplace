@@ -1,0 +1,307 @@
+apiVersion: marketplace/v1
+kind: DataProduct
+metadata:
+  id: DP-MFG-003
+  name: "Equipment Reliability & Maintenance"
+  industry: manufacturing
+  domain: network_asset
+  archetype: aggregate
+  tier: tier1
+  owner:
+    party_id: PTY-0053
+    team: "Reliability Engineering"
+    escalation: "#dp-reliability-mfg"
+  certification: certified
+spec:
+  purpose: >-
+    Work-order level view of equipment failures, preventive maintenance and spares availability,
+    so reliability is read from what maintenance actually did rather than from downtime alone.
+  grain: "one row per maintenance work order"
+  history_months: 36
+  known_limitations: >-
+    Operating hours are apportioned to a work order from the line's run time between the
+    previous order and this one, so an asset idled for a shutdown carries no hours rather than
+    zero-hour failures. A breakdown discovered during preventive work is recorded against the
+    preventive order that found it, which understates unplanned share slightly and is the
+    convention the plants agreed. Condition-monitoring telemetry lands only on instrumented
+    assets, roughly two thirds of the base by count.
+  upstream_sources: [SRC-CMMS, SRC-CONDITION-MONITORING, SRC-SPARES-INVENTORY, SRC-MES]
+  entities: [work_order, asset, failure, spare_part]
+  certified_kpis: [KPI-MTBF-108, KPI-MTTREPAIR-109, KPI-PMADHERE-110, KPI-UNPLANNED-111, KPI-SPARESAVAIL-112]
+  columns:
+    - name: work_order_id
+      type: string
+      business_name: "Work Order ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Maintenance work order. The grain of this product.
+    - name: asset_id
+      type: string
+      business_name: "Asset ID"
+      nullable: false
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Equipment the work order was raised against.
+    - name: failure_id
+      type: string
+      business_name: "Failure ID"
+      nullable: true
+      classification: [identifier]
+      sensitivity: internal
+      description: >-
+        Failure the order responded to, null on preventive work that found nothing. A failure
+        appears once, on the order that addressed it, so counting failures counts failures.
+    - name: raised_at
+      type: timestamp
+      business_name: "Raised At"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        When the work order was raised.
+    - name: plant
+      type: string
+      business_name: "Plant"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Plant the asset is installed in.
+    - name: line
+      type: string
+      business_name: "Line"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Production line the asset serves.
+    - name: region
+      type: string
+      business_name: "Region"
+      nullable: false
+      classification: [location]
+      sensitivity: internal
+      description: >-
+        Region of the plant.
+    - name: asset_class
+      type: string
+      business_name: "Asset Class"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Equipment class the asset belongs to.
+    - name: criticality
+      type: string
+      business_name: "Criticality"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        How hard the plant stops when this asset does.
+    - name: failure_mode
+      type: string
+      business_name: "Failure Mode"
+      nullable: true
+      classification: []
+      sensitivity: internal
+      description: >-
+        Mode recorded against the failure, null where the order was preventive.
+    - name: crew
+      type: string
+      business_name: "Crew"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Maintenance crew that carried out the work.
+    - name: operating_hours
+      type: number
+      business_name: "Operating Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Hours the asset ran between the previous work order and this one.
+    - name: maintenance_hours
+      type: number
+      business_name: "Maintenance Hours"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Labour hours the order consumed.
+    - name: repair_minutes
+      type: number
+      business_name: "Repair Minutes"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Minutes from the failure being raised to the asset running again, zero on preventive
+        work that found no failure.
+    - name: unplanned
+      type: boolean
+      business_name: "Unplanned"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the order was raised by a breakdown rather than by a schedule.
+    - name: preventive_scheduled
+      type: boolean
+      business_name: "Preventive Scheduled"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the order came from the preventive maintenance plan.
+    - name: completed_in_window
+      type: boolean
+      business_name: "Completed in Window"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when a scheduled order was completed inside its planned window.
+    - name: spares_needed
+      type: boolean
+      business_name: "Spares Needed"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when the work required a part from stores.
+    - name: spares_available
+      type: boolean
+      business_name: "Spares Available"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when every part the work needed was on the shelf when it was called for.
+    - name: condition_alert_open
+      type: boolean
+      business_name: "Condition Alert Open"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        True when condition monitoring had an open alert on the asset when the order was raised.
+    - name: asset_age_years
+      type: number
+      business_name: "Asset Age"
+      nullable: false
+      classification: []
+      sensitivity: internal
+      description: >-
+        Years since the asset was commissioned.
+  contract:
+    version: 1.0.0
+    schema_stability: additive_only
+    guarantees:
+      freshness:
+        target: "daily by 06:00"
+        p95_minutes: 60
+        measured: per_partition
+      availability:
+        target_pct: 99.5
+        window: monthly
+      completeness:
+        required_fields_pct: 99.5
+      accuracy:
+        reconciliation_variance_pct: 0.5
+        against: "maintenance_system_of_record"
+    deprecation_policy:
+      notice_days: 90
+      minimum_parallel_run_days: 45
+    support:
+      hours: "extended"
+      p1_response_minutes: 45
+      on_call: "pagerduty://mfg-reliability-dp"
+    classification:
+      max_sensitivity: internal
+      contains_pii: false
+      residency: [US, EU, APAC]
+    consumer_obligations:
+      - "Crew-level figures must not be used for individual performance management"
+      - "Operating hours are apportioned and must not be reported as metered runtime"
+    breach_process: >-
+      Auto-incident raised and affected consumers notified within 45 minutes of detection.
+  quality_rules:
+    - id: QR-MFG-003-01
+      dimension: completeness
+      column: work_order_id
+      rule: not_null
+      threshold_pct: 100
+      severity: critical
+    - id: QR-MFG-003-02
+      dimension: uniqueness
+      columns: [work_order_id]
+      rule: unique_at_grain
+      threshold_pct: 99.99
+      severity: critical
+    - id: QR-MFG-003-03
+      dimension: freshness
+      rule: partition_completion_by
+      target: "24h"
+      tolerance_minutes: 60
+      severity: critical
+    - id: QR-MFG-003-04
+      dimension: validity
+      column: asset_class
+      rule: in_reference_set
+      threshold_pct: 99.9
+      severity: high
+    - id: QR-MFG-003-05
+      dimension: consistency
+      column: operating_hours
+      rule: non_negative
+      threshold_pct: 100
+      severity: high
+  endpoints: [sql, mcp]
+  demo_tier:
+    synthetic: true
+    rows_target: 540000
+    preserve: [distribution, seasonality, referential_integrity, cardinality]
+    expected_quality: 91
+    planted_patterns:
+      - id: ageing-asset-class
+        description: >-
+            One asset class fails far more often than the rest, and its installed base is the
+            oldest.
+      - id: spares-driven-repair
+        description: >-
+            Repairs where the part was not on the shelf take materially longer, which is where
+            the repair time actually goes.
+      - id: pm-slippage-on-one-line
+        description: >-
+            Preventive adherence slips on one line, and its unplanned share rises with it.
+  value_case:
+    business_outcome: >-
+      Reliability engineering spends its budget on the asset class that stops the plant rather
+      than on the one that raises the most work orders.
+    baseline:
+      method: "monthly reliability pack exported from the CMMS and reconciled by hand"
+      analyst_hours_month: 85
+      captured: "2026-05"
+    benefit_model: "avoided_unplanned_downtime_hours * contribution_per_line_hour"
+    assumptions:
+      - text: "share of unplanned downtime avoidable by acting on condition alerts earlier"
+        value: 18.0
+        unit: percent
+        sample_size: 340
+        source: "condition monitoring pilot on two lines"
+        dated: 2026-06-30
+      - text: "contribution lost per hour of unplanned line downtime"
+        value: 2400.0
+        unit: usd
+        source: "FY26 plant contribution model"
+        dated: 2026-01-25
+    attribution_confidence: medium
+    review:
+      last_reviewed: 2026-09-05
+      reviewer: PTY-0053

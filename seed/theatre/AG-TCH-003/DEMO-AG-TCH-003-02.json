@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TCH-003-1.0.0",
   "analysis_type": "event_analysis",
   "answer": {
-    "headline": "Service Error Rate is 0.35% for the day ending 2026-09-04, flat on the prior day.",
+    "headline": "Service Error Rate is 0.35% for the day ending 2026-09-05, flat on the prior day.",
     "narrative": "Computed from DP-TCH-002 under the certified definition KPI-ERRRATE-083, across 15 days and 30,240 rows.",
     "table": {
       "columns": [
@@ -14,14 +14,9 @@
       ],
       "rows": [
         [
-          "2026-08-21",
-          0.35,
-          2070
-        ],
-        [
           "2026-08-22",
           0.35,
-          2160
+          2070
         ],
         [
           "2026-08-23",
@@ -35,27 +30,27 @@
         ],
         [
           "2026-08-25",
-          0.73,
+          0.35,
           2160
         ],
         [
           "2026-08-26",
-          0.74,
+          0.73,
           2160
         ],
         [
           "2026-08-27",
-          0.75,
+          0.74,
           2160
         ],
         [
           "2026-08-28",
-          0.37,
+          0.75,
           2160
         ],
         [
           "2026-08-29",
-          0.35,
+          0.37,
           2160
         ],
         [
@@ -86,6 +81,11 @@
         [
           "2026-09-04",
           0.35,
+          2160
+        ],
+        [
+          "2026-09-05",
+          0.35,
           90
         ]
       ]
@@ -103,7 +103,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "service_id",
         "observed_hour",
@@ -126,12 +126,12 @@
   ],
   "notes": [],
   "question": "How has the error rate moved day by day?",
-  "recorded_at": "2026-09-04T21:58:31.138884+00:00",
+  "recorded_at": "2026-09-05T23:31:01.276655+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 13,
+    "latency_ms": 15,
     "rows_scanned": 30240,
     "runtime": "analytic",
     "tokens": {
@@ -149,7 +149,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_002"
         },
         "cost_class": "medium",
-        "duration_ms": 10,
+        "duration_ms": 12,
         "rows_returned": 15,
         "rows_scanned": 30240,
         "tool": "query_dp_tch_002"

@@ -16,13 +16,13 @@
     }
   ],
   "claims": {
-    "current": "105.93",
-    "delta": "0.11",
+    "current": "105.94",
+    "delta": "0.17",
     "groups": "2",
     "rows_scanned": "50400"
   },
   "exchange_id": "DEMO-AG-TCH-002-05",
-  "headline": "Net Revenue Retention is 105.93% for the quarter ending 2026-07-01, up 0.11% on the prior quarter.",
+  "headline": "Net Revenue Retention is 105.94% for the quarter ending 2026-07-01, up 0.17% on the prior quarter.",
   "kpi_definitions": [
     "KPI-NRR-015"
   ],

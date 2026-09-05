@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-UTL-001-1.0.0",
   "analysis_type": "contribution_ranking",
   "answer": {
-    "headline": "FDR-101 leads on saidi at 178,522.52 minutes, 32.45% of the total across 7 feeders.",
+    "headline": "FDR-101 leads on saidi at 183,437.77 minutes, 32.90% of the total across 7 feeders.",
     "narrative": "Ranked by the certified definition KPI-SAIDI-061 over 7,440 rows in DP-UTL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
@@ -15,37 +15,37 @@
       "rows": [
         [
           "FDR-101",
-          178522.52,
+          183437.77,
           1054
         ],
         [
           "FDR-102",
-          158108.19,
+          160327.32,
           1209
         ],
         [
           "FDR-104",
-          48436.46,
+          47961.38,
           992
         ],
         [
           "FDR-103",
-          44731.38,
+          47562.75,
           992
         ],
         [
-          "FDR-105",
-          41059.45,
-          837
-        ],
-        [
           "FDR-107",
-          40896.25,
+          41315.12,
           1116
         ],
         [
+          "FDR-105",
+          40170.93,
+          837
+        ],
+        [
           "FDR-106",
-          38360.02,
+          36808.72,
           1240
         ]
       ]
@@ -63,7 +63,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "asset_id",
         "customer_interruption_minutes",
@@ -86,12 +86,12 @@
   ],
   "notes": [],
   "question": "Which feeders contribute most to interruption minutes?",
-  "recorded_at": "2026-09-04T21:58:31.637748+00:00",
+  "recorded_at": "2026-09-05T23:31:01.897301+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 34,
+    "latency_ms": 45,
     "rows_scanned": 7440,
     "runtime": "analytic",
     "tokens": {
@@ -109,7 +109,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 32,
+        "duration_ms": 42,
         "rows_returned": 7,
         "rows_scanned": 7440,
         "tool": "query_dp_utl_001"

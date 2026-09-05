@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-UNPLANNED-111
+  name: "Unplanned Maintenance Share"
+  domain: network_asset
+  steward: PTY-0053
+  status: certified
+spec:
+  business_definition: >-
+    Maintenance hours spent on breakdowns as a share of all maintenance hours. The ratio that
+    says whether the plant is maintaining its equipment or reacting to it.
+  numerator_expr: "sum(maintenance_hours) filter (where unplanned)"
+  denominator_expr: "sum(maintenance_hours)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [asset_class, plant, line, criticality, failure_mode]
+  unit: percent
+  direction: lower_is_better
+  target: 30.0
+  source_of_record: DP-MFG-003
+  forum_approved_at: 2026-09-05
+  last_reviewed: 2026-09-05
+  review_months: 12
+  synonyms: ["reactive maintenance", "breakdown share"]

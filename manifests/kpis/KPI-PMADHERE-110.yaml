@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-PMADHERE-110
+  name: "Preventive Maintenance Adherence"
+  domain: network_asset
+  steward: PTY-0053
+  status: certified
+spec:
+  business_definition: >-
+    Share of scheduled preventive work orders completed inside their window. Against the window
+    rather than the date, because a plan with slack is still a plan.
+  numerator_expr: "count(*) filter (where completed_in_window)"
+  denominator_expr: "count(*) filter (where preventive_scheduled)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [asset_class, plant, line, criticality, failure_mode]
+  unit: percent
+  direction: higher_is_better
+  target: 92.0
+  source_of_record: DP-MFG-003
+  forum_approved_at: 2026-09-05
+  last_reviewed: 2026-09-05
+  review_months: 12
+  synonyms: ["PM compliance", "schedule adherence"]

@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "citations": [
+    {
+      "columns": [
+        "asset_class",
+        "criticality",
+        "failure_id",
+        "failure_mode",
+        "line",
+        "operating_hours",
+        "plant",
+        "raised_at"
+      ],
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "31200",
+    "top": "728.06",
+    "top_share": "5.47"
+  },
+  "exchange_id": "DEMO-AG-MFG-003-01",
+  "headline": "compressor trails on mean time between failures at 728.06 hours, 5.47% of the total across 5 asset classs.",
+  "kpi_definitions": [
+    "KPI-MTBF-108"
+  ],
+  "narrative": "Ranked by the certified definition KPI-MTBF-108 over 31,200 rows in DP-MFG-003.",
+  "question": "Which asset classes have the worst time between failures?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "asset_class",
+    "KPI-MTBF-108",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TCH-002-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "DAU to MAU Ratio is 0.91 for the month ending 2026-09-01, down 0.09 on the prior month.",
+    "headline": "DAU to MAU Ratio is 0.94 for the month ending 2026-09-01, down 0.06 on the prior month.",
     "narrative": "Computed from DP-TCH-001 under the certified definition KPI-DAUMAU-011, across 4 months and 50,400 rows.",
     "table": {
       "columns": [
@@ -16,7 +16,7 @@
         [
           "2026-06-01",
           1.0,
-          13440
+          12880
         ],
         [
           "2026-07-01",
@@ -30,8 +30,8 @@
         ],
         [
           "2026-09-01",
-          0.91,
-          2240
+          0.94,
+          2800
         ]
       ]
     },
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "account_id",
         "activity_date",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "How has the DAU to MAU ratio moved month by month?",
-  "recorded_at": "2026-09-04T21:58:31.019113+00:00",
+  "recorded_at": "2026-09-05T23:31:01.135164+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 36,
+    "latency_ms": 47,
     "rows_scanned": 50400,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 34,
+        "duration_ms": 44,
         "rows_returned": 4,
         "rows_scanned": 50400,
         "tool": "query_dp_tch_001"

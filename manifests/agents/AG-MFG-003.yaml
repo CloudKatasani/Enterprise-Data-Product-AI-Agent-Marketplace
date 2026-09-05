@@ -1,0 +1,186 @@
+apiVersion: marketplace/v1
+kind: Agent
+metadata:
+  id: AG-MFG-003
+  name: "Equipment Reliability Analyst"
+  industry: manufacturing
+  domain: network_asset
+  owner:
+    party_id: PTY-0053
+    team: "Reliability Engineering"
+    on_call: "pagerduty://mfg-reliability-agents"
+  autonomy_level: L1
+  certification: certified
+spec:
+  capability_statement: >-
+    Answers questions about time between failures, repair time, preventive adherence, unplanned
+    share and spares availability.
+  business_value_block:
+    analyses: [performance_ranking, comparison, cohort_comparison, gap_analysis, trend_segmented]
+    replaces: >-
+      The monthly reliability pack exported from the maintenance system and reconciled by hand.
+    personas: [reliability_engineer, maintenance_planner, plant_manager]
+  out_of_scope:
+    - "Raising, scheduling or closing a work order"
+    - "Ordering spares or changing a stocking policy"
+    - "Individual crew or technician performance"
+  runtime:
+    provider: analytic
+    model:
+      provider: anthropic
+      id: marketplace-analytic-v1
+      temperature: 0.0
+      max_tokens: 2000
+    prompt_ref: prompts/AG-MFG-003/system@v1
+  data_products:
+    - product_id: DP-MFG-003
+      columns: [work_order_id, asset_id, failure_id, raised_at, plant, line, region, asset_class, criticality, failure_mode, crew, operating_hours, maintenance_hours, repair_minutes, unplanned, preventive_scheduled, completed_in_window, spares_needed, spares_available, condition_alert_open, asset_age_years]
+      access: read
+  tool_bindings:
+    - tool: query_dp_mfg_003
+      endpoint: "mcp://marketplace.${TENANT}.internal/dp/DP-MFG-003"
+      scope: "dp:DP-MFG-003:read"
+      cost_class: medium
+      row_limit: 10000
+    - tool: get_kpi_definition
+      scope: "kpi:read"
+      cost_class: trivial
+    - tool: get_quality
+      scope: "quality:read"
+      cost_class: trivial
+  kpi_coverage:
+    - kpi_id: KPI-MTBF-108
+      source_product: DP-MFG-003
+      columns_used: [failure_id, raised_at, asset_class, plant, line, criticality, failure_mode, operating_hours]
+      grains: [month, quarter, year]
+      slices: [asset_class, plant, line, criticality, failure_mode]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-MTTREPAIR-109
+      source_product: DP-MFG-003
+      columns_used: [failure_id, raised_at, asset_class, plant, line, criticality, failure_mode, repair_minutes, spares_available]
+      grains: [month, quarter, year]
+      slices: [asset_class, plant, line, criticality, failure_mode]
+      analysis_depth: explain
+    - kpi_id: KPI-PMADHERE-110
+      source_product: DP-MFG-003
+      columns_used: [work_order_id, raised_at, asset_class, plant, line, criticality, preventive_scheduled, completed_in_window]
+      grains: [month, quarter, year]
+      slices: [line, plant, asset_class, criticality]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-UNPLANNED-111
+      source_product: DP-MFG-003
+      columns_used: [work_order_id, raised_at, asset_class, plant, line, criticality, maintenance_hours, unplanned]
+      grains: [month, quarter, year]
+      slices: [line, asset_class, plant, criticality]
+      analysis_depth: rank_drivers
+    - kpi_id: KPI-SPARESAVAIL-112
+      source_product: DP-MFG-003
+      columns_used: [work_order_id, raised_at, asset_class, plant, line, criticality, spares_needed, spares_available]
+      grains: [month, quarter, year]
+      slices: [asset_class, plant, line, criticality]
+      analysis_depth: compare
+  guardrails:
+    grounding:
+      require_citation_on_numerics: true
+      on_failure: return_error
+    injection_defence: v3
+    output_filters: [pii_pattern, credential_pattern]
+    refusal_policy: >-
+      State the boundary in one sentence, name the agent or data product that does cover the
+      question, and offer a handoff or a new-supply request.
+  budgets:
+    p95_latency_ms: 6000
+    cost_per_answer_usd: 0.06
+  demo_exchanges:
+    - id: DEMO-AG-MFG-003-01
+      ordinal: 1
+      question: "Which asset classes have the worst time between failures?"
+      kpi_class: KPI-MTBF-108
+      analysis_type: performance_ranking
+      expected_shape:
+        headline: >-
+          the equipment classes failing soonest, and the distance to the rest of the base
+        visual: bar
+        table_columns: [asset_class, mean_hours_between_failures, failures]
+        must_cite: [DP-MFG-003, KPI-MTBF-108]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-003/q1.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-003-02
+      ordinal: 2
+      question: "Do repairs take longer when the spare was not on the shelf?"
+      kpi_class: KPI-MTTREPAIR-109
+      analysis_type: cohort_comparison
+      expected_shape:
+        headline: >-
+          the repair time difference between calls with the part in stock and calls without
+        visual: bar
+        table_columns: [cohort, mean_repair_minutes, failures]
+        must_cite: [DP-MFG-003, KPI-MTTREPAIR-109]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-003/q2.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-003-03
+      ordinal: 3
+      question: "Where is preventive maintenance adherence weakest by line?"
+      kpi_class: KPI-PMADHERE-110
+      analysis_type: gap_analysis
+      expected_shape:
+        headline: >-
+          the lines completing least of their planned work in window, and the gap to the best
+        visual: bar
+        table_columns: [line, pm_adherence_pct, scheduled_orders]
+        must_cite: [DP-MFG-003, KPI-PMADHERE-110]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-003/q3.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-003-04
+      ordinal: 4
+      question: "Which lines spend the most maintenance hours on breakdowns?"
+      kpi_class: KPI-UNPLANNED-111
+      analysis_type: driver_ranking
+      expected_shape:
+        headline: >-
+          the lines reacting rather than maintaining, and the spread across the plant
+        visual: bar
+        table_columns: [line, unplanned_share_pct, maintenance_hours]
+        must_cite: [DP-MFG-003, KPI-UNPLANNED-111]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-003/q4.json
+      tolerance_pct: 2.0
+    - id: DEMO-AG-MFG-003-05
+      ordinal: 5
+      question: "Which asset classes are worst served by spares availability?"
+      kpi_class: KPI-SPARESAVAIL-112
+      analysis_type: comparison
+      expected_shape:
+        headline: >-
+          the equipment classes waiting on parts most often, and how far apart they sit
+        visual: bar
+        table_columns: [asset_class, spares_availability_pct, calls_needing_parts]
+        must_cite: [DP-MFG-003, KPI-SPARESAVAIL-112]
+      data_tier: demo
+      max_latency_ms: 6000
+      golden_answer_ref: seed/golden/AG-MFG-003/q5.json
+      tolerance_pct: 2.0
+  evaluation:
+    suites: [golden_accuracy, groundedness, boundary_refusal, adversarial, entitlement, compositional_exposure, consistency, cost_latency]
+    pass_threshold_pct: 92
+    cases_ref: seed/eval/AG-MFG-003/
+  value_case:
+    benefit_model: "avoided_reliability_reporting_hours * fully_loaded_analyst_rate"
+    attribution_confidence: medium
+    assumptions:
+      - text: "avg manual minutes per reliability or maintenance question"
+        value: 55
+        unit: minutes
+        sample_size: 12
+        source: "reliability engineering time study"
+        dated: 2026-06-01
+    review:
+      last_reviewed: 2026-09-05
+      reviewer: PTY-0053

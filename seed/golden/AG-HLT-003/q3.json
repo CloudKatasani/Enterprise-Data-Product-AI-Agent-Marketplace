@@ -17,11 +17,11 @@
   "claims": {
     "groups": "5",
     "rows_scanned": "8060",
-    "top": "1976.92",
-    "top_share": "28.35"
+    "top": "2007.69",
+    "top_share": "28.74"
   },
   "exchange_id": "DEMO-AG-HLT-003-03",
-  "headline": "heart_failure leads on emergency department utilization rate at 1,976.92, 28.35% of the total across 5 conditions.",
+  "headline": "heart_failure leads on emergency department utilization rate at 2,007.69, 28.74% of the total across 5 conditions.",
   "kpi_definitions": [
     "KPI-EDUTIL-038"
   ],

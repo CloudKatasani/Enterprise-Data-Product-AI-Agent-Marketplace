@@ -1,0 +1,104 @@
+{
+  "agent_id": "AG-MFG-003",
+  "agent_name": "Equipment Reliability Analyst",
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "answer": {
+    "headline": "LINE-2 leads on unplanned maintenance share at 38.00%, 31.45% of the total across 4 lines.",
+    "narrative": "Ranked by the certified definition KPI-UNPLANNED-111 over 31,200 rows in DP-MFG-003.",
+    "table": {
+      "columns": [
+        "line",
+        "KPI-UNPLANNED-111",
+        "observations"
+      ],
+      "rows": [
+        [
+          "LINE-2",
+          38.0,
+          8520
+        ],
+        [
+          "LINE-3",
+          28.59,
+          7800
+        ],
+        [
+          "LINE-4",
+          27.72,
+          8280
+        ],
+        [
+          "LINE-1",
+          26.51,
+          6600
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 30.0,
+        "unit": "percent",
+        "x": "line",
+        "y": "KPI-UNPLANNED-111"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-05T00:00:00+00:00",
+      "columns": [
+        "work_order_id",
+        "raised_at",
+        "asset_class",
+        "plant",
+        "line",
+        "criticality",
+        "maintenance_hours",
+        "unplanned"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-003-04",
+  "kpi_definitions": [
+    "KPI-UNPLANNED-111"
+  ],
+  "notes": [],
+  "question": "Which lines spend the most maintenance hours on breakdowns?",
+  "recorded_at": "2026-09-05T23:31:00.034344+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 12,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "line",
+          "limit": 24,
+          "measure": "((sum(maintenance_hours) filter (where unplanned))::numeric / NULLIF((sum(maintenance_hours))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 9,
+        "rows_returned": 4,
+        "rows_scanned": 31200,
+        "tool": "query_dp_mfg_003"
+      }
+    ]
+  }
+}

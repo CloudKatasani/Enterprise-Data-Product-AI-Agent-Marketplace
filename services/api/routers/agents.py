@@ -69,15 +69,21 @@ def list_agents(
     cursor: str | None = None,
     limit: int | None = None,
 ) -> dict[str, Any]:
+    filters = catalog.AgentFilters(
+        industry=industry, domain=domain, autonomy=autonomy,
+        certification=certification, kpi=kpi, product=product,
+    )
     page = catalog.list_agents(
         connection, tenant_id, principal, rubric,
-        filters=catalog.AgentFilters(
-            industry=industry, domain=domain, autonomy=autonomy,
-            certification=certification, kpi=kpi, product=product,
-        ),
-        sort=sort, cursor=cursor, limit=limit,
+        filters=filters, sort=sort, cursor=cursor, limit=limit,
     )
-    return {**page.document(), "sort": sort, "sorts": sorted(catalog.SORTS)}
+    facets = catalog.agent_facets(connection, tenant_id, rubric, filters)
+    return {
+        **page.document(),
+        "facets": [facet.document() for facet in facets],
+        "sort": sort,
+        "sorts": sorted(catalog.SORTS),
+    }
 
 
 @router.get("/{agent_id}", status_code=http_status.OK, summary="Full agent listing")

@@ -56,6 +56,12 @@ def _one(db, sql: str, params: tuple) -> dict:
     return dict(row)
 
 
+def _all(db, sql: str, params: tuple) -> list[dict]:
+    with db.cursor() as cursor:
+        cursor.execute(sql, params)
+        return [dict(row) for row in cursor.fetchall()]
+
+
 def test_metadata_harvest_writes_columns_with_classification_and_sensitivity(
     seeded, platform, rubric
 ) -> None:
@@ -164,14 +170,19 @@ def test_cost_harvest_apportions_credits_and_records_the_method(seeded, platform
     result = harvest.harvest_cost(platform, seeded, TENANT, rubric)
 
     assert result.counts["cost_allocation"] > 0
-    row = _one(
+    rows = _all(
         seeded,
-        "SELECT query_usd, source, tier FROM cost_allocation WHERE asset_id = %s LIMIT 1",
+        "SELECT query_usd, source, tier FROM cost_allocation WHERE asset_id = %s",
         (PRODUCT,),
     )
-    assert row["query_usd"] > 0
-    assert "apportioned by bytes_scanned" in row["source"]
-    assert row["tier"] == "live"
+    assert rows
+    # Across the window, not on whichever row came back first. A day the
+    # warehouse has metered no credits for yet — today, until it closes —
+    # apportions to nothing, which is the correct answer and not the one this
+    # test is about.
+    assert sum(row["query_usd"] for row in rows) > 0
+    assert all("apportioned by bytes_scanned" in row["source"] for row in rows)
+    assert all(row["tier"] == "live" for row in rows)
 
 
 def test_apportioned_cost_never_exceeds_the_metered_credits(seeded, platform, rubric) -> None:

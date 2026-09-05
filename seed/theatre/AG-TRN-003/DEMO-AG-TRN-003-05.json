@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "invoice_line_id",
         "invoice_date",
@@ -73,12 +73,12 @@
   ],
   "notes": [],
   "question": "How does cost per kilometre compare across modes?",
-  "recorded_at": "2026-09-04T21:58:31.584230+00:00",
+  "recorded_at": "2026-09-05T23:31:01.827949+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 10,
+    "latency_ms": 13,
     "rows_scanned": 28800,
     "runtime": "analytic",
     "tokens": {
@@ -96,7 +96,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_trn_002"
         },
         "cost_class": "medium",
-        "duration_ms": 8,
+        "duration_ms": 11,
         "rows_returned": 4,
         "rows_scanned": 28800,
         "tool": "query_dp_trn_002"

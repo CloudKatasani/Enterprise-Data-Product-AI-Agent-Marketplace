@@ -17,7 +17,7 @@
   ],
   "claims": {
     "groups": "3",
-    "rows_scanned": "17100",
+    "rows_scanned": "12780",
     "top": "80.77",
     "top_share": "52.41"
   },
@@ -26,9 +26,9 @@
   "kpi_definitions": [
     "KPI-DRRESP-069"
   ],
-  "narrative": "Ranked by the certified definition KPI-DRRESP-069 over 17,100 rows in DP-ENG-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-DRRESP-069 over 12,780 rows in DP-ENG-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which demand response programmes are getting the best response?",
-  "rows_scanned": 17100,
+  "rows_scanned": 12780,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

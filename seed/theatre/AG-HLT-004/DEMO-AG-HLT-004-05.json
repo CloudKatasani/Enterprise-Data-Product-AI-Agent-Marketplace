@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T23:00:00+00:00",
+      "as_of": "2026-09-05T23:00:00+00:00",
       "columns": [
         "unit_id",
         "shift_start",
@@ -70,12 +70,12 @@
   ],
   "notes": [],
   "question": "Which unit types board admitted patients longest?",
-  "recorded_at": "2026-09-04T21:58:29.376023+00:00",
+  "recorded_at": "2026-09-05T23:30:59.054848+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 25,
+    "latency_ms": 28,
     "rows_scanned": 48600,
     "runtime": "analytic",
     "tokens": {
@@ -93,7 +93,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_003"
         },
         "cost_class": "medium",
-        "duration_ms": 22,
+        "duration_ms": 25,
         "rows_returned": 4,
         "rows_scanned": 48600,
         "tool": "query_dp_hlt_003"

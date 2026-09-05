@@ -17,13 +17,13 @@
     }
   ],
   "claims": {
-    "current": "0.91",
-    "delta": "-0.09",
+    "current": "0.94",
+    "delta": "-0.06",
     "groups": "4",
     "rows_scanned": "50400"
   },
   "exchange_id": "DEMO-AG-TCH-002-01",
-  "headline": "DAU to MAU Ratio is 0.91 for the month ending 2026-09-01, down 0.09 on the prior month.",
+  "headline": "DAU to MAU Ratio is 0.94 for the month ending 2026-09-01, down 0.06 on the prior month.",
   "kpi_definitions": [
     "KPI-DAUMAU-011"
   ],

@@ -148,7 +148,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "receipt_line_id",
         "receipt_date",
@@ -173,12 +173,12 @@
   ],
   "notes": [],
   "question": "Which suppliers account for most of our rejected units?",
-  "recorded_at": "2026-09-04T21:58:30.116981+00:00",
+  "recorded_at": "2026-09-05T23:30:59.886788+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 9,
+    "latency_ms": 11,
     "rows_scanned": 26400,
     "runtime": "analytic",
     "tokens": {
@@ -196,7 +196,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_002"
         },
         "cost_class": "medium",
-        "duration_ms": 7,
+        "duration_ms": 9,
         "rows_returned": 24,
         "rows_scanned": 26400,
         "tool": "query_dp_mfg_002"

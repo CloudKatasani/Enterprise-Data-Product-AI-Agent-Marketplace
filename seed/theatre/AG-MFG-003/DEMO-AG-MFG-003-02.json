@@ -1,0 +1,95 @@
+{
+  "agent_id": "AG-MFG-003",
+  "agent_name": "Equipment Reliability Analyst",
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "answer": {
+    "headline": "Mean Time to Repair is 393.96 minutes where cohort is false against 139.95 minutes where it is true, a gap of 254.01 minutes.",
+    "narrative": "Both cohorts are drawn from DP-MFG-003 over the same period: 17,554 observations against 13,646.",
+    "table": {
+      "columns": [
+        "cohort",
+        "KPI-MTTREPAIR-109",
+        "observations"
+      ],
+      "rows": [
+        [
+          "false",
+          393.96,
+          17554
+        ],
+        [
+          "true",
+          139.95,
+          13646
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "lower_is_better",
+        "target": 180.0,
+        "unit": "minutes",
+        "x": "cohort",
+        "y": "KPI-MTTREPAIR-109"
+      },
+      "type": "comparison_bars"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-05T00:00:00+00:00",
+      "columns": [
+        "failure_id",
+        "raised_at",
+        "asset_class",
+        "plant",
+        "line",
+        "criticality",
+        "failure_mode",
+        "repair_minutes",
+        "spares_available"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-003-02",
+  "kpi_definitions": [
+    "KPI-MTTREPAIR-109"
+  ],
+  "notes": [],
+  "question": "Do repairs take longer when the spare was not on the shelf?",
+  "recorded_at": "2026-09-05T23:31:00.007069+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 31,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "year",
+          "group_by": "cohort",
+          "limit": 24,
+          "measure": "((sum(repair_minutes))::numeric / NULLIF((count(distinct failure_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 28,
+        "rows_returned": 2,
+        "rows_scanned": 31200,
+        "tool": "query_dp_mfg_003"
+      }
+    ]
+  }
+}

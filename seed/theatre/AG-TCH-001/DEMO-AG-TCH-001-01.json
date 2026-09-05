@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "account_id",
         "onboarded",
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which features are driving activation this quarter?",
-  "recorded_at": "2026-09-04T21:58:30.747582+00:00",
+  "recorded_at": "2026-09-05T23:31:00.771684+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 61,
+    "latency_ms": 98,
     "rows_scanned": 17360,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 58,
+        "duration_ms": 96,
         "rows_returned": 3,
         "rows_scanned": 17360,
         "tool": "query_dp_tch_001"

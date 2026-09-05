@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "asset_id",
         "asset_health_score",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Which poor-health assets serve the most customers?",
-  "recorded_at": "2026-09-04T21:58:31.647774+00:00",
+  "recorded_at": "2026-09-05T23:31:01.908648+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 10,
     "rows_scanned": 21600,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_utl_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 7,
         "rows_returned": 4,
         "rows_scanned": 21600,
         "tool": "query_dp_utl_001"

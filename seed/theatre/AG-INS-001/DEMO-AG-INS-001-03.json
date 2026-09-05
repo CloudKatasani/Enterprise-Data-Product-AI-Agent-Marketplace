@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "claim_id",
         "cycle_days",
@@ -70,7 +70,7 @@
   ],
   "notes": [],
   "question": "What is driving cycle time increase in auto physical damage?",
-  "recorded_at": "2026-09-04T21:58:29.416914+00:00",
+  "recorded_at": "2026-09-05T23:30:59.103525+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
@@ -93,7 +93,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 7,
         "rows_returned": 4,
         "rows_scanned": 12600,
         "tool": "query_dp_ins_001"

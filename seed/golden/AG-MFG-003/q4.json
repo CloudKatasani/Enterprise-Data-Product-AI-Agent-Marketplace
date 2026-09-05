@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "driver_ranking",
+  "citations": [
+    {
+      "columns": [
+        "asset_class",
+        "criticality",
+        "line",
+        "maintenance_hours",
+        "plant",
+        "raised_at",
+        "unplanned",
+        "work_order_id"
+      ],
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "31200",
+    "top": "38.00",
+    "top_share": "31.45"
+  },
+  "exchange_id": "DEMO-AG-MFG-003-04",
+  "headline": "LINE-2 leads on unplanned maintenance share at 38.00%, 31.45% of the total across 4 lines.",
+  "kpi_definitions": [
+    "KPI-UNPLANNED-111"
+  ],
+  "narrative": "Ranked by the certified definition KPI-UNPLANNED-111 over 31,200 rows in DP-MFG-003.",
+  "question": "Which lines spend the most maintenance hours on breakdowns?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "line",
+    "KPI-UNPLANNED-111",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "site_id",
         "throughput_mbps",
@@ -69,7 +69,7 @@
   ],
   "notes": [],
   "question": "What is driving the throughput drop in the Denver cluster?",
-  "recorded_at": "2026-09-04T21:58:31.335896+00:00",
+  "recorded_at": "2026-09-05T23:31:01.525436+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

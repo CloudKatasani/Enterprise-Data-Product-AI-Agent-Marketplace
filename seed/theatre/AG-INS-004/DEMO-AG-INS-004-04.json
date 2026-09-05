@@ -67,12 +67,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Which segments complain most per thousand customers?",
-  "recorded_at": "2026-09-04T21:58:29.971861+00:00",
+  "recorded_at": "2026-09-05T23:30:59.721436+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 83,
+    "latency_ms": 106,
     "rows_scanned": 2400,
     "runtime": "analytic",
     "tokens": {
@@ -90,7 +90,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_003"
         },
         "cost_class": "medium",
-        "duration_ms": 80,
+        "duration_ms": 103,
         "rows_returned": 3,
         "rows_scanned": 2400,
         "tool": "query_dp_ins_003"

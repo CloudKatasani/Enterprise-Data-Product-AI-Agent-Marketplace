@@ -15,13 +15,13 @@
     }
   ],
   "claims": {
-    "current": "961.54",
-    "delta": "-6000.00",
+    "current": "1176.92",
+    "delta": "-5796.16",
     "groups": "5",
     "rows_scanned": "31200"
   },
   "exchange_id": "DEMO-AG-HLT-003-04",
-  "headline": "Emergency Department Utilization Rate is 961.54 for the month ending 2026-09-01, down 6,000.00 on the prior month.",
+  "headline": "Emergency Department Utilization Rate is 1,176.92 for the month ending 2026-09-01, down 5,796.16 on the prior month.",
   "kpi_definitions": [
     "KPI-EDUTIL-038"
   ],

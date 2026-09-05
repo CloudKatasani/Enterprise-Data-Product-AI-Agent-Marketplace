@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "run_id",
         "line",
@@ -72,7 +72,7 @@
   ],
   "notes": [],
   "question": "What is OEE by line this week and where did we lose the most?",
-  "recorded_at": "2026-09-04T21:58:30.072376+00:00",
+  "recorded_at": "2026-09-05T23:30:59.837970+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

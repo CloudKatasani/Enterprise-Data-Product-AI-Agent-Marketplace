@@ -1,0 +1,109 @@
+{
+  "agent_id": "AG-MFG-003",
+  "agent_name": "Equipment Reliability Analyst",
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "performance_ranking",
+  "answer": {
+    "headline": "compressor trails on mean time between failures at 728.06 hours, 5.47% of the total across 5 asset classs.",
+    "narrative": "Ranked by the certified definition KPI-MTBF-108 over 31,200 rows in DP-MFG-003.",
+    "table": {
+      "columns": [
+        "asset_class",
+        "KPI-MTBF-108",
+        "observations"
+      ],
+      "rows": [
+        [
+          "compressor",
+          728.06,
+          4080
+        ],
+        [
+          "robot_cell",
+          3103.18,
+          8280
+        ],
+        [
+          "conveyor",
+          3120.31,
+          6840
+        ],
+        [
+          "packaging_head",
+          3159.65,
+          6360
+        ],
+        [
+          "press",
+          3203.2,
+          5640
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 2000.0,
+        "unit": "hours",
+        "x": "asset_class",
+        "y": "KPI-MTBF-108"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-05T00:00:00+00:00",
+      "columns": [
+        "failure_id",
+        "raised_at",
+        "asset_class",
+        "plant",
+        "line",
+        "criticality",
+        "failure_mode",
+        "operating_hours"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-003-01",
+  "kpi_definitions": [
+    "KPI-MTBF-108"
+  ],
+  "notes": [],
+  "question": "Which asset classes have the worst time between failures?",
+  "recorded_at": "2026-09-05T23:30:59.974463+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 31,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "asset_class",
+          "limit": 24,
+          "measure": "((sum(operating_hours))::numeric / NULLIF((count(distinct failure_id))::numeric, 0))",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 29,
+        "rows_returned": 5,
+        "rows_scanned": 31200,
+        "tool": "query_dp_mfg_003"
+      }
+    ]
+  }
+}

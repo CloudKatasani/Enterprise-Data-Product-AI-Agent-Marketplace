@@ -1,0 +1,261 @@
+{
+  "_generated": {
+    "from": "manifests/agents/AG-MFG-003.yaml",
+    "by": "scripts/gen.py",
+    "generator_version": "1.0.0",
+    "manifest_hash": "d5b757c0f2c355e109ef402afe7c113ee085a91d2b66bc3d5363228afc11ca2b",
+    "warning": "DO NOT EDIT"
+  },
+  "schema": "marketplace/agentcard/v1",
+  "agent": {
+    "id": "AG-MFG-003",
+    "name": "Equipment Reliability Analyst",
+    "industry": "manufacturing",
+    "domain": "network_asset",
+    "autonomy_level": "L1",
+    "certification": "certified",
+    "owner": {
+      "party_id": "PTY-0053",
+      "team": "Reliability Engineering",
+      "on_call": "pagerduty://mfg-reliability-agents"
+    }
+  },
+  "capability_statement": "Answers questions about time between failures, repair time, preventive adherence, unplanned share and spares availability.",
+  "business_value": {
+    "analyses": [
+      "performance_ranking",
+      "comparison",
+      "cohort_comparison",
+      "gap_analysis",
+      "trend_segmented"
+    ],
+    "replaces": "The monthly reliability pack exported from the maintenance system and reconciled by hand.",
+    "personas": [
+      "reliability_engineer",
+      "maintenance_planner",
+      "plant_manager"
+    ]
+  },
+  "out_of_scope": [
+    "Raising, scheduling or closing a work order",
+    "Ordering spares or changing a stocking policy",
+    "Individual crew or technician performance"
+  ],
+  "coverage": [
+    {
+      "kpi_id": "KPI-MTBF-108",
+      "kpi_name": "Mean Time Between Failures",
+      "unit": "hours",
+      "source_product": "DP-MFG-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "asset_class",
+        "plant",
+        "line",
+        "criticality",
+        "failure_mode"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-MTTREPAIR-109",
+      "kpi_name": "Mean Time to Repair",
+      "unit": "minutes",
+      "source_product": "DP-MFG-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "asset_class",
+        "plant",
+        "line",
+        "criticality",
+        "failure_mode"
+      ],
+      "analysis_depth": "explain",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-PMADHERE-110",
+      "kpi_name": "Preventive Maintenance Adherence",
+      "unit": "percent",
+      "source_product": "DP-MFG-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "line",
+        "plant",
+        "asset_class",
+        "criticality"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-UNPLANNED-111",
+      "kpi_name": "Unplanned Maintenance Share",
+      "unit": "percent",
+      "source_product": "DP-MFG-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "line",
+        "asset_class",
+        "plant",
+        "criticality"
+      ],
+      "analysis_depth": "rank_drivers",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    },
+    {
+      "kpi_id": "KPI-SPARESAVAIL-112",
+      "kpi_name": "Spares Availability at Call",
+      "unit": "percent",
+      "source_product": "DP-MFG-003",
+      "grains": [
+        "month",
+        "quarter",
+        "year"
+      ],
+      "slices": [
+        "asset_class",
+        "plant",
+        "line",
+        "criticality"
+      ],
+      "analysis_depth": "compare",
+      "eval_accuracy_pct": null,
+      "eval_sample_size": null
+    }
+  ],
+  "reads": [
+    {
+      "product_id": "DP-MFG-003",
+      "columns": [
+        "work_order_id",
+        "asset_id",
+        "failure_id",
+        "raised_at",
+        "plant",
+        "line",
+        "region",
+        "asset_class",
+        "criticality",
+        "failure_mode",
+        "crew",
+        "operating_hours",
+        "maintenance_hours",
+        "repair_minutes",
+        "unplanned",
+        "preventive_scheduled",
+        "completed_in_window",
+        "spares_needed",
+        "spares_available",
+        "condition_alert_open",
+        "asset_age_years"
+      ],
+      "access": "read",
+      "required_scope": "dp:DP-MFG-003:read"
+    }
+  ],
+  "invocation": {
+    "endpoint": "/api/v1/agents/AG-MFG-003/ask",
+    "required_scope": "agent:AG-MFG-003:invoke",
+    "purpose_required": true,
+    "effective_access": "intersection(agent scope, user entitlement)",
+    "refusal": {
+      "out_of_scope_status": 422,
+      "ungrounded_status": 424,
+      "entitlement_missing_status": 403
+    }
+  },
+  "budgets": {
+    "p95_latency_ms": 6000,
+    "cost_per_answer_usd": 0.06
+  },
+  "evaluation": {
+    "suites": [
+      "golden_accuracy",
+      "groundedness",
+      "boundary_refusal",
+      "adversarial",
+      "entitlement",
+      "compositional_exposure",
+      "consistency",
+      "cost_latency"
+    ],
+    "pass_threshold_pct": 92
+  },
+  "demo": {
+    "exchange_count": 5,
+    "questions": [
+      "Which asset classes have the worst time between failures?",
+      "Do repairs take longer when the spare was not on the shelf?",
+      "Where is preventive maintenance adherence weakest by line?",
+      "Which lines spend the most maintenance hours on breakdowns?",
+      "Which asset classes are worst served by spares availability?"
+    ]
+  },
+  "bundle": {
+    "model_provider": "anthropic",
+    "model_id": "marketplace-analytic-v1",
+    "model_params": {
+      "temperature": 0.0,
+      "max_tokens": 2000
+    },
+    "prompt_ref": "prompts/AG-MFG-003/system@v1",
+    "tool_bindings": [
+      {
+        "tool": "query_dp_mfg_003",
+        "scope": "dp:DP-MFG-003:read",
+        "cost_class": "medium",
+        "row_limit": 10000
+      },
+      {
+        "tool": "get_kpi_definition",
+        "scope": "kpi:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      },
+      {
+        "tool": "get_quality",
+        "scope": "quality:read",
+        "cost_class": "trivial",
+        "row_limit": null
+      }
+    ],
+    "upstream_contract_versions": {
+      "DP-MFG-003": "1.0.0"
+    },
+    "guardrails": {
+      "grounding": {
+        "require_citation_on_numerics": true,
+        "on_failure": "return_error"
+      },
+      "injection_defence": "v3",
+      "output_filters": [
+        "pii_pattern",
+        "credential_pattern"
+      ],
+      "refusal_policy": "State the boundary in one sentence, name the agent or data product that does cover the question, and offer a handoff or a new-supply request."
+    }
+  },
+  "bundle_hash": "cfd04d7e05c73766cdbd20cfae971188a91cda8311f5ed847fda2adc819b099a"
+}

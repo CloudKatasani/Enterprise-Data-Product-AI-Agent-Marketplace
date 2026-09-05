@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-TRN-002-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Asset Utilization is 73.45% for the week ending 2026-08-31, up 0.04% on the prior week.",
+    "headline": "Asset Utilization is 73.40% for the week ending 2026-08-31, up 0.04% on the prior week.",
     "narrative": "Computed from DP-TRN-001 under the certified definition KPI-ASSETUTIL-059, across 9 weeks and 13,200 rows.",
     "table": {
       "columns": [
@@ -15,48 +15,48 @@
       "rows": [
         [
           "2026-07-06",
-          73.59,
-          1320
+          73.6,
+          1100
         ],
         [
           "2026-07-13",
-          73.13,
+          73.09,
           1540
         ],
         [
           "2026-07-20",
-          72.72,
+          73.05,
           1540
         ],
         [
           "2026-07-27",
-          73.63,
+          73.77,
           1540
         ],
         [
           "2026-08-03",
-          72.81,
+          72.38,
           1540
         ],
         [
           "2026-08-10",
-          73.32,
+          73.3,
           1540
         ],
         [
           "2026-08-17",
-          73.07,
+          73.19,
           1540
         ],
         [
           "2026-08-24",
-          73.41,
+          73.36,
           1540
         ],
         [
           "2026-08-31",
-          73.45,
-          1100
+          73.4,
+          1320
         ]
       ]
     },
@@ -73,7 +73,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "shipment_leg_id",
         "departure_timestamp",
@@ -96,12 +96,12 @@
   ],
   "notes": [],
   "question": "How has asset utilization moved week by week?",
-  "recorded_at": "2026-09-04T21:58:31.506153+00:00",
+  "recorded_at": "2026-09-05T23:31:01.734803+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 9,
     "rows_scanned": 13200,
     "runtime": "analytic",
     "tokens": {

@@ -300,7 +300,7 @@ COHORT_MARKERS = (
     "curtailed_during_event", "passed_without_rework", "save_offer_accepted",
     "loyalty_identified", "autopay_enrolled", "digital_registered", "multi_line",
     "float_pool_used", "inspection_required", "tendered_to_spot", "change_deployed",
-    "delinquent_30d", "filled_shift",
+    "delinquent_30d", "filled_shift", "spares_available", "condition_alert_open",
 )
 
 

@@ -3,7 +3,7 @@
     "from": "manifests/products/DP-RTL-002.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "8582ee023574045c153f6206c9f567f1bd8bf26f280d60891b3220444572dc41",
+    "manifest_hash": "0c3198c3ee40134cbb187b05e5dbb00d74d7c572396ee69c86940cc6744f0d95",
     "warning": "DO NOT EDIT"
   },
   "server": "mcp://marketplace.${TENANT}.internal/dp/DP-RTL-002",

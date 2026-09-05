@@ -3,7 +3,7 @@
     "from": "manifests/agents/AG-UTL-001.yaml",
     "by": "scripts/gen.py",
     "generator_version": "1.0.0",
-    "manifest_hash": "167e02345c32ec8285f5304cfc765db85af8e5597327726adfefc13e9424a4e8",
+    "manifest_hash": "d5b757c0f2c355e109ef402afe7c113ee085a91d2b66bc3d5363228afc11ca2b",
     "warning": "DO NOT EDIT"
   },
   "schema": "marketplace/agentcard/v1",

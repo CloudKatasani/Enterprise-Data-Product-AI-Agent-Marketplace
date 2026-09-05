@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "run_id",
         "line",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Where is scrap concentrated by product and root cause?",
-  "recorded_at": "2026-09-04T21:58:30.105897+00:00",
+  "recorded_at": "2026-09-05T23:30:59.873909+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 6,
+    "latency_ms": 7,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {

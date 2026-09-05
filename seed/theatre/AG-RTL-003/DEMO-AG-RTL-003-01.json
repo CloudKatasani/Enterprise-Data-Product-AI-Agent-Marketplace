@@ -58,7 +58,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "business_date",
         "category",
@@ -80,12 +80,12 @@
   ],
   "notes": [],
   "question": "Which categories have the weakest gross margin rate?",
-  "recorded_at": "2026-09-04T21:58:30.337665+00:00",
+  "recorded_at": "2026-09-05T23:31:00.254157+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 9,
+    "latency_ms": 10,
     "rows_scanned": 23400,
     "runtime": "analytic",
     "tokens": {
@@ -103,7 +103,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_001"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
+        "duration_ms": 7,
         "rows_returned": 6,
         "rows_scanned": 23400,
         "tool": "query_dp_rtl_001"

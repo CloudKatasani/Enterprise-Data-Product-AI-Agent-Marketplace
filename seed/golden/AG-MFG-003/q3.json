@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "gap_analysis",
+  "citations": [
+    {
+      "columns": [
+        "asset_class",
+        "completed_in_window",
+        "criticality",
+        "line",
+        "plant",
+        "preventive_scheduled",
+        "raised_at",
+        "work_order_id"
+      ],
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "claims": {
+    "groups": "4",
+    "rows_scanned": "31200",
+    "top": "71.08",
+    "top_share": "20.07"
+  },
+  "exchange_id": "DEMO-AG-MFG-003-03",
+  "headline": "LINE-2 trails on preventive maintenance adherence at 71.08%, 20.07% of the total across 4 lines.",
+  "kpi_definitions": [
+    "KPI-PMADHERE-110"
+  ],
+  "narrative": "Ranked by the certified definition KPI-PMADHERE-110 over 31,200 rows in DP-MFG-003.",
+  "question": "Where is preventive maintenance adherence weakest by line?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "line",
+    "KPI-PMADHERE-110",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

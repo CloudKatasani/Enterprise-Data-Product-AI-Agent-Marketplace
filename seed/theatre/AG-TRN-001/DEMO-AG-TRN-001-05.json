@@ -58,7 +58,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "shipment_leg_id",
         "exception_logged",
@@ -81,7 +81,7 @@
   ],
   "notes": [],
   "question": "Which customers are at risk of SLA penalty this month?",
-  "recorded_at": "2026-09-04T21:58:31.482241+00:00",
+  "recorded_at": "2026-09-05T23:31:01.706648+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

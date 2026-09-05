@@ -71,7 +71,7 @@
   ],
   "notes": [],
   "question": "Where is provision coverage weakest by region?",
-  "recorded_at": "2026-09-04T21:58:28.724957+00:00",
+  "recorded_at": "2026-09-05T23:30:58.256331+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
         },
         "cost_class": "medium",
-        "duration_ms": 5,
+        "duration_ms": 7,
         "rows_returned": 4,
         "rows_scanned": 19200,
         "tool": "query_dp_bnk_003"

@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "visit_id",
         "transaction_id",
@@ -66,12 +66,12 @@
   ],
   "notes": [],
   "question": "Which channels convert visits into purchases best?",
-  "recorded_at": "2026-09-04T21:58:30.506617+00:00",
+  "recorded_at": "2026-09-05T23:31:00.450398+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 154,
+    "latency_ms": 179,
     "rows_scanned": 78000,
     "runtime": "analytic",
     "tokens": {
@@ -89,7 +89,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_rtl_003"
         },
         "cost_class": "medium",
-        "duration_ms": 152,
+        "duration_ms": 176,
         "rows_returned": 3,
         "rows_scanned": 78000,
         "tool": "query_dp_rtl_003"

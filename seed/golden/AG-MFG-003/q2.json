@@ -1,0 +1,45 @@
+{
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "cohort_comparison",
+  "citations": [
+    {
+      "columns": [
+        "asset_class",
+        "criticality",
+        "failure_id",
+        "failure_mode",
+        "line",
+        "plant",
+        "raised_at",
+        "repair_minutes",
+        "spares_available"
+      ],
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "claims": {
+    "cohort_gap": "254.01",
+    "cohort_high": "393.96",
+    "cohort_high_observations": "17554",
+    "cohort_low": "139.95",
+    "cohort_low_observations": "13646",
+    "groups": "2",
+    "rows_scanned": "31200"
+  },
+  "exchange_id": "DEMO-AG-MFG-003-02",
+  "headline": "Mean Time to Repair is 393.96 minutes where cohort is false against 139.95 minutes where it is true, a gap of 254.01 minutes.",
+  "kpi_definitions": [
+    "KPI-MTTREPAIR-109"
+  ],
+  "narrative": "Both cohorts are drawn from DP-MFG-003 over the same period: 17,554 observations against 13,646.",
+  "question": "Do repairs take longer when the spare was not on the shelf?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "cohort",
+    "KPI-MTTREPAIR-109",
+    "observations"
+  ],
+  "visual_type": "comparison_bars"
+}

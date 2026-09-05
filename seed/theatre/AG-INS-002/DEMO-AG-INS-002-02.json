@@ -71,7 +71,7 @@
   ],
   "notes": [],
   "question": "What is our exposure concentration by county for wind peril?",
-  "recorded_at": "2026-09-04T21:58:29.467210+00:00",
+  "recorded_at": "2026-09-05T23:30:59.160791+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",

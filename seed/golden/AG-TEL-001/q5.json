@@ -17,11 +17,11 @@
   "claims": {
     "groups": "3",
     "rows_scanned": "6510",
-    "top": "44.93",
-    "top_share": "35.80"
+    "top": "44.12",
+    "top_share": "34.50"
   },
   "exchange_id": "DEMO-AG-TEL-001-05",
-  "headline": "consumer leads on save rate at 44.93%, 35.80% of the total across 3 segments.",
+  "headline": "consumer leads on save rate at 44.12%, 34.50% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-SAVE-003"
   ],

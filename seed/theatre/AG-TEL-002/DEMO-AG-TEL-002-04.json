@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "site_id",
         "restore_minutes",
@@ -69,12 +69,12 @@
   ],
   "notes": [],
   "question": "Which faults are recurring on the same assets?",
-  "recorded_at": "2026-09-04T21:58:31.350350+00:00",
+  "recorded_at": "2026-09-05T23:31:01.542651+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 6,
+    "latency_ms": 7,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {

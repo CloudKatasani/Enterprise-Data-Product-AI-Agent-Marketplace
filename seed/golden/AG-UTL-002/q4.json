@@ -16,13 +16,13 @@
     }
   ],
   "claims": {
-    "current": "194.38",
-    "delta": "4.59",
+    "current": "190.18",
+    "delta": "0.13",
     "groups": "4",
     "rows_scanned": "21600"
   },
   "exchange_id": "DEMO-AG-UTL-002-04",
-  "headline": "Average Restoration Time is 194.38 minutes for the month ending 2026-09-01, up 4.59 minutes on the prior month.",
+  "headline": "Average Restoration Time is 190.18 minutes for the month ending 2026-09-01, up 0.13 minutes on the prior month.",
   "kpi_definitions": [
     "KPI-RESTORE-064"
   ],

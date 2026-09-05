@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "claim_id",
         "transition_timestamp",
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "How does loss ratio compare across distribution channels?",
-  "recorded_at": "2026-09-04T21:58:29.576525+00:00",
+  "recorded_at": "2026-09-05T23:30:59.257603+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 8,
+    "latency_ms": 7,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "medium",
-        "duration_ms": 5,
+        "duration_ms": 4,
         "rows_returned": 3,
         "rows_scanned": 12600,
         "tool": "query_dp_ins_001"

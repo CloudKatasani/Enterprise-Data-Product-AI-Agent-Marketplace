@@ -355,3 +355,48 @@ def test_an_unusable_reason_code_is_refused(client: TestClient, agent: dict) -> 
     )
     assert response.status_code == http_status.BAD_REQUEST
     assert "is not a reason code" in response.json()["detail"]
+
+
+# ---------------------------------------------------------------------------
+# The agent catalog rail
+# ---------------------------------------------------------------------------
+
+
+def _facet(body: dict, code: str) -> dict:
+    return next(facet for facet in body["facets"] if facet["code"] == code)
+
+
+def test_the_agent_catalog_carries_a_facet_for_every_filter_it_accepts(
+    client: TestClient,
+) -> None:
+    body = client.get(f"{PREFIX}/agents", headers=_headers()).json()
+    codes = {facet["code"] for facet in body["facets"]}
+    # Every filter the route accepts needs a rail entry, or it is a filter only
+    # somebody reading the query string can find.
+    assert {"industry", "domain", "autonomy", "certification", "kpi", "product"} <= codes
+    industry = _facet(body, "industry")
+    assert industry["values"], "the industry facet is empty"
+    assert sum(value["count"] for value in industry["values"]) == body["total"]
+
+
+def test_choosing_an_industry_narrows_the_agents_but_not_the_industry_list(
+    client: TestClient,
+) -> None:
+    unfiltered = client.get(f"{PREFIX}/agents", headers=_headers()).json()
+    industries = _facet(unfiltered, "industry")["values"]
+    chosen = industries[0]["value"]
+
+    filtered = client.get(
+        f"{PREFIX}/agents", params={"industry": chosen}, headers=_headers()
+    ).json()
+    assert filtered["items"], f"no agents in {chosen}"
+    assert {item["industry"] for item in filtered["items"]} == {chosen}
+
+    # A facet is counted without its own selection, so the consumer can change
+    # their mind without clearing the filter first.
+    still = _facet(filtered, "industry")
+    assert len(still["values"]) == len(industries)
+    assert [value["value"] for value in still["values"] if value["selected"]] == [chosen]
+    # Every other facet is counted against the selection.
+    domains = _facet(filtered, "domain")
+    assert sum(value["count"] for value in domains["values"]) == len(filtered["items"])

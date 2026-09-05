@@ -507,3 +507,34 @@ edge between two products that nothing can name.
 Two generator calibrations were made against the measures rather than beside them: lending
 delinquency was set to land near its own 2.4% target instead of at 10%, and freight margin was
 reading 26% because fuel surcharge was billed as revenue but never counted as cost.
+
+### D-040 — The agent catalogue gets the rail the product catalogue already had (2026-09-05)
+**Context** The agents page read six filter query parameters — industry, domain, autonomy,
+certification, KPI, product — and rendered no control for any of them. The filters worked; only
+somebody willing to hand-write a query string could find them. `AGENT_FACETS` had been declared
+in `services/catalog/facets.py` since M4 and was referenced by nothing.
+**Decision** `/agents` returns facets the way `/products` does, counted by the same function
+under the same rule: each facet is counted with every *other* selection applied but not its own,
+so choosing an industry never collapses the industry list to the one row the consumer picked.
+The page grows the same `240px` rail, with the chosen filters shown as removable chips above it
+because a filter you cannot see is a filter you cannot undo.
+**Consequence** Filtering to an industry is one click and every state is a URL. The rail is
+links rather than controls, so it works without JavaScript, and the counts tell a consumer what
+they will get before they click.
+
+Manufacturing was the one industry the new rail would have landed a consumer on thinly: three
+agents everywhere else, two there, and no reliability view of a plant at all. DP-MFG-003
+(Equipment Reliability & Maintenance, one row per maintenance work order) and AG-MFG-003 fill
+that — mean time between failures, repair time, preventive adherence, unplanned share and
+spares availability, none of them measures any existing agent covers. Every industry now holds
+at least three agents and 112 of 112 KPIs are answerable.
+
+Two things the new product exposed:
+
+* Spares availability was drawn independently of whether spares were needed, so the rate came
+  out at 139% — more calls served than calls made. Availability is only defined where a part was
+  actually called for.
+* `spares_available` was not in the cohort vocabulary, so "do repairs take longer when the spare
+  was not on the shelf" was answered as a ranking by asset class rather than as the comparison
+  it asked for. It is a legitimate cohort — the KPI's own expression does not reference it — and
+  the split it produces is the finding: 394 minutes against 140.

@@ -1,0 +1,41 @@
+{
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "comparison",
+  "citations": [
+    {
+      "columns": [
+        "asset_class",
+        "criticality",
+        "line",
+        "plant",
+        "raised_at",
+        "spares_available",
+        "spares_needed",
+        "work_order_id"
+      ],
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "claims": {
+    "groups": "5",
+    "rows_scanned": "31200",
+    "top": "87.37",
+    "top_share": "19.81"
+  },
+  "exchange_id": "DEMO-AG-MFG-003-05",
+  "headline": "compressor trails on spares availability at call at 87.37%, 19.81% of the total across 5 asset classs.",
+  "kpi_definitions": [
+    "KPI-SPARESAVAIL-112"
+  ],
+  "narrative": "Ranked by the certified definition KPI-SPARESAVAIL-112 over 31,200 rows in DP-MFG-003.",
+  "question": "Which asset classes are worst served by spares availability?",
+  "rows_scanned": 31200,
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "runtime": "analytic",
+  "table_columns": [
+    "asset_class",
+    "KPI-SPARESAVAIL-112",
+    "observations"
+  ],
+  "visual_type": "bar"
+}

@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "service_id",
         "observed_hour",
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Which deployment rings fail changes most often?",
-  "recorded_at": "2026-09-04T21:58:31.182361+00:00",
+  "recorded_at": "2026-09-05T23:31:01.335074+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 8,
+    "latency_ms": 13,
     "rows_scanned": 30240,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tch_002"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
+        "duration_ms": 10,
         "rows_returned": 3,
         "rows_scanned": 30240,
         "tool": "query_dp_tch_002"

@@ -19,6 +19,7 @@ from typing import Any
 
 import psycopg
 
+from services.catalog import facets as facet_module
 from services.common.db import fetch_all, fetch_one
 from services.common.pagination import Cursor, Page
 from services.common.principal import Principal, held_scopes
@@ -101,6 +102,14 @@ class AgentFilters:
             )
             arguments["product"] = self.product
         return (" AND " + " AND ".join(where) if where else ""), arguments
+
+    def selected(self) -> dict[str, list[str]]:
+        """The filter set as the facet counter reads it: code to chosen values."""
+        return {
+            name: values
+            for name in ("industry", "domain", "autonomy", "certification", "kpi", "product")
+            if (values := getattr(self, name))
+        }
 
 
 def _access(agent_id: str, scopes: frozenset[str]) -> dict[str, Any]:
@@ -208,6 +217,24 @@ def list_agents(
         items=[_card(row, scopes) for row in visible],
         total=int(total["total"]) if total else None,
         next_cursor=next_cursor,
+    )
+
+
+def agent_facets(
+    connection: psycopg.Connection[Any],
+    tenant: str,
+    rubric: Rubric,
+    filters: AgentFilters | None = None,
+) -> list[facet_module.Facet]:
+    """Counts for the agent rail, each facet counted without its own selection.
+
+    The same rule the product rail follows, for the same reason: choosing an
+    industry must not collapse the industry list to the one row the consumer
+    picked, or they cannot change their mind without starting over.
+    """
+    return facet_module.compute(
+        connection, tenant, facet_module.AGENT_FACETS, "agent", "a",
+        (filters or AgentFilters()).selected(), rubric,
     )
 
 

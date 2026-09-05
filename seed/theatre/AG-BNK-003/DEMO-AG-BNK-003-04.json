@@ -62,12 +62,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Do customers with a primary relationship hold more products?",
-  "recorded_at": "2026-09-04T21:58:28.615141+00:00",
+  "recorded_at": "2026-09-05T23:30:58.113232+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 27,
+    "latency_ms": 35,
     "rows_scanned": 500,
     "runtime": "analytic",
     "tokens": {
@@ -85,7 +85,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 25,
+        "duration_ms": 33,
         "rows_returned": 2,
         "rows_scanned": 500,
         "tool": "query_dp_bnk_001"

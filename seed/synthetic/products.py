@@ -1613,9 +1613,100 @@ DP_INS_003 = _spec(
     notes="affinity is single-line; 10y+ never registered digitally; complaints are Southeast x commercial",
 )
 
+# ---------------------------------------------------------------------------
+# DP-MFG-003 — Equipment Reliability & Maintenance
+# Planted: one asset class fails far more often than the rest and carries the
+# oldest installed base; repairs waiting on a part take materially longer; and
+# preventive adherence slips on one line, whose unplanned share rises with it.
+# ---------------------------------------------------------------------------
+MFG3_ASSET_CLASSES = [("conveyor", 3), ("press", 2), ("robot_cell", 3),
+                      ("packaging_head", 2), ("compressor", 2)]
+MFG3_CRITICALITY = [("line_stopper", 3), ("degrader", 4), ("nuisance", 3)]
+MFG3_MODES = ["bearing_wear", "seal_failure", "control_fault", "lubrication", "alignment"]
+MFG3_LINES = ["LINE-1", "LINE-2", "LINE-3", "LINE-4"]
+# The class that fails, and the line whose plan slips.
+FAILING_CLASS = "compressor"
+SLIPPING_LINE = "LINE-2"
+
+_M3_CLASS = weighted(MFG3_ASSET_CLASSES, E, k("acls"))
+_M3_LINE = pick(MFG3_LINES, E, k("line"))
+_M3_UNPLANNED = (
+    f"({rnd(E, P, k('unp'))} < "
+    "  0.17"
+    f"  * (CASE WHEN {_M3_CLASS} = '{FAILING_CLASS}' THEN 1.9 ELSE 1.0 END)"
+    f"  * (CASE WHEN {_M3_LINE} = '{SLIPPING_LINE}' THEN 1.5 ELSE 1.0 END))"
+)
+
+_M3_SPARES_AVAILABLE = f"({rnd(E, P, k('spav'))} < 0.88)"
+
+DP_MFG_003 = _spec(
+    "DP-MFG-003",
+    entity_column="work_order_id", entity_count=2600,
+    time_column="raised_at", grain="day", periods=120,
+    expressions={
+        "work_order_id": "('WO-' || lpad(entity::text, 8, '0') || '-' || period::text)",
+        # Assets recur across orders, which is what makes hours between failures
+        # a meaningful thing to divide by.
+        "asset_id": "('AST-' || lpad((1 + (entity % 240))::text, 5, '0'))",
+        "raised_at": "period_at",
+        "plant": weighted([("plant_north", 4), ("plant_south", 3), ("plant_east", 3)], E,
+                          k("plant")),
+        "line": _M3_LINE,
+        "region": pick(["Northeast", "Southeast", "Midwest", "West"], E, k("reg")),
+        "asset_class": _M3_CLASS,
+        "criticality": weighted(MFG3_CRITICALITY, E, k("crit")),
+        "crew": pick(["crew_a", "crew_b", "crew_c"], E, P, k("crew")),
+        "unplanned": _M3_UNPLANNED,
+        "preventive_scheduled": f"(NOT {_M3_UNPLANNED})",
+        # A failure belongs to the order that addressed it, so counting failures
+        # does not count the orders that found nothing.
+        "failure_id": (
+            f"(CASE WHEN {_M3_UNPLANNED} "
+            "       THEN ('FLR-' || lpad(entity::text, 8, '0') || '-' || period::text) END)"
+        ),
+        "failure_mode": (
+            f"(CASE WHEN {_M3_UNPLANNED} THEN {pick(MFG3_MODES, E, P, k('mode'))} END)"
+        ),
+        # The ageing class runs fewer hours between failures than the rest.
+        "operating_hours": (
+            f"round(((160 + {rnd(E, P, k('oph'))} * 900) "
+            f"  * (CASE WHEN {_M3_CLASS} = '{FAILING_CLASS}' THEN 0.42 ELSE 1.0 END))"
+            "::numeric, 1)"
+        ),
+        "spares_needed": f"({_M3_UNPLANNED} OR {rnd(E, P, k('spn'))} < 0.36)",
+        "spares_available": f"(spares_needed AND {_M3_SPARES_AVAILABLE})",
+        # Where the repair time actually goes: waiting for a part.
+        "repair_minutes": (
+            f"(CASE WHEN {_M3_UNPLANNED} "
+            f"      THEN round(((45 + {rnd(E, P, k('rep'))} * 190) "
+            f"        * (CASE WHEN NOT {_M3_SPARES_AVAILABLE} THEN 2.8 ELSE 1.0 END))"
+            "::numeric, 1) ELSE 0 END)"
+        ),
+        "maintenance_hours": (
+            f"round(((1.2 + {rnd(E, P, k('mh'))} * 5.5) "
+            f"  + (CASE WHEN {_M3_UNPLANNED} THEN 2.4 ELSE 0 END))::numeric, 2)"
+        ),
+        # The plan slips on one line, which is where its breakdowns come from.
+        "completed_in_window": (
+            f"(NOT {_M3_UNPLANNED} AND {rnd(E, P, k('ciw'))} < "
+            f"  (CASE WHEN {_M3_LINE} = '{SLIPPING_LINE}' THEN 0.71 ELSE 0.945 END))"
+        ),
+        "condition_alert_open": (
+            f"({rnd(E, P, k('cond'))} < "
+            f"  (CASE WHEN {_M3_UNPLANNED} THEN 0.41 ELSE 0.12 END))"
+        ),
+        "asset_age_years": (
+            f"round(((1.5 + {rnd(E, k('age'))} * 12) "
+            f"  + (CASE WHEN {_M3_CLASS} = '{FAILING_CLASS}' THEN 9 ELSE 0 END))::numeric, 1)"
+        ),
+    },
+    notes="compressors fail oldest and hardest; missing spares triple repair time; LINE-2 plan slips",
+)
+
 ALL_SPECS = [
     DP_TEL_001, DP_TEL_002, DP_TCH_001, DP_BNK_001, DP_BNK_002, DP_INS_001, DP_INS_002,
     DP_HLT_001, DP_HLT_002, DP_RTL_001, DP_RTL_002, DP_RTL_003, DP_TRN_001, DP_UTL_001,
     DP_ENG_001, DP_MFG_001,
     DP_BNK_003, DP_TCH_002, DP_TRN_002, DP_MFG_002, DP_HLT_003, DP_INS_003,
+    DP_MFG_003,
 ]

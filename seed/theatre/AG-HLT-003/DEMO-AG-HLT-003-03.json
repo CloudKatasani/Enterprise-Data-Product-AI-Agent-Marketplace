@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-HLT-003-1.0.0",
   "analysis_type": "driver_ranking",
   "answer": {
-    "headline": "heart_failure leads on emergency department utilization rate at 1,976.92, 28.35% of the total across 5 conditions.",
+    "headline": "heart_failure leads on emergency department utilization rate at 2,007.69, 28.74% of the total across 5 conditions.",
     "narrative": "Ranked by the certified definition KPI-EDUTIL-038 over 8,060 rows in DP-HLT-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
@@ -15,28 +15,28 @@
       "rows": [
         [
           "heart_failure",
-          1976.92,
-          2305
+          2007.69,
+          2319
         ],
         [
           "pneumonia",
-          1492.31,
-          1688
+          1484.62,
+          1680
         ],
         [
           "copd",
           1396.15,
-          1732
+          1727
         ],
         [
           "sepsis",
-          1073.36,
+          1061.78,
           1158
         ],
         [
           "hip_replacement",
           1034.88,
-          1177
+          1176
         ]
       ]
     },
@@ -53,7 +53,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "ed_encounter_id",
         "attributed_member_id",
@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "Which conditions drive emergency department utilization?",
-  "recorded_at": "2026-09-04T21:58:29.244645+00:00",
+  "recorded_at": "2026-09-05T23:30:58.904045+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 60,
+    "latency_ms": 69,
     "rows_scanned": 8060,
     "runtime": "analytic",
     "tokens": {
@@ -97,7 +97,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
         },
         "cost_class": "medium",
-        "duration_ms": 57,
+        "duration_ms": 66,
         "rows_returned": 5,
         "rows_scanned": 8060,
         "tool": "query_dp_hlt_001"

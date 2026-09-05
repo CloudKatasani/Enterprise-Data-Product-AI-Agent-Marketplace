@@ -53,7 +53,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04T00:00:00+00:00",
+      "as_of": "2026-09-05T00:00:00+00:00",
       "columns": [
         "alert_id",
         "alert_score",
@@ -75,12 +75,12 @@
   ],
   "notes": [],
   "question": "Which alerts should be worked first today?",
-  "recorded_at": "2026-09-04T21:58:28.505516+00:00",
+  "recorded_at": "2026-09-05T23:30:57.961094+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 28,
+    "latency_ms": 32,
     "rows_scanned": 14400,
     "runtime": "analytic",
     "tokens": {
@@ -98,7 +98,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_002"
         },
         "cost_class": "small",
-        "duration_ms": 25,
+        "duration_ms": 28,
         "rows_returned": 5,
         "rows_scanned": 14400,
         "tool": "query_dp_bnk_002"

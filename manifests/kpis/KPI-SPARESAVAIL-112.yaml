@@ -1,0 +1,24 @@
+apiVersion: marketplace/v1
+kind: Kpi
+metadata:
+  id: KPI-SPARESAVAIL-112
+  name: "Spares Availability at Call"
+  domain: network_asset
+  steward: PTY-0053
+  status: certified
+spec:
+  business_definition: >-
+    Share of maintenance calls where every part needed was on the shelf. Measured at the call
+    rather than on stock levels, because a part in the wrong store is not available.
+  numerator_expr: "count(*) filter (where spares_available)"
+  denominator_expr: "count(*) filter (where spares_needed)"
+  grains_supported: [month, quarter, year]
+  slices_supported: [asset_class, plant, line, criticality, failure_mode]
+  unit: percent
+  direction: higher_is_better
+  target: 88.0
+  source_of_record: DP-MFG-003
+  forum_approved_at: 2026-09-05
+  last_reviewed: 2026-09-05
+  review_months: 12
+  synonyms: ["parts availability", "spares fill"]

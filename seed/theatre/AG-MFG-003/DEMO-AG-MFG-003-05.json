@@ -1,0 +1,109 @@
+{
+  "agent_id": "AG-MFG-003",
+  "agent_name": "Equipment Reliability Analyst",
+  "agent_version_id": "AGV-AG-MFG-003-1.0.0",
+  "analysis_type": "comparison",
+  "answer": {
+    "headline": "compressor trails on spares availability at call at 87.37%, 19.81% of the total across 5 asset classs.",
+    "narrative": "Ranked by the certified definition KPI-SPARESAVAIL-112 over 31,200 rows in DP-MFG-003.",
+    "table": {
+      "columns": [
+        "asset_class",
+        "KPI-SPARESAVAIL-112",
+        "observations"
+      ],
+      "rows": [
+        [
+          "compressor",
+          87.37,
+          4080
+        ],
+        [
+          "conveyor",
+          87.66,
+          6840
+        ],
+        [
+          "robot_cell",
+          88.13,
+          8280
+        ],
+        [
+          "packaging_head",
+          88.89,
+          6360
+        ],
+        [
+          "press",
+          88.95,
+          5640
+        ]
+      ]
+    },
+    "visual": {
+      "spec": {
+        "direction": "higher_is_better",
+        "target": 88.0,
+        "unit": "percent",
+        "x": "asset_class",
+        "y": "KPI-SPARESAVAIL-112"
+      },
+      "type": "bar"
+    }
+  },
+  "citations": [
+    {
+      "as_of": "2026-09-05T00:00:00+00:00",
+      "columns": [
+        "work_order_id",
+        "raised_at",
+        "asset_class",
+        "plant",
+        "line",
+        "criticality",
+        "spares_needed",
+        "spares_available"
+      ],
+      "contract_version": "1.0.0",
+      "product_id": "DP-MFG-003"
+    }
+  ],
+  "confidence": 0.93,
+  "confidence_display": "0.93",
+  "exchange_id": "DEMO-AG-MFG-003-05",
+  "kpi_definitions": [
+    "KPI-SPARESAVAIL-112"
+  ],
+  "notes": [],
+  "question": "Which asset classes are worst served by spares availability?",
+  "recorded_at": "2026-09-05T23:31:00.049446+00:00",
+  "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
+  "trace": {
+    "cost_display": "$0.0200",
+    "cost_usd": 0.02,
+    "latency_ms": 13,
+    "rows_scanned": 31200,
+    "runtime": "analytic",
+    "tokens": {
+      "in": 0,
+      "out": 0
+    },
+    "tool_calls": [
+      {
+        "arguments": {
+          "grain": "month",
+          "group_by": "asset_class",
+          "limit": 24,
+          "measure": "((count(*) filter (where spares_available))::numeric / NULLIF((count(*) filter (where spares_needed))::numeric, 0) * 100)",
+          "period": "all periods",
+          "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
+        },
+        "cost_class": "medium",
+        "duration_ms": 11,
+        "rows_returned": 5,
+        "rows_scanned": 31200,
+        "tool": "query_dp_mfg_003"
+      }
+    ]
+  }
+}

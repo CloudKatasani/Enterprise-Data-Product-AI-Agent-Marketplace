@@ -17,13 +17,13 @@
     }
   ],
   "claims": {
-    "current": "73.45",
+    "current": "73.40",
     "delta": "0.04",
     "groups": "9",
     "rows_scanned": "13200"
   },
   "exchange_id": "DEMO-AG-TRN-002-03",
-  "headline": "Asset Utilization is 73.45% for the week ending 2026-08-31, up 0.04% on the prior week.",
+  "headline": "Asset Utilization is 73.40% for the week ending 2026-08-31, up 0.04% on the prior week.",
   "kpi_definitions": [
     "KPI-ASSETUTIL-059"
   ],

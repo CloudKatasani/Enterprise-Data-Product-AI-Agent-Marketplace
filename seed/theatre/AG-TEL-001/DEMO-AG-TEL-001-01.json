@@ -16,12 +16,12 @@
         [
           "2026-04-01",
           1.9,
-          11340
+          11130
         ],
         [
           "2026-07-01",
           2.86,
-          13860
+          14070
         ]
       ]
     },
@@ -38,7 +38,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-04",
+      "as_of": "2026-09-05",
       "columns": [
         "subscriber_id",
         "churn_flag",
@@ -60,12 +60,12 @@
   ],
   "notes": [],
   "question": "What is our churn rate this quarter and how does it compare to last?",
-  "recorded_at": "2026-09-04T21:58:31.203864+00:00",
+  "recorded_at": "2026-09-05T23:31:01.363702+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 20,
+    "latency_ms": 27,
     "rows_scanned": 25200,
     "runtime": "analytic",
     "tokens": {
@@ -83,7 +83,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 18,
+        "duration_ms": 24,
         "rows_returned": 2,
         "rows_scanned": 25200,
         "tool": "query_dp_tel_001"

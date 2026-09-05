@@ -149,6 +149,7 @@ AGENT_IDENTITIES: list[tuple[str, str]] = [
     ("AG-MFG-002", "Supplier Quality Analyst"),
     ("AG-HLT-004", "Care Capacity Analyst"),
     ("AG-INS-004", "Policyholder Relationship Analyst"),
+    ("AG-MFG-003", "Equipment Reliability Analyst"),
 ]
 
 ORG_UNIT_FOR_INDUSTRY = {

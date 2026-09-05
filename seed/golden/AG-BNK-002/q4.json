@@ -16,13 +16,13 @@
     }
   ],
   "claims": {
-    "current": "2.43",
-    "delta": "0.70",
+    "current": "2.42",
+    "delta": "0.68",
     "groups": "2",
     "rows_scanned": "14400"
   },
   "exchange_id": "DEMO-AG-BNK-002-04",
-  "headline": "SAR Conversion Rate is 2.43% for the quarter ending 2026-07-01, up 0.70% on the prior quarter.",
+  "headline": "SAR Conversion Rate is 2.42% for the quarter ending 2026-07-01, up 0.68% on the prior quarter.",
   "kpi_definitions": [
     "KPI-SARCONV-023"
   ],

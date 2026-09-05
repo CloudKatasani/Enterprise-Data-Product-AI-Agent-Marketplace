@@ -466,3 +466,27 @@ entries:
     owner_team: "Customer Experience"
     criticality: tier3
     rank_order: 58
+  - code: SRC-CMMS
+    label: "Maintenance Management"
+    description: >-
+        Work orders, preventive maintenance schedules, completions and equipment failure records.
+    platform: maximo
+    owner_team: "Maintenance Engineering"
+    criticality: tier1
+    rank_order: 59
+  - code: SRC-CONDITION-MONITORING
+    label: "Condition Monitoring"
+    description: >-
+        Vibration, thermal and lubricant telemetry read from instrumented equipment.
+    platform: osisoft_pi
+    owner_team: "Reliability Engineering"
+    criticality: tier2
+    rank_order: 60
+  - code: SRC-SPARES-INVENTORY
+    label: "Spare Parts Inventory"
+    description: >-
+        Stock position, reservations and consumption for maintenance spares.
+    platform: sap
+    owner_team: "Maintenance Engineering"
+    criticality: tier2
+    rank_order: 61
