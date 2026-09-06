@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Link from 'next/link';
 
@@ -49,6 +49,13 @@ export function Constellation({
   const driftRef = useRef<Map<string, SVGGElement>>(new Map());
   const orbitRef = useRef<Map<string, SVGGElement>>(new Map());
   const [focused, setFocused] = useState<string | null>(null);
+  // Every radius here is read from a CSS custom property, which the server
+  // cannot see. Sizing nodes before the stylesheet is readable makes the server
+  // and the client disagree on an attribute React will not patch up, so the
+  // sized marks wait one paint. The box, the edges and the layout are server
+  // rendered as before, so nothing moves when they arrive.
+  const [styled, setStyled] = useState(false);
+  useEffect(() => setStyled(true), []);
 
   const placements = useMemo(
     () => new Map(hero.placements.map((placement) => [placement.id, placement])),
@@ -69,9 +76,16 @@ export function Constellation({
   const radius = useCallback((node: HeroNode) => {
     const min = motionToken('--constellation-node-radius-min', 0);
     const max = motionToken('--constellation-node-radius-max', 0);
+    // No scale to place a node on: the server render cannot read a CSS custom
+    // property, so both tokens come back as the fallback. Falling through the
+    // formula divides by log1p(0) and emits r="NaN", which the browser rejects
+    // outright — every node in the constellation disappears, and the only trace
+    // is a console error nobody is watching.
+    const span = Math.log1p(max);
+    if (span <= 0) return min;
     // Log scale, because an estate where one product has forty consumers and
     // the rest have four should not be one enormous dot and a scatter of specks.
-    const scaled = min + Math.log1p(node.consumers) * (max - min) / Math.log1p(max);
+    const scaled = min + Math.log1p(node.consumers) * (max - min) / span;
     return Math.min(Math.max(scaled, min), max);
   }, []);
 
@@ -193,7 +207,7 @@ export function Constellation({
                   key={`${pulse.agent_id}-${product}-${pulse.at}`}
                   cx={at.x}
                   cy={at.y}
-                  r={motionToken('--constellation-node-radius-min', 0)}
+                  r={styled ? motionToken('--constellation-node-radius-min', 0) : 0}
                   className="constellation-pulse"
                 />
               );
@@ -228,7 +242,7 @@ export function Constellation({
                   onFocus={interactive ? () => setFocused(node.id) : undefined}
                   onBlur={interactive ? () => setFocused(null) : undefined}
                 >
-                  <circle r={radius(node)} />
+                  {styled ? <circle r={radius(node)} /> : null}
                 </g>
               </g>
             );
@@ -246,7 +260,7 @@ export function Constellation({
               transform={orbitTransform(orbit, orbit.phase_turns)}
             >
               <circle
-                r={motionToken('--constellation-node-radius-min', 0)}
+                r={styled ? motionToken('--constellation-node-radius-min', 0) : 0}
                 className="constellation-satellite"
               />
             </g>
