@@ -9,6 +9,7 @@ Acme
 DataHub
 Data Exchange Platform
 Enterprise Data Exchange
+Enterprise Data & Agents Marketplace
 Marketplace Inc
 Contoso
 Northwind

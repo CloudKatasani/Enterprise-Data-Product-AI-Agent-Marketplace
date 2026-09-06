@@ -15,8 +15,7 @@ export function generateMetadata(): Metadata {
       template: `%s — ${productName}`,
     },
     description:
-      'Governed catalog of data products and the AI agents that run on them: quality, ' +
-      'contracts, entitlements, demos and value in one supply chain.',
+      'Every governed data product and AI agent in the enterprise — on one shelf.',
   };
 }
 

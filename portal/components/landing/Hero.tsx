@@ -48,7 +48,7 @@ export function Hero({
       <div className="hero-scrim" aria-hidden />
       <div className="hero-copy">
         <h1 className="hero-headline">
-          Every governed data product and AI agent in the enterprise. One shelf.
+          Every governed data product and AI agent in the enterprise — on one shelf.
         </h1>
         <p className="hero-sub">
           Find it, watch it answer, request it, use it today — with the contract, the
