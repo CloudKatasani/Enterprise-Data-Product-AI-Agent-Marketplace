@@ -39,7 +39,7 @@ export function ProductRibbon({
 }: {
   products: FeaturedProduct[];
   staticCards: number;
-  totalProducts: number;
+  totalProducts: number | null;
 }) {
   const [paused, setPaused] = useState(false);
   const rows = useMemo(() => split(products), [products]);
@@ -82,7 +82,9 @@ export function ProductRibbon({
           ))}
         </ul>
         <Link href="/data-products" className="ribbon-more">
-          Browse all {totalProducts} data products
+          {totalProducts === null
+            ? 'Browse all data products'
+            : `Browse all ${totalProducts} data products`}
         </Link>
       </div>
 

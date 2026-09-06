@@ -20,6 +20,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
+from scripts._paths import PORTAL
 from services.common.rubrics import load_current
 from services.landing import featured, layout, proof, pulse, theatre
 
@@ -293,3 +294,45 @@ def test_a_proof_tile_states_its_window_and_its_source(db, landing, mesh) -> Non
         # An estate that has not deflected an hour should not claim a zero as
         # an achievement; empty tiles are omitted rather than shown.
         assert tile["value"] > 0
+
+
+# ---------------------------------------------------------------------------
+# What the bands may say about size
+# ---------------------------------------------------------------------------
+
+LANDING_PAGE = PORTAL / "app" / "page.tsx"
+RIBBON = PORTAL / "components" / "landing" / "ProductRibbon.tsx"
+CAROUSEL = PORTAL / "components" / "landing" / "AgentCarousel.tsx"
+
+
+def test_the_agents_band_says_what_its_handful_is_out_of(db, landing) -> None:
+    """Six cards read as the whole estate unless the band says otherwise.
+
+    The product ribbon has always carried its total. The agent band carried
+    none, so a visitor met thirty agents as six.
+    """
+    counters = {counter.code: counter for counter in pulse.counters(db, landing)}
+    assert counters["agents"].value > 0
+
+    source = CAROUSEL.read_text(encoding="utf-8")
+    assert "totalAgents" in source
+    assert 'href="/agents"' in source
+
+
+def test_a_missing_counter_is_not_rendered_as_a_zero() -> None:
+    """A counters call that failed does not mean the estate holds nothing.
+
+    Defaulting the total to zero puts "Browse all 0 data products" on the front
+    page — a claim about the estate made from a failed fetch. The bands take
+    null and drop the number instead, keeping the link.
+    """
+    page = LANDING_PAGE.read_text(encoding="utf-8")
+    # A slice limit may default to zero — slicing to no cards is correct when
+    # there are no cards. A *count* may not, because it is shown to a reader.
+    assert "?? 0" not in page
+    assert "number | null" in page
+
+    for component in (RIBBON, CAROUSEL):
+        source = component.read_text(encoding="utf-8")
+        assert "number | null" in source
+        assert "=== null" in source

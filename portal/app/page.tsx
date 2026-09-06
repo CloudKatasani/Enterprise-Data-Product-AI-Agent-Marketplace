@@ -60,10 +60,15 @@ export default async function LandingPage({
   const products = featured.ok ? featured.data.products : [];
   const agents = featured.ok ? featured.data.agents : [];
   const staticCards = featured.ok ? featured.data.limits.static_grid_cards : 0;
-  const totalProducts =
+  // Null, not zero. A counters call that failed does not mean the estate holds
+  // nothing, and "Browse all 0 data products" is a claim the page cannot
+  // support — the bands drop the number and keep the link.
+  const total = (code: string): number | null =>
     counters.ok
-      ? (counters.data.counters.find((counter) => counter.code === 'products')?.value ?? 0)
-      : 0;
+      ? (counters.data.counters.find((counter) => counter.code === code)?.value ?? null)
+      : null;
+  const totalProducts = total('products');
+  const totalAgents = total('agents');
 
   return (
     <div className="landing">
@@ -86,7 +91,7 @@ export default async function LandingPage({
           totalProducts={totalProducts}
         />
 
-        <AgentCarousel agents={agents} />
+        <AgentCarousel agents={agents} totalAgents={totalAgents} />
 
         {theatre.ok ? <AnswerTheatre traces={theatre.data.traces} /> : null}
 

@@ -15,7 +15,13 @@ import type { FeaturedAgent } from '@/lib/types';
  * a modal that reimplements it. One console, one code path, one set of
  * groundedness rules.
  */
-export function AgentCarousel({ agents }: { agents: FeaturedAgent[] }) {
+export function AgentCarousel({
+  agents,
+  totalAgents,
+}: {
+  agents: FeaturedAgent[];
+  totalAgents: number | null;
+}) {
   if (agents.length === 0) return null;
 
   return (
@@ -58,6 +64,12 @@ export function AgentCarousel({ agents }: { agents: FeaturedAgent[] }) {
           </li>
         ))}
       </ul>
+      {/* The band shows a handful; the count says what the handful is out of,
+          the way the product ribbon does. Without it a visitor reads six cards
+          as the whole estate. */}
+      <Link href="/agents" className="ribbon-more">
+        {totalAgents === null ? 'Browse all agents' : `Browse all ${totalAgents} agents`}
+      </Link>
     </section>
   );
 }
