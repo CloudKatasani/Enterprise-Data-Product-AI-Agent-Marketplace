@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM services/api/main.py BY scripts/gen.py — DO NOT EDIT
-// generator_version: 1.0.0  manifest_hash: 050a8e25b3257929c47ba51039b44f34fd5d60a2d9d9f41eb4b3a53e07995239  generated_at: 2026-09-04T08:15:10+00:00
+// generator_version: 1.0.0  manifest_hash: fa188358a66e628b94873de6875d8b7114d0707423ead37ade76c34c6a2bd20d  generated_at: 2026-09-06T01:47:37+00:00
 
 /* eslint-disable */
 /**
@@ -184,6 +184,11 @@ export class MarketplaceClient {
   /** File new-supply demand */
   postDemand(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
     return request(this.baseUrl, 'POST', `/api/v1/demand`, undefined, body, options);
+  }
+
+  /** Can the estate already answer this? Run before filing new demand. */
+  postDemandAssess(body?: unknown, options: RequestOptions = {}): Promise<unknown> {
+    return request(this.baseUrl, 'POST', `/api/v1/demand/assess`, undefined, body, options);
   }
 
   /** Does the estate already supply this? Run before submitting. */

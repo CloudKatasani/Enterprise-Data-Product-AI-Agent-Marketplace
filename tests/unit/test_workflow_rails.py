@@ -470,3 +470,49 @@ def test_a_declined_item_stays_on_the_public_backlog_with_its_reason(
     assert listed["REQ-PUB"]["state"] == engine.ENH_DECLINED
     assert listed["REQ-PUB"]["decline"]["reason_code"] == "cost_prohibitive"
     assert listed["REQ-PUB"]["decline"]["reason_text"]
+
+
+def test_a_demand_for_an_agent_is_compared_against_agents(db, demand_rubric) -> None:
+    """"We already have one of these" is a claim about the same sort of asset.
+
+    Comparing a demand for an agent against the product catalogue answers a
+    question nobody asked: a churn agent does not read like a churn product, so
+    the check comes back clear and the requester is told to build something the
+    estate already runs.
+    """
+    text = (
+        "An agent that watches subscriber churn and tells retention which "
+        "cohorts are leaving."
+    )
+    against_agents = demand.check_duplicates(
+        db, demand_rubric, request_text=text, kpis=["KPI-CHURN-001"],
+        entities=["subscriber", "churn"], sources=["DP-TEL-001"],
+        kind=demand.KIND_AGENT,
+    )
+    assert against_agents.verdict != demand.VERDICT_CLEAR
+    assert against_agents.matches[0].candidate_id.startswith("AG-")
+
+
+def test_the_default_comparison_is_still_the_product_catalogue(db, demand_rubric) -> None:
+    """The submission path has always meant products, and adding a kind must not
+    quietly move it."""
+    text = "Subscriber churn and retention across the base, by cohort and region."
+    default = demand.check_duplicates(
+        db, demand_rubric, request_text=text, kpis=["KPI-CHURN-001"],
+        entities=["subscriber", "churn"], sources=["SRC-CRM-01"],
+    )
+    explicit = demand.check_duplicates(
+        db, demand_rubric, request_text=text, kpis=["KPI-CHURN-001"],
+        entities=["subscriber", "churn"], sources=["SRC-CRM-01"],
+        kind=demand.KIND_PRODUCT,
+    )
+    assert default.document() == explicit.document()
+    for match in default.matches:
+        assert match.candidate_id.startswith("DP-")
+
+
+def test_an_unknown_kind_of_demand_is_refused(db, demand_rubric) -> None:
+    with pytest.raises(ValueError):
+        demand.check_duplicates(
+            db, demand_rubric, request_text="anything at all", kind="banana"
+        )

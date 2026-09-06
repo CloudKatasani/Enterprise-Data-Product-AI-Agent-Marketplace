@@ -942,3 +942,45 @@ export interface TenancyPanel {
   row_level_security: number;
   unprotected_tables: string[];
 }
+
+
+export interface AssessedKpi {
+  kpi_id: string;
+  kpi_name: string | null;
+  known: boolean;
+  source_product_id: string | null;
+  answered_by: string[];
+  answered: boolean;
+}
+
+export interface AssessmentCandidate {
+  asset_type: string;
+  asset_id: string;
+  name: string;
+  covered_kpis: string[];
+  missing_kpis: string[];
+  share: number;
+}
+
+export interface SupplyAssessment {
+  kind: string;
+  recommendation:
+    | 'already_served'
+    | 'enhance_agent'
+    | 'enhance_product'
+    | 'build_new'
+    | 'insufficient_evidence';
+  headline: string;
+  rationale: string;
+  answered_share: number;
+  coverage: AssessedKpi[];
+  candidates: AssessmentCandidate[];
+  unplaced_questions: string[];
+  notes: string[];
+  rubric_version_id: string;
+}
+
+export interface AssessResponse {
+  assessment: SupplyAssessment;
+  duplicates: DuplicateCheck | null;
+}

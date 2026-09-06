@@ -1,6 +1,6 @@
 # Demand scoring and duplicate-supply detection.
 rubric: demand_scoring
-version: 1.2.0
+version: 1.4.0
 criteria:
   - { code: business_value,      weight: 0.30 }
   - { code: consumer_breadth,    weight: 0.20 }
@@ -17,6 +17,30 @@ duplicate_detection:
   blocking_threshold: 0.75
   advisory_threshold: 0.50
   architect_review_below_confidence: 0.80
+# What the estate should do about a demand, decided from how much of it is
+# already answerable rather than from how the request was worded.
+#
+# The two thresholds are shares of the KPIs the requester named. At or above
+# `already_served_min` a single existing asset answers the whole ask and no new
+# supply is warranted; at or above `enhance_existing_min` enough is already in
+# place that extending the nearest asset is cheaper and safer than building
+# beside it. Below both, the ask is genuinely new.
+#
+# `already_served_min` is one on purpose. "Most of your question is answered"
+# is not the same claim as "your question is answered", and a recommendation to
+# build nothing has to clear the higher bar.
+supply_assessment:
+  already_served_min: 1.0
+  enhance_existing_min: 0.4
+  # A demand naming no KPI cannot be assessed against coverage at all; it is
+  # sent to a steward rather than given a recommendation the evidence does not
+  # support.
+  min_kpis_for_recommendation: 1
+  # How many of the closest agents and closest products the assessment hands
+  # back as evidence. Enough to show the shape of what exists; few enough that
+  # the reader still reads it.
+  candidates_shown: 5
+
 theme_escalation:
   distinct_teams_min: 5
 clustering:

@@ -11,14 +11,29 @@ import type { DuplicateCheck } from '@/lib/types';
  * duplicate check that cannot explain itself gets overridden once and then
  * ignored forever.
  */
-export function DuplicatePanel({ check }: { check: DuplicateCheck }) {
+export function DuplicatePanel({
+  check,
+  kind = 'data_product',
+}: {
+  check: DuplicateCheck;
+  kind?: 'data_product' | 'agent';
+}) {
+  // A demand for an agent is compared against agents, so the panel has to name
+  // the same sort of asset the comparison was made against — and link to it.
+  const agent = kind === 'agent';
+  const noun = agent ? 'AI agent' : 'data product';
+  const base = agent ? '/agents' : '/data-products';
+
   if (check.verdict === 'clear') {
     return (
       <section className="refusal-panel" data-kind="clear">
-        <h2 className="refusal-title">Nothing in the estate covers this</h2>
+        {/* Scoped to what this check actually did. "Nothing in the estate
+            covers this" is a claim about coverage, which the assessment above
+            answers from the register — and it can say the opposite. */}
+        <h2 className="refusal-title">Nothing reads like a duplicate</h2>
         <p className="refusal-body">
-          No existing data product scores close enough to be a duplicate. This request
-          goes to scoring.
+          No existing {noun} is close enough in wording, entities or KPIs to be a
+          restatement of one. This request goes to scoring.
         </p>
       </section>
     );
@@ -55,7 +70,7 @@ export function DuplicatePanel({ check }: { check: DuplicateCheck }) {
             <li key={match.candidate_id} className="rounded-md border border-subtle p-md">
               <div className="flex flex-wrap items-baseline justify-between gap-2xs">
                 <Link
-                  href={`/data-products/${match.candidate_id}`}
+                  href={`${base}/${match.candidate_id}`}
                   className="text-sm font-medium text-accent hover:underline"
                 >
                   {match.candidate_name}

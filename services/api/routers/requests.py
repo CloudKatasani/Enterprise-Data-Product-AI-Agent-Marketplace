@@ -24,7 +24,7 @@ from services.common.principal import Principal, current_principal
 from services.common.problem import Problem, bad_request, not_found
 from services.common.rubrics import Rubric
 from services.search import embedding
-from services.workflow import access, demand, engine, enhancement, policy
+from services.workflow import access, assessment, demand, engine, enhancement, policy
 
 router = APIRouter(prefix="/requests", tags=["requests"])
 demand_router = APIRouter(prefix="/demand", tags=["demand"])
@@ -341,6 +341,48 @@ def check_demand(
         entities=body.get("entities"), sources=body.get("sources"),
         kpis=body.get("kpis"),
     ).document()
+
+
+@demand_router.post(
+    "/assess",
+    status_code=http_status.OK,
+    summary="Can the estate already answer this? Run before filing new demand.",
+)
+def assess_demand(
+    connection: Connection,
+    principal: Caller,
+    tenant_id: Tenant,
+    rubric: DemandRubric,
+    search: SearchRubric,
+    body: Annotated[dict[str, Any], Body()],
+) -> dict[str, Any]:
+    """Coverage, candidates and a recommendation, from the KPIs and questions asked.
+
+    Distinct from ``/check``, which asks whether a request *reads like* something
+    that exists. This asks whether the estate can already *answer* it, which is a
+    fact about the coverage map rather than a similarity between two texts. Both
+    run before anything is filed, and the intake shows them together.
+    """
+    kind = str(body.get("kind") or assessment.KIND_PRODUCT).strip()
+    if kind not in assessment.KINDS:
+        raise bad_request(f"kind must be one of {', '.join(assessment.KINDS)}")
+    text = str(body.get("text") or "").strip()
+
+    embedding.configure_from_rubric(search)
+    verdict = assessment.assess(
+        connection, rubric, kind=kind,
+        kpis=body.get("kpis"), questions=body.get("questions"),
+    )
+    duplicates = (
+        demand.check_duplicates(
+            connection, rubric, request_text=text,
+            entities=body.get("entities"), sources=body.get("sources"),
+            kpis=body.get("kpis"), kind=kind,
+        ).document()
+        if text
+        else None
+    )
+    return {"assessment": verdict.document(), "duplicates": duplicates}
 
 
 @demand_router.post(

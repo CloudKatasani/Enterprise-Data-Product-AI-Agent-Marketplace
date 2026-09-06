@@ -424,6 +424,105 @@
     opacity: var(--opacity-hover);
   }
 
+  /* New-supply intake: the form, and the assessment it produces. */
+  .supply-form {
+    display: grid;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+  }
+
+  .supply-label {
+    display: block;
+    margin-block-end: var(--space-2xs);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .supply-input {
+    display: block;
+    inline-size: 100%;
+    padding: var(--space-2xs) var(--space-sm);
+    border: var(--border-width-hairline) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+  }
+
+  /* Textarea height is presentation, so it is set here rather than with a rows
+     attribute in the component — the portal keeps numbers out of its source. */
+  .supply-input--short {
+    min-block-size: calc(var(--text-sm) * 4);
+  }
+
+  .supply-input--tall {
+    min-block-size: calc(var(--text-sm) * 6);
+  }
+
+  .supply-hint {
+    display: block;
+    margin-block-start: var(--space-3xs);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .assessment {
+    padding: var(--space-lg);
+    border: var(--border-width-hairline) solid var(--border-subtle);
+    border-inline-start-width: var(--border-width-accent);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+  }
+
+  /* The verdict is carried by the rail colour, and by the words. Colour is
+     never the only signal: the headline says what the recommendation is. */
+  .assessment-verdict-served {
+    border-inline-start-color: var(--colour-band-exemplary);
+  }
+
+  .assessment-verdict-enhance {
+    border-inline-start-color: var(--colour-band-watch);
+  }
+
+  .assessment-verdict-build {
+    border-inline-start-color: var(--border-accent);
+  }
+
+  .assessment-verdict-thin {
+    border-inline-start-color: var(--border-strong);
+  }
+
+  .assessment-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .assessment-table th,
+  .assessment-table td {
+    padding: var(--space-2xs) var(--space-xs);
+    text-align: start;
+    border-block-end: var(--border-width-hairline) solid var(--border-subtle);
+  }
+
+  .assessment-table thead th {
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+  }
+
+  .assessment-table tbody th {
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
   .tab-heading {
     font-size: var(--text-2xs);
     font-weight: var(--weight-semibold);

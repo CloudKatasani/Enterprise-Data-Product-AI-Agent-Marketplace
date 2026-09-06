@@ -538,3 +538,38 @@ Two things the new product exposed:
   was not on the shelf" was answered as a ranking by asset class rather than as the comparison
   it asked for. It is a legitimate cohort — the KPI's own expression does not reference it — and
   the split it produces is the finding: 394 minutes against 140.
+
+### D-041 — A demand is assessed against coverage before it is scored on similarity (2026-09-06)
+**Context** New-supply intake had one gate: `/demand/check`, which asks whether a request *reads
+like* a published product. That is a text question, and it is the right one for the moment
+somebody starts typing — but it is a weak answer to the question the board actually needs, which
+is whether anything in the estate can already **answer** what is being asked. It also compared
+every demand against data products, including a demand for an agent, so "we already have one of
+these" was being judged against the wrong sort of asset. The intake page carried no form: the
+whole flow was reachable only by hand-writing a query string.
+**Decision** `services/workflow/assessment.py` answers the coverage question from three facts the
+estate already holds — a KPI's `source_of_record`, `agent_kpi_coverage`, and
+`agent_product_binding` — and returns one of `already_served`, `enhance_agent`,
+`enhance_product`, `build_new` or `insufficient_evidence`, with the evidence it was made from.
+`/demand/assess` runs it and the similarity check together, so the page cannot show a
+recommendation made from one estate beside duplicates from another. The intake grew a real form:
+kind, the need, the KPIs the answer would carry, and the questions it would have to place.
+`check_duplicates` takes a `kind` and compares an agent demand against agents, defaulting to
+products so the submission path is unchanged. Every threshold, including how many candidates are
+worth reading, is in `manifests/rubrics/demand.yaml` under `supply_assessment` at 1.4.0.
+**Consequence** A demand naming no KPI gets `insufficient_evidence` rather than a verdict the
+evidence cannot support — the request for KPIs is not paperwork, it is the only thing that makes
+the check possible.
+
+Three things this exposed, all of them errors the first version made confidently:
+
+* A set of measures answered across *two* agents was recommended as an enhancement to whichever
+  single agent covered the most — which meant advising someone to add a measure another agent
+  already answers, the exact divergence the rationale warns against. Answered is answered,
+  however it is spread; that is an entitlement and a composition problem, not missing supply.
+* A KPI that is not in the register was reported as a coverage gap. It is not one. There is no
+  definition to answer against yet, and an agent asked to answer it would have to invent one, so
+  it is named as a definition gap instead.
+* A question was counted as placeable whenever the demand named *any* answered KPI. Almost every
+  demand does, so the unplaced-question signal disappeared exactly when it was worth having. A
+  question is placed by naming a measure something answers, or not at all.

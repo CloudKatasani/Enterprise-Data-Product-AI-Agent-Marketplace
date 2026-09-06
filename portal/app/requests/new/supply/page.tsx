@@ -1,44 +1,60 @@
 import Link from 'next/link';
 
+import { AssessmentPanel } from '@/components/workflow/AssessmentPanel';
 import { DuplicatePanel } from '@/components/workflow/DuplicatePanel';
 import { apiPost } from '@/lib/api';
-import type { DuplicateCheck } from '@/lib/types';
+import type { AssessResponse } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
+
+const KINDS = [
+  { code: 'data_product', label: 'A data product' },
+  { code: 'agent', label: 'An AI agent' },
+] as const;
+
+type DemandKind = (typeof KINDS)[number]['code'];
+
+/**
+ * A kind off the query string is whatever somebody typed there. Narrowing it
+ * against the list the form offers means an edited URL falls back to the
+ * default rather than sending the API a kind it will refuse.
+ */
+function asKind(value: string | string[] | undefined): DemandKind {
+  return KINDS.some((option) => option.code === value)
+    ? (value as DemandKind)
+    : KINDS[0].code;
+}
 
 function asList(value: string | string[] | undefined): string[] {
   if (value === undefined) return [];
   return Array.isArray(value) ? value : [value];
 }
 
-function Named({ label, values }: { label: string; values: string[] }) {
-  return (
-    <div>
-      <dt className="text-2xs uppercase tracking-wide text-muted">{label}</dt>
-      <dd className="mt-3xs">
-        {values.length === 0 ? (
-          <span className="text-2xs text-muted">none given</span>
-        ) : (
-          <ul className="trace-chips">
-            {values.map((value) => (
-              <li key={value} className="trace-chip font-mono">
-                {value}
-              </li>
-            ))}
-          </ul>
-        )}
-      </dd>
-    </div>
-  );
+/** Newline- or comma-separated free text, as the list the caller meant. */
+function lines(value: string): string[] {
+  return value
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 /**
- * New-supply demand intake (section 14.3).
+ * New-supply intake (section 14.3).
  *
- * The duplicate check runs on what has been typed so far, before anything is
- * filed. Catching a duplicate at this moment is worth more than any amount of
- * catalogue browsing, because it is the moment the person is actually
- * motivated to look.
+ * Two checks run on what has been typed, before anything is filed, because this
+ * is the moment the person is actually motivated to look:
+ *
+ * * the duplicate check asks whether the request *reads like* something that
+ *   exists — a similarity, over the description and the entities named;
+ * * the supply assessment asks whether the estate can already *answer* it — a
+ *   coverage fact, over the KPIs and questions named.
+ *
+ * The second is why the form asks for KPIs and example questions rather than a
+ * description alone. A demand that cannot name a measure cannot be checked
+ * against the coverage map, and the assessment says so instead of guessing.
+ *
+ * The form is a GET back to this page, so every state is a URL somebody can
+ * share with the steward they are arguing with, and none of it needs JavaScript.
  */
 export default async function NewSupplyRequestPage({
   searchParams,
@@ -46,26 +62,28 @@ export default async function NewSupplyRequestPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const question = typeof params.question === 'string' ? params.question : '';
+  const text = typeof params.question === 'string' ? params.question : '';
   const declinedBy = typeof params.declined_by === 'string' ? params.declined_by : '';
+  const kind = asKind(params.kind);
+  const kpiText = typeof params.kpis === 'string' ? params.kpis : '';
+  const questionText = typeof params.questions === 'string' ? params.questions : '';
   const entities = asList(params.entity);
   const sources = asList(params.source);
-  const kpis = asList(params.kpi);
 
-  const check = question
-    ? await apiPost<DuplicateCheck>('/demand/check', {
-        text: question,
+  const kpis = lines(kpiText);
+  const questions = lines(questionText);
+  const asked = text || kpis.length > 0 || questions.length > 0;
+
+  const result = asked
+    ? await apiPost<AssessResponse>('/demand/assess', {
+        kind,
+        text,
+        kpis,
+        questions,
         entities,
         sources,
-        kpis,
       })
     : null;
-  // Text alone can reach at most the embedding weight — 0.40 under the current
-  // rubric — which is below the advisory threshold by construction. So a
-  // description with no entities, sources or KPIs named cannot raise even an
-  // advisory, and saying "nothing covers this" on that basis would be a
-  // stronger claim than the check can support.
-  const thin = entities.length === 0 && sources.length === 0 && kpis.length === 0;
 
   return (
     <div className="mx-auto max-w-screen-md px-lg py-xl">
@@ -81,53 +99,113 @@ export default async function NewSupplyRequestPage({
       <p className="mt-2xs text-sm text-secondary">
         {declinedBy
           ? `${declinedBy} could not answer this. That is worth recording — an unanswered question is the most useful thing the marketplace can learn about itself.`
-          : 'Describe what you need. Before anything is filed, we check whether the estate already supplies it.'}
+          : 'Describe what you need and name the measures it would have to carry. Before anything is filed, we check whether the estate already answers it.'}
       </p>
 
-      {question ? (
-        <blockquote className="mt-lg rounded-md border-s-2 border-accent bg-sunken px-md py-sm text-sm text-primary">
-          {question}
-        </blockquote>
-      ) : (
-        <p className="mt-lg rounded-lg border border-subtle bg-sunken p-lg text-sm text-secondary">
-          Nothing to check yet. This form is normally reached from an agent that could
-          not answer, or from a catalogue search that found nothing.
-        </p>
-      )}
+      <form method="get" className="supply-form mt-lg">
+        <fieldset>
+          <legend className="text-2xs font-semibold uppercase tracking-wide text-muted">
+            What are you asking for?
+          </legend>
+          <div className="mt-xs flex flex-wrap gap-md">
+            {KINDS.map((option) => (
+              <label
+                key={option.code}
+                htmlFor={`kind-${option.code}`}
+                className="flex items-center gap-2xs text-sm"
+              >
+                {/* The wrapping label associates these already; the explicit
+                    pair and the aria-label are what the a11y check can see,
+                    because the id is built from the option rather than
+                    written out. */}
+                <input
+                  id={`kind-${option.code}`}
+                  type="radio"
+                  name="kind"
+                  value={option.code}
+                  aria-label={option.label}
+                  defaultChecked={kind === option.code}
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
-      {check ? (
-        <div className="mt-lg">
-          {check.ok ? (
+        <p>
+          <label htmlFor="question" className="supply-label">
+            What do you need, and what decision does it serve?
+          </label>
+          <textarea
+            id="question"
+            name="question"
+            defaultValue={text}
+            className="supply-input supply-input--tall"
+            placeholder="Freight margin by lane, so procurement can renegotiate the lanes that lose money."
+          />
+        </p>
+
+        <p>
+          <label htmlFor="kpis" className="supply-label">
+            Which certified KPIs would the answer carry?
+          </label>
+          <textarea
+            id="kpis"
+            name="kpis"
+            defaultValue={kpiText}
+            className="supply-input supply-input--short font-mono"
+            placeholder="KPI-FRTMARGIN-088, KPI-COSTPERKM-089"
+          />
+          <span className="supply-hint">
+            One per line or comma separated. Without at least one, the estate cannot be
+            checked for whether it already answers this —{' '}
+            <Link href="/data-products" className="underline">
+              browse the catalogue
+            </Link>{' '}
+            to find the identifiers.
+          </span>
+        </p>
+
+        <p>
+          <label htmlFor="questions" className="supply-label">
+            Which questions would it have to answer?
+          </label>
+          <textarea
+            id="questions"
+            name="questions"
+            defaultValue={questionText}
+            className="supply-input supply-input--tall"
+            placeholder="Which lanes are thinnest on margin?&#10;Do spot-tendered movements earn less?"
+          />
+          <span className="supply-hint">
+            One per line. Each is checked against what the published agents can place.
+          </span>
+        </p>
+
+        <button type="submit" className="refusal-action">
+          Check it against the estate
+        </button>
+      </form>
+
+      {result ? (
+        <div className="mt-xl space-y-lg">
+          {result.ok ? (
             <>
-              {thin ? (
-                <p className="mb-md rounded-md border border-subtle bg-sunken px-md py-sm text-2xs text-secondary">
-                  Only the description was compared. Naming the entities, source systems
-                  or KPIs you need makes this check far stronger — a description on its
-                  own cannot carry enough evidence to flag a duplicate.
-                </p>
+              <AssessmentPanel assessment={result.data.assessment} />
+              {result.data.duplicates ? (
+                <div>
+                  <h2 className="refusal-subhead">Does it read like something we have?</h2>
+                  <div className="mt-sm">
+                    <DuplicatePanel check={result.data.duplicates} kind={kind} />
+                  </div>
+                </div>
               ) : null}
-              <DuplicatePanel check={check.data} />
             </>
           ) : (
-            <p className="text-sm text-secondary">{check.problem.detail}</p>
+            <p className="text-sm text-secondary">{result.problem.detail}</p>
           )}
         </div>
       ) : null}
-
-      <section className="mt-xl">
-        <h2 className="refusal-subhead">What else are you asking for?</h2>
-        <p className="mt-2xs text-sm text-secondary">
-          These sharpen the duplicate check. Add them to the URL as{' '}
-          <code className="font-mono text-2xs">entity=</code>,{' '}
-          <code className="font-mono text-2xs">source=</code> or{' '}
-          <code className="font-mono text-2xs">kpi=</code>, repeated per value.
-        </p>
-        <dl className="mt-sm grid grid-cols-1 gap-sm sm:grid-cols-3">
-          <Named label="Entities" values={entities} />
-          <Named label="Source systems" values={sources} />
-          <Named label="KPIs" values={kpis} />
-        </dl>
-      </section>
     </div>
   );
 }

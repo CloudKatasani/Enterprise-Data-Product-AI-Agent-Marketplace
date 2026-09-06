@@ -642,6 +642,7 @@
       "required": [
         "criteria",
         "duplicate_detection",
+        "supply_assessment",
         "theme_escalation",
         "clustering",
         "presentation"
@@ -691,6 +692,33 @@
             },
             "architect_review_below_confidence": {
               "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            }
+          }
+        },
+        "supply_assessment": {
+          "type": "object",
+          "description": "Whether the estate already answers a demand, before it is scored for similarity.",
+          "required": [
+            "already_served_min",
+            "enhance_existing_min",
+            "min_kpis_for_recommendation",
+            "candidates_shown"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "already_served_min": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "enhance_existing_min": {
+              "$ref": "urn:marketplace:common#/$defs/unitInterval"
+            },
+            "min_kpis_for_recommendation": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "candidates_shown": {
+              "type": "integer",
+              "minimum": 1
             }
           }
         },

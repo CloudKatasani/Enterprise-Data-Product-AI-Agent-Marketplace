@@ -96,7 +96,7 @@
       "by": "scripts/gen.py",
       "from": "services/api/main.py",
       "generator_version": "1.0.0",
-      "manifest_hash": "050a8e25b3257929c47ba51039b44f34fd5d60a2d9d9f41eb4b3a53e07995239",
+      "manifest_hash": "fa188358a66e628b94873de6875d8b7114d0707423ead37ade76c34c6a2bd20d",
       "warning": "DO NOT EDIT"
     }
   },
@@ -2051,6 +2051,84 @@
           }
         },
         "summary": "File new-supply demand",
+        "tags": [
+          "demand"
+        ]
+      }
+    },
+    "/api/v1/demand/assess": {
+      "post": {
+        "description": "Coverage, candidates and a recommendation, from the KPIs and questions asked.\n\nDistinct from ``/check``, which asks whether a request *reads like* something\nthat exists. This asks whether the estate can already *answer* it, which is a\nfact about the coverage map rather than a similarity between two texts. Both\nrun before anything is filed, and the intake shows them together.",
+        "operationId": "assess_demand_api_v1_demand_assess_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-marketplace-subject",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Subject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-marketplace-agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Marketplace-Agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Assess Demand Api V1 Demand Assess Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Can the estate already answer this? Run before filing new demand.",
         "tags": [
           "demand"
         ]

@@ -56,6 +56,11 @@ THEME_TEAMS_PATH = "theme_escalation.distinct_teams_min"
 LABEL_WORDS_PATH = "clustering.label_words"
 PRECISION_PATH = "presentation.precision"
 
+# What a demand is asking for, and so what it is compared against.
+KIND_PRODUCT = "data_product"
+KIND_AGENT = "agent"
+KINDS = (KIND_PRODUCT, KIND_AGENT)
+
 VERDICT_BLOCKING = "blocking"
 VERDICT_ADVISORY = "advisory"
 VERDICT_CLEAR = "clear"
@@ -166,7 +171,7 @@ def _candidates(connection: psycopg.Connection[Any]) -> list[dict[str, Any]]:
         # record, and its sources are the upstream lineage edges the harvest
         # found. Both are read from the register rather than from a join table
         # kept in step by hand.
-        "SELECT p.product_id, p.name, p.purpose, p.grain, "
+        "SELECT p.product_id AS candidate_id, p.name, p.purpose, "
         "       coalesce(array_agg(DISTINCT k.kpi_id) FILTER (WHERE k.kpi_id IS NOT NULL), "
         "                '{}') AS kpis, "
         "       coalesce(array_agg(DISTINCT k.kpi_name) FILTER (WHERE k.kpi_name IS NOT NULL),"
@@ -180,8 +185,41 @@ def _candidates(connection: psycopg.Connection[Any]) -> list[dict[str, Any]]:
         "LEFT JOIN lineage_edge e ON e.downstream_id = p.product_id "
         "  AND e.downstream_type = 'data_product' AND e.upstream_type = 'source_system' "
         "LEFT JOIN data_product_column col ON col.product_id = p.product_id "
-        "GROUP BY p.product_id, p.name, p.purpose, p.grain "
+        "GROUP BY p.product_id, p.name, p.purpose "
         "ORDER BY p.product_id",
+    )
+
+
+def _agent_candidates(connection: psycopg.Connection[Any]) -> list[dict[str, Any]]:
+    """The same comparison surface as a product, read off an agent.
+
+    An agent's capability statement is its purpose, the KPIs in its coverage map
+    are the measures it serves, the products it binds are what it reads, and the
+    columns those bindings allow are the entities it can speak about. Shaping it
+    identically to a product is what lets one similarity calculation answer for
+    both — a demand for an agent is compared against agents, and the weights,
+    thresholds and rationale stay the ones the rubric published.
+    """
+    return fetch_all(
+        connection,
+        "SELECT a.agent_id AS candidate_id, a.name, "
+        "       v.capability_statement AS purpose, "
+        "       coalesce(array_agg(DISTINCT c.kpi_id) "
+        "                FILTER (WHERE c.kpi_id IS NOT NULL), '{}') AS kpis, "
+        "       coalesce(array_agg(DISTINCT k.kpi_name) "
+        "                FILTER (WHERE k.kpi_name IS NOT NULL), '{}') AS kpi_names, "
+        "       coalesce(array_agg(DISTINCT b.product_id) "
+        "                FILTER (WHERE b.product_id IS NOT NULL), '{}') AS sources, "
+        "       coalesce(array_agg(DISTINCT col.value) "
+        "                FILTER (WHERE col.value IS NOT NULL), '{}') AS columns "
+        "FROM agent a "
+        "JOIN agent_version v ON v.agent_version_id = a.current_version_id "
+        "LEFT JOIN agent_kpi_coverage c ON c.agent_version_id = v.agent_version_id "
+        "LEFT JOIN kpi_definition k ON k.kpi_id = c.kpi_id "
+        "LEFT JOIN agent_product_binding b ON b.agent_version_id = v.agent_version_id "
+        "LEFT JOIN LATERAL unnest(b.columns_allowed) AS col(value) ON true "
+        "GROUP BY a.agent_id, a.name, v.capability_statement "
+        "ORDER BY a.agent_id",
     )
 
 
@@ -193,7 +231,17 @@ def check_duplicates(
     entities: list[str] | None = None,
     sources: list[str] | None = None,
     kpis: list[str] | None = None,
+    kind: str = KIND_PRODUCT,
 ) -> DuplicateCheck:
+    """Whether this demand reads like something the estate already publishes.
+
+    ``kind`` chooses what it is compared against: a demand for an agent is
+    compared against agents, not products, because "we already have one of
+    these" is a claim about the same sort of asset. It defaults to products so
+    the submission path, which has always meant products, is unchanged.
+    """
+    if kind not in KINDS:
+        raise ValueError(f"kind must be one of {', '.join(KINDS)}")
     weights = {
         "embedding_match": float(rubric.number(WEIGHT_EMBEDDING)),
         "entity_overlap": float(rubric.number(WEIGHT_ENTITY)),
@@ -212,7 +260,10 @@ def check_duplicates(
     request_vector = embedder.embed(request_text)
 
     matches: list[Match] = []
-    for candidate in _candidates(connection):
+    pool = _agent_candidates(connection) if kind == KIND_AGENT else _candidates(
+        connection
+    )
+    for candidate in pool:
         subject = " ".join(
             [candidate["purpose"], candidate["name"], *candidate["kpi_names"]]
         )
@@ -245,7 +296,7 @@ def check_duplicates(
             continue
         matches.append(
             Match(
-                candidate_id=candidate["product_id"],
+                candidate_id=candidate["candidate_id"],
                 candidate_name=candidate["name"],
                 similarity=similarity,
                 contributing_factors=factors,
@@ -279,11 +330,12 @@ def _rationale(
     """Which signal drove the match, named so a reviewer can disagree with it."""
     contributions = {key: weights[key] * value for key, value in factors.items()}
     leading = max(contributions, key=lambda key: contributions[key])
+    asset = candidate["candidate_id"]
     readable = {
         "embedding_match": f"its stated purpose reads like {candidate['name']}",
-        "entity_overlap": f"it asks for entities {candidate['product_id']} already publishes",
-        "source_overlap": f"it names source systems {candidate['product_id']} already reads",
-        "kpi_overlap": f"it names KPIs {candidate['product_id']} already serves",
+        "entity_overlap": f"it asks for entities {asset} already covers",
+        "source_overlap": f"it names sources {asset} already reads",
+        "kpi_overlap": f"it names KPIs {asset} already serves",
     }
     return readable[leading]
 
