@@ -11,6 +11,13 @@ explore the two meshes, and see a quantified value case for every asset.
 Build specification: [`BUILD.md`](./BUILD.md). Where this README and `BUILD.md` disagree,
 `BUILD.md` wins.
 
+As-built specification and deployment reference:
+[`docs/build-spec/`](./docs/build-spec/README.md) — what to hand an AI engineer and a data engineer
+who have to build this on a client network and run it on AWS, Azure or GCP. Functional
+specification, solution architecture, the 76-table canonical model, a per-table data loading
+specification, three cloud reference architectures, the agent runtime, and a build plan with
+acceptance criteria. It does not override `BUILD.md`; it answers what happens after it.
+
 ## Quick start
 
 ```bash
