@@ -3,6 +3,9 @@
 Target: the marketplace running in a client's AWS account, private to their network, with Aurora
 PostgreSQL as the canonical store and Bedrock behind the `cortex`-class agent runtime.
 
+**Step-by-step commands:** [`../DEPLOY_AWS.md`](../DEPLOY_AWS.md) — note its finding F4: the `cortex`
+runtime calls Snowflake Cortex, so Bedrock is not required by the current code.
+
 Everything in [02 §7](02-architecture.md) applies. **[VERIFY]** every service, region and price in
 the client's own account.
 
