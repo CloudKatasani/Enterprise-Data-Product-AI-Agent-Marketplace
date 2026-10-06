@@ -141,8 +141,6 @@ def main(argv: list[str] | None = None) -> int:
             cur.execute(BOOTSTRAP)
         conn.commit()
 
-        _ensure_application_role(conn)
-
         for path in migrations:
             sql = path.read_text(encoding="utf-8")
             digest = hashlib.sha256(sql.encode("utf-8")).hexdigest()
@@ -171,6 +169,10 @@ def main(argv: list[str] | None = None) -> int:
             conn.commit()
             applied += 1
             print(f"migrate: applied {path.name}")
+
+        # After the migrations, not before: app_role is created by the first of
+        # them, so on a fresh database there is nothing to grant until it has run.
+        _ensure_application_role(conn)
 
     print(f"migrate: {applied} migration(s) applied, {len(migrations) - applied} already current")
     return 0

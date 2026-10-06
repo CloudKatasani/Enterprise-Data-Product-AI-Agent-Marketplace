@@ -18,6 +18,9 @@ specification, solution architecture, the 76-table canonical model, a per-table 
 specification, three cloud reference architectures, the agent runtime, and a build plan with
 acceptance criteria. It does not override `BUILD.md`; it answers what happens after it.
 
+Step-by-step AWS hosting guide, with the review findings that shape it:
+[`docs/DEPLOY_AWS.md`](./docs/DEPLOY_AWS.md).
+
 ## Quick start
 
 ```bash

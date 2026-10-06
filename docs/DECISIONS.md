@@ -573,3 +573,20 @@ Three things this exposed, all of them errors the first version made confidently
 * A question was counted as placeable whenever the demand named *any* answered KPI. Almost every
   demand does, so the unplaced-question signal disappeared exactly when it was worth having. A
   question is placed by naming a measure something answers, or not at all.
+
+### D-042 — An executable AWS deployment guide, written against the code rather than the spec (2026-10-06)
+**Context** `docs/build-spec/05-cloud-aws.md` is a reference architecture. Nobody could follow it
+to a running estate: the repository ships no Dockerfile and no infrastructure code, and reading the
+code turned up facts the reference does not reflect — the portal only authenticates with the
+development subject header, the API's bearer path verifies with the client secret as an HS256 key,
+Redis is validated but never connected, and the `cortex` runtime is Snowflake Cortex rather than
+Bedrock.
+**Decision** `docs/DEPLOY_AWS.md` is an ordered, copy-pasteable runbook (ECS Fargate, RDS for
+PostgreSQL 16, Service Connect, Secrets Manager, Cognito on the ALB, EventBridge Scheduler) that
+states those findings first and designs around them: sign-in is enforced at the load balancer and
+`OIDC_ISSUER` keeps a local marker, because pointing it at a real issuer today would lock every
+user out. `Dockerfile.backend` (API, worker and every job — one image, different
+commands), `Dockerfile.portal` and `.dockerignore` are committed at the root. CI does not build
+them yet; the portal build and the backend's editable install were verified outside Docker.
+**Consequence** A deployment that follows it is a governed single-identity pilot. Multi-user
+production waits on implementing option B from 02 §5; the guide lists that as the first gap.
