@@ -1,0 +1,22 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+COPY . .
+
+# Set WITH_SNOWFLAKE=true only when harvesting a real Snowflake account or running
+# AGENT_RUNTIME=cortex (finding F4). The default analytic runtime does not need it.
+ARG WITH_SNOWFLAKE=false
+RUN pip install --upgrade pip \
+ && pip install -e . \
+ && if [ "$WITH_SNOWFLAKE" = "true" ]; then pip install snowflake-connector-python; fi \
+ && useradd --uid 10001 --create-home app \
+ && chown -R app /app
+
+USER app
+EXPOSE 8000
+CMD ["python", "-m", "uvicorn", "services.api.main:app", \
+     "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]

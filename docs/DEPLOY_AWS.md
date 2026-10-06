@@ -14,7 +14,7 @@ These facts come from reading the code, not the spec. Each one changes a deploym
 
 | # | Finding | Where | What it means for hosting |
 |---|---|---|---|
-| F1 | **No Dockerfile and no infrastructure code exist.** `docker-compose.yml` only runs Postgres and Redis for local development. | repo root | Step 2 supplies two Dockerfiles; steps 3–10 build the infrastructure with the AWS CLI. |
+| F1 | **No infrastructure code exists**, and until this guide there was no Dockerfile — `docker-compose.yml` only runs Postgres and Redis for local development. | repo root | `Dockerfile.backend`, `Dockerfile.portal` and `.dockerignore` are now at the repository root (step 2); steps 3–10 build the infrastructure with the AWS CLI. |
 | F2 | **There is no working production sign-in yet.** The portal only ever sends `X-Marketplace-Subject: $PORTAL_DEV_SUBJECT`. The API honours that header *only* when `OIDC_ISSUER` contains a local marker (`localhost`, `.local`, `.invalid`, `oidc.local`). Pointed at a real IdP, the API ignores the header and expects a bearer token the portal never sends — and it verifies that token with `OIDC_CLIENT_SECRET` as an HS256 key, which no RS256/JWKS identity provider (Cognito, Entra, Okta) produces. | `portal/lib/api.ts`, `services/api/auth.py` | Keep `OIDC_ISSUER` at a local-marker value and put **authentication in front of the whole site at the load balancer** (Cognito on the ALB, step 9). Every signed-in person then acts as the one seeded party in `PORTAL_DEV_SUBJECT`. That is a governed **pilot/demo**, not multi-user production — see §13. |
 | F3 | **Redis is never used.** `REDIS_URL` is validated as present, but nothing connects to it. | `services/common/config.py` | ElastiCache is optional. Set `REDIS_URL` to any well-formed value, or provision a `cache.t4g.micro` if you want it ready for later. |
 | F4 | **The `cortex` runtime is Snowflake Cortex Agents, not Amazon Bedrock.** The default `analytic` runtime makes no model call at all. | `services/agent_runtime/cortex.py` | **No Bedrock access is needed.** `snowflake-connector-python` is *not* in `pyproject.toml`; add it to the image only when you connect a real Snowflake account (build arg in step 2). |
@@ -69,7 +69,8 @@ These facts come from reading the code, not the spec. Each one changes a deploym
 
 ## 2. Containerise the application
 
-Create these four files at the repository root. They are not committed today (F1).
+These three files are committed at the repository root; they are reproduced here so the guide reads
+end to end. The copies in the repository are authoritative.
 
 ### 2.1 `.dockerignore`
 

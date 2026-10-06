@@ -585,7 +585,8 @@ Bedrock.
 PostgreSQL 16, Service Connect, Secrets Manager, Cognito on the ALB, EventBridge Scheduler) that
 states those findings first and designs around them: sign-in is enforced at the load balancer and
 `OIDC_ISSUER` keeps a local marker, because pointing it at a real issuer today would lock every
-user out. Dockerfiles are given in the guide rather than committed, so this change adds no build
-surface CI does not yet exercise.
+user out. `Dockerfile.backend` (API, worker and every job — one image, different
+commands), `Dockerfile.portal` and `.dockerignore` are committed at the root. CI does not build
+them yet; the portal build and the backend's editable install were verified outside Docker.
 **Consequence** A deployment that follows it is a governed single-identity pilot. Multi-user
 production waits on implementing option B from 02 §5; the guide lists that as the first gap.
