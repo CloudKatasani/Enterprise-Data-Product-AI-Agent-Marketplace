@@ -53,7 +53,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "failure_id",
         "raised_at",
@@ -76,12 +76,12 @@
   ],
   "notes": [],
   "question": "Which asset classes have the worst time between failures?",
-  "recorded_at": "2026-09-05T23:30:59.974463+00:00",
+  "recorded_at": "2026-10-06T20:29:39.195080+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 31,
+    "latency_ms": 47,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {
@@ -99,7 +99,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
         },
         "cost_class": "medium",
-        "duration_ms": 29,
+        "duration_ms": 43,
         "rows_returned": 5,
         "rows_scanned": 31200,
         "tool": "query_dp_mfg_003"

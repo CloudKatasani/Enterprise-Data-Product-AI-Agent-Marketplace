@@ -5,7 +5,7 @@
   "analysis_type": "gap_analysis",
   "answer": {
     "headline": "affinity trails on multi-line penetration at 21.49%, 20.59% of the total across 3 distribution channels.",
-    "narrative": "Ranked by the certified definition KPI-MULTILINE-104 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "narrative": "Ranked by the certified definition KPI-MULTILINE-104 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "distribution_channel",
@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "as_of_month",
@@ -67,12 +67,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Which distribution channels have the weakest multi-line penetration?",
-  "recorded_at": "2026-09-05T23:30:59.394607+00:00",
+  "recorded_at": "2026-10-06T20:29:38.556717+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 105,
+    "latency_ms": 101,
     "rows_scanned": 2400,
     "runtime": "analytic",
     "tokens": {
@@ -86,11 +86,11 @@
           "group_by": "distribution_channel",
           "limit": 24,
           "measure": "((count(distinct customer_id) filter (where multi_line))::numeric / NULLIF((count(distinct customer_id))::numeric, 0) * 100)",
-          "period": "2026-09-01",
+          "period": "2026-10-01",
           "table": "MARKETPLACE_DEMO.t_dp_ins_003"
         },
         "cost_class": "medium",
-        "duration_ms": 103,
+        "duration_ms": 99,
         "rows_returned": 3,
         "rows_scanned": 2400,
         "tool": "query_dp_ins_003"

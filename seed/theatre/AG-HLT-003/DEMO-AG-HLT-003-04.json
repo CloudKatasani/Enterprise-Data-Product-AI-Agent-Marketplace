@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-HLT-003-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Emergency Department Utilization Rate is 1,176.92 for the month ending 2026-09-01, down 5,796.16 on the prior month.",
+    "headline": "Emergency Department Utilization Rate is 230.77 for the month ending 2026-10-01, down 6,561.54 on the prior month.",
     "narrative": "Computed from DP-HLT-001 under the certified definition KPI-EDUTIL-038, across 5 months and 31,200 rows.",
     "table": {
       "columns": [
@@ -14,29 +14,29 @@
       ],
       "rows": [
         [
-          "2026-05-01",
-          4976.92,
-          5980
-        ],
-        [
           "2026-06-01",
-          6853.85,
-          7800
+          5884.62,
+          7020
         ],
         [
           "2026-07-01",
-          6934.62,
+          7038.46,
           8060
         ],
         [
           "2026-08-01",
-          6973.08,
+          6969.23,
           8060
         ],
         [
           "2026-09-01",
-          1176.92,
-          1300
+          6792.31,
+          7800
+        ],
+        [
+          "2026-10-01",
+          230.77,
+          260
         ]
       ]
     },
@@ -53,7 +53,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05",
+      "as_of": "2026-10-01",
       "columns": [
         "ed_encounter_id",
         "attributed_member_id",
@@ -74,12 +74,12 @@
   ],
   "notes": [],
   "question": "How has emergency department utilization moved by month?",
-  "recorded_at": "2026-09-05T23:30:58.937253+00:00",
+  "recorded_at": "2026-10-06T20:29:38.088765+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 31,
+    "latency_ms": 23,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {
@@ -97,7 +97,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_hlt_001"
         },
         "cost_class": "medium",
-        "duration_ms": 28,
+        "duration_ms": 20,
         "rows_returned": 5,
         "rows_scanned": 31200,
         "tool": "query_dp_hlt_001"

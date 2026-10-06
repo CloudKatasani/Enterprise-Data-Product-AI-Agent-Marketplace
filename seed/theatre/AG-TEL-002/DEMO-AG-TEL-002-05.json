@@ -4,8 +4,8 @@
   "agent_version_id": "AGV-AG-TEL-002-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Fault Mean Time to Restore is 322.56 hours for the quarter ending 2026-07-01.",
-    "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 1 quarters and 15,120 rows.",
+    "headline": "Fault Mean Time to Restore is 252.78 hours for the quarter ending 2026-10-01, down 70.29 hours on the prior quarter.",
+    "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 2 quarters and 15,120 rows.",
     "table": {
       "columns": [
         "period",
@@ -15,8 +15,13 @@
       "rows": [
         [
           "2026-07-01",
-          322.56,
-          15120
+          323.07,
+          15030
+        ],
+        [
+          "2026-10-01",
+          252.78,
+          90
         ]
       ]
     },
@@ -33,7 +38,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "site_id",
         "restore_minutes",
@@ -54,12 +59,12 @@
   ],
   "notes": [],
   "question": "What is our MTTR trend and where is it worst?",
-  "recorded_at": "2026-09-05T23:31:01.553811+00:00",
+  "recorded_at": "2026-10-06T20:29:40.858246+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 9,
+    "latency_ms": 8,
     "rows_scanned": 15120,
     "runtime": "analytic",
     "tokens": {
@@ -77,8 +82,8 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_002"
         },
         "cost_class": "small",
-        "duration_ms": 7,
-        "rows_returned": 1,
+        "duration_ms": 5,
+        "rows_returned": 2,
         "rows_scanned": 15120,
         "tool": "query_dp_tel_002"
       }

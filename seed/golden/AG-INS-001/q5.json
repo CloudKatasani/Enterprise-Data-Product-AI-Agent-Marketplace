@@ -18,18 +18,18 @@
   ],
   "claims": {
     "groups": "3",
-    "rows_scanned": "4340",
-    "top": "772556.89",
+    "rows_scanned": "4200",
+    "top": "747635.70",
     "top_share": "37.27"
   },
   "exchange_id": "DEMO-AG-INS-001-05",
-  "headline": "low leads on average claim severity at $772,556.89, 37.27% of the total across 3 complexity bands.",
+  "headline": "low leads on average claim severity at $747,635.70, 37.27% of the total across 3 complexity bands.",
   "kpi_definitions": [
     "KPI-AVGSEV-028"
   ],
-  "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,340 rows in DP-INS-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,200 rows in DP-INS-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Did the new triage rule reduce severity on low-complexity claims?",
-  "rows_scanned": 4340,
+  "rows_scanned": 4200,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

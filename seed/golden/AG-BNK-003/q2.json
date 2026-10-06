@@ -26,7 +26,7 @@
   "kpi_definitions": [
     "KPI-PPC-017"
   ],
-  "narrative": "Ranked by the certified definition KPI-PPC-017 over 500 rows in DP-BNK-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-PPC-017 over 500 rows in DP-BNK-001. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "How does product density compare across regions?",
   "rows_scanned": 500,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

@@ -4,8 +4,8 @@
   "agent_version_id": "AGV-AG-INS-001-1.0.0",
   "analysis_type": "variance",
   "answer": {
-    "headline": "auto_liability leads on average claim severity at $784,221.50, 28.09% of the total across 4 coverage lines.",
-    "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,340 rows in DP-INS-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "headline": "auto_liability leads on average claim severity at $758,924.03, 28.09% of the total across 4 coverage lines.",
+    "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,200 rows in DP-INS-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "coverage_line",
@@ -15,23 +15,23 @@
       "rows": [
         [
           "auto_liability",
-          784221.5,
-          1054
+          758924.03,
+          1020
         ],
         [
           "auto_physical_damage",
-          740196.15,
-          1457
+          716318.86,
+          1410
         ],
         [
           "property",
-          648341.72,
-          992
+          627427.47,
+          960
         ],
         [
           "general_liability",
-          619341.86,
-          837
+          599363.09,
+          810
         ]
       ]
     },
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "claim_id",
         "incurred_losses",
@@ -73,13 +73,13 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Which settlement patterns diverge most from peers on like claims?",
-  "recorded_at": "2026-09-05T23:30:59.092081+00:00",
+  "recorded_at": "2026-10-06T20:29:38.254584+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 26,
-    "rows_scanned": 4340,
+    "latency_ms": 24,
+    "rows_scanned": 4200,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -92,13 +92,13 @@
           "group_by": "coverage_line",
           "limit": 24,
           "measure": "((sum(incurred_losses))::numeric / NULLIF((count(distinct claim_id))::numeric, 0))",
-          "period": "2026-08-01",
+          "period": "2026-09-01",
           "table": "MARKETPLACE_DEMO.t_dp_ins_001"
         },
         "cost_class": "small",
-        "duration_ms": 23,
+        "duration_ms": 22,
         "rows_returned": 4,
-        "rows_scanned": 4340,
+        "rows_scanned": 4200,
         "tool": "query_dp_ins_001"
       }
     ]

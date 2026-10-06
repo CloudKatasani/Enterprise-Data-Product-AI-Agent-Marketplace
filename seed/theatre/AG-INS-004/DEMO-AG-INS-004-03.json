@@ -5,7 +5,7 @@
   "analysis_type": "driver_ranking",
   "answer": {
     "headline": "Southeast leads on complaint rate per thousand at 27.30, 33.31% of the total across 4 regions.",
-    "narrative": "Ranked by the certified definition KPI-COMPLAINT-107 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "narrative": "Ranked by the certified definition KPI-COMPLAINT-107 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "region",
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "as_of_month",
@@ -72,12 +72,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "Which regions carry the highest complaint rate?",
-  "recorded_at": "2026-09-05T23:30:59.613339+00:00",
+  "recorded_at": "2026-10-06T20:29:38.747953+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 107,
+    "latency_ms": 96,
     "rows_scanned": 2400,
     "runtime": "analytic",
     "tokens": {
@@ -91,11 +91,11 @@
           "group_by": "region",
           "limit": 24,
           "measure": "((count(distinct customer_id) filter (where complaints_90d > 0) * 1000)::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
-          "period": "2026-09-01",
+          "period": "2026-10-01",
           "table": "MARKETPLACE_DEMO.t_dp_ins_003"
         },
         "cost_class": "medium",
-        "duration_ms": 104,
+        "duration_ms": 93,
         "rows_returned": 4,
         "rows_scanned": 2400,
         "tool": "query_dp_ins_003"

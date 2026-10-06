@@ -5,7 +5,7 @@
   "analysis_type": "cohort_comparison",
   "answer": {
     "headline": "enterprise leads on activation rate at 93.33%, 35.81% of the total across 3 plan tiers.",
-    "narrative": "Ranked by the certified definition KPI-ACTIV-013 over 17,360 rows in DP-TCH-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "narrative": "Ranked by the certified definition KPI-ACTIV-013 over 16,800 rows in DP-TCH-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "plan_tier",
@@ -16,17 +16,17 @@
         [
           "enterprise",
           93.33,
-          3720
+          3600
         ],
         [
           "starter",
           85.19,
-          6696
+          6480
         ],
         [
           "growth",
           82.14,
-          6944
+          6720
         ]
       ]
     },
@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05",
+      "as_of": "2026-10-01",
       "columns": [
         "account_id",
         "onboarded",
@@ -65,13 +65,13 @@
   ],
   "notes": [],
   "question": "Did the March onboarding change improve activation?",
-  "recorded_at": "2026-09-05T23:31:00.990381+00:00",
+  "recorded_at": "2026-10-06T20:29:40.261688+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 91,
-    "rows_scanned": 17360,
+    "latency_ms": 102,
+    "rows_scanned": 16800,
     "runtime": "analytic",
     "tokens": {
       "in": 0,
@@ -84,13 +84,13 @@
           "group_by": "plan_tier",
           "limit": 24,
           "measure": "((count(distinct account_id) filter (where activated))::numeric / NULLIF((count(distinct account_id) filter (where onboarded))::numeric, 0) * 100)",
-          "period": "2026-08-01",
+          "period": "2026-09-01",
           "table": "MARKETPLACE_DEMO.t_dp_tch_001"
         },
         "cost_class": "small",
-        "duration_ms": 89,
+        "duration_ms": 99,
         "rows_returned": 3,
-        "rows_scanned": 17360,
+        "rows_scanned": 16800,
         "tool": "query_dp_tch_001"
       }
     ]

@@ -28,7 +28,7 @@
   "kpi_definitions": [
     "KPI-POLRETEN-032"
   ],
-  "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 480 rows in DP-INS-002. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-POLRETEN-032 over 480 rows in DP-INS-002. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "What would a 5% increase on the worst-performing segment do to retention?",
   "rows_scanned": 480,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

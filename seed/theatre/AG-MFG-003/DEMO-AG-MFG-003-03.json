@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "work_order_id",
         "raised_at",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Where is preventive maintenance adherence weakest by line?",
-  "recorded_at": "2026-09-05T23:31:00.020797+00:00",
+  "recorded_at": "2026-10-06T20:29:39.247929+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 12,
+    "latency_ms": 13,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {

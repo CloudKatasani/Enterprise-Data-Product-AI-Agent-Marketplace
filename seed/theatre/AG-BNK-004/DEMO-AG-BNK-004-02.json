@@ -5,7 +5,7 @@
   "analysis_type": "comparison",
   "answer": {
     "headline": "broker leads on 30+ delinquency rate at 6.17%, 57.40% of the total across 3 channels.",
-    "narrative": "Ranked by the certified definition KPI-DELINQ-079 over 800 rows in DP-BNK-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "narrative": "Ranked by the certified definition KPI-DELINQ-079 over 800 rows in DP-BNK-003. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "channel",
@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "loan_id",
         "as_of_month",
@@ -68,12 +68,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "How does delinquency differ across origination channels?",
-  "recorded_at": "2026-09-05T23:30:58.234323+00:00",
+  "recorded_at": "2026-10-06T20:29:37.307518+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 39,
+    "latency_ms": 45,
     "rows_scanned": 800,
     "runtime": "analytic",
     "tokens": {
@@ -87,11 +87,11 @@
           "group_by": "channel",
           "limit": 24,
           "measure": "((count(distinct loan_id) filter (where delinquent_30d))::numeric / NULLIF((count(distinct loan_id))::numeric, 0) * 100)",
-          "period": "2026-09-01",
+          "period": "2026-10-01",
           "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
         },
         "cost_class": "medium",
-        "duration_ms": 37,
+        "duration_ms": 42,
         "rows_returned": 3,
         "rows_scanned": 800,
         "tool": "query_dp_bnk_003"

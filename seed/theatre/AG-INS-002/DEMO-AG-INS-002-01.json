@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "policy_id",
         "charged_premium",
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Where is rate adequacy weakest in the commercial property book?",
-  "recorded_at": "2026-09-05T23:30:59.151524+00:00",
+  "recorded_at": "2026-10-06T20:29:38.310435+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 9,
     "rows_scanned": 17280,
     "runtime": "analytic",
     "tokens": {

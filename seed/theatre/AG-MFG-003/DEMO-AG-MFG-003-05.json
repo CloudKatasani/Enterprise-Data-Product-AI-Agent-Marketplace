@@ -53,7 +53,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "work_order_id",
         "raised_at",
@@ -76,12 +76,12 @@
   ],
   "notes": [],
   "question": "Which asset classes are worst served by spares availability?",
-  "recorded_at": "2026-09-05T23:31:00.049446+00:00",
+  "recorded_at": "2026-10-06T20:29:39.276174+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 13,
+    "latency_ms": 12,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {
@@ -99,7 +99,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
         },
         "cost_class": "medium",
-        "duration_ms": 11,
+        "duration_ms": 10,
         "rows_returned": 5,
         "rows_scanned": 31200,
         "tool": "query_dp_mfg_003"

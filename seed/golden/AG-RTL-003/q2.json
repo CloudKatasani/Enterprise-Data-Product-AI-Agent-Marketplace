@@ -16,13 +16,13 @@
     }
   ],
   "claims": {
-    "current": "35.49",
-    "delta": "-0.08",
+    "current": "36.40",
+    "delta": "0.87",
     "groups": "4",
     "rows_scanned": "23400"
   },
   "exchange_id": "DEMO-AG-RTL-003-02",
-  "headline": "Gross Margin Rate is 35.49% for the month ending 2026-09-01, down 0.08% on the prior month.",
+  "headline": "Gross Margin Rate is 36.40% for the month ending 2026-10-01, up 0.87% on the prior month.",
   "kpi_definitions": [
     "KPI-GMRATE-049"
   ],

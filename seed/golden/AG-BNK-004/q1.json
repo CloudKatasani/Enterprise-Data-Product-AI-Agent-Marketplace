@@ -27,7 +27,7 @@
   "kpi_definitions": [
     "KPI-DELINQ-079"
   ],
-  "narrative": "Ranked by the certified definition KPI-DELINQ-079 over 800 rows in DP-BNK-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-DELINQ-079 over 800 rows in DP-BNK-003. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which origination vintages carry the worst delinquency?",
   "rows_scanned": 800,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

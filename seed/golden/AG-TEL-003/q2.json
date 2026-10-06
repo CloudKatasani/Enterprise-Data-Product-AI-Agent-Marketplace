@@ -19,12 +19,12 @@
   ],
   "claims": {
     "current": "100.00",
-    "delta": "1.43",
+    "delta": "0.95",
     "groups": "5",
     "rows_scanned": "25200"
   },
   "exchange_id": "DEMO-AG-TEL-003-02",
-  "headline": "Retention Rate is 100.00% for the month ending 2026-09-01, up 1.43% on the prior month.",
+  "headline": "Retention Rate is 100.00% for the month ending 2026-10-01, up 0.95% on the prior month.",
   "kpi_definitions": [
     "KPI-RETEN-002"
   ],

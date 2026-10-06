@@ -38,7 +38,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "policy_id",
         "as_of_month",
@@ -61,12 +61,12 @@
   ],
   "notes": [],
   "question": "How does written premium differ between bound and unbound quotes?",
-  "recorded_at": "2026-09-05T23:30:59.287528+00:00",
+  "recorded_at": "2026-10-06T20:29:38.453056+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 9,
+    "latency_ms": 8,
     "rows_scanned": 17280,
     "runtime": "analytic",
     "tokens": {
@@ -84,7 +84,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_002"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
+        "duration_ms": 5,
         "rows_returned": 2,
         "rows_scanned": 17280,
         "tool": "query_dp_ins_002"

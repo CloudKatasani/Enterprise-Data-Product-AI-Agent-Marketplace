@@ -38,7 +38,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "failure_id",
         "raised_at",
@@ -62,12 +62,12 @@
   ],
   "notes": [],
   "question": "Do repairs take longer when the spare was not on the shelf?",
-  "recorded_at": "2026-09-05T23:31:00.007069+00:00",
+  "recorded_at": "2026-10-06T20:29:39.232727+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 31,
+    "latency_ms": 35,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {
@@ -85,7 +85,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_mfg_003"
         },
         "cost_class": "medium",
-        "duration_ms": 28,
+        "duration_ms": 30,
         "rows_returned": 2,
         "rows_scanned": 31200,
         "tool": "query_dp_mfg_003"

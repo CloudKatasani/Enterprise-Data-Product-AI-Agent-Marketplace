@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "household_id",
@@ -65,12 +65,12 @@
   ],
   "notes": [],
   "question": "Who are my top 20 households by relationship value in the Southeast?",
-  "recorded_at": "2026-09-05T23:30:57.840208+00:00",
+  "recorded_at": "2026-10-06T20:29:36.919511+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 13,
+    "latency_ms": 17,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {
@@ -88,7 +88,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 6,
+        "duration_ms": 8,
         "rows_returned": 3,
         "rows_scanned": 18000,
         "tool": "query_dp_bnk_001"

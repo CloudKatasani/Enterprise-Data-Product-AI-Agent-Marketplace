@@ -4,8 +4,8 @@
   "agent_version_id": "AGV-AG-TEL-001-1.0.0",
   "analysis_type": "period_comparison",
   "answer": {
-    "headline": "Churn Rate is 2.86% for the quarter ending 2026-07-01, up 0.96% on the prior quarter.",
-    "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 2 quarters and 25,200 rows.",
+    "headline": "Churn Rate is 0.00% for the quarter ending 2026-10-01, down 3.33% on the prior quarter.",
+    "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 3 quarters and 25,200 rows.",
     "table": {
       "columns": [
         "period",
@@ -15,13 +15,18 @@
       "rows": [
         [
           "2026-04-01",
-          1.9,
-          11130
+          0.95,
+          5670
         ],
         [
           "2026-07-01",
-          2.86,
-          14070
+          3.33,
+          19320
+        ],
+        [
+          "2026-10-01",
+          0.0,
+          210
         ]
       ]
     },
@@ -38,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05",
+      "as_of": "2026-10-01",
       "columns": [
         "subscriber_id",
         "churn_flag",
@@ -60,12 +65,12 @@
   ],
   "notes": [],
   "question": "What is our churn rate this quarter and how does it compare to last?",
-  "recorded_at": "2026-09-05T23:31:01.363702+00:00",
+  "recorded_at": "2026-10-06T20:29:40.635476+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 27,
+    "latency_ms": 21,
     "rows_scanned": 25200,
     "runtime": "analytic",
     "tokens": {
@@ -83,8 +88,8 @@
           "table": "MARKETPLACE_DEMO.t_dp_tel_001"
         },
         "cost_class": "small",
-        "duration_ms": 24,
-        "rows_returned": 2,
+        "duration_ms": 19,
+        "rows_returned": 3,
         "rows_scanned": 25200,
         "tool": "query_dp_tel_001"
       }

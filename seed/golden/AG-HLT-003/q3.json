@@ -16,18 +16,18 @@
   ],
   "claims": {
     "groups": "5",
-    "rows_scanned": "8060",
-    "top": "2007.69",
-    "top_share": "28.74"
+    "rows_scanned": "7800",
+    "top": "1950.00",
+    "top_share": "28.63"
   },
   "exchange_id": "DEMO-AG-HLT-003-03",
-  "headline": "heart_failure leads on emergency department utilization rate at 2,007.69, 28.74% of the total across 5 conditions.",
+  "headline": "heart_failure leads on emergency department utilization rate at 1,950.00, 28.63% of the total across 5 conditions.",
   "kpi_definitions": [
     "KPI-EDUTIL-038"
   ],
-  "narrative": "Ranked by the certified definition KPI-EDUTIL-038 over 8,060 rows in DP-HLT-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-EDUTIL-038 over 7,800 rows in DP-HLT-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which conditions drive emergency department utilization?",
-  "rows_scanned": 8060,
+  "rows_scanned": 7800,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "loan_id",
         "as_of_month",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "Which product types earn the most portfolio yield?",
-  "recorded_at": "2026-09-05T23:30:58.245231+00:00",
+  "recorded_at": "2026-10-06T20:29:37.324989+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 9,
+    "latency_ms": 14,
     "rows_scanned": 19200,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_003"
         },
         "cost_class": "medium",
-        "duration_ms": 6,
+        "duration_ms": 9,
         "rows_returned": 4,
         "rows_scanned": 19200,
         "tool": "query_dp_bnk_003"

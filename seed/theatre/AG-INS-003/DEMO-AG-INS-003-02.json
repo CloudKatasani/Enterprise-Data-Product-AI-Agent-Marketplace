@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "claim_id",
         "transition_timestamp",
@@ -65,7 +65,7 @@
   ],
   "notes": [],
   "question": "How does loss ratio compare across distribution channels?",
-  "recorded_at": "2026-09-05T23:30:59.257603+00:00",
+  "recorded_at": "2026-10-06T20:29:38.419597+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",

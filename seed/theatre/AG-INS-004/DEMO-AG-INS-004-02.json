@@ -5,7 +5,7 @@
   "analysis_type": "comparison",
   "answer": {
     "headline": "3-5y leads on digital enrolment rate at 70.85%, 30.75% of the total across 4 tenure bands.",
-    "narrative": "Ranked by the certified definition KPI-DIGITAL-105 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "narrative": "Ranked by the certified definition KPI-DIGITAL-105 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "tenure_band",
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "as_of_month",
@@ -72,12 +72,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "How does digital enrolment differ by tenure band?",
-  "recorded_at": "2026-09-05T23:30:59.504201+00:00",
+  "recorded_at": "2026-10-06T20:29:38.649105+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",
     "cost_usd": 0.02,
-    "latency_ms": 108,
+    "latency_ms": 90,
     "rows_scanned": 2400,
     "runtime": "analytic",
     "tokens": {
@@ -91,11 +91,11 @@
           "group_by": "tenure_band",
           "limit": 24,
           "measure": "((count(distinct customer_id) filter (where digital_registered))::numeric / NULLIF((count(distinct customer_id))::numeric, 0) * 100)",
-          "period": "2026-09-01",
+          "period": "2026-10-01",
           "table": "MARKETPLACE_DEMO.t_dp_ins_003"
         },
         "cost_class": "medium",
-        "duration_ms": 105,
+        "duration_ms": 87,
         "rows_returned": 4,
         "rows_scanned": 2400,
         "tool": "query_dp_ins_003"

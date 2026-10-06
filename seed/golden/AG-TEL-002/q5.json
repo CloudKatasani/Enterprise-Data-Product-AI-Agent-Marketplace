@@ -15,16 +15,17 @@
     }
   ],
   "claims": {
-    "current": "322.56",
-    "groups": "1",
+    "current": "252.78",
+    "delta": "-70.29",
+    "groups": "2",
     "rows_scanned": "15120"
   },
   "exchange_id": "DEMO-AG-TEL-002-05",
-  "headline": "Fault Mean Time to Restore is 322.56 hours for the quarter ending 2026-07-01.",
+  "headline": "Fault Mean Time to Restore is 252.78 hours for the quarter ending 2026-10-01, down 70.29 hours on the prior quarter.",
   "kpi_definitions": [
     "KPI-FMTTR-009"
   ],
-  "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 1 quarters and 15,120 rows.",
+  "narrative": "Computed from DP-TEL-002 under the certified definition KPI-FMTTR-009, across 2 quarters and 15,120 rows.",
   "question": "What is our MTTR trend and where is it worst?",
   "rows_scanned": 15120,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

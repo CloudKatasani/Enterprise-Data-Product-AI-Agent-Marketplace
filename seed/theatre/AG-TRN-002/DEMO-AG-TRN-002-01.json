@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "shipment_leg_id",
         "departure_timestamp",
@@ -66,12 +66,12 @@
   ],
   "notes": [],
   "question": "Which equipment types are utilised least?",
-  "recorded_at": "2026-09-05T23:31:01.715479+00:00",
+  "recorded_at": "2026-10-06T20:29:41.050540+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 7,
+    "latency_ms": 8,
     "rows_scanned": 13200,
     "runtime": "analytic",
     "tokens": {

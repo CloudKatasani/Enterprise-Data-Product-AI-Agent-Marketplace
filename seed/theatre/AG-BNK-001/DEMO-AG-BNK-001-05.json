@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-BNK-001-1.0.0",
   "analysis_type": "event_impact",
   "answer": {
-    "headline": "Deposit Balance Growth is 5.16% for the year ending 2026-01-01, up 1.24% on the prior year.",
+    "headline": "Deposit Balance Growth is 5.16% for the year ending 2026-01-01, up 1.65% on the prior year.",
     "narrative": "Computed from DP-BNK-001 under the certified definition KPI-DEPGRW-020, across 4 years and 18,000 rows.",
     "table": {
       "columns": [
@@ -16,7 +16,7 @@
         [
           "2023-01-01",
           0.21,
-          1500
+          1000
         ],
         [
           "2024-01-01",
@@ -25,13 +25,13 @@
         ],
         [
           "2025-01-01",
-          3.92,
+          3.51,
           6000
         ],
         [
           "2026-01-01",
           5.16,
-          4500
+          5000
         ]
       ]
     },
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "starting_deposit_balance",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "How did deposit balances shift after the April rate change?",
-  "recorded_at": "2026-09-05T23:30:57.902584+00:00",
+  "recorded_at": "2026-10-06T20:29:36.988057+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 12,
+    "latency_ms": 17,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 8,
+        "duration_ms": 9,
         "rows_returned": 4,
         "rows_scanned": 18000,
         "tool": "query_dp_bnk_001"

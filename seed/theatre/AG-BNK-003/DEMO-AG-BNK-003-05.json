@@ -5,7 +5,7 @@
   "analysis_type": "distribution",
   "answer": {
     "headline": "Median products per customer is 3.00 for 0-2y, with p90 at 6.00.",
-    "narrative": "Across 117 observations in DP-BNK-001; the spread, not the mean, is what the question asked about. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+    "narrative": "Across 117 observations in DP-BNK-001; the spread, not the mean, is what the question asked about. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
     "table": {
       "columns": [
         "tenure_band",
@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "as_of_month",
@@ -72,12 +72,12 @@
     "Fewer than 5,000 rows were available, so this answer is thinner evidence than usual."
   ],
   "question": "How is product density distributed across tenure bands?",
-  "recorded_at": "2026-09-05T23:30:58.151517+00:00",
+  "recorded_at": "2026-10-06T20:29:37.213329+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 37,
+    "latency_ms": 29,
     "rows_scanned": 500,
     "runtime": "analytic",
     "tokens": {
@@ -91,11 +91,11 @@
           "group_by": "tenure_band",
           "limit": 24,
           "measure": "((sum(active_product_count))::numeric / NULLIF((count(distinct customer_id))::numeric, 0))",
-          "period": "2026-09-01",
+          "period": "2026-10-01",
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 34,
+        "duration_ms": 26,
         "rows_returned": 4,
         "rows_scanned": 500,
         "tool": "query_dp_bnk_001"

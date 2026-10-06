@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-BNK-003-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Products per Customer is 3.54 for the month ending 2025-09-01, flat on the prior month.",
+    "headline": "Products per Customer is 3.54 for the month ending 2025-10-01, flat on the prior month.",
     "narrative": "Computed from DP-BNK-001 under the certified definition KPI-PPC-017, across 24 months and 18,000 rows.",
     "table": {
       "columns": [
@@ -13,11 +13,6 @@
         "observations"
       ],
       "rows": [
-        [
-          "2023-10-01",
-          3.54,
-          500
-        ],
         [
           "2023-11-01",
           3.54,
@@ -132,6 +127,11 @@
           "2025-09-01",
           3.54,
           500
+        ],
+        [
+          "2025-10-01",
+          3.54,
+          500
         ]
       ]
     },
@@ -148,7 +148,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "customer_id",
         "as_of_month",
@@ -170,12 +170,12 @@
   ],
   "notes": [],
   "question": "How has products per customer moved month by month?",
-  "recorded_at": "2026-09-05T23:30:58.075968+00:00",
+  "recorded_at": "2026-10-06T20:29:37.150505+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 15,
+    "latency_ms": 12,
     "rows_scanned": 18000,
     "runtime": "analytic",
     "tokens": {
@@ -193,7 +193,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_bnk_001"
         },
         "cost_class": "small",
-        "duration_ms": 12,
+        "duration_ms": 10,
         "rows_returned": 24,
         "rows_scanned": 18000,
         "tool": "query_dp_bnk_001"

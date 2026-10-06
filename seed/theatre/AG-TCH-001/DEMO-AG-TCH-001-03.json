@@ -43,7 +43,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05",
+      "as_of": "2026-10-01",
       "columns": [
         "account_id",
         "days_to_first_value",
@@ -64,12 +64,12 @@
   ],
   "notes": [],
   "question": "How long does a new account take to reach first value?",
-  "recorded_at": "2026-09-05T23:31:00.897098+00:00",
+  "recorded_at": "2026-10-06T20:29:40.156898+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 26,
+    "latency_ms": 25,
     "rows_scanned": 50400,
     "runtime": "analytic",
     "tokens": {

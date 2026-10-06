@@ -4,7 +4,7 @@
   "agent_version_id": "AGV-AG-INS-003-1.0.0",
   "analysis_type": "trend_segmented",
   "answer": {
-    "headline": "Loss Ratio is 70.35% for the quarter ending 2026-07-01, flat on the prior quarter.",
+    "headline": "Loss Ratio is 70.35% for the quarter ending 2026-10-01, flat on the prior quarter.",
     "narrative": "Computed from DP-INS-001 under the certified definition KPI-LOSSRATIO-026, across 2 quarters and 12,600 rows.",
     "table": {
       "columns": [
@@ -14,14 +14,14 @@
       ],
       "rows": [
         [
-          "2026-04-01",
-          70.35,
-          3220
-        ],
-        [
           "2026-07-01",
           70.35,
-          9380
+          12460
+        ],
+        [
+          "2026-10-01",
+          70.35,
+          140
         ]
       ]
     },
@@ -38,7 +38,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-01T00:00:00+00:00",
       "columns": [
         "claim_id",
         "transition_timestamp",
@@ -60,7 +60,7 @@
   ],
   "notes": [],
   "question": "How has loss ratio moved quarter by quarter?",
-  "recorded_at": "2026-09-05T23:30:59.266883+00:00",
+  "recorded_at": "2026-10-06T20:29:38.429905+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0200",

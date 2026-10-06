@@ -33,7 +33,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05",
+      "as_of": "2026-10-01",
       "columns": [
         "encounter_id",
         "index_encounter_id",
@@ -58,12 +58,12 @@
   ],
   "notes": [],
   "question": "What is our 30-day readmission rate and how does it compare to last year?",
-  "recorded_at": "2026-09-05T23:30:58.485094+00:00",
+  "recorded_at": "2026-10-06T20:29:37.599882+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 45,
+    "latency_ms": 48,
     "rows_scanned": 31200,
     "runtime": "analytic",
     "tokens": {

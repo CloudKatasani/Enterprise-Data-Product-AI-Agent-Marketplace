@@ -18,18 +18,18 @@
   ],
   "claims": {
     "groups": "4",
-    "rows_scanned": "4340",
-    "top": "784221.50",
+    "rows_scanned": "4200",
+    "top": "758924.03",
     "top_share": "28.09"
   },
   "exchange_id": "DEMO-AG-INS-001-02",
-  "headline": "auto_liability leads on average claim severity at $784,221.50, 28.09% of the total across 4 coverage lines.",
+  "headline": "auto_liability leads on average claim severity at $758,924.03, 28.09% of the total across 4 coverage lines.",
   "kpi_definitions": [
     "KPI-AVGSEV-028"
   ],
-  "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,340 rows in DP-INS-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-AVGSEV-028 over 4,200 rows in DP-INS-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Which settlement patterns diverge most from peers on like claims?",
-  "rows_scanned": 4340,
+  "rows_scanned": 4200,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [

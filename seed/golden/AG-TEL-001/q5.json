@@ -16,18 +16,18 @@
   ],
   "claims": {
     "groups": "3",
-    "rows_scanned": "6510",
-    "top": "44.12",
-    "top_share": "34.50"
+    "rows_scanned": "6300",
+    "top": "47.83",
+    "top_share": "36.60"
   },
   "exchange_id": "DEMO-AG-TEL-001-05",
-  "headline": "consumer leads on save rate at 44.12%, 34.50% of the total across 3 segments.",
+  "headline": "consumer leads on save rate at 47.83%, 36.60% of the total across 3 segments.",
   "kpi_definitions": [
     "KPI-SAVE-003"
   ],
-  "narrative": "Ranked by the certified definition KPI-SAVE-003 over 6,510 rows in DP-TEL-001. Computed within the month beginning 2026-08-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-SAVE-003 over 6,300 rows in DP-TEL-001. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Did the May retention campaign actually work?",
-  "rows_scanned": 6510,
+  "rows_scanned": 6300,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "runtime": "analytic",
   "table_columns": [
