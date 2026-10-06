@@ -590,3 +590,24 @@ commands), `Dockerfile.portal` and `.dockerignore` are committed at the root. CI
 them yet; the portal build and the backend's editable install were verified outside Docker.
 **Consequence** A deployment that follows it is a governed single-identity pilot. Multi-user
 production waits on implementing option B from 02 §5; the guide lists that as the first gap.
+
+### D-043 — The demo tier is pinned in time, and CI seeds it at the scale the answers were recorded at (2026-10-06)
+**Context** CI had been red on `main` since early September. Once migrate stopped failing on a
+fresh database (d0e9faf), the next failure was `demo:verify`: all 150 exchanges stale. Two causes, neither in the
+agents. CI seeded the demo tier at `DEMO_TIER_SCALE=0.05` while every golden answer was recorded at
+0.1, and halving the sample moves an average or a median past the 2% tolerance — the claim in 04 §5
+that scale changes only the row count was true of the distributions, not of the figures computed
+from them. And the generator anchored the last period to `date_trunc('day', now())`, so every
+seasonal term and month-by-month answer moved with the calendar: at the recorded scale 27 of 150
+exchanges had drifted with no code change at all. Re-capturing alone would have gone stale again
+within weeks.
+**Decision** `seed/synthetic/framework.py` anchors the last period to a fixed `ANCHOR`
+(2026-10-01T00:00Z), which makes the framework's own "same manifest, same scale, byte-identical
+rows" promise true. CI seeds at 0.1, the scale `.env.example` and the golden answers already use,
+so a developer, CI and the recordings agree. The 150 exchanges were re-captured under the
+development tenant (44 golden files changed: the 27 that had drifted and the in-tolerance moves),
+and the theatre traces re-recorded with them.
+**Consequence** The demo tier's dates no longer advance: the newest period is October 2026 however
+long the deployment runs. A deployment that wants current-looking dates moves `ANCHOR` and
+re-captures, deliberately, rather than having the calendar do it silently. CI's demo-tier seed
+handles twice the rows it did (about 680,000).

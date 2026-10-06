@@ -32,7 +32,7 @@ env:
   MODEL_ID: ci-model
   MODEL_MAX_TOKENS: "2000"
   DEMO_TIER_SCHEMA: MARKETPLACE_DEMO
-  DEMO_TIER_SCALE: "0.05"
+  DEMO_TIER_SCALE: "0.1"
   OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4318
   FEATURE_FLAG_SOURCE: env
   WORKER_POLL_SECONDS: "5"
@@ -112,7 +112,7 @@ jobs:
       - name: demo tier
         run: npm run seed:demo-tier
         env:
-          DEMO_TIER_SCALE: "0.05"
+          DEMO_TIER_SCALE: "0.1"
 
       # The curated questions run against the real runtime and are compared to
       # their golden answers. A drifted answer fails the build here rather than

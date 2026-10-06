@@ -22,6 +22,11 @@ own manifest. The requirements the framework exists to satisfy:
 Randomness is `md5` over a key string, which is stable across Postgres versions
 and across machines — `random()` would make the demo tier unreproducible and a
 golden answer meaningless.
+
+Time is pinned for the same reason. The last period lands on ``ANCHOR``, not on
+today: anchored to ``now()``, every calendar-dependent answer — a seasonal term,
+a month-by-month delta, a monthly bucket — moved as the calendar did, and the
+golden answers went stale without any code changing.
 """
 
 from __future__ import annotations
@@ -31,6 +36,10 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import psycopg
+
+# The instant the last period ends on. Moving it moves every calendar-dependent
+# answer, so changing it means re-capturing the golden answers (npm run demo:capture).
+ANCHOR = "2026-10-01 00:00:00+00"
 
 # A deterministic value in [0, 1) from any key expression.
 RANDOM_SQL = "((('x' || substr(md5({key}), 1, 8))::bit(32)::bigint & 2147483647) / 2147483647.0)"
@@ -220,7 +229,7 @@ def create_and_fill(
         FROM generate_series(1, {entities}) AS entity
         CROSS JOIN LATERAL (
           SELECT period,
-                 (date_trunc('day', now())
+                 (TIMESTAMPTZ '{ANCHOR}'
                    - ((({spec.periods} - period)::text || ' {unit}')::interval)) AS period_at
           FROM generate_series(1, {spec.periods}) AS period
         ) AS periods

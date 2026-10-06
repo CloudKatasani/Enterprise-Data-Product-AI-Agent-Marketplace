@@ -265,9 +265,15 @@ Both were real defects in this estate and both will recur in a client's:
 `DEMO_TIER_SCHEMA`, **physically separate** from the marketplace's own tables and from anything
 production, with no path to real data.
 
-- `DEMO_TIER_SCALE` scales the manifests' `rows_target` down for a development machine (0.1 local,
-  0.05 in CI, 1.0 for a full deployment). **Distributions, seasonality, referential integrity and
-  the planted patterns are unaffected by scale** — only row count changes.
+- `DEMO_TIER_SCALE` scales the manifests' `rows_target` down for a development machine (0.1 local
+  and in CI, 1.0 for a full deployment). **Distributions, seasonality, referential integrity and
+  the planted patterns are unaffected by scale** — but the figures computed from them are not: a
+  smaller sample moves an average or a median by more than the 2% golden tolerance. The golden
+  answers are recorded at **0.1**, so `demo:verify` passes at 0.1 and nowhere else.
+- Time is pinned: the last period ends on `ANCHOR` in `seed/synthetic/framework.py`, not on today.
+  Anchored to `now()`, every seasonal and month-by-month answer moved with the calendar and the
+  golden answers went stale with no change to the code. Moving the anchor means re-capturing
+  (`npm run demo:capture`).
 - The planted patterns are the point: they are what the agents find and what the demo exchanges
   demonstrate. A demo tier with no signal in it produces five true and boring answers.
 - `npm run seed:platform` materialises the **local stand-in platform** so the whole system —
@@ -378,7 +384,7 @@ against budget, and KPIs whose `last_reviewed` is older than `review_months`.
 | Environment | Data | Notes |
 |---|---|---|
 | **Local** | Full seed, demo tier at 0.1, sandbox platform | `npm run dev`, zero manual setup beyond `cp .env.example .env` |
-| **CI** | Seed at 0.05, ephemeral Postgres | `AGENT_RUNTIME=mock` |
+| **CI** | Demo tier at 0.1 (the scale the golden answers are recorded at), ephemeral Postgres | `AGENT_RUNTIME=mock` |
 | **Staging/UAT** | Client manifests once authored; demo tier only if the theatre is wanted | Treat as production for access control — it holds the client's real contract and KPI definitions within a week |
 | **Production** | Client manifests only | No demo parties; consider whether the demo tier and theatre belong at all |
 
