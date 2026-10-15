@@ -16,17 +16,17 @@
     }
   ],
   "claims": {
-    "current": "2.86",
-    "delta": "0.96",
-    "groups": "2",
+    "current": "0.00",
+    "delta": "-3.33",
+    "groups": "3",
     "rows_scanned": "25200"
   },
   "exchange_id": "DEMO-AG-TEL-001-01",
-  "headline": "Churn Rate is 2.86% for the quarter ending 2026-07-01, up 0.96% on the prior quarter.",
+  "headline": "Churn Rate is 0.00% for the quarter ending 2026-10-01, down 3.33% on the prior quarter.",
   "kpi_definitions": [
     "KPI-CHURN-001"
   ],
-  "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 2 quarters and 25,200 rows.",
+  "narrative": "Computed from DP-TEL-001 under the certified definition KPI-CHURN-001, across 3 quarters and 25,200 rows.",
   "question": "What is our churn rate this quarter and how does it compare to last?",
   "rows_scanned": 25200,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

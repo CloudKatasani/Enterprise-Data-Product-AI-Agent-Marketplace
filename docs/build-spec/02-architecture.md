@@ -268,7 +268,7 @@ lint → typecheck → gen-diff → unit → contract → golden → publish_gat
 `lint` is nine checks: manifest validation, no-magic-numbers, no-brand-strings, animatable-props,
 logical-properties, migrations, generated-header, ruff, and the portal's ESLint. The CI service
 containers are `pgvector/pgvector:pg16` and Redis; CI runs with `AGENT_RUNTIME=mock`,
-`DEMO_TIER_SCALE=0.05` and a CI-only `PRODUCT_NAME`.
+`DEMO_TIER_SCALE=0.1`, `DEMO_TIER_ANCHOR` (the date the golden answers were captured) and a CI-only `PRODUCT_NAME`.
 
 Deployment sequence for every environment:
 
@@ -289,6 +289,6 @@ what development and CI use. Freezing that baseline is a release task (03 §6).
 | Environment | Data | Runtime | Notes |
 |---|---|---|---|
 | **Local** | Full seed + demo tier at `DEMO_TIER_SCALE=0.1` | `analytic` | `npm run dev` brings up Compose, migrates, seeds, starts all three processes |
-| **CI** | Seed at scale 0.05 | `mock` → analytic | Ephemeral Postgres and Redis |
+| **CI** | Seed at scale 0.1, anchored | `mock` → analytic | Ephemeral Postgres and Redis |
 | **Staging/UAT** | Seeded estate, client manifests once authored | `analytic`, or `cortex` against a non-production warehouse | Treat as production for access control |
 | **Production** | Client manifests; demo tier only if the client wants the theatre | `cortex` where model access is approved | No demo parties |

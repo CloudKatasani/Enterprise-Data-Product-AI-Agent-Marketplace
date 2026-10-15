@@ -26,7 +26,7 @@
   "kpi_definitions": [
     "KPI-DIGITAL-105"
   ],
-  "narrative": "Ranked by the certified definition KPI-DIGITAL-105 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Ranked by the certified definition KPI-DIGITAL-105 over 2,400 rows in DP-INS-003. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "How does digital enrolment differ by tenure band?",
   "rows_scanned": 2400,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

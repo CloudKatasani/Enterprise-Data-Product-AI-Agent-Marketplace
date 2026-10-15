@@ -29,7 +29,7 @@
   "kpi_definitions": [
     "KPI-PPC-017"
   ],
-  "narrative": "Both cohorts are drawn from DP-BNK-001 over the same period: 193 observations against 307. Computed within the month beginning 2026-09-01, because this measure counts entities that recur and cannot be pooled across periods.",
+  "narrative": "Both cohorts are drawn from DP-BNK-001 over the same period: 193 observations against 307. Computed within the month beginning 2026-10-01, because this measure counts entities that recur and cannot be pooled across periods.",
   "question": "Do customers with a primary relationship hold more products?",
   "rows_scanned": 500,
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",

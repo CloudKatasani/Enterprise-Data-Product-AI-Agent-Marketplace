@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-01",
+      "as_of": "2026-10-01",
       "columns": [
         "policy_id",
         "total_insured_value",
@@ -71,12 +71,12 @@
   ],
   "notes": [],
   "question": "What is our exposure concentration by county for wind peril?",
-  "recorded_at": "2026-09-05T23:30:59.160791+00:00",
+  "recorded_at": "2026-10-15T21:38:22.487682+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 8,
+    "latency_ms": 13,
     "rows_scanned": 17280,
     "runtime": "analytic",
     "tokens": {
@@ -94,7 +94,7 @@
           "table": "MARKETPLACE_DEMO.t_dp_ins_002"
         },
         "cost_class": "small",
-        "duration_ms": 5,
+        "duration_ms": 9,
         "rows_returned": 4,
         "rows_scanned": 17280,
         "tool": "query_dp_ins_002"
