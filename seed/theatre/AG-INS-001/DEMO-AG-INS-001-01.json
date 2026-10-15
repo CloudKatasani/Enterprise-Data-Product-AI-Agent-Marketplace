@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05T00:00:00+00:00",
+      "as_of": "2026-10-15T00:00:00+00:00",
       "columns": [
         "claim_id",
         "assessed_leakage_amount",
@@ -70,12 +70,12 @@
   ],
   "notes": [],
   "question": "Where is leakage highest by coverage line?",
-  "recorded_at": "2026-09-05T23:30:59.063954+00:00",
+  "recorded_at": "2026-10-15T21:38:22.353857+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
     "cost_usd": 0.002,
-    "latency_ms": 7,
+    "latency_ms": 8,
     "rows_scanned": 12600,
     "runtime": "analytic",
     "tokens": {

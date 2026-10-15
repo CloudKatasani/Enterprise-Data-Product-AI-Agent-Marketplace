@@ -676,3 +676,20 @@ restarts Caddy from the already-accepted file if it has died. It prints Caddy's 
 restart also fails.
 **Consequence** A crash after reload costs seconds of downtime instead of lasting until someone
 notices. The cause is in Caddy itself; upgrading the host's Caddy is the lasting fix.
+
+### D-050 — The demo tier can be anchored to a date, and CI anchors it (2026-10-15)
+**Context** CI had failed at `demo runner` since September. The demo tier was built at
+`DEMO_TIER_SCALE=0.05` while the golden answers were captured at 0.1, so every `rows_scanned` was
+halved and all 150 exchanges failed. Correcting the scale still left 27 failing.
+`seed/synthetic/framework.py` placed each period at `now()` minus N units. Calendar questions
+("this quarter", "month by month") bucket rows by date, so answers moved as the days passed, which
+contradicted the framework's own "byte-identical rows" guarantee. Because the job stopped at that
+step, nothing after it (evaluate, publish, tests, build, e2e, perf) had run on CI since.
+**Decision** `create_and_fill` takes an optional `anchor` date for the newest period;
+`seed_demo_tier.py` reads it from `DEMO_TIER_ANCHOR` and keeps today when it is unset. CI sets
+`DEMO_TIER_SCALE=0.1` and `DEMO_TIER_ANCHOR=2026-10-15`. The goldens were re-captured at that
+anchor under `TEN-DEMO`, so `rubric_version_id` is unchanged and only the 44 date-sensitive answers
+moved. Live installs stay unanchored and use `demo_runner --nightly` (D-047).
+**Consequence** The goldens are now a pure function of manifest, scale and anchor. The whole CI
+pipeline was run locally against PostgreSQL 16.15 from a clean database: all 150 exchanges pass,
+and so does every later step. Changing the scale or anchor means re-capturing in the same commit.

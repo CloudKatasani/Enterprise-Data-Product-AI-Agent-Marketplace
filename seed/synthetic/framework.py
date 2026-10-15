@@ -12,8 +12,11 @@ own manifest. The requirements the framework exists to satisfy:
   noise.
 * **No real subject data.** Every value is computed from a hash of the row's own
   keys. Nothing is sampled from anywhere.
-* **Deterministic.** The same manifest and the same scale produce byte-identical
-  rows, which is what lets a golden answer be pinned to a number.
+* **Deterministic.** The same manifest, scale and anchor produce byte-identical
+  rows, which is what lets a golden answer be pinned to a number. Periods count
+  back from the anchor day: today by default, so a demo looks current, or a
+  fixed date (``DEMO_TIER_ANCHOR``) wherever answers are compared to goldens —
+  calendar questions ("this quarter") bucket rows differently as the days pass.
 * **Physically separate.** Everything lands in ``DEMO_TIER_SCHEMA`` with no path
   to production data.
 * **Non-trivial answers.** Each product plants the patterns its curated questions
@@ -28,6 +31,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from datetime import date
 from typing import Any
 
 import psycopg
@@ -192,8 +196,13 @@ def create_and_fill(
     manifest: dict[str, Any],
     spec: ProductSpec,
     scale: float,
+    anchor: date | None = None,
 ) -> int:
-    """Create the demo table for a product and fill it deterministically."""
+    """Create the demo table for a product and fill it deterministically.
+
+    The last period falls on ``anchor``, or on today when it is ``None``.
+    """
+    origin = "now()" if anchor is None else f"DATE '{anchor.isoformat()}'"
     columns = manifest["spec"]["columns"]
     table = f"{schema}.{table_name(spec.product_id)}"
 
@@ -220,7 +229,7 @@ def create_and_fill(
         FROM generate_series(1, {entities}) AS entity
         CROSS JOIN LATERAL (
           SELECT period,
-                 (date_trunc('day', now())
+                 (date_trunc('day', {origin})
                    - ((({spec.periods} - period)::text || ' {unit}')::interval)) AS period_at
           FROM generate_series(1, {spec.periods}) AS period
         ) AS periods

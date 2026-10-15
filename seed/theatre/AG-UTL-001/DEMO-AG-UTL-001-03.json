@@ -48,7 +48,7 @@
   },
   "citations": [
     {
-      "as_of": "2026-09-05",
+      "as_of": "2026-10-15",
       "columns": [
         "asset_id",
         "asset_health_score",
@@ -71,7 +71,7 @@
   ],
   "notes": [],
   "question": "Which poor-health assets serve the most customers?",
-  "recorded_at": "2026-09-05T23:31:01.908648+00:00",
+  "recorded_at": "2026-10-15T21:38:26.083254+00:00",
   "rubric_version_id": "RV-TEN-DEMO-agent_runtime-c8a350ad6765",
   "trace": {
     "cost_display": "$0.0020",
