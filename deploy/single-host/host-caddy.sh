@@ -53,6 +53,20 @@ rm -f "$CADDYFILE.tmp"
 # A reload loads and checks the new file; if Caddy rejects it, the running
 # configuration is left untouched and we put the old file back.
 if systemctl reload caddy; then
+  # Some Caddy releases can crash right after a successful reload, which takes
+  # down every site this Caddy serves. Make sure it is still running, and
+  # restart it from the (already accepted) file if not.
+  sleep 3
+  if ! systemctl is-active --quiet caddy; then
+    echo "Caddy stopped after reloading; restarting it." >&2
+    systemctl restart caddy
+    sleep 3
+    systemctl is-active --quiet caddy || {
+      echo "Caddy did not come back. Its log:" >&2
+      journalctl -u caddy -n 20 --no-pager >&2 || true
+      exit 1
+    }
+  fi
   echo "Caddy now also serves https://$SITE (original file kept at $BACKUP)"
   rm -f "$PREVIOUS"
 else

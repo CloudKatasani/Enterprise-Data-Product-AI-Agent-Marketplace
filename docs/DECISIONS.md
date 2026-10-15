@@ -666,3 +666,13 @@ it rewrites the host-Caddy block without `basicauth`, or selects `Caddyfile.publ
 own Caddy through `CADDY_CONFIG`. `install.sh` accepts `ACCESS=public` and defaults to `password`.
 **Consequence** Opening a demo to the public is one deliberate command that is easy to reverse.
 The guide states what a public visitor can do. A fresh install still starts closed.
+
+### D-049 — Check the shared Caddy is alive after every reload (2026-10-15)
+**Context** On the pilot server the host's Caddy accepted a reload ("load complete") and then
+panicked (`context: internal error: missing cancel error`). That took down the marketplace and
+the other site it serves.
+**Decision** `host-caddy.sh` waits after `systemctl reload caddy`, checks `is-active`, and
+restarts Caddy from the already-accepted file if it has died. It prints Caddy's log if the
+restart also fails.
+**Consequence** A crash after reload costs seconds of downtime instead of lasting until someone
+notices. The cause is in Caddy itself; upgrading the host's Caddy is the lasting fix.
