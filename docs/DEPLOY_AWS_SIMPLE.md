@@ -206,19 +206,18 @@ Put them before the install command, e.g.
 
 ## Sharing the server with another app
 
-The installer stops if something else (nginx, Apache, another app) already listens on ports 80 or
-443, because the marketplace's HTTPS proxy needs them. Either stop that program, or serve the
-marketplace on another port: open that port (e.g. **TCP 8443**) in the security group and install
-with
+**Another site already served by Caddy** (installed as a system service, `/etc/caddy/Caddyfile`):
+nothing to do. The installer notices, does not start a second proxy, and adds the marketplace to
+your Caddy as one more site, `marketplace.<public-ip>.sslip.io`, with its own password. Your other
+site keeps working unchanged. The original file is kept as `/etc/caddy/Caddyfile.before-marketplace`;
+the marketplace's part sits between `# >>> marketplace` and `# <<< marketplace` and is rewritten by
+`deploy/single-host/host-caddy.sh`. If Caddy rejects the change, the old file is put back
+automatically. The portal listens on `127.0.0.1:3100` for Caddy to reach it; set
+`PORTAL_HOST_PORT` in `.env` if that port is taken.
 
-```bash
-sudo SITE_ADDRESS=:8443 /opt/marketplace/deploy/single-host/install.sh
-```
-
-then edit `deploy/single-host/docker-compose.yml` so the `caddy` ports read `"8443:8443"` instead of
-`80`/`443`, and run `sudo docker compose up -d` in that folder. On a port other than 443 there is
-no automatic certificate, so the site is plain HTTP (still password-protected) — fine for a
-prototype test, not for real data.
+**Anything else on ports 80/443** (nginx, Apache, a Caddy not run by systemd): the installer stops
+and names the program. Either stop it, or put a site for the marketplace in that proxy pointing at
+`http://127.0.0.1:3100`, protected with a password.
 
 ## Use your own domain later
 

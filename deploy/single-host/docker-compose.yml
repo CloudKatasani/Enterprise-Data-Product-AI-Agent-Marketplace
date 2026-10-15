@@ -56,6 +56,9 @@ services:
 
   portal:
     image: marketplace-portal:local
+    # Loopback only: reached through Caddy, never directly from the internet.
+    ports:
+      - "127.0.0.1:${PORTAL_HOST_PORT:-3100}:3000"
     build:
       context: ../..
       dockerfile: Dockerfile.portal
@@ -65,8 +68,12 @@ services:
       api:
         condition: service_healthy
 
+  # Started only with the "proxy" profile (COMPOSE_PROFILES in .env). On a
+  # server that already runs Caddy, install.sh leaves it off and adds the
+  # marketplace to that Caddy instead (host-caddy.sh).
   caddy:
     image: caddy:2.8
+    profiles: ["proxy"]
     env_file: .env
     ports:
       - "80:80"
