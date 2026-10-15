@@ -84,8 +84,7 @@ sudo git clone https://github.com/CloudKatasani/Enterprise-Data-Product-AI-Agent
 sudo /opt/marketplace/deploy/single-host/install.sh
 ```
 
-> Until `deploy/single-host/` is merged to `main`, add `-b claude/inspiring-mayer-eflxmu` after
-> `git clone`. If the repository is private, clone with a GitHub personal access token:
+> If the repository is private, clone with a GitHub personal access token:
 > `https://<token>@github.com/CloudKatasani/…`.
 
 The installer, in order:
