@@ -7,6 +7,12 @@ import { getLocale } from '@/lib/locale';
 import { getThemeConfig } from '@/lib/theme/product';
 import '@/styles/globals.css';
 
+// Configuration is read from the process environment at request time, so no
+// page may be prerendered at build time — including Next's built-in
+// /_not-found, which inherits only this layout. A container image is then
+// built once, with no configuration, and configured where it runs.
+export const dynamic = 'force-dynamic';
+
 export function generateMetadata(): Metadata {
   const { productName } = getThemeConfig();
   return {

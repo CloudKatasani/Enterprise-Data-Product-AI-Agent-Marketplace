@@ -619,3 +619,12 @@ new public IP after a stop/start, so stopping the instance to save money needs n
 into a layer.
 **Consequence** One server, one shared password: a prototype, not production. Moving up to the
 ECS guides keeps the same images and environment, and a dump restores into RDS.
+
+### D-045 — The root layout is force-dynamic (2026-10-15)
+**Context** Building the portal image failed: `next build` prerendered the built-in `/_not-found`
+page, whose only layout reads `PRODUCT_NAME` and `TENANT_ID`, and a container build has no
+configuration. CI never saw it because CI builds with the variables set.
+**Decision** `export const dynamic = 'force-dynamic'` on `portal/app/layout.tsx`. Every routed
+page was already force-dynamic; this covers the one Next.js generates itself.
+**Consequence** `next build` succeeds with an empty environment, so one portal image is built once
+and configured where it runs, which is what F8 in DEPLOY_AWS.md assumed.

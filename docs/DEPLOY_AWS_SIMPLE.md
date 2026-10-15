@@ -46,7 +46,7 @@ AWS console → **EC2** → check the **region** (top right) → **Launch instan
 | Setting | Value |
 |---|---|
 | Name | `marketplace` |
-| Application and OS image | **Ubuntu** → **Ubuntu Server 24.04 LTS (HVM), SSD Volume Type**, architecture **64-bit (x86)** |
+| Application and OS image | **Ubuntu** → **Ubuntu Server 24.04 LTS** or **26.04 LTS** (HVM, SSD Volume Type), architecture **64-bit (x86)** |
 | Instance type | **t3a.medium** (2 vCPU, 4 GB) — recommended. See [choosing a size](#choosing-an-instance-size) for cheaper options |
 | Key pair | **Create new key pair** → name `marketplace`, RSA, `.pem` → it downloads. (Only needed if you SSH from your own computer.) |
 | Network settings → **Edit** | VPC: default · Subnet: no preference · **Auto-assign public IP: Enable** |
@@ -203,6 +203,22 @@ Put them before the install command, e.g.
 | `ADMIN_PASSWORD` | random | Sign-in password |
 | `PRODUCT_NAME` | `Enterprise Data & Agents Marketplace` | Display name in the portal |
 | `BACKUP_S3_BUCKET` | empty | Also copy nightly backups to this bucket (step 6) |
+
+## Sharing the server with another app
+
+The installer stops if something else (nginx, Apache, another app) already listens on ports 80 or
+443, because the marketplace's HTTPS proxy needs them. Either stop that program, or serve the
+marketplace on another port: open that port (e.g. **TCP 8443**) in the security group and install
+with
+
+```bash
+sudo SITE_ADDRESS=:8443 /opt/marketplace/deploy/single-host/install.sh
+```
+
+then edit `deploy/single-host/docker-compose.yml` so the `caddy` ports read `"8443:8443"` instead of
+`80`/`443`, and run `sudo docker compose up -d` in that folder. On a port other than 443 there is
+no automatic certificate, so the site is plain HTTP (still password-protected) — fine for a
+prototype test, not for real data.
 
 ## Use your own domain later
 
