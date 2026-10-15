@@ -201,6 +201,7 @@ Put them before the install command, e.g.
 | `SITE_ADDRESS` | `<public-ip>.sslip.io` | Your own host name, e.g. `marketplace.example.com` — create its DNS **A record → public IP first** |
 | `ADMIN_USER` | `admin` | Sign-in user name |
 | `ADMIN_PASSWORD` | random | Sign-in password |
+| `ACCESS` | `password` | `public` lets anyone with the URL open the site without signing in |
 | `PRODUCT_NAME` | `Enterprise Data & Agents Marketplace` | Display name in the portal |
 | `BACKUP_S3_BUCKET` | empty | Also copy nightly backups to this bucket (step 6) |
 
@@ -229,6 +230,19 @@ and names the program. Either stop it, or put a site for the marketplace in that
    sudo sed -i 's#^SITE_ADDRESS=.*#SITE_ADDRESS=marketplace.example.com#; s#^PORTAL_BASE_URL=.*#PORTAL_BASE_URL=https://marketplace.example.com#' .env
    sudo docker compose up -d --force-recreate caddy portal
    ```
+
+## Open it to anyone with the link (no password)
+
+```bash
+sudo /opt/marketplace/deploy/single-host/set-access.sh public     # no sign-in
+sudo /opt/marketplace/deploy/single-host/set-access.sh password   # back to user + password
+```
+
+Or install with `ACCESS=public` from the start. Keep in mind: the application has no per-user
+sign-in, so **every visitor acts as the same demo user**, including the admin console and the
+request and approval pages. Anyone with the link can click through them and change the demo
+data. The data is synthetic, but share the link deliberately, and switch back to `password` when
+the demo is over.
 
 ## Change the sign-in password
 
@@ -297,7 +311,7 @@ New AWS accounts may have free-tier or credit coverage that brings this lower.
 | EC2 Instance Connect: "failed to connect" | SSH rule source is *My IP*; see the note in step 1, or use your own SSH client |
 | Install stopped during "Building images" with `Killed` | Out of memory — use t3a.medium, or re-run (safe; Docker caches finished layers) |
 | `429 Too Many Requests` pulling images | Docker Hub anonymous limit; wait an hour or `sudo docker login` with a free Docker Hub account, then re-run the installer |
-| Installer stopped at a seeding step | Read the error just above it, fix, and re-run the installer. Seeding counts as done only after every step succeeded |
+| Installer stopped at a seeding step | Read the error just above it, fix, and re-run the installer. It resumes at the step that failed; finished steps are listed in `deploy/single-host/.seed-progress` |
 | Error page after signing in | `sudo docker compose logs api portal --tail 200`; `api` should be `healthy` in `sudo docker compose ps` |
 | Disk full | `sudo docker system prune -f` (removes old images), or EC2 → Volumes → Modify → larger size, then `sudo growpart /dev/nvme0n1 1 && sudo resize2fs /dev/nvme0n1p1` |
 | S3 backup: `AccessDenied` / `Unable to locate credentials` | IAM role attached to the instance (step 6.3) and the bucket name in the policy matches `.env` |

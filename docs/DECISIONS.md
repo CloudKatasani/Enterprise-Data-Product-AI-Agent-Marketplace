@@ -643,3 +643,26 @@ which every Caddy 2 release accepts; `basic_auth` needs 2.8. `set-address.sh` ke
 **Consequence** The installer edits a file another app depends on, guarded by a one-time
 backup, a marked block it alone rewrites, and rollback on rejection. Any other program on 80/443
 still stops the install with its name.
+
+### D-047 — The installer seeds with `demo_runner --nightly`, resumably (2026-10-15)
+**Context** On the first real install, `demo_runner --verify` failed 27 of 150 exchanges at the
+correct `DEMO_TIER_SCALE`. The demo tier is generated relative to the current date and the golden
+answers were recorded earlier, so date-relative questions drift. `--verify` is the strict CI gate.
+An installer that stops on drift never brings the site up.
+**Decision** `install.sh` runs `--nightly`, the mode the runner documents for a running estate: the
+same comparison, with drifted exchanges marked `stale` and kept off the front-page theatre. That
+step, `evaluate`, `publish_agents`, `mesh` and `observe` report through their exit codes and no
+longer stop the install. Each finished step is appended to `.seed-progress`, so a re-run resumes
+rather than seeding twice.
+**Consequence** A fresh install shows the demo exchanges that still match and hides the rest until
+the goldens are re-captured. The strict comparison stays in CI.
+
+### D-048 — Public access is a switch, not the default (2026-10-15)
+**Context** The prototype's owner wants to share the URL so others can open it without
+credentials. The password at the proxy is the only gate (F2): the application has no per-user
+sign-in, so without it every visitor acts as `PORTAL_DEV_SUBJECT`, admin console included.
+**Decision** `ACCESS=public|password` in `.env`. `set-access.sh` flips it on a running install:
+it rewrites the host-Caddy block without `basicauth`, or selects `Caddyfile.public` for the stack's
+own Caddy through `CADDY_CONFIG`. `install.sh` accepts `ACCESS=public` and defaults to `password`.
+**Consequence** Opening a demo to the public is one deliberate command that is easy to reverse.
+The guide states what a public visitor can do. A fresh install still starts closed.

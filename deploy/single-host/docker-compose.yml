@@ -79,7 +79,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Caddyfile (password) or Caddyfile.public, chosen by set-access.sh.
+      - ./${CADDY_CONFIG:-Caddyfile}:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
     restart: unless-stopped
