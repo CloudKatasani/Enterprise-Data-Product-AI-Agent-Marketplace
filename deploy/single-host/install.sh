@@ -50,15 +50,23 @@ fi
 systemctl enable --now docker >/dev/null 2>&1 || true
 docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is missing: apt-get install docker-compose-v2" >&2; exit 1; }
 
-# --- Ports 80 and 443 must be free for the HTTPS proxy. ---
-if ! docker compose ps --status running caddy 2>/dev/null | grep -q caddy; then
+# --- Who serves HTTPS: our own Caddy container, or a Caddy already here. ---
+PROXY=container
+if [ -f .env ] && grep -q '^HOST_CADDY=1' .env; then
+  PROXY=host
+elif ! docker compose ps --status running caddy 2>/dev/null | grep -q caddy; then
   BUSY="$(ss -Hltnp '( sport = :80 or sport = :443 )' 2>/dev/null || true)"
   if [ -n "$BUSY" ]; then
-    echo "Ports 80/443 are already in use on this server:" >&2
-    echo "$BUSY" >&2
-    echo "Stop that program (e.g. 'sudo systemctl disable --now nginx'), or see" >&2
-    echo "'Sharing the server with another app' in docs/DEPLOY_AWS_SIMPLE.md." >&2
-    exit 1
+    if grep -q '"caddy"' <<<"$BUSY" && [ -f /etc/caddy/Caddyfile ] && systemctl is-active --quiet caddy; then
+      PROXY=host
+      log "Caddy already serves ports 80/443 here; the marketplace will be added to it as a second site"
+    else
+      echo "Ports 80/443 are already in use on this server:" >&2
+      echo "$BUSY" >&2
+      echo "Stop that program (e.g. 'sudo systemctl disable --now nginx'), or see" >&2
+      echo "'Sharing the server with another app' in docs/DEPLOY_AWS_SIMPLE.md." >&2
+      exit 1
+    fi
   fi
 fi
 
@@ -69,6 +77,8 @@ if [ ! -f .env ]; then
   if [ -z "${SITE_ADDRESS:-}" ]; then
     IP="$(curl -fsS https://checkip.amazonaws.com | tr -d '[:space:]')"
     SITE_ADDRESS="${IP//./-}.sslip.io"
+    # Sharing a Caddy with another site: use a name of our own on the same IP.
+    [ "$PROXY" = host ] && SITE_ADDRESS="marketplace.$SITE_ADDRESS"
   fi
   ADMIN_USER="${ADMIN_USER:-admin}"
   ADMIN_PASSWORD="${ADMIN_PASSWORD:-$(rand)}"
@@ -129,6 +139,33 @@ EOF
   umask 022
 fi
 
+# Proxy settings, also added to a .env written by an earlier version.
+set_key() {
+  if grep -q "^$1=" .env; then sed -i "s#^$1=.*#$1=$2#" .env; else echo "$1=$2" >> .env; fi
+}
+grep -q '^PORTAL_HOST_PORT=' .env || set_key PORTAL_HOST_PORT 3100
+if [ "$PROXY" = host ]; then
+  set_key HOST_CADDY 1
+  set_key COMPOSE_PROFILES ""
+  # A bare <ip>.sslip.io name may be the other site's; take marketplace.<ip>.sslip.io.
+  SITE="$(sed -n 's/^SITE_ADDRESS=//p' .env)"
+  if [[ "$SITE" =~ ^[0-9]+-[0-9]+-[0-9]+-[0-9]+\.sslip\.io$ ]]; then
+    set_key SITE_ADDRESS "marketplace.$SITE"
+    set_key PORTAL_BASE_URL "https://marketplace.$SITE"
+    sed -i "s#^URL: .*#URL:      https://marketplace.$SITE#" /root/marketplace-credentials.txt 2>/dev/null || true
+  fi
+else
+  set_key HOST_CADDY 0
+  set_key COMPOSE_PROFILES proxy
+fi
+
+PORT="$(sed -n 's/^PORTAL_HOST_PORT=//p' .env)"
+if ! docker compose ps --status running portal 2>/dev/null | grep -q portal \
+   && [ -n "$(ss -Hltn "sport = :$PORT" 2>/dev/null)" ]; then
+  echo "Port $PORT is already in use; set PORTAL_HOST_PORT to a free port in $HERE/.env and re-run." >&2
+  exit 1
+fi
+
 # The AWS CLI is needed only to copy backups to S3.
 if grep -q '^BACKUP_S3_BUCKET=.' .env && ! command -v aws >/dev/null 2>&1; then
   log "Installing the AWS CLI (for S3 backups)"
@@ -170,6 +207,10 @@ fi
 # --- 6. Everything else. ---
 log "Starting API, worker, portal and HTTPS proxy"
 docker compose up -d --wait
+if [ "$PROXY" = host ]; then
+  log "Adding the marketplace to this server's Caddy"
+  ./host-caddy.sh
+fi
 
 # --- 7. Recurring jobs and nightly database backup. ---
 log "Scheduling recurring jobs"

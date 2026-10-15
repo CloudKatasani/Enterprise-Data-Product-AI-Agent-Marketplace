@@ -628,3 +628,18 @@ configuration. CI never saw it because CI builds with the variables set.
 page was already force-dynamic; this covers the one Next.js generates itself.
 **Consequence** `next build` succeeds with an empty environment, so one portal image is built once
 and configured where it runs, which is what F8 in DEPLOY_AWS.md assumed.
+
+### D-046 — Share an existing Caddy rather than demand ports 80 and 443 (2026-10-15)
+**Context** The first real install ran on a server whose ports 80/443 already belonged to a
+system Caddy serving another app. The single-host stack starts its own Caddy, so it could not run
+there without taking the other site down.
+**Decision** When 80/443 are held by a systemd Caddy with `/etc/caddy/Caddyfile`, `install.sh`
+switches to host mode: the stack's Caddy is behind a Compose profile (`COMPOSE_PROFILES` in
+`.env`) and stays off, the portal is published on `127.0.0.1:${PORTAL_HOST_PORT:-3100}`, and
+`host-caddy.sh` writes a marked site block (`marketplace.<ip>.sslip.io`, basic auth) into the host
+Caddyfile and reloads. A rejected reload restores the previous file. The block uses `basicauth`,
+which every Caddy 2 release accepts; `basic_auth` needs 2.8. `set-address.sh` keeps the
+`marketplace.` prefix and rewrites the block after a stop/start.
+**Consequence** The installer edits a file another app depends on, guarded by a one-time
+backup, a marked block it alone rewrites, and rollback on rejection. Any other program on 80/443
+still stops the install with its name.
