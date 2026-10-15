@@ -297,7 +297,7 @@ New AWS accounts may have free-tier or credit coverage that brings this lower.
 | EC2 Instance Connect: "failed to connect" | SSH rule source is *My IP*; see the note in step 1, or use your own SSH client |
 | Install stopped during "Building images" with `Killed` | Out of memory — use t3a.medium, or re-run (safe; Docker caches finished layers) |
 | `429 Too Many Requests` pulling images | Docker Hub anonymous limit; wait an hour or `sudo docker login` with a free Docker Hub account, then re-run the installer |
-| Installer stopped at a seeding step | Read the error just above it, fix, and re-run the installer. Seeding counts as done only after every step succeeded |
+| Installer stopped at a seeding step | Read the error just above it, fix, and re-run the installer. It resumes at the step that failed; finished steps are listed in `deploy/single-host/.seed-progress` |
 | Error page after signing in | `sudo docker compose logs api portal --tail 200`; `api` should be `healthy` in `sudo docker compose ps` |
 | Disk full | `sudo docker system prune -f` (removes old images), or EC2 → Volumes → Modify → larger size, then `sudo growpart /dev/nvme0n1 1 && sudo resize2fs /dev/nvme0n1p1` |
 | S3 backup: `AccessDenied` / `Unable to locate credentials` | IAM role attached to the instance (step 6.3) and the bucket name in the policy matches `.env` |

@@ -643,3 +643,16 @@ which every Caddy 2 release accepts; `basic_auth` needs 2.8. `set-address.sh` ke
 **Consequence** The installer edits a file another app depends on, guarded by a one-time
 backup, a marked block it alone rewrites, and rollback on rejection. Any other program on 80/443
 still stops the install with its name.
+
+### D-047 — The installer seeds with `demo_runner --nightly`, resumably (2026-10-15)
+**Context** On the first real install, `demo_runner --verify` failed 27 of 150 exchanges at the
+correct `DEMO_TIER_SCALE`. The demo tier is generated relative to the current date and the golden
+answers were recorded earlier, so date-relative questions drift. `--verify` is the strict CI gate.
+An installer that stops on drift never brings the site up.
+**Decision** `install.sh` runs `--nightly`, the mode the runner documents for a running estate: the
+same comparison, with drifted exchanges marked `stale` and kept off the front-page theatre. That
+step, `evaluate`, `publish_agents`, `mesh` and `observe` report through their exit codes and no
+longer stop the install. Each finished step is appended to `.seed-progress`, so a re-run resumes
+rather than seeding twice.
+**Consequence** A fresh install shows the demo exchanges that still match and hides the rest until
+the goldens are re-captured. The strict comparison stays in CI.

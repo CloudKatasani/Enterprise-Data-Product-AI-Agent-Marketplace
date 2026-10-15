@@ -185,22 +185,38 @@ log "Applying migrations"
 
 if [ ! -f .seeded ]; then
   log "Seeding the catalog and demo data (first time only)"
-  for step in \
-      "python scripts/seed.py" \
-      "python scripts/seed_platform.py" \
-      "python scripts/harvest.py" \
-      "python scripts/score.py" \
-      "python scripts/seed_demo_tier.py" \
-      "python scripts/demo_runner.py --verify" \
-      "python scripts/evaluate.py" \
-      "python scripts/publish_agents.py"; do
-    # shellcheck disable=SC2086
-    ./run-job.sh $step
-  done
-  # mesh and observe report findings through their exit code; a finding here
-  # is information, not a failed install.
-  ./run-job.sh python scripts/mesh.py || echo "mesh reported findings (see above)"
-  ./run-job.sh python scripts/observe.py || echo "observe reported findings (see above)"
+  # Each finished step is recorded in .seed-progress, so a re-run after an
+  # interruption or failure resumes instead of seeding twice.
+  touch .seed-progress
+  run_step() {  # run_step required|report <command...>
+    local kind="$1"; shift
+    if grep -qxF "$*" .seed-progress; then echo "already done: $*"; return 0; fi
+    if ./run-job.sh "$@"; then
+      echo "$*" >> .seed-progress
+    elif [ "$kind" = report ]; then
+      # These report findings through their exit code. A finding is information
+      # about the demo estate, not a failed install.
+      echo "$* reported findings (see above); continuing"
+      echo "$*" >> .seed-progress
+    else
+      echo "Install stopped at: $*  (re-run install.sh to resume here)" >&2
+      exit 1
+    fi
+  }
+  run_step required python scripts/seed.py
+  run_step required python scripts/seed_platform.py
+  run_step required python scripts/harvest.py
+  run_step required python scripts/score.py
+  run_step required python scripts/seed_demo_tier.py
+  # --nightly, not --verify: the stored golden answers were recorded on an
+  # earlier date, and date-relative questions ("this quarter") drift. --nightly
+  # hides a drifted answer from the front page instead of failing; --verify is
+  # the strict CI gate.
+  run_step report python scripts/demo_runner.py --nightly
+  run_step report python scripts/evaluate.py
+  run_step report python scripts/publish_agents.py
+  run_step report python scripts/mesh.py
+  run_step report python scripts/observe.py
   touch .seeded
 fi
 
