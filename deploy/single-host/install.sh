@@ -12,6 +12,8 @@
 #                   ":80" serves plain HTTP (testing only).
 #   ADMIN_USER      sign-in user name (default: admin)
 #   ADMIN_PASSWORD  sign-in password (default: generated and printed)
+#   ACCESS          "password" (default) or "public": anyone with the URL can
+#                   open the site. Change later with set-access.sh.
 #   PRODUCT_NAME    display name (default: Enterprise Data & Agents Marketplace)
 #
 # Safe to re-run: an existing .env is kept, and the one-time seeding is skipped
@@ -144,6 +146,8 @@ set_key() {
   if grep -q "^$1=" .env; then sed -i "s#^$1=.*#$1=$2#" .env; else echo "$1=$2" >> .env; fi
 }
 grep -q '^PORTAL_HOST_PORT=' .env || set_key PORTAL_HOST_PORT 3100
+grep -q '^ACCESS=' .env || set_key ACCESS "${ACCESS:-password}"
+if grep -q '^ACCESS=public' .env; then set_key CADDY_CONFIG Caddyfile.public; else set_key CADDY_CONFIG Caddyfile; fi
 if [ "$PROXY" = host ]; then
   set_key HOST_CADDY 1
   set_key COMPOSE_PROFILES ""
@@ -254,7 +258,11 @@ cat > /etc/logrotate.d/marketplace <<'EOF'
 EOF
 
 log "Done"
-cat /root/marketplace-credentials.txt
+if grep -q '^ACCESS=public' .env; then
+  echo "URL: https://$(sed -n 's/^SITE_ADDRESS=//p' .env)  (public: no password needed)"
+else
+  cat /root/marketplace-credentials.txt
+fi
 echo
 echo "The first HTTPS request can take ~30 s while the certificate is issued."
 echo "Credentials are saved in /root/marketplace-credentials.txt"

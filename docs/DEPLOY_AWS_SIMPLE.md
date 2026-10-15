@@ -201,6 +201,7 @@ Put them before the install command, e.g.
 | `SITE_ADDRESS` | `<public-ip>.sslip.io` | Your own host name, e.g. `marketplace.example.com` — create its DNS **A record → public IP first** |
 | `ADMIN_USER` | `admin` | Sign-in user name |
 | `ADMIN_PASSWORD` | random | Sign-in password |
+| `ACCESS` | `password` | `public` lets anyone with the URL open the site without signing in |
 | `PRODUCT_NAME` | `Enterprise Data & Agents Marketplace` | Display name in the portal |
 | `BACKUP_S3_BUCKET` | empty | Also copy nightly backups to this bucket (step 6) |
 
@@ -229,6 +230,19 @@ and names the program. Either stop it, or put a site for the marketplace in that
    sudo sed -i 's#^SITE_ADDRESS=.*#SITE_ADDRESS=marketplace.example.com#; s#^PORTAL_BASE_URL=.*#PORTAL_BASE_URL=https://marketplace.example.com#' .env
    sudo docker compose up -d --force-recreate caddy portal
    ```
+
+## Open it to anyone with the link (no password)
+
+```bash
+sudo /opt/marketplace/deploy/single-host/set-access.sh public     # no sign-in
+sudo /opt/marketplace/deploy/single-host/set-access.sh password   # back to user + password
+```
+
+Or install with `ACCESS=public` from the start. Keep in mind: the application has no per-user
+sign-in, so **every visitor acts as the same demo user**, including the admin console and the
+request and approval pages. Anyone with the link can click through them and change the demo
+data. The data is synthetic, but share the link deliberately, and switch back to `password` when
+the demo is over.
 
 ## Change the sign-in password
 

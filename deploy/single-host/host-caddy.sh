@@ -17,13 +17,18 @@ USER_NAME="$(env_value BASIC_AUTH_USER)"
 HASH="$(env_value BASIC_AUTH_HASH)"
 PORT="$(env_value PORTAL_HOST_PORT)"
 PORT="${PORT:-3100}"
+ACCESS="$(env_value ACCESS)"
+
+# Password-protected unless ACCESS=public (set-access.sh).
+AUTH="	basicauth {
+		$USER_NAME $HASH
+	}
+"
+[ "$ACCESS" = public ] && AUTH=""
 
 BLOCK="$BEGIN
 $SITE {
-	basicauth {
-		$USER_NAME $HASH
-	}
-	encode gzip
+${AUTH}	encode gzip
 	reverse_proxy 127.0.0.1:$PORT {
 		flush_interval -1
 	}

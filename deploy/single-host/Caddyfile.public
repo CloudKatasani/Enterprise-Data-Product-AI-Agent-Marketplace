@@ -1,0 +1,11 @@
+# Public variant of Caddyfile: no password. Selected with
+# `./set-access.sh public` (or ACCESS=public at install). Everyone who opens the
+# site acts as the one demo identity (docs/DEPLOY_AWS.md, finding F2).
+{$SITE_ADDRESS} {
+	encode gzip
+
+	reverse_proxy portal:3000 {
+		# /api/events is a long-lived stream: pass bytes through as they arrive.
+		flush_interval -1
+	}
+}

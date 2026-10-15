@@ -656,3 +656,13 @@ longer stop the install. Each finished step is appended to `.seed-progress`, so 
 rather than seeding twice.
 **Consequence** A fresh install shows the demo exchanges that still match and hides the rest until
 the goldens are re-captured. The strict comparison stays in CI.
+
+### D-048 — Public access is a switch, not the default (2026-10-15)
+**Context** The prototype's owner wants to share the URL so others can open it without
+credentials. The password at the proxy is the only gate (F2): the application has no per-user
+sign-in, so without it every visitor acts as `PORTAL_DEV_SUBJECT`, admin console included.
+**Decision** `ACCESS=public|password` in `.env`. `set-access.sh` flips it on a running install:
+it rewrites the host-Caddy block without `basicauth`, or selects `Caddyfile.public` for the stack's
+own Caddy through `CADDY_CONFIG`. `install.sh` accepts `ACCESS=public` and defaults to `password`.
+**Consequence** Opening a demo to the public is one deliberate command that is easy to reverse.
+The guide states what a public visitor can do. A fresh install still starts closed.
