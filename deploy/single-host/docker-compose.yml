@@ -1,0 +1,85 @@
+# The whole marketplace on one server: database, API, worker, portal and an
+# HTTPS reverse proxy with a password in front. See docs/DEPLOY_AWS_SIMPLE.md.
+#
+# install.sh writes .env next to this file; every service reads it.
+#   docker compose up -d                                   start / apply changes
+#   docker compose run --rm jobs python scripts/<job>.py   run a job once
+
+x-backend: &backend
+  image: marketplace-backend:local
+  env_file: .env
+  restart: unless-stopped
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    # Ships pgvector and pg_trgm, which the first migration creates.
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: marketplace
+      POSTGRES_PASSWORD: ${OWNER_PW:?run install.sh first}
+      POSTGRES_DB: marketplace
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketplace -d marketplace"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    # No published port: only the containers on this network can reach it.
+
+  api:
+    <<: *backend
+    build:
+      context: ../..
+      dockerfile: Dockerfile.backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  worker:
+    <<: *backend
+    command: ["python", "-m", "services.worker.main"]
+
+  # Not started by `up`; used for migrations, seeding and the scheduled jobs.
+  jobs:
+    <<: *backend
+    restart: "no"
+    profiles: ["jobs"]
+    command: ["python", "scripts/migrate.py"]
+
+  portal:
+    image: marketplace-portal:local
+    build:
+      context: ../..
+      dockerfile: Dockerfile.portal
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2.8
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    depends_on:
+      - portal
+
+volumes:
+  postgres-data:
+  caddy-data:
+  caddy-config:
