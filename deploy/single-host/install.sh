@@ -41,9 +41,26 @@ if ! command -v docker >/dev/null 2>&1; then
   [ -f /etc/docker/daemon.json ] || cat > /etc/docker/daemon.json <<'JSON'
 {"log-driver": "json-file", "log-opts": {"max-size": "10m", "max-file": "3"}}
 JSON
-  curl -fsSL https://get.docker.com | sh
+  # Ubuntu's own packages first: they exist for every release, including ones
+  # Docker's convenience script does not support yet.
+  if ! { apt-get update -y && apt-get install -y docker.io docker-compose-v2 docker-buildx; }; then
+    curl -fsSL https://get.docker.com | sh
+  fi
 fi
 systemctl enable --now docker >/dev/null 2>&1 || true
+docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is missing: apt-get install docker-compose-v2" >&2; exit 1; }
+
+# --- Ports 80 and 443 must be free for the HTTPS proxy. ---
+if ! docker compose ps --status running caddy 2>/dev/null | grep -q caddy; then
+  BUSY="$(ss -Hltnp '( sport = :80 or sport = :443 )' 2>/dev/null || true)"
+  if [ -n "$BUSY" ]; then
+    echo "Ports 80/443 are already in use on this server:" >&2
+    echo "$BUSY" >&2
+    echo "Stop that program (e.g. 'sudo systemctl disable --now nginx'), or see" >&2
+    echo "'Sharing the server with another app' in docs/DEPLOY_AWS_SIMPLE.md." >&2
+    exit 1
+  fi
+fi
 
 # --- 3. Configuration (.env), written once. ---
 if [ ! -f .env ]; then
