@@ -4,6 +4,7 @@ portal/.next
 .venv
 **/__pycache__
 .env
+**/.env
 .env.*
 !.env.example
 *.docx

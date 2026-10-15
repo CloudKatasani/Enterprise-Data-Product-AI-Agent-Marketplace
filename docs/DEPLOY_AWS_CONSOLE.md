@@ -6,6 +6,9 @@ Application Load Balancer, EventBridge Scheduler — but every step is done in t
 Console. The only text you type outside a console form is JSON you paste into console editors and,
 optionally, two commands in **AWS CloudShell** (a browser terminal inside the console).
 
+> Building a low-cost prototype? [`DEPLOY_AWS_SIMPLE.md`](DEPLOY_AWS_SIMPLE.md) runs the whole
+> marketplace on one EC2 instance with a single install command, and needs no other AWS service.
+
 Read [`DEPLOY_AWS.md` §0](DEPLOY_AWS.md#0-read-this-first--what-the-review-found) first. Its
 findings F1–F11 explain *why* the steps below look the way they do. The four that matter most:
 

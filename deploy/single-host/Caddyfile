@@ -1,0 +1,16 @@
+# SITE_ADDRESS is a host name (HTTPS with an automatic Let's Encrypt
+# certificate) or ":80" (plain HTTP, for testing only).
+{$SITE_ADDRESS} {
+	# The application has no per-user sign-in yet (docs/DEPLOY_AWS.md, finding
+	# F2), so this password is what keeps the site private.
+	basic_auth {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
+
+	encode gzip
+
+	reverse_proxy portal:3000 {
+		# /api/events is a long-lived stream: pass bytes through as they arrive.
+		flush_interval -1
+	}
+}

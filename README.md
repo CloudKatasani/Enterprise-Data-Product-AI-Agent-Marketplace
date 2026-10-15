@@ -22,6 +22,8 @@ Step-by-step AWS hosting guide, with the review findings that shape it:
 [`docs/DEPLOY_AWS.md`](./docs/DEPLOY_AWS.md).
 The same deployment done entirely in the AWS Management Console:
 [`docs/DEPLOY_AWS_CONSOLE.md`](./docs/DEPLOY_AWS_CONSOLE.md).
+Lowest-cost prototype — one EC2 server, one install command, about USD 15–35 a month:
+[`docs/DEPLOY_AWS_SIMPLE.md`](./docs/DEPLOY_AWS_SIMPLE.md).
 
 ## Quick start
 

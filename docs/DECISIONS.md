@@ -602,3 +602,20 @@ own `marketplace-job-*` task definition; the failed-job rule matches on the `fam
 prefix so it covers those and the one-off `marketplace-jobs` alike.
 **Consequence** Two guides describe one deployment. `DEPLOY_AWS.md` stays the reference for
 findings, cost and the production gaps; the console guide links to it rather than restating them.
+
+### D-044 — A one-server EC2 deployment for prototypes (2026-10-15)
+**Context** The ECS guides cost about USD 215–275 a month and touch a dozen AWS services. A
+prototype needs to be cheap and run with as few AWS services as possible, the way it runs on a laptop.
+**Decision** `deploy/single-host/` runs the whole estate with Docker Compose on one EC2 instance:
+`pgvector/pgvector:pg16` (no published port), the backend image as api, worker and a `jobs`
+profile, the portal, and Caddy in front for automatic Let's Encrypt HTTPS and basic auth.
+Because the application has no per-user sign-in (F2), that password is the only gate, the same
+role Cognito plays on the ALB. `install.sh` builds the images on the server (no registry), writes
+`.env` with random secrets, runs the seed sequence once, and schedules jobs and a nightly
+`pg_dump` from cron, copied to S3 when `BACKUP_S3_BUCKET` is set. The default address is
+`<ip>.sslip.io`, so no domain or DNS service is needed, and at boot `set-address.sh` follows the
+new public IP after a stop/start, so stopping the instance to save money needs no Elastic IP.
+`.dockerignore` now excludes `**/.env`, so the backend image's `COPY . .` cannot bake that file
+into a layer.
+**Consequence** One server, one shared password: a prototype, not production. Moving up to the
+ECS guides keeps the same images and environment, and a dump restores into RDS.
