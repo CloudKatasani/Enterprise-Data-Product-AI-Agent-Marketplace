@@ -20,6 +20,8 @@ acceptance criteria. It does not override `BUILD.md`; it answers what happens af
 
 Step-by-step AWS hosting guide, with the review findings that shape it:
 [`docs/DEPLOY_AWS.md`](./docs/DEPLOY_AWS.md).
+The same deployment done entirely in the AWS Management Console:
+[`docs/DEPLOY_AWS_CONSOLE.md`](./docs/DEPLOY_AWS_CONSOLE.md).
 
 ## Quick start
 

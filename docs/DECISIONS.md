@@ -590,3 +590,15 @@ commands), `Dockerfile.portal` and `.dockerignore` are committed at the root. CI
 them yet; the portal build and the backend's editable install were verified outside Docker.
 **Consequence** A deployment that follows it is a governed single-identity pilot. Multi-user
 production waits on implementing option B from 02 §5; the guide lists that as the first gap.
+
+### D-043 — A console-only companion to the AWS deployment guide (2026-10-15)
+**Context** `docs/DEPLOY_AWS.md` is written as AWS CLI commands. Teams standing up a pilot often
+work in the AWS Management Console and cannot run a long shell session against the account.
+**Decision** `docs/DEPLOY_AWS_CONSOLE.md` builds the same estate through console forms, with the
+same names, findings and order. Two console constraints changed the shape: images are built by a
+CodeBuild project (privileged, inline buildspec) instead of a local Docker daemon, and because the
+EventBridge Scheduler console's ECS target offers no command override, each scheduled job gets its
+own `marketplace-job-*` task definition; the failed-job rule matches on the `family:marketplace-job`
+prefix so it covers those and the one-off `marketplace-jobs` alike.
+**Consequence** Two guides describe one deployment. `DEPLOY_AWS.md` stays the reference for
+findings, cost and the production gaps; the console guide links to it rather than restating them.

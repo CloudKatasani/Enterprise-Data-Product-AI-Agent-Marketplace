@@ -6,6 +6,9 @@ the repository running in an AWS account, written against what the code actually
 
 Region used throughout: **`us-east-2`** (Ohio). Change `AWS_REGION` once and every command follows.
 
+Prefer clicking to typing? [`DEPLOY_AWS_CONSOLE.md`](DEPLOY_AWS_CONSOLE.md) builds the same estate
+step by step in the AWS Management Console.
+
 ---
 
 ## 0. Read this first — what the review found
