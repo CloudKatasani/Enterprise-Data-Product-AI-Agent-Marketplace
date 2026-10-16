@@ -693,3 +693,15 @@ moved. Live installs stay unanchored and use `demo_runner --nightly` (D-047).
 **Consequence** The goldens are now a pure function of manifest, scale and anchor. The whole CI
 pipeline was run locally against PostgreSQL 16.15 from a clean database: all 150 exchanges pass,
 and so does every later step. Changing the scale or anchor means re-capturing in the same commit.
+
+### D-051 — The shared-Caddy host name is `enterprise-data-agents-marketplace.<ip>.sslip.io` (2026-10-16)
+**Context** The host-mode name `marketplace.<ip>.sslip.io` (D-046) did not say which product it
+serves next to the other site on the same IP.
+**Decision** `install.sh` takes its prefix from `SITE_PREFIX`, now
+`enterprise-data-agents-marketplace`, written lowercase because host names are case-insensitive
+and certificates are issued for the lowercase form. Re-running it moves an existing
+`marketplace.<ip>.sslip.io` (or bare `<ip>.sslip.io`) address to the new name, updating
+`SITE_ADDRESS`, `PORTAL_BASE_URL` and the credentials file; `host-caddy.sh` then rewrites the
+block, and `set-address.sh` keeps the new prefix after a stop/start. A custom domain is untouched.
+**Consequence** The old URL stops being served once the installer re-runs; bookmarks need the new
+one. Caddy obtains a fresh certificate for the new name on first request.
