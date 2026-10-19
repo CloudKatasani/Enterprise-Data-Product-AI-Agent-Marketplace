@@ -20,6 +20,10 @@
 # once it has succeeded.
 set -euo pipefail
 
+# Host name prefix used when sharing a Caddy with another site on the same IP:
+# <prefix>.<ip>.sslip.io. Host names are case-insensitive, so it is lowercase.
+SITE_PREFIX="enterprise-data-agents-marketplace"
+
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
 log() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
@@ -80,7 +84,7 @@ if [ ! -f .env ]; then
     IP="$(curl -fsS https://checkip.amazonaws.com | tr -d '[:space:]')"
     SITE_ADDRESS="${IP//./-}.sslip.io"
     # Sharing a Caddy with another site: use a name of our own on the same IP.
-    [ "$PROXY" = host ] && SITE_ADDRESS="marketplace.$SITE_ADDRESS"
+    [ "$PROXY" = host ] && SITE_ADDRESS="$SITE_PREFIX.$SITE_ADDRESS"
   fi
   ADMIN_USER="${ADMIN_USER:-admin}"
   ADMIN_PASSWORD="${ADMIN_PASSWORD:-$(rand)}"
@@ -151,12 +155,15 @@ if grep -q '^ACCESS=public' .env; then set_key CADDY_CONFIG Caddyfile.public; el
 if [ "$PROXY" = host ]; then
   set_key HOST_CADDY 1
   set_key COMPOSE_PROFILES ""
-  # A bare <ip>.sslip.io name may be the other site's; take marketplace.<ip>.sslip.io.
+  # A bare <ip>.sslip.io name may be the other site's; take <prefix>.<ip>.sslip.io.
+  # An address from an earlier install (marketplace.<ip>.sslip.io) moves to the
+  # current prefix too.
   SITE="$(sed -n 's/^SITE_ADDRESS=//p' .env)"
-  if [[ "$SITE" =~ ^[0-9]+-[0-9]+-[0-9]+-[0-9]+\.sslip\.io$ ]]; then
-    set_key SITE_ADDRESS "marketplace.$SITE"
-    set_key PORTAL_BASE_URL "https://marketplace.$SITE"
-    sed -i "s#^URL: .*#URL:      https://marketplace.$SITE#" /root/marketplace-credentials.txt 2>/dev/null || true
+  if [[ "$SITE" =~ ^(marketplace\.)?([0-9]+-[0-9]+-[0-9]+-[0-9]+\.sslip\.io)$ ]]; then
+    SITE="$SITE_PREFIX.${BASH_REMATCH[2]}"
+    set_key SITE_ADDRESS "$SITE"
+    set_key PORTAL_BASE_URL "https://$SITE"
+    sed -i "s#^URL: .*#URL:      https://$SITE#" /root/marketplace-credentials.txt 2>/dev/null || true
   fi
 else
   set_key HOST_CADDY 0

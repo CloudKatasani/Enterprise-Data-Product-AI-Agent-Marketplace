@@ -209,8 +209,9 @@ Put them before the install command, e.g.
 
 **Another site already served by Caddy** (installed as a system service, `/etc/caddy/Caddyfile`):
 nothing to do. The installer notices, does not start a second proxy, and adds the marketplace to
-your Caddy as one more site, `marketplace.<public-ip>.sslip.io`, with its own password. Your other
-site keeps working unchanged. The original file is kept as `/etc/caddy/Caddyfile.before-marketplace`;
+your Caddy as one more site, `enterprise-data-agents-marketplace.<public-ip>.sslip.io`, with its
+own password. Your other site keeps working unchanged. A server installed earlier under
+`marketplace.<public-ip>.sslip.io` moves to the new name when you re-run the installer. The original file is kept as `/etc/caddy/Caddyfile.before-marketplace`;
 the marketplace's part sits between `# >>> marketplace` and `# <<< marketplace` and is rewritten by
 `deploy/single-host/host-caddy.sh`. If Caddy rejects the change, the old file is put back
 automatically. The portal listens on `127.0.0.1:3100` for Caddy to reach it; set

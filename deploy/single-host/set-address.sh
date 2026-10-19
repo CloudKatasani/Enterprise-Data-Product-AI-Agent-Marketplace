@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 SITE="$(sed -n 's/^SITE_ADDRESS=//p' .env)"
-# <prefix.>a-b-c-d.sslip.io — keep any prefix (e.g. "marketplace.").
+# <prefix.>a-b-c-d.sslip.io — keep any prefix (e.g. "enterprise-data-agents-marketplace.").
 [[ "$SITE" =~ ^(.*\.)?[0-9]+-[0-9]+-[0-9]+-[0-9]+\.sslip\.io$ ]] || exit 0
 PREFIX="${BASH_REMATCH[1]}"
 IP="$(curl -fsS --retry 10 --retry-connrefused https://checkip.amazonaws.com | tr -d '[:space:]')"
